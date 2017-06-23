@@ -1,0 +1,4 @@
+protectedStates = [
+ 'Injured']
+overrideStates = [
+ 'ThrownInJail']
