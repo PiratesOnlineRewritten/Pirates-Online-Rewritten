@@ -1755,14 +1755,11 @@ class NPCMoviePlayer(DirectObject.DirectObject):
 
 
 searchPath = DSearchPath()
-if AppRunnerGlobal.appRunner:
-    searchPath.appendDirectory(Filename.expandFrom('$POTCO_2_ROOT'))
+if __debug__:
+    searchPath.appendDirectory(Filename.expandFrom('../resources/phase_3/etc'))
 else:
-    searchPath.appendDirectory(Filename('etc'))
-    searchPath.appendDirectory(Filename.fromOsSpecific(os.path.expandvars('$PIRATES/src/quest')))
-    searchPath.appendDirectory(Filename.fromOsSpecific('pirates/src/quest'))
-    searchPath.appendDirectory(Filename.fromOsSpecific('pirates/quest'))
-    searchPath.appendDirectory(Filename('.'))
+    searchPath.appendDirectory(Filename.expandFrom('phase_2/etc'))
+
 scriptFile = Filename('QuestScripts.txt')
 found = vfs.resolveFilename(scriptFile, searchPath)
 if not found:

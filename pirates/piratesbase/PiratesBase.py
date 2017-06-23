@@ -2,7 +2,9 @@ import sys
 import time
 import os
 from pandac.PandaModules import *
-from libotp import NametagGlobals, ChatBalloon, MarginManager
+from otp.nametag import NametagGlobals
+from otp.nametag.ChatBalloon import ChatBalloon
+from otp.nametag.MarginManager import MarginManager
 from direct.showbase.DirectObject import *
 from direct.showbase.PythonUtil import *
 from direct.showbase.Transitions import Transitions
@@ -61,7 +63,7 @@ class PiratesBase(OTPBase):
             launcher.setValue('GAME_SHOW_ADDS', 'NO')
         if base.appRunner:
             launcher.setValue('GAME_SHOW_ADDS', 'NO')
-        self.fourthOfJuly = base.config.GetBool('test-fourth-of-july', 0)
+        self.fourthOfJuly = self.config.GetBool('test-fourth-of-july', 0)
         if self.hasEmbedded:
             self.inAdFrame = embedded.isMainWindowVisible()
         else:
@@ -136,7 +138,7 @@ class PiratesBase(OTPBase):
             options.log('Loaded Game Options')
         else:
             options.config_to_options()
-            if base.config.GetBool('want-dev', False):
+            if self.config.GetBool('want-dev', False):
                 pass
             else:
                 use_recommended_options = True
@@ -167,21 +169,13 @@ class PiratesBase(OTPBase):
                     wp.setFullscreen(options.getFullscreen())
                     self.openDefaultWindow(props=wp)
                 self.eventMgr.doEvents()
-                loadingMode = config.GetInt('loading-screen', 0)
-                if loadingMode == 0:
+                if config.GetInt('fancy-loading-screen', False):
                     self.loadingScreen = LoadingScreen.LoadingScreen(None)
                 else:
                     self.loadingScreen = FancyLoadingScreen.FancyLoadingScreen(None)
                 self.loadingScreen.showTarget(pickapirate=True)
                 self.loadingScreen.show()
                 self.loadingScreen.beginStep('PiratesBase', 34, 25)
-                if not self.isMainWindowOpen():
-                    try:
-                        launcher.setPandaErrorCode(7)
-                    except:
-                        pass
-
-                    sys.exit(1)
                 self.loadingScreen.tick()
                 options.options_to_config()
                 options.setRuntimeOptions()
@@ -197,18 +191,14 @@ class PiratesBase(OTPBase):
                 TextureStage.getDefault().setPriority(10)
                 self.useDrive()
                 self.disableMouse()
-                if self.mouseInterface:
-                    self.mouseInterface.reparentTo(self.dataUnused)
-                if base.mouse2cam:
-                    self.mouse2cam.reparentTo(self.dataUnused)
-                if not base.config.GetBool('location-kiosk', 0):
+                if not self.config.GetBool('location-kiosk', 0):
                     for key in PiratesGlobals.ScreenshotHotkeyList:
                         self.accept(key, self.takeScreenShot)
 
                     self.screenshotViewer = None
-                    if base.config.GetBool('want-screenshot-viewer', 0):
+                    if self.config.GetBool('want-screenshot-viewer', 0):
                         self.accept(PiratesGlobals.ScreenshotViewerHotkey, self.showScreenshots)
-                self.wantMarketingViewer = base.config.GetBool('want-marketing-viewer', 0)
+                self.wantMarketingViewer = self.config.GetBool('want-marketing-viewer', 0)
                 self.marketingViewerOn = False
                 if self.wantMarketingViewer:
                     for key in PiratesGlobals.MarketingHotkeyList:
@@ -223,7 +213,7 @@ class PiratesBase(OTPBase):
                 farCullNode.setClipEffect(0)
                 self.farCull = camera.attachNewNode(farCullNode)
                 self.positionFarCull()
-                globalClockMaxDt = base.config.GetFloat('pirates-max-dt', 0.2)
+                globalClockMaxDt = self.config.GetFloat('pirates-max-dt', 0.2)
                 globalClock.setMaxDt(globalClockMaxDt)
                 self.loadingScreen.tick()
                 if self.config.GetBool('want-particles', 1):
@@ -371,14 +361,14 @@ class PiratesBase(OTPBase):
                     self.notify.info(string)
                     string = 'page_faults:     %d' % di.getPageFaultCount()
                     self.notify.info(string)
-                if base.config.GetBool('want-cpu-frequency-warning', 0):
+                if self.config.GetBool('want-cpu-frequency-warning', 0):
                     processor_number = 0
                     di.updateCpuFrequency(processor_number)
                     maximum = di.getMaximumCpuFrequency()
                     if maximum > 0:
                         current = di.getCurrentCpuFrequency()
                         if current > 0:
-                            if base.config.GetInt('test-cpu-frequency-warning', 0):
+                            if self.config.GetInt('test-cpu-frequency-warning', 0):
                                 current = maximum - 1000000
                             change = False
                             if current != self.currentCpuFrequency:
@@ -423,7 +413,7 @@ class PiratesBase(OTPBase):
             from pirates.kraken import Holder
             Holder.Holder.setupAssets()
             self.loadingScreen.tick()
-        if base.config.GetBool('want-seamonsters', 0):
+        if self.config.GetBool('want-seamonsters', 0):
             from pirates.creature import SeaSerpent
             SeaSerpent.SeaSerpent.setupAssets()
             self.loadingScreen.tick()
@@ -586,7 +576,7 @@ class PiratesBase(OTPBase):
         embedded.allowAddRefreshTop()
 
     def positionFarCull(self):
-        gridDetail = base.config.GetString('grid-detail', 'high')
+        gridDetail = self.config.GetString('grid-detail', 'high')
         self.gridDetail = gridDetail
         if gridDetail == 'high':
             self.farCull.setPos(0, 10000, 0)
@@ -646,8 +636,8 @@ class PiratesBase(OTPBase):
 
     def doAvatarPhysics(self, state):
         dt = ClockObject.getGlobalClock().getDt()
-        freq = base.config.GetFloat('avatar-physics-freq', 0.0)
-        maxSteps = base.config.GetInt('avatar-physics-maxsteps', 5)
+        freq = self.config.GetFloat('avatar-physics-freq', 0.0)
+        maxSteps = self.config.GetInt('avatar-physics-maxsteps', 5)
         if not freq:
             self.avatarPhysicsMgr.doPhysics(dt)
         else:
@@ -727,7 +717,8 @@ class PiratesBase(OTPBase):
             self.cleanupDownloadWatcher()
         else:
             self.acceptOnce('launcherAllPhasesComplete', self.cleanupDownloadWatcher)
-        gameServer = base.config.GetString('game-server', '')
+
+        gameServer = self.config.GetString('game-server', '')
         if gameServer:
             self.notify.info('Using game-server from Configrc: %s ' % gameServer)
         else:
@@ -737,32 +728,36 @@ class PiratesBase(OTPBase):
             else:
                 gameServer = 'localhost'
                 self.notify.info('Using gameServer localhost')
-            serverPort = base.config.GetInt('server-port', 6667)
-            debugQuests = base.config.GetBool('debug-quests', True)
-            self.wantTattoos = base.config.GetBool('want-tattoos', 0)
-            self.wantSocks = base.config.GetBool('want-socks', 0)
-            self.wantJewelry = base.config.GetBool('want-jewelry', 0)
-            serverList = []
-            for name in gameServer.split(';'):
-                url = URLSpec(name, 1)
+
+        serverPort = self.config.GetInt('server-port', 7198)
+        debugQuests = self.config.GetBool('debug-quests', True)
+        self.wantTattoos = self.config.GetBool('want-tattoos', 0)
+        self.wantSocks = self.config.GetBool('want-socks', 0)
+        self.wantJewelry = self.config.GetBool('want-jewelry', 0)
+        serverList = []
+        for name in gameServer.split(';'):
+            url = URLSpec(name, 1)
+            if self.config.GetBool('want-ssl-scheme', False):
                 url.setScheme('s')
-                if not url.hasPort():
-                    url.setPort(serverPort)
-                serverList.append(url)
 
-            if len(serverList) == 1:
-                failover = base.config.GetString('server-failover', '')
-                serverURL = serverList[0]
-                for arg in failover.split():
-                    try:
-                        port = int(arg)
-                        url = URLSpec(serverURL)
-                        url.setPort(port)
-                    except:
-                        url = URLSpec(arg, 1)
+            if not url.hasPort():
+                url.setPort(serverPort)
 
-                    if url != serverURL:
-                        serverList.append(url)
+            serverList.append(url)
+
+        if len(serverList) == 1:
+            failover = self.config.GetString('server-failover', '')
+            serverURL = serverList[0]
+            for arg in failover.split():
+                try:
+                    port = int(arg)
+                    url = URLSpec(serverURL)
+                    url.setPort(port)
+                except:
+                    url = URLSpec(arg, 1)
+
+                if url != serverURL:
+                    serverList.append(url)
 
         cr.loginFSM.request('connect', [serverList])
         self.musicMgr = MusicManager.MusicManager()
@@ -771,7 +766,7 @@ class PiratesBase(OTPBase):
         def toggleGUI():
             self.showGui = not self.showGui
             render2d.toggleVis()
-            if base.config.GetBool('hidegui-hidenametags', 1):
+            if self.config.GetBool('hidegui-hidenametags', 1):
                 npc = render.findAllMatches('**/nametag3d')
                 for i in range(npc.getNumPaths()):
                     np = npc.getPath(i)
@@ -944,8 +939,8 @@ class PiratesBase(OTPBase):
                         resolution_table = resolution_table + [resolution]
                 index += 1
 
-            width = base.config.GetInt('custom-window-width', 0)
-            height = base.config.GetInt('custom-window-height', 0)
+            width = self.config.GetInt('custom-window-width', 0)
+            height = self.config.GetInt('custom-window-height', 0)
             if width > 0 and height > 0:
                 resolution = (
                  width, height)

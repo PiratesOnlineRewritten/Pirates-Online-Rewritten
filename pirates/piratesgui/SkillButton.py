@@ -424,7 +424,8 @@ class SkillButton(DirectFrame):
                         if effectId:
                             entry = SkillEffectDescriptions.get(effectId)
                             if len(entry) > 1:
-                                damage or upgradeInfo += PLocalizer.UpgradesDuration
+                                val = damage or upgradeInfo
+                                val += PLocalizer.UpgradesDuration
                             else:
                                 upgradeInfo += ' ' + PLocalizer.And
                             upgradeInfo += ' ' + entry[1]

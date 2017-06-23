@@ -1,3 +1,4 @@
+from panda3d.core import *
 from pirates.piratesbase import PiratesGlobals
 from pirates.piratesbase import PLocalizer
 from pirates.piratesgui import PiratesGuiGlobals
@@ -144,7 +145,6 @@ class LoadingScreen(DirectObject.DirectObject):
         self.allowLiveFlatten = ConfigVariableBool('allow-live-flatten')
         self.title_art = []
         self.tempVolume = []
-        return
 
     def startLoading(self):
         pass
@@ -201,43 +201,43 @@ class LoadingScreen(DirectObject.DirectObject):
             gsg.setIncompleteRender(False)
         base.setTaskChainNetNonthreaded()
         self.allowLiveFlatten.setValue(1)
-        if self.parent:
-            if base.cr.isPaid() == OTPGlobals.AccessVelvetRope and base.config.GetBool('loading-screen-interstitial', 0):
-                self.model = loader.loadModel('models/gui/loading_screen_interstitial')
-                if self.model is not None:
-                    loadimage = self.model.find('**/loadimage')
-                    if loadimage is not None:
-                        loadimage.hide()
-            else:
-                self.model = loader.loadModel('models/gui/loading_screen')
-            self.locationLabel = DirectLabel(parent=aspect2dp, relief=None, text='', text_font=PiratesGlobals.getPirateOutlineFont(), text_fg=PiratesGuiGlobals.TextFG1, text_shadow=PiratesGuiGlobals.TextShadow, text_scale=PiratesGuiGlobals.TextScaleTitleJumbo * 0.7, text_align=TextNode.ACenter, pos=(0.0, 0.0, -0.52), textMayChange=1)
-            self.hintLabel = DirectLabel(parent=aspect2dp, relief=None, text='', text_font=PiratesGlobals.getPirateOutlineFont(), text_fg=PiratesGuiGlobals.TextFG1, text_shadow=PiratesGuiGlobals.TextShadow, text_scale=PiratesGuiGlobals.TextScaleTitleJumbo * 0.5, text_align=TextNode.ACenter, pos=(0.0, 0.0, -0.8), text_wordwrap=30, textMayChange=1)
-            self.wheel = self.model.find('**/red_wheel')
-            title_bg = self.model.find('**/title_bg')
-            title_frame = self.model.find('**/title_frame')
-            if self.parent and base.cr.isPaid() == OTPGlobals.AccessVelvetRope and base.config.GetBool('loading-screen-interstitial', 0):
-                self.hintLabel.setPos(0.69, 0, -0.63)
-                self.hintLabel['text_wordwrap'] = 12
-                self.locationLabel.setPos(-0.11, 0.0, -0.65)
-                root = self.model.find('**/loading_screen_top')
-                timer = self.model.find('**/timer')
-                gear = self.model.find('**/gear')
-                shell = self.model.find('**/shell')
-                frame_little = self.model.find('**/frame_little')
-                self.wheel.reparentTo(timer, 0)
-                gear.reparentTo(timer, 1)
-                shell.reparentTo(timer, 2)
-                title_bg.reparentTo(root)
-                title_frame.reparentTo(root)
-                self.snapshotFrameBasic = DirectFrame(parent=aspect2dp, relief=DGG.FLAT, frameColor=(0.0,
-                                                                                                     0.0,
-                                                                                                     0.0,
-                                                                                                     1.0), frameSize=(-4.95,
-                                                                                                                      -2.5,
-                                                                                                                      -1.1,
-                                                                                                                      -2.6))
-                self.snapshotFrameBasic.reparentTo(root)
-                frame_little.reparentTo(root)
+        if base.config.GetBool('loading-screen-interstitial', 0):
+            self.model = loader.loadModel('models/gui/loading_screen_interstitial')
+            if self.model is not None:
+                loadimage = self.model.find('**/loadimage')
+                if loadimage is not None:
+                    loadimage.hide()
+        else:
+            self.model = loader.loadModel('models/gui/loading_screen')
+
+        self.locationLabel = DirectLabel(parent=aspect2dp, relief=None, text='', text_font=PiratesGlobals.getPirateOutlineFont(), text_fg=PiratesGuiGlobals.TextFG1, text_shadow=PiratesGuiGlobals.TextShadow, text_scale=PiratesGuiGlobals.TextScaleTitleJumbo * 0.7, text_align=TextNode.ACenter, pos=(0.0, 0.0, -0.52), textMayChange=1)
+        self.hintLabel = DirectLabel(parent=aspect2dp, relief=None, text='', text_font=PiratesGlobals.getPirateOutlineFont(), text_fg=PiratesGuiGlobals.TextFG1, text_shadow=PiratesGuiGlobals.TextShadow, text_scale=PiratesGuiGlobals.TextScaleTitleJumbo * 0.5, text_align=TextNode.ACenter, pos=(0.0, 0.0, -0.8), text_wordwrap=30, textMayChange=1)
+        self.wheel = self.model.find('**/red_wheel')
+        title_bg = self.model.find('**/title_bg')
+        title_frame = self.model.find('**/title_frame')
+        if base.config.GetBool('loading-screen-interstitial', 0):
+            self.hintLabel.setPos(0.69, 0, -0.63)
+            self.hintLabel['text_wordwrap'] = 12
+            self.locationLabel.setPos(-0.11, 0.0, -0.65)
+            root = self.model.find('**/loading_screen_top')
+            timer = self.model.find('**/timer')
+            gear = self.model.find('**/gear')
+            shell = self.model.find('**/shell')
+            frame_little = self.model.find('**/frame_little')
+            self.wheel.reparentTo(timer, 0)
+            gear.reparentTo(timer, 1)
+            shell.reparentTo(timer, 2)
+            title_bg.reparentTo(root)
+            title_frame.reparentTo(root)
+            self.snapshotFrameBasic = DirectFrame(parent=aspect2dp, relief=DGG.FLAT, frameColor=(0.0,
+                                                                                                 0.0,
+                                                                                                 0.0,
+                                                                                                 1.0), frameSize=(-4.95,
+                                                                                                                  -2.5,
+                                                                                                                  -1.1,
+                                                                                                                  -2.6))
+            self.snapshotFrameBasic.reparentTo(root)
+            frame_little.reparentTo(root)
             self.title_art.append(title_bg)
             self.title_art.append(title_frame)
             self.hideTitleFrame()
@@ -248,7 +248,7 @@ class LoadingScreen(DirectObject.DirectObject):
                 self.snapshot.show()
         elif self.snapshot:
             self.snapshot.show()
-        if self.parent and self.snapshot and base.cr.isPaid() == OTPGlobals.AccessVelvetRope and base.config.GetBool('loading-screen-interstitial', 0):
+        if self.snapshot and base.config.GetBool('loading-screen-interstitial', 0):
             root = self.model.find('**/loading_screen_top')
             frame_little = self.model.find('**/frame_little')
             self.snapshot.reparentTo(root, 0)
@@ -261,10 +261,10 @@ class LoadingScreen(DirectObject.DirectObject):
                                                                                                          2.0,
                                                                                                          -2.0))
         self.snapshotFrame.setBin('fixed', 0)
-        self.model.reparentTo(aspect2dp, NO_FADE_SORT_INDEX)
-        self.locationLabel.reparentTo(aspect2dp, NO_FADE_SORT_INDEX)
-        self.hintLabel.reparentTo(aspect2dp, NO_FADE_SORT_INDEX)
-        if self.parent and base.cr.isPaid() == OTPGlobals.AccessVelvetRope and base.config.GetBool('loading-screen-interstitial', 0):
+        self.model.reparentTo(aspect2dp, DGG.NO_FADE_SORT_INDEX)
+        self.locationLabel.reparentTo(aspect2dp, DGG.NO_FADE_SORT_INDEX)
+        self.hintLabel.reparentTo(aspect2dp, DGG.NO_FADE_SORT_INDEX)
+        if base.config.GetBool('loading-screen-interstitial', 0):
             self.model.setScale(0.22, 0.22, 0.22)
             self.model.setPos(0.0, 0.0, -0.3)
         else:
@@ -275,7 +275,7 @@ class LoadingScreen(DirectObject.DirectObject):
         if self.hintText is not None:
             if len(self.hintText):
                 self.__setHintText(self.hintText)
-        if self.parent and base.cr.isPaid() == OTPGlobals.AccessVelvetRope and base.config.GetBool('want-ad-reporting', 0) and base.config.GetBool('loading-screen-interstitial', 0):
+        if base.config.GetBool('want-ad-reporting', 0) and base.config.GetBool('loading-screen-interstitial', 0):
             self.__setAdArt()
         base.graphicsEngine.renderFrame()
         base.graphicsEngine.renderFrame()
@@ -311,7 +311,7 @@ class LoadingScreen(DirectObject.DirectObject):
              '1196970035.53sdnaik', '1196970080.56sdnaik']
             if destId in shipPVPIslands or ocean and base.localAvatar.getCurrentIsland() in shipPVPIslands:
                 hint = getPrivateeringHint()
-        if self.parent and base.localAvatar.style.getTutorial() == PiratesGlobals.TUT_MET_JOLLY_ROGER:
+        if base.localAvatar.style.getTutorial() == PiratesGlobals.TUT_MET_JOLLY_ROGER:
             hint = '%s:  %s' % (PLocalizer.LoadingScreen_Hint, PLocalizer.GeneralTip7)
         self.__setHintText(hint)
 
@@ -439,26 +439,26 @@ class LoadingScreen(DirectObject.DirectObject):
     def __setLoadingArt(self, screenshot):
         if self.snapshot:
             return
-        if self.parent:
-            if hasattr(base, 'localAvatar') and base.localAvatar.style.getTutorial() < PiratesGlobals.TUT_MET_JOLLY_ROGER and screenshot not in tutorialShots:
-                screenshot = random.choice(tutorialShots)
-            self.snapshot = loader.loadModel(screenshot)
-            if self.snapshot:
-                if self.parent and base.cr.isPaid() == OTPGlobals.AccessVelvetRope and base.config.GetBool('loading-screen-interstitial', 0):
-                    self.snapshot.setScale(2.35, 1.0, 1.3)
-                    self.snapshot.setPos(-3.74, 0, -1.83)
-                    if self.model is not None:
-                        root = self.model.find('**/loading_screen_top')
-                        frame_little = self.model.find('**/frame_little')
-                        self.snapshot.reparentTo(root, 0)
-                        frame_little.reparentTo(root, 1)
-                else:
-                    self.snapshot.reparentTo(aspect2dp, NO_FADE_SORT_INDEX)
-                    self.snapshot.setScale(2.15, 1, 1.2)
-                    self.snapshot.setPos(0.0, 0.0, 0.09)
-                    self.snapshot.setBin('fixed', 1)
-                self.__isVisible() or self.snapshot.hide()
-        return
+
+        if hasattr(base, 'localAvatar') and base.localAvatar.style.getTutorial() < PiratesGlobals.TUT_MET_JOLLY_ROGER and screenshot not in tutorialShots:
+            screenshot = random.choice(tutorialShots)
+
+        self.snapshot = loader.loadModel(screenshot)
+        if self.snapshot:
+            if base.config.GetBool('loading-screen-interstitial', 0):
+                self.snapshot.setScale(2.35, 1.0, 1.3)
+                self.snapshot.setPos(-3.74, 0, -1.83)
+                if self.model is not None:
+                    root = self.model.find('**/loading_screen_top')
+                    frame_little = self.model.find('**/frame_little')
+                    self.snapshot.reparentTo(root, 0)
+                    frame_little.reparentTo(root, 1)
+            else:
+                self.snapshot.reparentTo(aspect2dp, DGG.NO_FADE_SORT_INDEX)
+                self.snapshot.setScale(2.15, 1, 1.2)
+                self.snapshot.setPos(0.0, 0.0, 0.09)
+                self.snapshot.setBin('fixed', 1)
+            self.__isVisible() or self.snapshot.hide()
 
     def __setLocationText(self, locationText):
         self.locationText = locationText

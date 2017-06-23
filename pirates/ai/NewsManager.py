@@ -47,7 +47,6 @@ class NewsManager(DistributedObject.DistributedObject):
         DistributedObject.DistributedObject.delete(self)
         return
 
-    @bpdb.bpCall()
     def displayMessage(self, messageId):
         if not self.inNewsWorld():
             return

@@ -1,9 +1,5 @@
 from pirates.creature.DistributedCreature import DistributedCreature
 
-class bp():
-    kraken = bpdb.bpPreset(cfg='kraken', static=1)
-
-
 class KrakenHead(DistributedCreature):
 
     def __init__(self, cr):

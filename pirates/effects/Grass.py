@@ -203,8 +203,6 @@ class Grass(DirectObject, NodePath):
                         self.returnClumpToPool(sample[0])
                         sample[0] = 0
 
-        else:
-
     def grassTask(self, task):
         avMoving = 0
         if hasattr(localAvatar.controlManager.currentControls, 'moving'):

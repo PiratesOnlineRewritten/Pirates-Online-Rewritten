@@ -395,7 +395,6 @@ class MasterHuman(HumanBase.HumanBase, Biped.Biped):
         self.makeSubpart('legs', ['dx_root'], ['zz_spine01'])
         self.setSubpartsComplete(True)
         self.eyeIrisTextures = loader.loadModel('models/misc/eye_iris.bam')
-        return
 
     def setLODs(self):
         self.setLODNode()
@@ -412,12 +411,14 @@ class MasterHuman(HumanBase.HumanBase, Biped.Biped):
                  0, 0, 10, 1000000000]
             else:
                 raise StandardError, 'Invalid avatar-detail: %s' % avatarDetail
-            self.addLOD(2000, dist[1], dist[0])
-            self.addLOD(1000, dist[2], dist[1])
-            self.addLOD(500, dist[3], dist[2])
-            if self.optimizeLOD:
-                lowLOD = self.getLOD('500')
-                lowLOD.setTransparency(0, 1000)
+
+        self.addLOD(2000, dist[1], dist[0])
+        self.addLOD(1000, dist[2], dist[1])
+        self.addLOD(500, dist[3], dist[2])
+        if self.optimizeLOD:
+            lowLOD = self.getLOD('500')
+            lowLOD.setTransparency(0, 1000)
+
         self.getLODNode().setCenter(Point3(0, 0, 5))
 
     def showLOD(self, lodName):

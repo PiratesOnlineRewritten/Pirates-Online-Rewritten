@@ -1,6 +1,6 @@
 from pandac.PandaModules import *
-from libotp import WhisperPopup
-from libotp import CFQuicktalker, CFPageButton, CFQuitButton, CFSpeech, CFThought, CFTimeout
+from otp.nametag.WhisperPopup import WhisperPopup
+from otp.nametag.NametagGlobals import CFQuicktalker, CFPageButton, CFQuitButton, CFSpeech, CFThought, CFTimeout
 from otp.chat import ChatGarbler
 import string
 from direct.task import Task
@@ -13,10 +13,6 @@ from otp.avatar import Avatar, PlayerBase
 from otp.chat import TalkAssistant
 from otp.otpbase import OTPGlobals
 from otp.avatar.Avatar import teleportNotify
-if base.config.GetBool('want-chatfilter-hacks', 0):
-    from otp.switchboard import badwordpy
-    import os
-    badwordpy.init(os.environ.get('OTP') + '\\src\\switchboard\\', '')
 
 class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBase):
     TeleportFailureTimeout = 60.0
@@ -200,12 +196,6 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
         if self.cr.wantMagicWords and len(chatString) > 0 and chatString[0] == '~':
             messenger.send('magicWord', [chatString])
         else:
-            if base.config.GetBool('want-chatfilter-hacks', 0):
-                if base.config.GetBool('want-chatfilter-drop-offending', 0):
-                    if badwordpy.test(chatString):
-                        return
-                else:
-                    chatString = badwordpy.scrub(chatString)
             messenger.send('wakeup')
             self.setChatAbsolute(chatString, chatFlags)
             self.d_setChat(chatString, chatFlags)

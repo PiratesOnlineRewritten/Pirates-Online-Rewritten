@@ -1,4 +1,4 @@
-from pandac.libpandaexpressModules import *
+from panda3d.core import *
 import string
 import types
 try:
@@ -11,13 +11,13 @@ except:
 def getLanguage():
     return language
 
-
 print 'OTPLocalizer: Running in language: %s' % language
 if language == 'english':
     _languageModule = 'otp.otpbase.OTPLocalizer' + string.capitalize(language)
 else:
     checkLanguage = 1
     _languageModule = 'otp.otpbase.OTPLocalizer_' + language
+
 print 'from ' + _languageModule + ' import *'
 exec 'from ' + _languageModule + ' import *'
 if checkLanguage:

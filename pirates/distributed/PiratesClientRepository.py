@@ -12,7 +12,7 @@ from direct.gui.DirectGui import *
 base.loadingScreen.tick()
 from pandac.PandaModules import *
 base.loadingScreen.tick()
-from libotp import NametagGlobals
+from otp.nametag import NametagGlobals
 base.loadingScreen.tick()
 from direct.interval.IntervalGlobal import *
 base.loadingScreen.tick()
@@ -91,10 +91,6 @@ from pirates.quest.QuestChoiceDynMap import QuestChoiceDynMap
 from pirates.npc import NPCManager
 from pirates.audio import SoundGlobals
 from pirates.audio.SoundGlobals import loadSfx
-
-class bp():
-    loginCfg = bpdb.bpGroup(iff=True, cfg='loginCfg', static=1)
-
 
 class PiratesClientRepository(OTPClientRepository):
     notify = directNotify.newCategory('PiratesClientRepository')
@@ -280,7 +276,6 @@ class PiratesClientRepository(OTPClientRepository):
         self.sendSetAvatarIdMsg(0)
         self.handler = self.handleMessageType
         if __dev__:
-            bp.loginCfg()
             config_slot = base.config.GetInt('login-pirate-slot', -1)
             if config_slot >= 0 and len(avList) > 0:
                 config_subId = base.config.GetInt('login-pirate-subId', avList.keys()[0])
@@ -294,6 +289,7 @@ class PiratesClientRepository(OTPClientRepository):
                         base.cr.avatarManager.sendRequestPlayAvatar(potAv.id, config_subId)
                         self.handleAvatarChoice('chose', config_subId, config_slot)
                         return
+
         self.avChoiceDoneEvent = 'avatarChooserDone'
         self.avChoice = AvatarChooser(self.loginFSM, self.avChoiceDoneEvent)
         base.loadingScreen.tick()

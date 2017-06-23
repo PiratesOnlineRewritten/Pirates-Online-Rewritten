@@ -10,14 +10,11 @@ from pirates.battle.EnemySkills import *
 vfs = VirtualFileSystem.getGlobalPtr()
 filename = Filename('ItemGlobals.pkl')
 searchPath = DSearchPath()
-if AppRunnerGlobal.appRunner:
-    searchPath.appendDirectory(Filename.expandFrom('$POTCO_2_ROOT/etc'))
+if __debug__:
+    searchPath.appendDirectory(Filename.expandFrom('../resources/phase_2/etc'))
 else:
-    searchPath.appendDirectory(Filename.fromOsSpecific(os.path.expandvars('$PIRATES/src/inventory')))
-    searchPath.appendDirectory(Filename.fromOsSpecific(os.path.expandvars('pirates/src/inventory')))
-    searchPath.appendDirectory(Filename.fromOsSpecific(os.path.expandvars('pirates/inventory')))
-    searchPath.appendDirectory(Filename('.'))
-    searchPath.appendDirectory(Filename('etc'))
+    searchPath.appendDirectory(Filename.expandFrom('phase_2/etc'))
+
 found = vfs.resolveFilename(filename, searchPath)
 if not found:
     message = 'ItemGlobals.pkl file not found on %s' % searchPath

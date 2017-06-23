@@ -3,7 +3,6 @@ from direct.showbase import GarbageReport, ContainerReport, MessengerLeakDetecto
 from direct.distributed import DistributedObject
 from direct.directnotify import DirectNotifyGlobal
 from direct.showbase.InputStateGlobal import inputState
-from direct.showbase.ObjectCount import ObjectCount
 from direct.task import Task
 from direct.task.TaskProfiler import TaskProfiler
 from otp.avatar import Avatar
@@ -355,12 +354,6 @@ class MagicWordManager(DistributedObject.DistributedObject):
                 self.baselineObjReport = report
 
             self.setMagicWordResponse('objects logged')
-        elif wordIs('~objectcount'):
-
-            def handleObjectCountDone(objectCount):
-                self.setMagicWordResponse('object count logged')
-
-            oc = ObjectCount('~objectcount', doneCallback = handleObjectCountDone)
         elif wordIs('~objecthg'):
             import gc as gc
             objs = gc.get_objects()
@@ -395,9 +388,8 @@ class MagicWordManager(DistributedObject.DistributedObject):
 
                 try:
                     cycleLimit = int(arg)
-                continue
-                continue
-
+                except:
+                    continue
 
             GarbageReport.GarbageLogger('~garbage', fullReport = full, threaded = True, safeMode = safeMode, delOnly = delOnly, cycleLimit = cycleLimit, doneCallback = self.garbageReportDone)
         elif wordIs('~guicreates'):
@@ -498,9 +490,6 @@ class MagicWordManager(DistributedObject.DistributedObject):
             taskMgr.flushTaskProfiles(name)
             response = 'flushed AI task profiles%s' % choice(name, ' for %s' % name, '')
             self.setMagicWordResponse(response)
-        elif wordIs('~dobjectcount'):
-            base.cr.printObjectCount()
-            self.setMagicWordResponse('logging client distributed object count...')
         elif wordIs('~taskmgr'):
             print taskMgr
             self.setMagicWordResponse('logging client taskMgr...')
@@ -780,12 +769,9 @@ class MagicWordManager(DistributedObject.DistributedObject):
             try:
                 bitmask |= BitMask32.bit(int(w))
                 print bitmask
-            continue
             except ValueError:
                 invalid += ' ' + w
                 continue
-
-
 
         if invalid:
             self.setMagicWordResponse('Unknown CS keyword(s): %s' % invalid)

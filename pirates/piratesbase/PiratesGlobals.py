@@ -57,9 +57,9 @@ FRENCH_NAMETAG = (0.1, 0.1, 0.44, 1.0)
 SPANISH_NAMETAG = (0.85, 0.65, 0.13, 1.0)
 NAMETAG_WORDWRAP = 100
 MAX_COMBAT_DAMAGE = 999
-AI_BROADCAST_PERIOD = config.GetDouble('smooth-lag', 0.2) * 0.9
+AI_BROADCAST_PERIOD = ConfigVariableDouble('smooth-lag', 0.2).getValue() * 0.9
 AI_MOVEMENT_PERIOD = AI_BROADCAST_PERIOD * 0.9
-AI_EXAMINE_EVERY = config.GetInt('ai-examine-every', 2)
+AI_EXAMINE_EVERY = ConfigVariableInt('ai-examine-every', 2).getValue()
 IDLES_DONT_EXAMINE = [
  VILLAGER_TEAM, PLAYER_TEAM]
 COLL_MODE_NONE = 0
@@ -259,10 +259,11 @@ SeaChestHotkey = 'uber-tab'
 EscapeHotkey = 'uber-escape'
 OptionsHotkey = 'f7'
 MinimapHotkey = 'f8'
-if config.GetBool('want-dev-hotkeys', 0):
+if ConfigVariableBool('want-dev-hotkeys', 0).getValue():
     ShipHotkey = 'f11'
     KrakenHotkey = 'f10'
     SynchronizeHotkey = 'f6'
+
 HideGuiHotkey = 'f12'
 TreasureHotkey = 'u'
 TreasureHotkey2 = 'shift-u'
@@ -280,9 +281,7 @@ SPEED_SLOW_INDEX = 3
 SPEED_CARRY_INDEX = 4
 SPEED_HEAVY_INDEX = 5
 SPEED_NOMOVE_INDEX = 6
-PirateSpeeds = [
- (
-  24.0, 24.0, 8.0, 120.0), (24.0, 24.0, 8.0, 120.0), (24.0, 24.0, 8.0, 120.0), (6.0, 4.0, 2.5, 33.0), (16.0, 8.0, 8.0, 80.0), (12.0, 8.0, 4.0, 80.0), (0.0, 0.0, 0.0, 0.0)]
+PirateSpeeds = [(24.0, 24.0, 8.0, 120.0), (24.0, 24.0, 8.0, 120.0), (24.0, 24.0, 8.0, 120.0), (6.0, 4.0, 2.5, 33.0), (16.0, 8.0, 8.0, 80.0), (12.0, 8.0, 4.0, 80.0), (0.0, 0.0, 0.0, 0.0)]
 ToonForwardFastSpeed = 24.0
 ToonJumpFastForce = 24.0
 ToonReverseFastSpeed = 8.0

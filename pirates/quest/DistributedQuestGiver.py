@@ -21,7 +21,7 @@ from pirates.quest import QuestOffer
 from pirates.reputation.ReputationGlobals import getLevelFromTotalReputation
 from pirates.quest.DialogTree import *
 from pirates.quest.DialogProcessMaster import *
-from libotp import CFSpeech, CFTimeout
+from otp.nametag.NametagGlobals import CFSpeech, CFTimeout
 
 class DistributedQuestGiver(Avatar.Avatar):
     notify = directNotify.newCategory('DistributedQuestGiver')

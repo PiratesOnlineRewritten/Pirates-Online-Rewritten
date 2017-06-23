@@ -146,7 +146,6 @@ class PotionBoardPiece(NodePath):
                             otherLevel += 1
                         if ownLevel == otherLevel:
                             self.pendingConnections.append(gameBoard.boardPieces[col][row])
-        return
 
     def updateDisplay(self):
         if self.colorIndex >= 0:
@@ -163,11 +162,13 @@ class PotionBoardPiece(NodePath):
                     texName = 'pir_t_gui_pot_tok_bla_%i' % self.level
                 elif self.colorIndex == 5:
                     texName = 'pir_t_gui_pot_tok_pur_%i' % self.level
-                self.completed or texName += '_empty'
+
+                texName += '_empty'
                 if self.nameCheck is not None:
                     self.nameCheck.stash()
             elif self.nameCheck is not None:
                 self.nameCheck.unstash()
+
             textureCard = loader.loadModel('models/minigames/pir_m_gui_pot_textureCard')
             self.bgTexture = textureCard.findTexture(texName)
             geom = self.bgModel.find('**/+GeomNode').node()

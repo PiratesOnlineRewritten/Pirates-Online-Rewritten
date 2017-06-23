@@ -61,14 +61,11 @@ BD_1FLOAT = 4
 vfs = VirtualFileSystem.getGlobalPtr()
 filename = Filename('WeaponGlobals.pkl')
 searchPath = DSearchPath()
-if AppRunnerGlobal.appRunner:
-    searchPath.appendDirectory(Filename.expandFrom('$POTCO_2_ROOT/etc'))
+if __debug__:
+    searchPath.appendDirectory(Filename.expandFrom('../resources/phase_2/etc'))
 else:
-    searchPath.appendDirectory(Filename.expandFrom('$PIRATES/src/battle'))
-    searchPath.appendDirectory(Filename.expandFrom('pirates/src/battle'))
-    searchPath.appendDirectory(Filename.expandFrom('pirates/battle'))
-    searchPath.appendDirectory(Filename('.'))
-    searchPath.appendDirectory(Filename('etc'))
+    searchPath.appendDirectory(Filename.expandFrom('phase_2/etc'))
+
 found = vfs.resolveFilename(filename, searchPath)
 if not found:
     message = 'WeaponGlobals.pkl file not found on %s' % searchPath

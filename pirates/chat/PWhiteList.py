@@ -10,14 +10,11 @@ class PWhiteList(WhiteList):
         vfs = VirtualFileSystem.getGlobalPtr()
         filename = Filename('pwhitelist.txt')
         searchPath = DSearchPath()
-        if AppRunnerGlobal.appRunner:
-            searchPath.appendDirectory(Filename.expandFrom('$POTCO_WL_ROOT/etc'))
+        if __debug__:
+            searchPath.appendDirectory(Filename.expandFrom('../resources/phase_3/etc'))
         else:
-            searchPath.appendDirectory(Filename('.'))
-            searchPath.appendDirectory(Filename('etc'))
-            searchPath.appendDirectory(Filename.fromOsSpecific(os.path.expandvars('$PIRATES/src/chat')))
-            searchPath.appendDirectory(Filename.fromOsSpecific(os.path.expandvars('pirates/src/chat')))
-            searchPath.appendDirectory(Filename.fromOsSpecific(os.path.expandvars('pirates/chat')))
+            searchPath.appendDirectory(Filename.expandFrom('phase_3/etc'))
+
         found = vfs.resolveFilename(filename, searchPath)
         if not found:
             message = 'pwhitelist.txt file not found on %s' % searchPath

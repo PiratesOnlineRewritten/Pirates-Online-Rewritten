@@ -81,7 +81,7 @@ class DisplayOptions():
         if base.appRunner is None or base.appRunner.windowProperties is None:
             restrict = 0
             change_display = False
-        self.restrict_to_embedded = choice(restrict, 1, 0)
+        self.restrict_to_embedded = 1 if restrict else 0
         self.notify.debug('restrict_to_embedded: %s' % self.restrict_to_embedded)
         if change_display:
             self.set(base.options, base.pipe, base.options.getWidth(), base.options.getHeight())
@@ -474,8 +474,8 @@ class Options(OptionSpace):
 
     def config_resolution(self):
         self.resolution = base.width_to_resolution_id(base.config.GetInt('win-size', 800))
-        horizontal_resolution = win_size.getIntWord(0)
-        vertical_resolution = win_size.getIntWord(1)
+        horizontal_resolution = int(win_size.getValue())
+        vertical_resolution = int(win_size.getValue())
         self.widescreen = 0
         if horizontal_resolution == 1280 and vertical_resolution == 720:
             self.widescreen = 1
@@ -492,8 +492,8 @@ class Options(OptionSpace):
         self.default()
         win_size = ConfigVariableInt('win-size')
         self.resolution = GameOptions.width_to_resolution_id(base.config.GetInt('win-size', 800))
-        horizontal_resolution = win_size.getIntWord(0)
-        vertical_resolution = win_size.getIntWord(1)
+        horizontal_resolution = int(win_size.getValue())
+        vertical_resolution = int(win_size.getValue())
         self.widescreen = 0
         if horizontal_resolution == 1280 and vertical_resolution == 720:
             self.widescreen = 1

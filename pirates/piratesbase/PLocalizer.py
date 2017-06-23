@@ -1,4 +1,4 @@
-from pandac.libpandaexpressModules import *
+from panda3d.core import *
 import string
 import types
 try:
@@ -10,7 +10,6 @@ except:
 
 def getLanguage():
     return language
-
 
 print 'PLocalizer: Running in language: %s' % language
 _languageModule = 'pirates.piratesbase.PLocalizer' + string.capitalize(language)

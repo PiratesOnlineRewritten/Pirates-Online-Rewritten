@@ -7,7 +7,7 @@ from direct.fsm import FSM
 from direct.task import Task
 from direct.showbase.PythonUtil import lerp, report, getShortestRotation
 from direct.directnotify.DirectNotifyGlobal import directNotify
-from libotp import NametagGlobals
+from otp.nametag import NametagGlobals
 from pirates.battle import WeaponGlobals
 from pirates.piratesbase import PiratesGlobals
 from pirates.piratesbase import EmoteGlobals

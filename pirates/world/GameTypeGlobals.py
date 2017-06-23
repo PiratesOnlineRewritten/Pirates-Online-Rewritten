@@ -72,7 +72,7 @@ def gatherGameStyleInfo(gameType, gameStyle, callback):
 
 
 GameTypes = {PiratesGlobals.GAME_TYPE_PRIV: {'options': {'execute': 'findPvp'}},PiratesGlobals.GAME_TYPE_PVP: {'style': {PiratesGlobals.GAME_STYLE_CTL: {'options': {GAME_OPTION_MIN_PLAYERS: [PiratesGuiGlobals.UIItemType_ListItem, ['2', '3', '4', '5', '6']]}},PiratesGlobals.GAME_STYLE_PIRATEER: {'options': {GAME_OPTION_MIN_PLAYERS: [PiratesGuiGlobals.UIItemType_ListItem, ['2', '3', '4', '5', '6']]}},PiratesGlobals.GAME_STYLE_TEAM_BATTLE: {'options': {GAME_OPTION_MIN_PLAYERS: [PiratesGuiGlobals.UIItemType_ListItem, ['4', '6']],GAME_OPTION_MAX_PLAYERS: [PiratesGuiGlobals.UIItemType_Hidden, '8']}},PiratesGlobals.GAME_STYLE_BATTLE: {'options': {GAME_OPTION_MIN_PLAYERS: [PiratesGuiGlobals.UIItemType_ListItem, ['2', '3', '4', '5', '6']],GAME_OPTION_MAX_PLAYERS: [PiratesGuiGlobals.UIItemType_Hidden, '8']}},PiratesGlobals.GAME_STYLE_SHIP_BATTLE: {'options': {GAME_OPTION_MAX_CREW_SIZE: [PiratesGuiGlobals.UIItemType_Hidden],GAME_OPTION_MAX_CREW_SHIP: [PiratesGuiGlobals.UIItemType_Hidden]}}}},PiratesGlobals.GAME_TYPE_CREW: {'options': {'execute': 'find'}},PiratesGlobals.GAME_TYPE_PG: {'style': {PiratesGlobals.GAME_STYLE_BLACKJACK: {'options': {GAME_OPTION_MAX_PLAYERS: [PiratesGuiGlobals.UIItemType_Hidden, '6']}},PiratesGlobals.GAME_STYLE_POKER: {'options': {GAME_OPTION_MAX_PLAYERS: [PiratesGuiGlobals.UIItemType_Hidden, '6']}}}},PiratesGlobals.GAME_TYPE_TM: {'style': gatherGameStyleInfo,'hidden': True}}
-pvpMode = ConfigVariableBool('pvp-testing-level', 0).getIntWord(0)
+pvpMode = int(ConfigVariableBool('pvp-testing-level', 0).getValue())
 if pvpMode < 1:
     del GameTypes[PiratesGlobals.GAME_TYPE_PVP]['style'][PiratesGlobals.GAME_STYLE_CTL]
 if pvpMode < 2:

@@ -85,10 +85,6 @@ if base.config.GetBool('want-pstats', 0):
     import profile
     import pstats
 
-class bp():
-    loginCfg = bpdb.bpGroup(iff=False, cfg='loginCfg', static=1)
-
-
 from direct.controls.ControlManager import ControlManager
 if base.config.GetBool('want-custom-keys', 0):
     ControlManager.wantCustomKeys = 1
@@ -611,7 +607,6 @@ class LocalPirate(DistributedPlayerPirate, LocalAvatar):
         def setIt(inventory, returnLocation=returnLocation):
             if inventory:
                 if __dev__ and not getBase().config.GetBool('login-location-used-setIt', False):
-                    bp.loginCfg()
                     ConfigVariableBool('login-location-used-setRetIt').setValue(True)
                     config_location = getBase().config.GetString('login-location', '').lower()
                     config_location_uid = PLocalizer.LocationUids.get(config_location)

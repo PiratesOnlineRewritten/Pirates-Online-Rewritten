@@ -1032,10 +1032,7 @@ class PiratesMagicWordManager(MagicWordManager.MagicWordManager):
             if len(args) > 1:
                 force = int(args[1])
 
-            DistributedSimpleShip = DistributedSimpleShip
-            import pirates.ship
-            clientShips = filter((lambda x: if isinstance(x, DistributedSimpleShip.DistributedSimpleShip):
-passx is not localAvatar.ship), base.cr.doId2do.values())
+            clientShips = [x for x in base.cr.doId2do.values() if isinstance(x, DistributedSimpleShip.DistributedSimpleShip)]
             cleared = False
             for currShip in clientShips:
                 shipCollWall = currShip.hull[0].collisions.find('**/collision_hull')
@@ -1196,9 +1193,7 @@ passx is not localAvatar.ship), base.cr.doId2do.values())
 
 
             base.cr.wantSpecialEffects = base.config.GetBool('want-special-effects', 1)
-            DistributedSimpleShip = DistributedSimpleShip
-            import pirates.ship
-            clientShips = filter((lambda x: isinstance(x, DistributedSimpleShip.DistributedSimpleShip)), base.cr.doId2do.values())
+            clientShips = [x for x in base.cr.doId2do.values() if isinstance(x, DistributedSimpleShip.DistributedSimpleShip)]
             if base.cr.queryShowEffect('BlackSmoke') or base.cr.queryShowEffect('Fire'):
                 for ship in clientShips:
                     if base.cr.queryShowEffect('BlackSmoke'):

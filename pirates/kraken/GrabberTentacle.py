@@ -8,7 +8,6 @@ from pirates.kraken.GrabberGameFSM import GrabberGameFSM
 from pirates.piratesbase import PiratesGlobals
 import math
 import random
-bp = bpdb.bpPreset('Kraken')
 
 class GrabberTentacle(DistributedCreature, Monstrous):
     notify = DirectNotifyGlobal.directNotify.newCategory('GrabberTentacle')

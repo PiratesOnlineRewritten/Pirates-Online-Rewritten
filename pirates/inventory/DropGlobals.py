@@ -1,6 +1,4 @@
-import cPickle
-from libpandaexpress import ConfigVariableBool
-from pandac.PandaModules import *
+from panda3d.core import *
 from direct.showbase.PythonUtil import *
 from direct.showbase import AppRunnerGlobal
 from pirates.pirate import AvatarTypes
@@ -11,17 +9,16 @@ from pirates.battle import EnemyGlobals
 import string
 import random
 import os
+import cPickle
+
 vfs = VirtualFileSystem.getGlobalPtr()
 filename = Filename('DropGlobals.pkl')
 searchPath = DSearchPath()
-if AppRunnerGlobal.appRunner:
-    searchPath.appendDirectory(Filename.expandFrom('$POTCO_2_ROOT/etc'))
+if __debug__:
+    searchPath.appendDirectory(Filename.expandFrom('../resources/phase_2/etc'))
 else:
-    searchPath.appendDirectory(Filename.fromOsSpecific(os.path.expandvars('$PIRATES/src/inventory')))
-    searchPath.appendDirectory(Filename.fromOsSpecific(os.path.expandvars('pirates/src/inventory')))
-    searchPath.appendDirectory(Filename.fromOsSpecific(os.path.expandvars('pirates/inventory')))
-    searchPath.appendDirectory(Filename('.'))
-    searchPath.appendDirectory(Filename('etc'))
+    searchPath.appendDirectory(Filename.expandFrom('phase_2/etc'))
+
 found = vfs.resolveFilename(filename, searchPath)
 if not found:
     print 'DropGlobals.pkl file not found: %s' % filename.cStr()

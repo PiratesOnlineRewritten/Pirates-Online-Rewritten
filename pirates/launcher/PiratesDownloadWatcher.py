@@ -16,7 +16,7 @@ class PiratesDownloadWatcher(DownloadWatcher.DownloadWatcher):
         self.model = loader.loadModel('models/gui/pir_m_gui_gen_loadingBar')
         bar = self.model.findTexture('pir_t_gui_gen_loadingBar')
         self.model.find('**/loading_bar').hide()
-        self.topFrame = DirectFrame(parent=base.a2dTopRight, pos=(-0.8, 0, -0.1), sortOrder=NO_FADE_SORT_INDEX + 1)
+        self.topFrame = DirectFrame(parent=base.a2dTopRight, pos=(-0.8, 0, -0.1), sortOrder=DGG.NO_FADE_SORT_INDEX + 1)
         self.text = DirectLabel(relief=None, parent=self.topFrame, guiId='DownloadWatcherText', pos=(0,
                                                                                                      0,
                                                                                                      0), text='                     ', text_fg=(1,
@@ -59,7 +59,7 @@ class PiratesDownloadWatcher(DownloadWatcher.DownloadWatcher):
     def foreground(self):
         self.topFrame.reparentTo(base.a2dpTopRight)
         self.topFrame.setBin('gui-fixed', 55)
-        self.topFrame['sortOrder'] = NO_FADE_SORT_INDEX + 1
+        self.topFrame['sortOrder'] = DGG.NO_FADE_SORT_INDEX + 1
 
     def background(self):
         self.topFrame.reparentTo(base.a2dTopRight)

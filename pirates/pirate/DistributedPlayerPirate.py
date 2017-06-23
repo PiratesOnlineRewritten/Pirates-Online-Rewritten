@@ -1,6 +1,10 @@
-import string
-from pandac.PandaModules import TextProperties
-from pandac.PandaModules import TextPropertiesManager
+import random
+import copy
+import time
+from math import sin
+from math import cos
+from math import pi
+from panda3d.core import *
 from direct.showbase.PythonUtil import Functor
 from direct.showbase.PythonUtil import report
 from direct.directnotify import DirectNotifyGlobal
@@ -17,8 +21,8 @@ from direct.gui.OnscreenText import OnscreenText
 from direct.gui.DirectGui import DirectWaitBar, DGG
 from direct.gui.DirectGui import *
 from direct.fsm.StatePush import FunctionCall, StateVar
-from libotp import NametagGroup
-from libotp import CFSpeech, CFQuicktalker, CFTimeout
+from otp.nametag.NametagGroup import NametagGroup
+from otp.nametag.NametagGlobals import CFSpeech, CFQuicktalker, CFTimeout
 from otp.avatar.DistributedPlayer import DistributedPlayer
 from otp.otpbase import OTPLocalizer
 from otp.otpbase import OTPGlobals
@@ -80,21 +84,11 @@ from pirates.audio import SoundGlobals
 from pirates.makeapirate import ClothingGlobals
 from pirates.pirate import PlayerStateGlobals
 from pirates.economy.StowawayGUI import StowawayGUI
-import random
-import copy
-import time
 from pirates.ai import HolidayGlobals
-from math import sin
-from math import cos
-from math import pi
 from pirates.piratesgui.DialMeter import DialMeter
 from pirates.quest import QuestDB
 from pirates.piratesbase import Freebooter
 from pirates.inventory import ItemConstants
-
-class bp():
-    loginCfg = bpdb.bpGroup(iff=False, cfg='loginCfg', static=1)
-
 
 class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, DistributedBattleAvatar, DistributedQuestAvatar, PAvatarHandle):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedPirate')
@@ -1430,7 +1424,6 @@ class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, Distribu
 
     @report(types=['deltaStamp', 'module'], dConfigParam='teleport')
     def readyToTeleport(self, teleportMgr):
-        bp.loginCfg()
         teleportMgr.initiateTeleport(self.teleportToType, self.teleportToName, shardId=self.getDefaultShard(), locationUid=self.returnLocation)
 
     def requestActivityAccepted(self):
@@ -1791,14 +1784,15 @@ class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, Distribu
     @report(types=['frameCount', 'args'], dConfigParam='jail')
     def setReturnLocation(self, returnLocation):
         if __dev__ and not getBase().config.GetBool('login-location-used-setRetLoc', False):
-            bp.loginCfg()
             ConfigVariableBool('login-location-used-setRetLoc').setValue(True)
             config_location = getBase().config.GetString('login-location', '').lower()
             config_location_uid = PLocalizer.LocationUids.get(config_location)
             if config_location and config_location_uid:
                 returnLocation = config_location_uid
+
         if returnLocation == '1142018473.22dxschafe':
             returnLocation = LocationIds.DEL_FUEGO_ISLAND
+
         self.returnLocation = returnLocation
 
     @report(types=['frameCount'], dConfigParam='jail')

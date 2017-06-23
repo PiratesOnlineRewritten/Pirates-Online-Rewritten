@@ -5,7 +5,7 @@ from direct.distributed import DistributedNode
 from direct.actor.DistributedActor import DistributedActor
 from direct.task import Task
 from direct.showbase import PythonUtil
-from libotp import Nametag
+from otp.nametag.Nametag import Nametag
 from otp.otpbase import OTPGlobals
 from otp.otpbase import OTPLocalizer
 from otp.speedchat import SCDecoders
@@ -32,7 +32,6 @@ class DistributedAvatar(DistributedActor, Avatar):
         self.hpText = None
         self.hp = None
         self.maxHp = None
-        return
 
     def disable(self):
         try:
@@ -48,15 +47,15 @@ class DistributedAvatar(DistributedActor, Avatar):
         self.ignore('nameTagShowAvId')
         self.ignore('nameTagShowName')
         DistributedActor.disable(self)
-        return
 
     def delete(self):
         try:
             self.DistributedAvatar_deleted
         except:
             self.DistributedAvatar_deleted = 1
-            Avatar.delete(self)
-            DistributedActor.delete(self)
+
+        Avatar.delete(self)
+        DistributedActor.delete(self)
 
     def generate(self):
         DistributedActor.generate(self)

@@ -6,15 +6,20 @@ class game():
     name = 'pirates'
     process = 'client'
 
-
 __builtin__.game = game()
+
 import time
 import os
 import sys
 import random
-import __builtin__
 import gc
+from panda3d.core import *
+
+if __debug__:
+    loadPrcFile('config/general.prc')
+
 gc.disable()
+
 try:
     launcher
 except:
@@ -27,15 +32,16 @@ from direct.gui import DirectGuiGlobals
 import PiratesGlobals
 DirectGuiGlobals.setDefaultFontFunc(PiratesGlobals.getInterfaceFont)
 launcher.setPandaErrorCode(7)
-from pandac.PandaModules import *
 import PiratesBase
 PiratesBase.PiratesBase()
 from direct.showbase.ShowBaseGlobal import *
 if base.config.GetBool('want-preloader', 0):
     base.preloader = PiratesPreloader.PiratesPreloader()
+
 if base.win == None:
     print 'Unable to open window; aborting.'
     sys.exit()
+
 launcher.setPandaErrorCode(0)
 launcher.setPandaWindowOpen()
 base.sfxPlayer.setCutoffDistance(500.0)
@@ -65,10 +71,11 @@ UserFunnel.logSubmit(0, 'CLIENT_OPENS')
 if base.config.GetBool('want-portal-cull', 0):
     base.cam.node().setCullCenter(base.camera)
     base.graphicsEngine.setPortalCull(1)
+
 if base.options:
     base.options.options_to_config()
     base.options.setRuntimeOptions()
     if launcher.isDummy() and not Thread.isTrueThreads():
-        run()
+        base.run()
     elif __name__ == '__main__':
-        run()
+        base.run()

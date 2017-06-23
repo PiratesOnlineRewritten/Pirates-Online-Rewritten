@@ -10,7 +10,8 @@ from direct.interval.IntervalGlobal import *
 from direct.gui.OnscreenText import OnscreenText
 from direct.gui.DirectGui import DGG
 from direct.distributed.StagedObject import StagedObject
-from libotp import Nametag, NametagGroup
+from otp.nametag.Nametag import Nametag
+from otp.nametag.NametagGroup import NametagGroup
 from otp.otpbase import OTPGlobals
 from otp.otpbase import OTPRender
 from pirates.ai import HolidayGlobals
