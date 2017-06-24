@@ -19,6 +19,10 @@ uberdogs:
       id: 4704
       anonymous: true
 
+    - class: ClientServicesManager
+      id: 4665
+      anonymous: true
+
 roles:
     - type: clientagent
       bind: 127.0.0.1:7198

@@ -1,6 +1,8 @@
-from direct.distributed import DistributedObject
+from direct.distributed.DistributedObjectGlobal import DistributedObjectGlobal
+from direct.directnotify import DirectNotifyGlobal
 
-class Account(DistributedObject.DistributedObject):
+class Account(DistributedObjectGlobal):
+    notify = DirectNotifyGlobal.directNotify.newCategory('Account')
 
     def __init__(self, cr):
-        pass
+        DistributedObjectGlobal.__init__(self, cr)

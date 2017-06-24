@@ -267,10 +267,12 @@ class OTPClientRepository(ClientRepositoryBase):
         self.wantSwitchboard = config.GetBool('want-switchboard', False)
         self.wantSwitchboardHacks = base.config.GetBool('want-switchboard-hacks', False)
         self.centralLogger = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_CENTRAL_LOGGER, 'CentralLogger')
+        self.csm = None
 
     def startLeakDetector(self):
         if hasattr(self, 'leakDetector'):
             return False
+
         firstCheckDelay = config.GetFloat('leak-detector-first-check-delay', 2 * 60.0)
         self.leakDetector = ContainerLeakDetector('client container leak detector', firstCheckDelay=firstCheckDelay)
         self.objectTypesLeakDetector = LeakDetectors.ObjectTypesLeakDetector()
@@ -289,12 +291,10 @@ class OTPClientRepository(ClientRepositoryBase):
     def enterLoginOff(self):
         self.handler = self.handleMessageType
         self.shardListHandle = None
-        return
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def exitLoginOff(self):
         self.handler = None
-        return
 
     def getServerVersion(self):
         return self.serverVersion
@@ -360,6 +360,8 @@ class OTPClientRepository(ClientRepositoryBase):
         self.sendSetAvatarIdMsg(0)
         self.loginDoneEvent = 'loginDone'
         self.accept(self.loginDoneEvent, self.__handleLoginDone)
+        self.csm.performLogin(self.loginDoneEvent)
+        self.waitForDatabaseTimeout(requestName='WaitOnCSMLoginResponse')
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def __handleLoginDone(self, doneStatus):
@@ -1567,7 +1569,7 @@ class OTPClientRepository(ClientRepositoryBase):
         OTPClientRepository.notify.debug('waiting for database timeout %s at %s' % (requestName, globalClock.getFrameTime()))
         self.cleanupWaitingForDatabase()
         globalClock.tick()
-        taskMgr.doMethodLater((OTPGlobals.DatabaseDialogTimeout + extraTimeout) * choice(__dev__, 10, 1), self.__showWaitingForDatabase, 'waitingForDatabase', extraArgs=[requestName])
+        taskMgr.doMethodLater((OTPGlobals.DatabaseDialogTimeout + extraTimeout) * 10 if __dev__ else 1, self.__showWaitingForDatabase, 'waitingForDatabase', extraArgs=[requestName])
 
     def cleanupWaitingForDatabase(self):
         if self.waitingForDatabase:

@@ -195,6 +195,7 @@ from pirates.teleport import ExteriorDoorTeleportActor/AI/OV
 from pirates.teleport import JailTeleportActor/AI/OV
 from pirates.teleport import ShipTeleportActor/AI/OV
 from pirates.quest import DistributedDailyQuestSpot/AI
+from pirates.uberdog.ClientServicesManager/UD import ClientServicesManager/UD
 
 typedef uint16 SkillId;
 
@@ -2778,4 +2779,29 @@ dclass DistributedQuestProp : DistributedBattleable, Lootable {
   setNotCompletedQuestIds(string []) required broadcast ram;
   sendUpdateMessage(uint8) broadcast;
   sendLocalSound(uint8, bool);
+};
+
+struct PotentialPirate {
+  uint32 avNum;
+  string avName;
+  string avDNA;
+  uint8 avPosition;
+  uint8 aname;
+};
+
+dclass ClientServicesManager : DistributedObjectGlobal {
+  login(string cookie) clsend;
+  acceptLogin(uint32 timestamp);
+  requestAvatars() clsend;
+  setAvatars(PotentialPirate[]);
+  createAvatar(blob dna, uint8 index) clsend;
+  createAvatarResp(uint32 avId);
+  setNameTyped(uint32 avId, string name) clsend;
+  setNameTypedResp(uint32 avId, uint8 status);
+  setNamePattern(uint32 avId, int16 p1, uint8 f1, int16 p2, uint8 f2, int16 p3, uint8 f3, int16 p4, uint8 f4) clsend;
+  setNamePatternResp(uint32 avId, uint8 status);
+  acknowledgeAvatarName(uint32 avId) clsend;
+  acknowledgeAvatarNameResp();
+  deleteAvatar(uint32 avId) clsend;
+  chooseAvatar(uint32 avId) clsend;
 };

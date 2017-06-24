@@ -1,3 +1,7 @@
+import math
+import sys
+import time
+import gc
 from pandac.PandaModules import *
 from direct.directnotify.DirectNotifyGlobal import *
 from direct.showbase.MessengerGlobal import *
@@ -11,10 +15,6 @@ from direct.interval.IntervalManager import ivalMgr
 from direct.task import Task
 from direct.showbase import EventManager
 from direct.showbase import ExceptionVarDump
-import math
-import sys
-import time
-import gc
 
 class AIBase():
     notify = directNotify.newCategory('AIBase')
@@ -56,7 +56,6 @@ class AIBase():
         __builtins__['vfs'] = vfs
         __builtins__['hidden'] = self.hidden
         AIBase.notify.info('__dev__ == %s' % __dev__)
-        PythonUtil.recordFunctorCreationStacks()
         __builtins__['wantTestObject'] = self.config.GetBool('want-test-object', 0)
         self.wantStats = self.config.GetBool('want-pstats', 0)
         Task.TaskManager.pStatsTasks = self.config.GetBool('pstats-tasks', 0)
@@ -64,9 +63,11 @@ class AIBase():
         defaultValue = 1
         if __dev__:
             defaultValue = 0
+
         wantFakeTextures = self.config.GetBool('want-fake-textures-ai', defaultValue)
         if wantFakeTextures:
             loadPrcFileData('aibase', 'textures-header-only 1')
+
         self.wantPets = self.config.GetBool('want-pets', 1)
         if self.wantPets:
             if game.name == 'toontown':
@@ -76,6 +77,7 @@ class AIBase():
                 self.petThinkPeriod = self.config.GetFloat('pet-think-period', PetConstants.ThinkPeriod)
                 self.petMovePeriod = self.config.GetFloat('pet-move-period', PetConstants.MovePeriod)
                 self.petPosBroadcastPeriod = self.config.GetFloat('pet-pos-broadcast-period', PetConstants.PosBroadcastPeriod)
+
         self.wantBingo = self.config.GetBool('want-fish-bingo', 1)
         self.wantKarts = self.config.GetBool('wantKarts', 1)
         self.newDBRequestGen = self.config.GetBool('new-database-request-generate', 1)
@@ -88,7 +90,6 @@ class AIBase():
         self.sqlAvailable = self.config.GetBool('sql-available', 1)
         self.createStats()
         self.restart()
-        return
 
     def setupCpuAffinities(self, minChannel):
         if game.name == 'uberDog':
@@ -107,6 +108,7 @@ class AIBase():
                 affinity = self.config.GetInt('ai-cpu-affinity', -1)
                 if autoAffinity and affinity == -1:
                     affinity = 1
+
             if affinity != -1:
                 TrueClock.getGlobalPtr().setCpuAffinity(1 << affinity)
             elif autoAffinity:
@@ -120,6 +122,7 @@ class AIBase():
         minFinTime = frameStartTime + self.MaxEpockSpeed
         if nextScheuledTaksTime > 0 and nextScheuledTaksTime < minFinTime:
             minFinTime = nextScheuledTaksTime
+
         delta = minFinTime - globalClock.getRealTime()
         while delta > 0.002:
             time.sleep(delta)
@@ -128,12 +131,16 @@ class AIBase():
     def createStats(self, hostname=None, port=None):
         if not self.wantStats:
             return False
+
         if PStatClient.isConnected():
             PStatClient.disconnect()
+
         if hostname is None:
             hostname = ''
+
         if port is None:
             port = -1
+
         PStatClient.connect(hostname, port)
         return PStatClient.isConnected()
 
@@ -166,6 +173,7 @@ class AIBase():
         self.taskMgr.add(self.__igLoop, 'igLoop', priority=50)
         if self.AISleep >= 0 and (not self.AIRunningNetYield or self.AIForceSleep):
             self.taskMgr.add(self.__sleepCycleTask, 'aiSleep', priority=55)
+
         self.eventMgr.restart()
 
     def getRepository(self):

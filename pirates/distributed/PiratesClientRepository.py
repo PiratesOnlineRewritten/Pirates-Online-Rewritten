@@ -123,6 +123,7 @@ class PiratesClientRepository(OTPClientRepository):
         base.loadingScreen.tick()
         self.settingsMgr = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_PIRATES_SETTINGS_MANAGER, 'PiratesSettingsMgr')
         self.statusDatabase = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_STATUS_DATABASE, 'StatusDatabase')
+        self.csm = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_CLIENT_SERVICES_MANAGER, 'ClientServicesManager')
         self.wantSeapatch = base.config.GetBool('want-seapatch', 1)
         self.wantSpecialEffects = base.config.GetBool('want-special-effects', 1)
         self.wantMakeAPirate = base.config.GetBool('wantMakeAPirate', 0)
@@ -163,8 +164,7 @@ class PiratesClientRepository(OTPClientRepository):
         self.humanHigh[1].ignoreAll()
         self.humanHigh[0].stopBlink()
         self.humanHigh[1].stopBlink()
-        self.humanLow = [
-         MasterHuman.MasterHuman(), MasterHuman.MasterHuman()]
+        self.humanLow = [MasterHuman.MasterHuman(), MasterHuman.MasterHuman()]
         self.humanLow[0].billboardNode.removeNode()
         self.humanLow[1].billboardNode.removeNode()
         self.humanLow[0].style = HumanDNA.HumanDNA('m')
@@ -179,8 +179,7 @@ class PiratesClientRepository(OTPClientRepository):
         self.humanLow[0].stopBlink()
         self.humanLow[1].stopBlink()
         for i in range(2):
-            self.humanLow[i]._Actor__sortedLODNames = [
-             '500']
+            self.humanLow[i]._Actor__sortedLODNames = ['500']
             del self.humanLow[i]._Actor__partBundleDict['2000']
             del self.humanLow[i]._Actor__partBundleDict['1000']
             self.humanLow[i].getLOD('2000').detachNode()
@@ -192,6 +191,7 @@ class PiratesClientRepository(OTPClientRepository):
             self.human = self.humanLow
         else:
             self.human = self.humanHigh
+
         A = AvatarTypes
         del A
         self.preloadedCutscenes = {}
@@ -208,13 +208,13 @@ class PiratesClientRepository(OTPClientRepository):
             __builtin__.pm = pdb.pm
             self.effectTypes = {'damageSmoke': ['BlackSmoke'],'damageFire': ['Fire'],'cannonDeckFire': ['CannonSmokeSimple', 'CannonBlastSmoke'],'cannonBSFire': ['MuzzleFlameBS', 'CannonSmokeSimpleBS', 'CannonBlastSmokeBS', 'GrapeshotEffectBS'],'cannonHit': ['SimpleSmokeCloud', 'ExplosionFlip'],'cannonSplash': ['CannonSplash']}
             self.effectToggles = {}
+
         self.cannonballCollisionDebug = 1
         self.npcManager = NPCManager.NPCManager()
         PotionGlobals.updatePotionBuffDuration(C_SUMMON_CHICKEN, config.GetInt('summon-duration-chicken', 300))
         PotionGlobals.updatePotionBuffDuration(C_SUMMON_MONKEY, config.GetInt('summon-duration-monkey', 300))
         PotionGlobals.updatePotionBuffDuration(C_SUMMON_WASP, config.GetInt('summon-duration-wasp', 300))
         PotionGlobals.updatePotionBuffDuration(C_SUMMON_DOG, config.GetInt('summon-duration-dog', 300))
-        return
 
     def __repr__(self):
         return 'PiratesClientRepository'
@@ -908,10 +908,11 @@ class PiratesClientRepository(OTPClientRepository):
         handle = self.addInterest(parentId, zoneId, description, event)
         if handle:
             for tag in tags:
-                self._tagsToInterests.setdefault(tag, []).append(handle)
+                self._tagsToInterests.setdefault(tag, []).append(handle.asInt())
 
-            self._interestsToTags[handle] = tags
-        return handle
+            self._interestsToTags[handle.asInt()] = tags
+
+        return handle.asInt()
 
     @report(types=['args', 'deltaStamp'], dConfigParam='dteleport')
     def removeTaggedInterest(self, interestHandle, event=None):
@@ -924,6 +925,7 @@ class PiratesClientRepository(OTPClientRepository):
                     self._tagsToInterests.pop(tag)
 
             self.removeInterest(interestHandle, event)
+
         return tags
 
     @report(types=['args', 'deltaStamp'], dConfigParam='dteleport')

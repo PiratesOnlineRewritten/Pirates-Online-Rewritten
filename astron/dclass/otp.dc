@@ -1,9 +1,10 @@
 from direct.distributed import DistributedObject/AI/UD
+from direct.distributed import DistributedObjectGlobal/AI/UD
 from direct.distributed import DistributedNode/AI/UD
 from direct.distributed import DistributedSmoothNode/AI
 from direct.distributed import DistributedCartesianGrid/AI
 from direct.distributed import DistributedCamera/AI/OV
-from otp.distributed import Account/AI/UD
+from otp.distributed import Account/UD
 from otp.ai import TimeManager/AI
 from otp.ai import MagicWordManager/AI
 from otp.avatar import DistributedAvatar/AI/UD
@@ -43,15 +44,13 @@ struct AvatarPendingDel {
 
 dclass Account {
   string DcObjectType db;
-  uint32[] ACCOUNT_AV_SET required db;
-  uint32[] pirateAvatars required db;
-  uint32[] HOUSE_ID_SET db;
+  uint32 ACCOUNT_AV_SET[] required db;
   uint32 ESTATE_ID db;
   AvatarPendingDel ACCOUNT_AV_SET_DEL[] db;
-  string PLAYED_MINUTES db;
-  string PLAYED_MINUTES_PERIOD db;
   string CREATED db;
   string LAST_LOGIN db;
+  string ACCOUNT_ID db;
+  uint16 ACCESS_LEVEL db;
 };
 
 struct BarrierData {
@@ -65,6 +64,9 @@ dclass DistributedObject {
   setBarrierReady(uint16) airecv clsend;
   execCommand(string, uint32, uint32, uint32);
   broadcastMessage() broadcast;
+};
+
+dclass DistributedObjectGlobal : DistributedObject {
 };
 
 dclass DistributedTestObject : DistributedObject {
