@@ -1,5 +1,6 @@
 # Window:
 window-title Pirates Online Rewritten
+icon-filename phase_3/etc/Pirates_Adds.ico
 
 # Models:
 model-path ../resources
@@ -25,3 +26,10 @@ want-ssl-scheme #f
 
 # Loading Screen:
 fancy-loading-screen #t
+
+# ANTIALIASING
+framebuffer-multisample 1
+multisamples 2
+
+# STICKY KEYS
+disable-sticky-keys 1
