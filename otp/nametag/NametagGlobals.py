@@ -129,3 +129,6 @@ def setOnscreenChatForced(ocf):
 
 def setGlobalNametagScale(s):
     pass
+
+def setBalloonModulationColor(bmc):
+    pass

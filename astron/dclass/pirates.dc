@@ -148,7 +148,6 @@ from pirates.world import DistributedDinghy/AI
 from pirates.world import DistributedShipDeployer/AI
 from pirates.band import DistributedPirateBandManager/AI
 from pirates.band import DistributedBandMember/AI/OV
-from pirates.snapshot import PSnapshotRenderer/AI/UD
 from pirates.distributed import DistributedPopulationTracker/AI
 from pirates.friends import PCGuildManager/AI/UD
 from pirates.ai import NewsManager/AI
@@ -2346,9 +2345,6 @@ dclass DistributedShipDeployer : DistributedNode {
   shipEnteredSphere(uint32, uint8) clsend airecv;
   shipExitedSphere(uint32, uint8) clsend airecv;
   shipExitedBarrier(uint32) clsend airecv;
-};
-
-dclass PSnapshotRenderer : SnapshotRenderer {
 };
 
 dclass DistributedPopulationTracker : DistributedObject {

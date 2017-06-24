@@ -15,12 +15,8 @@ from otp.friends import PlayerFriendsManager/UD
 from otp.friends import GuildManager/AI/UD
 from otp.friends import FriendInfo
 from otp.friends import AvatarFriendInfo
-from otp.distributed import ObjectServer/AI/UD
 from otp.distributed import DistributedDistrict/AI/UD
 from otp.distributed import DistributedDirectory/AI
-from otp.distributed import DistributedTestObject/AI
-from otp.snapshot import SnapshotDispatcher/AI/UD
-from otp.snapshot import SnapshotRenderer/AI/UD
 from otp.uberdog import OtpAvatarManager/AI/UD
 from otp.uberdog import DistributedChatManager/AI/UD
 from otp.uberdog import SpeedchatRelay/UD
@@ -69,19 +65,6 @@ dclass DistributedObject {
 dclass DistributedObjectGlobal : DistributedObject {
 };
 
-dclass DistributedTestObject : DistributedObject {
-  uint32 AutoInterest[];
-  setParentingRules(string, string) broadcast ram;
-  setRequiredField(uint32) required broadcast ram;
-  setB(uint32) broadcast;
-  setBA(uint32) broadcast airecv;
-  setBO(uint32) broadcast ownsend;
-  setBR(uint32) broadcast ram;
-  setBRA(uint32) broadcast ram airecv;
-  setBRO(uint32) broadcast ram ownsend;
-  setBROA(uint32) broadcast ram ownsend airecv;
-};
-
 struct OSInfo {
   string name;
   int16 platform;
@@ -105,12 +88,6 @@ dclass TimeManager : DistributedObject {
   checkForGarbageLeaks(bool) airecv clsend;
   setNumAIGarbageLeaks(uint32);
   setClientGarbageLeak(uint32, string(0-1024)) airecv clsend;
-};
-
-dclass ObjectServer {
-  setName(string) airecv ram required;
-  setDcHash(uint32) ram required;
-  setDateCreated(uint32) airecv;
 };
 
 dclass DistributedDirectory : DistributedObject {
@@ -472,21 +449,6 @@ dclass PlayerFriendsManager : DistributedObject, TalkPath_account {
   rejectUseSecret(string);
   updatePlayerFriend(uint32, FriendInfo, uint8);
   removePlayerFriend(uint32);
-};
-
-dclass SnapshotDispatcher : DistributedObject {
-  online();
-  requestRender(uint32);
-  avatarDeleted(uint32);
-  requestNewWork(uint32);
-  errorFetchingAvatar(uint32, uint32);
-  errorRenderingAvatar(uint32, uint32);
-  renderSuccessful(uint32, uint32);
-};
-
-dclass SnapshotRenderer : DistributedObject {
-  online();
-  requestRender(uint32, uint32, string);
 };
 
 dclass SpeedchatRelay : DistributedObject, TalkPath_account {

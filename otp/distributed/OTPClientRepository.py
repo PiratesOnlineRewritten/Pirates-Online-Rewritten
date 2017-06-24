@@ -534,21 +534,17 @@ class OTPClientRepository(ClientRepositoryBase):
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def waitForGetGameListResponse(self):
         if self.isGameListCorrect():
-            if base.config.GetBool('game-server-tests', 0):
-                from otp.distributed import GameServerTestSuite
-                GameServerTestSuite.GameServerTestSuite(self)
             self.loginFSM.request('waitForShardList')
         else:
             self.loginFSM.request('missingGameRootObject')
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def isGameListCorrect(self):
-        return 1
+        return True
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def exitWaitForGameList(self):
         self.handler = None
-        return
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterMissingGameRootObject(self):
@@ -575,7 +571,6 @@ class OTPClientRepository(ClientRepositoryBase):
         self.ignore('missingGameRootObjectBoxAck')
         self.missingGameRootObjectBox.cleanup()
         del self.missingGameRootObjectBox
-        return
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterWaitForShardList(self):
@@ -597,14 +592,13 @@ class OTPClientRepository(ClientRepositoryBase):
         for shard in self.activeDistrictMap.values():
             if shard.available:
                 return True
-        else:
-            return False
+
+        return False
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def exitWaitForShardList(self):
         self.ignore('ShardList_Complete')
         self.handler = None
-        return
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterNoShards(self):
@@ -632,7 +626,6 @@ class OTPClientRepository(ClientRepositoryBase):
         self.ignore('noShardsAck')
         self.noShardsBox.cleanup()
         del self.noShardsBox
-        return
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterNoShardsWait(self):
@@ -668,7 +661,6 @@ class OTPClientRepository(ClientRepositoryBase):
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def exitReject(self):
         self.handler = None
-        return
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterNoConnection(self):

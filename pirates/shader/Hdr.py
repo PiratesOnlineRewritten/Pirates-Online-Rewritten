@@ -2,6 +2,7 @@ from pandac.PandaModules import *
 from otp.otpbase import OTPGlobals
 from otp.otpbase import OTPRender
 from pirates.shader.Blur import *
+from otp.nametag import NametagGlobals
 
 class Hdr():
 
@@ -17,6 +18,7 @@ class Hdr():
                 if base.win and base.win.getGsg() and base.win.getGsg().getShaderModel() >= GraphicsStateGuardian.SM20:
                     if base.options.hdr:
                         enable = enable_post_processing
+
         attrib = DepthTestAttrib.make(RenderAttrib.MLessEqual)
         render.setAttrib(attrib)
         width = display_width
@@ -49,7 +51,6 @@ class Hdr():
                             card.reparentTo(parent)
                         camera.node().setScene(render)
                         main_rtt.saveCamera(main_camera_node)
-                    return
 
                 dependency_array = DependencyArray(createCallback)
                 base.dependency_array = dependency_array
@@ -78,6 +79,7 @@ class Hdr():
                 else:
                     base.glow.delete()
                     base.glow = None
+
             if base.post_processing:
                 width = 512
                 height = 512
@@ -92,11 +94,13 @@ class Hdr():
                 if base.glow:
                     add_glow = 1
                     glow_rtt = base.glow.glow_rtt
+
                 if base.main_rtt:
                     base.hdr = Blur(width, height, source_rtt, luminance=luminance, add=add, order=order, hdr=hdr, hdr_output=hdr_output, add_glow=add_glow, glow_rtt=glow_rtt, average=average)
                     if base.hdr.success:
                         if base.glow:
                             base.glow.hdr = base.hdr
+
                         self.success = 1
                         c = 0.58
                         NametagGlobals.setBalloonModulationColor(VBase4(c, c, c, 1.0))
@@ -104,6 +108,7 @@ class Hdr():
                         if base.glow:
                             base.glow.delete()
                             base.glow = None
+
                         base.hdr.delete()
                         base.hdr = None
                         base.main_rtt.delete()
@@ -113,4 +118,3 @@ class Hdr():
         elif base.post_processing:
             if activeDisplayRegion:
                 activeDisplayRegion.setActive(1)
-        return
