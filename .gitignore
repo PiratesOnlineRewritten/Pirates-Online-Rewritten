@@ -130,3 +130,6 @@ logs/
 # Screenshots
 *.jpeg
 *.jpg
+
+# Accounts
+account-bridge/
