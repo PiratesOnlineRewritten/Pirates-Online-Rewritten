@@ -1,5 +1,5 @@
 from pandac.PandaModules import *
-from libpirates import SeaPatchNode
+from pirates.seapatch.SeaPatchNode import SeaPatchNode
 from direct.interval.IntervalGlobal import *
 from direct.actor import Actor
 from direct.particles import ParticleEffect
@@ -40,6 +40,7 @@ class Wake(PooledEffect):
             spn = SeaPatchNode('spn', base.pe.seaPatch.patch)
         else:
             spn = SeaPatchNode('spn', base.cr.activeWorld.getWater().patch)
+
         spn.setWantColor(0)
         spn.setWantUv(0)
         spn.setWantNormal(0)

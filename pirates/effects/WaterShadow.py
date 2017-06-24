@@ -1,5 +1,5 @@
 from pandac.PandaModules import *
-from libpirates import SeaPatchNode
+from pirates.seapatch.SeaPatchNode import SeaPatchNode
 from otp.otpbase import OTPRender
 
 class WaterShadow(NodePath):
@@ -16,6 +16,7 @@ class WaterShadow(NodePath):
                 shadow_spn = SeaPatchNode('water_shadow_spn', base.pe.seaPatch.patch)
             else:
                 shadow_spn = SeaPatchNode('water_shadow_spn', base.cr.activeWorld.getWater().patch)
+
             shadow_spn.setWantColor(0)
             shadow_spn.setWantUv(0)
             shadow_spn.setWantNormal(0)
@@ -28,6 +29,7 @@ class WaterShadow(NodePath):
                 self.setDepthWrite(0)
             else:
                 self.setBin('ground', -2)
+
             self.setDepthTest(0)
             self.setLightOff()
             self.reparentTo(parent)
@@ -36,10 +38,10 @@ class WaterShadow(NodePath):
                 shadow_spn.setEffect(CompassEffect.make(base.pe.seaPatch.patchNP, CompassEffect.PZ))
             else:
                 shadow_spn.setEffect(CompassEffect.make(base.cr.activeWorld.getWater().patchNP, CompassEffect.PZ))
+
             if self.use_water_bin:
                 mask = 4294967295L
                 stencil = StencilAttrib.make(1, StencilAttrib.SCFEqual, StencilAttrib.SOKeep, StencilAttrib.SOKeep, StencilAttrib.SOKeep, 1, mask, mask)
                 self.setAttrib(stencil)
                 if not base.useStencils:
                     self.hide()
-        return

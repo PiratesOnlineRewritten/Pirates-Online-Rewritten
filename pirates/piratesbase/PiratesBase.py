@@ -83,6 +83,11 @@ class PiratesBase(OTPBase):
         self.bamCache.setCacheModels(False)
         self.bamCache.setCacheTextures(True)
         self.bamCache.setCacheCompressedTextures(True)
+        CullBinManager.getGlobalPtr().addBin('ground', CullBinEnums.BTFixed, 14)
+        CullBinManager.getGlobalPtr().addBin('shadow', CullBinEnums.BTFixed, 15)
+        CullBinManager.getGlobalPtr().addBin('water', CullBinEnums.BTFixed, 28)
+        CullBinManager.getGlobalPtr().addBin('gui-fixed', CullBinEnums.BTFixed, 55)
+        CullBinManager.getGlobalPtr().addBin('gui-popup', CullBinEnums.BTUnsorted, 60)
         base.effectsRoot = render.attachNewNode('Effects Root')
         self.musicMgr = None
         use_recommended_options = False

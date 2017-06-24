@@ -18,17 +18,17 @@ class ClientServicesManager(DistributedObjectGlobal):
         self.sendUpdate('requestAvatars')
 
     def setAvatars(self, avatars):
-        avList = []
-        for avNum, avName, avDNA, avPosition, nameState in avatars:
-            nameOpen = int(nameState == 1)
-            names = [avName, '', '', '']
-            if nameState == 2: # PENDING
-                names[1] = avName
-            elif nameState == 3: # APPROVED
-                names[2] = avName
-            elif nameState == 4: # REJECTED
-                names[3] = avName
-            avList.append(PotentialAvatar(avNum, names, avDNA, avPosition, nameOpen))
+        avList = {0: [OTPGlobals.AvatarSlotAvailable for _ in xrange(0, OTPGlobals.AvatarNumSlots)]}
+        #for avNum, avName, avDNA, avPosition, nameState in avatars:
+        #    nameOpen = int(nameState == 1)
+        #    names = [avName, '', '', '']
+        #    if nameState == 2: # PENDING
+        #        names[1] = avName
+        #    elif nameState == 3: # APPROVED
+        #        names[2] = avName
+        #    elif nameState == 4: # REJECTED
+        #        names[3] = avName
+        #    avList.append(PotentialAvatar(avNum, names, avDNA, avPosition, nameOpen))
 
         self.cr.handleAvatarsList(avList)
 

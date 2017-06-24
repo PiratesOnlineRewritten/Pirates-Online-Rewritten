@@ -1336,7 +1336,7 @@ class GameOptions(BorderFrame):
     MinimumHorizontalResolution = 800
     MinimumVerticalResolution = 600
 
-    def __init__(self, title, x, y, width, height, options=None, file_path=None, pipe=None, access=0, chooser=0, keyMappings=None):
+    def __init__(self, title, x, y, width, height, options=None, file_path=None, pipe=None, chooser=0, keyMappings=None):
         self.inAdFrame = False
         self.width = width
         self.height = height
@@ -1374,39 +1374,29 @@ class GameOptions(BorderFrame):
                     self.options = Options()
                     self.options.config_to_options()
                     self.options.recommendedOptions(base.pipe, True)
-                if keyMappings:
-                    self.keyMappings = keyMappings
-                else:
-                    self.keyMappings = KeyMappings()
-                self.options.options_to_config()
-                self.current_options = copy.copy(self.options)
-                self.shader_support = False
-                self.shader_model = GraphicsStateGuardian.SM00
-                if base.win and base.win.getGsg():
-                    self.shader_model = base.win.getGsg().getShaderModel()
-                    if self.shader_model >= GraphicsStateGuardian.SM11:
-                        self.shader_support = True
-                self.play = False
-                try:
-                    if base.cr.gameFSM.getCurrentState().getName() == 'playGame':
-                        self.play = True
-                except:
-                    pass
+        if keyMappings:
+            self.keyMappings = keyMappings
+        else:
+            self.keyMappings = KeyMappings()
+        self.options.options_to_config()
+        self.current_options = copy.copy(self.options)
+        self.shader_support = False
+        self.shader_model = GraphicsStateGuardian.SM00
+        if base.win and base.win.getGsg():
+            self.shader_model = base.win.getGsg().getShaderModel()
+            if self.shader_model >= GraphicsStateGuardian.SM11:
+                self.shader_support = True
+        self.play = False
+        try:
+            if base.cr.gameFSM.getCurrentState().getName() == 'playGame':
+                self.play = True
+        except:
+            pass
 
-                if access == Freebooter.VELVET_ROPE:
-                    self.freeLock = True
-                else:
-                    self.freeLock = False
-                if launcher.getValue('GAME_SHOW_ADDS') == 'NO' or sys.platform == 'darwin' or sys.platform == 'linux2':
-                    self.freeLock = False
-                if hasattr(base, 'localAvatar'):
-                    if not Freebooter.getPaidStatus(base.localAvatar.getDoId()):
-                        self.freeLock = True
         BorderFrame.__init__(self, relief=None, state=DGG.NORMAL, frameColor=PiratesGuiGlobals.FrameColor, borderWidth=PiratesGuiGlobals.BorderWidth, pos=(x, 0.0, y), frameSize=(0, width, 0, height), sortOrder=20)
         self.initialiseoptions(GameOptions)
-        self.gui = GameOptionsGui(self, title, x, y, width, height, options, file_path, pipe, access, chooser, keyMappings)
+        self.gui = GameOptionsGui(self, title, x, y, width, height, options, file_path, pipe, chooser, keyMappings)
         BorderFrame.hide(self)
-        return
 
     def destroy(self):
         if self.gui:

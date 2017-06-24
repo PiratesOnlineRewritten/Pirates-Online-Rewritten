@@ -68,158 +68,169 @@ class SeaPatch(Water):
                 self.seamodel = loader.loadModel('models/sea/pir_m_are_wld_seaPatch_low')
             else:
                 self.seamodel = loader.loadModel('models/sea/SeaPatch31')
-            self.seamodel.setScale(2, 1, 1)
-            self.seamodel.flattenMedium()
-            mask = 4294967295L
-            if self.use_water_bin:
-                self.seamodel.setBin('water', 0)
-                stencil = StencilAttrib.makeWithClear(1, StencilAttrib.SCFAlways, StencilAttrib.SOKeep, StencilAttrib.SOKeep, StencilAttrib.SOReplace, 1, mask, mask, 1, 0)
-                self.seamodel.setAttrib(stencil)
-            else:
-                self.seamodel.setBin('background', 200)
-            self.seamodel.hide(OTPRender.MainCameraBitmask)
-            self.seamodel.showThrough(OTPRender.EnviroCameraBitmask)
-            self.reflectStage = None
+
+        self.seamodel.setScale(2, 1, 1)
+        self.seamodel.flattenMedium()
+        mask = 4294967295L
+        if self.use_water_bin:
+            self.seamodel.setBin('water', 0)
+            stencil = StencilAttrib.makeWithClear(1, StencilAttrib.SCFAlways, StencilAttrib.SOKeep, StencilAttrib.SOKeep, StencilAttrib.SOReplace, 1, mask, mask, 1, 0)
+            self.seamodel.setAttrib(stencil)
+        else:
+            self.seamodel.setBin('background', 200)
+
+        self.seamodel.hide(OTPRender.MainCameraBitmask)
+        self.seamodel.showThrough(OTPRender.EnviroCameraBitmask)
+        self.reflectStage = None
+        if False:
+            self.model = loader.loadModel('models/misc/smiley')
+            self.model.reparentTo(render)
+            self.model.setPos(0.0, 50.0, 10.0)
+            self.model.setHpr(0.0, 180.0, 0.0)
+            self.model.setBin('water', 100)
+            self.model2 = loader.loadModel('models/misc/smiley')
+            self.model2.reparentTo(render)
+            self.model2.setPos(10.0, 50.0, 15.0)
+            self.model2.setHpr(180.0, 0.0, 0.0)
+            self.model2.setBin('water', 50)
+            self.model3 = loader.loadModel('models/misc/smiley')
+            self.model3.reparentTo(render)
+            self.model3.setPos(-10.0, 50.0, 15.0)
+            self.model3.setHpr(0.0, 0.0, 0.0)
+            self.model3.setBin('water', 50)
+            stencil = StencilAttrib.make(1, StencilAttrib.SCFEqual, StencilAttrib.SOKeep, StencilAttrib.SOKeep, StencilAttrib.SOKeep, 1, mask, mask)
+            self.model.setAttrib(stencil)
+            stencil = StencilAttrib.make(1, StencilAttrib.SCFEqual, StencilAttrib.SOKeep, StencilAttrib.SOKeep, StencilAttrib.SOKeep, 0, mask, mask)
+            self.model3.setAttrib(stencil)
+
+        self.flatSea = self.seamodel.find('**/flatsea')
+        flat2 = self.flatSea.copyTo(self.flatSea)
+        flat2.setScale(2, 2, 1)
+        flat2.setZ(-4)
+        flat4 = self.flatSea.copyTo(self.flatSea)
+        flat4.setScale(4, 4, 1)
+        flat4.setZ(-8)
+        if not self.flatSea.isEmpty():
+            self.flatSea.setTag('flat_sea', 'true')
+            self.flatSea.setPos(0, 0, -1)
             if False:
-                self.model = loader.loadModel('models/misc/smiley')
-                self.model.reparentTo(render)
-                self.model.setPos(0.0, 50.0, 10.0)
-                self.model.setHpr(0.0, 180.0, 0.0)
-                self.model.setBin('water', 100)
-                self.model2 = loader.loadModel('models/misc/smiley')
-                self.model2.reparentTo(render)
-                self.model2.setPos(10.0, 50.0, 15.0)
-                self.model2.setHpr(180.0, 0.0, 0.0)
-                self.model2.setBin('water', 50)
-                self.model3 = loader.loadModel('models/misc/smiley')
-                self.model3.reparentTo(render)
-                self.model3.setPos(-10.0, 50.0, 15.0)
-                self.model3.setHpr(0.0, 0.0, 0.0)
-                self.model3.setBin('water', 50)
-                stencil = StencilAttrib.make(1, StencilAttrib.SCFEqual, StencilAttrib.SOKeep, StencilAttrib.SOKeep, StencilAttrib.SOKeep, 1, mask, mask)
-                self.model.setAttrib(stencil)
-                stencil = StencilAttrib.make(1, StencilAttrib.SCFEqual, StencilAttrib.SOKeep, StencilAttrib.SOKeep, StencilAttrib.SOKeep, 0, mask, mask)
-                self.model3.setAttrib(stencil)
-            self.flatSea = self.seamodel.find('**/flatsea')
-            flat2 = self.flatSea.copyTo(self.flatSea)
-            flat2.setScale(2, 2, 1)
-            flat2.setZ(-4)
-            flat4 = self.flatSea.copyTo(self.flatSea)
-            flat4.setScale(4, 4, 1)
-            flat4.setZ(-8)
-            if not self.flatSea.isEmpty():
-                self.flatSea.setTag('flat_sea', 'true')
-                self.flatSea.setPos(0, 0, -1)
-                if False:
-                    self.flatSea.setScale(1.3)
-                if self.use_water_bin:
-                    self.flatSea.setDepthWrite(0)
-            self.flatSea.flattenStrong()
+                self.flatSea.setScale(1.3)
+
             if self.use_water_bin:
-                self.patchNP.setBin('water', 10)
-            else:
-                self.patchNP.setBin('ground', -10)
-            self.todMgr = todMgr
-            if self.getTodMgr():
-                self.patchNP.setLightOff()
-                self.patchNP.setLight(self.getTodMgr().alight)
-            seaMin, seaMax = self.seamodel.getTightBounds()
-            seaDelta = seaMax - seaMin
-            cp = CollisionPolygon(Point3(-1.0, -1.0, 0), Point3(1.0, -1.0, 0), Point3(1.0, 1.0, 0), Point3(-1.0, 1.0, 0))
-            cNode = CollisionNode('seaCollision')
-            cNode.setCollideMask(PiratesGlobals.TargetBitmask)
-            cNode.addSolid(cp)
-            cNodePath = NodePath(cNode)
-            cNodePath.reparentTo(self.seamodel)
-            cNodePath.setScale(Vec3(seaDelta).length())
-            cNodePath.setZ(-3)
-            cNodePath.setTag('objType', str(PiratesGlobals.COLL_SEA))
-            cNodePath.reparentTo(self.parentNP)
-            self.cNodePath = cNodePath
-            ccPlane = CollisionPlane(Plane(Vec3(0, 0, 1), Point3(0, 0, 0)))
-            ccNode = CollisionNode('seaCamCollision')
-            ccNode.setCollideMask(PiratesGlobals.CameraBitmask)
-            ccNode.addSolid(ccPlane)
-            ccNodePath = NodePath(ccNode)
-            ccNodePath.reparentTo(self.seamodel)
-            self.ccNodePath = ccNodePath
-            self.seamodel.reparentTo(self.patchNP)
-            self.patchNP.flattenLight()
-            patchNode.collectGeometry()
-            self.enabled = False
-            self.enable()
+                self.flatSea.setDepthWrite(0)
+
+        self.flatSea.flattenStrong()
+        if self.use_water_bin:
+            self.patchNP.setBin('water', 10)
+        else:
+            self.patchNP.setBin('ground', -10)
+
+        self.todMgr = todMgr
+        if self.getTodMgr():
+            self.patchNP.setLightOff()
+            self.patchNP.setLight(self.getTodMgr().alight)
+
+        seaMin, seaMax = self.seamodel.getTightBounds()
+        seaDelta = seaMax - seaMin
+        cp = CollisionPolygon(Point3(-1.0, -1.0, 0), Point3(1.0, -1.0, 0), Point3(1.0, 1.0, 0), Point3(-1.0, 1.0, 0))
+        cNode = CollisionNode('seaCollision')
+        cNode.setCollideMask(PiratesGlobals.TargetBitmask)
+        cNode.addSolid(cp)
+        cNodePath = NodePath(cNode)
+        cNodePath.reparentTo(self.seamodel)
+        cNodePath.setScale(Vec3(seaDelta).length())
+        cNodePath.setZ(-3)
+        cNodePath.setTag('objType', str(PiratesGlobals.COLL_SEA))
+        cNodePath.reparentTo(self.parentNP)
+        self.cNodePath = cNodePath
+        ccPlane = CollisionPlane(Plane(Vec3(0, 0, 1), Point3(0, 0, 0)))
+        ccNode = CollisionNode('seaCamCollision')
+        ccNode.setCollideMask(PiratesGlobals.CameraBitmask)
+        ccNode.addSolid(ccPlane)
+        ccNodePath = NodePath(ccNode)
+        ccNodePath.reparentTo(self.seamodel)
+        self.ccNodePath = ccNodePath
+        self.seamodel.reparentTo(self.patchNP)
+        self.patchNP.flattenLight()
+        patchNode.collectGeometry()
+        self.enabled = False
+        self.enable()
+        if self.use_alpha_map:
+            if self.enable_alpha_map:
+                self.patchNP.setTransparency(1)
+                alpha_test_attrib = AlphaTestAttrib.make(RenderAttrib.MAlways, 0)
+                self.patchNP.setAttrib(alpha_test_attrib, 100)
+
+        if self.water_panel != None:
+            self.water_panel.setSeaPatch(self)
+
+        if self.enable_parameter_keys:
+
+            def showSeaPatchPanel():
+                from pirates.seapatch import SeaPatchPanel
+                self.spp = SeaPatchPanel.SeaPatchPanel()
+                self.spp.setPatch(self)
+
+            self.accept('shift-5', showSeaPatchPanel)
+
+        self.setting_0()
+        self.patchNP.setTransparency(0)
+        buffer_width = 512
+        buffer_height = 512
+        self.texture_extension = '.jpg'
+        if self.shader:
+            self.seamodel.setShader(self.shader)
+            self.seamodel.setFogOff()
             if self.use_alpha_map:
-                if self.enable_alpha_map:
-                    self.patchNP.setTransparency(1)
-                    alpha_test_attrib = AlphaTestAttrib.make(RenderAttrib.MAlways, 0)
-                    self.patchNP.setAttrib(alpha_test_attrib, 100)
-            if self.water_panel != None:
-                self.water_panel.setSeaPatch(self)
-            if self.enable_parameter_keys:
-
-                def showSeaPatchPanel():
-                    from pirates.seapatch import SeaPatchPanel
-                    self.spp = SeaPatchPanel.SeaPatchPanel()
-                    self.spp.setPatch(self)
-
-                self.accept('shift-5', showSeaPatchPanel)
+                self.patchNP.setTransparency(1)
+            self.base_texture = loader.loadTexture('maps/oceanWater2' + self.texture_extension)
+            self.texture_d = self.base_texture.loadRelated(InternalName.make('-d'))
+            self.texture_n = self.base_texture.loadRelated(InternalName.make('-n'))
+            self.texture_bb = self.base_texture.loadRelated(InternalName.make('-bb'))
             self.setting_0()
-            self.patchNP.setTransparency(0)
-            buffer_width = 512
-            buffer_height = 512
-            self.texture_extension = '.jpg'
-            if self.shader:
-                self.seamodel.setShader(self.shader)
-                self.seamodel.setFogOff()
-                if self.use_alpha_map:
-                    self.patchNP.setTransparency(1)
-                self.base_texture = loader.loadTexture('maps/oceanWater2' + self.texture_extension)
-                self.texture_d = self.base_texture.loadRelated(InternalName.make('-d'))
-                self.texture_n = self.base_texture.loadRelated(InternalName.make('-n'))
-                self.texture_bb = self.base_texture.loadRelated(InternalName.make('-bb'))
-                self.setting_0()
-                self.water_r = 77
-                self.water_g = 128
-                self.water_b = 179
-                self.water_a = 255
-                self.set_water_color()
-                default_water_color_texture_filename = 'maps/ocean_color_1' + self.texture_extension
-                default_water_alpha_texture_filename = 'maps/default_inv_alpha' + self.texture_extension
-                self.set_water_color_texture(default_water_color_texture_filename)
-                self.set_water_alpha_texture(default_water_alpha_texture_filename)
-                if self.enable_water_panel:
-                    self.water_panel.set_texture(default_water_color_texture_filename)
-                    self.water_panel.set_shader(shader_file_path)
-            if True:
-                if reflection:
-                    self.reflection = reflection
-                else:
-                    self.reflection = Reflection('seapatch', buffer_width, buffer_height, render, Plane(Vec3(0, 0, 1), Point3(0, 0, 0)))
-                if self.reflection_enabled():
-                    self.reflection_on()
-                else:
-                    self.reflection_off()
-                self.reflection.reflectShowThroughOnly(self.reflect_show_through_only)
-                self.seamodel.setShaderInput(self.reflectiontexture_name, self.reflection.reflection_texture)
-                OTPRender.renderReflection(False, self.patchNP, 'p_ocean_water', None)
+            self.water_r = 77
+            self.water_g = 128
+            self.water_b = 179
+            self.water_a = 255
+            self.set_water_color()
+            default_water_color_texture_filename = 'maps/ocean_color_1' + self.texture_extension
+            default_water_alpha_texture_filename = 'maps/default_inv_alpha' + self.texture_extension
+            self.set_water_color_texture(default_water_color_texture_filename)
+            self.set_water_alpha_texture(default_water_alpha_texture_filename)
+            if self.enable_water_panel:
+                self.water_panel.set_texture(default_water_color_texture_filename)
+                self.water_panel.set_shader(shader_file_path)
+
+        if True:
+            if reflection:
+                self.reflection = reflection
             else:
-                self.reflection_factor = 0.0
-                self.set_reflection_parameters_np()
-            if not self.shader:
-                self.accept('timeOfDayChange', self._timeChange)
-                if self.reflection:
-                    self.reflection.createCard('water', 6)
-                self.setting_0()
-                self.reflection_factor = 0.2
-                self.set_reflection_parameters_np()
-                if False:
-                    default_water_color_texture_filename = 'maps/ocean_color_1' + self.texture_extension
-                    self.set_water_color_texture(default_water_color_texture_filename)
-                    self.setup_color_map()
+                self.reflection = Reflection('seapatch', buffer_width, buffer_height, render, Plane(Vec3(0, 0, 1), Point3(0, 0, 0)))
+            if self.reflection_enabled():
+                self.reflection_on()
+            else:
+                self.reflection_off()
+            self.reflection.reflectShowThroughOnly(self.reflect_show_through_only)
+            self.seamodel.setShaderInput(self.reflectiontexture_name, self.reflection.reflection_texture)
+            OTPRender.renderReflection(False, self.patchNP, 'p_ocean_water', None)
+        else:
+            self.reflection_factor = 0.0
+            self.set_reflection_parameters_np()
+        if not self.shader:
+            self.accept('timeOfDayChange', self._timeChange)
+            if self.reflection:
+                self.reflection.createCard('water', 6)
+            self.setting_0()
+            self.reflection_factor = 0.2
+            self.set_reflection_parameters_np()
+            if False:
+                default_water_color_texture_filename = 'maps/ocean_color_1' + self.texture_extension
+                self.set_water_color_texture(default_water_color_texture_filename)
+                self.setup_color_map()
+
         self.create_interface()
         self.patchNP.reparentTo(self.parentNP)
         self.accept('grid-detail-changed', self.updateWater)
-        return
 
     def updateWater(self, level):
         if level == 0:

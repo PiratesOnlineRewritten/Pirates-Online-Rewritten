@@ -115,9 +115,11 @@ class AvatarChooser(DirectObject, StateData):
             index = self.subIds.index(loggedInSubId)
         else:
             index = 0
+
         self.showSub(index)
         if self.ship:
             taskMgr.add(self.__shipRockTask, 'avatarChooserShipRockTask')
+
         base.transitions.fadeScreen(1)
         base.transitions.fadeIn(3)
         base.graphicsEngine.renderFrame()
@@ -276,56 +278,52 @@ class AvatarChooser(DirectObject, StateData):
                 self.playButton['text'] = '\x01smallCaps\x01%s\x02' % PLocalizer.AvatarChooserPlay
                 self.playButton.setColor(1, 1, 1, 1)
                 self.playButton['text_fg'] = (1.0, 0.9, 0.7, 0.9)
-            self.accept('enter', self.__handleEnter)
-            self.accept('arrow_up', self.__handleArrowUp)
-            self.accept('arrow_down', self.__handleArrowDown)
-            self.deleteButton = DirectButton(parent=self.highlightFrame, relief=None, text_scale=0.045, text_fg=(1,
-                                                                                                                 0.9,
-                                                                                                                 0.7,
-                                                                                                                 0.9), text_shadow=PiratesGuiGlobals.TextShadow, text=('', '', PLocalizer.AvatarChooserDelete, ''), image=(self.model.find('**/avatar_c_B_delete'), self.model.find('**/avatar_c_B_delete'), self.model.find('**/avatar_c_B_delete_over')), image_scale=0.37, text_pos=(0, -0.1), pos=(0.51, 0, -0.08), scale=1.3, command=self.__handleDelete)
-            self.quitFrame = DirectFrame(parent=base.a2dBottomRight, relief=None, image=self.model.find('**/avatar_c_C_back'), image_scale=0.37, pos=(-0.4, 0, 0.21), scale=0.9)
-            self.quitFrameForeground = DirectFrame(parent=self.quitFrame, relief=None, image=self.model.find('**/avatar_c_C_frame'), image_scale=0.37, pos=(0,
-                                                                                                                                                            0,
-                                                                                                                                                            0))
-            self.logoutButton = DirectButton(parent=self.quitFrame, relief=None, text_scale=0.045, text_fg=(1,
-                                                                                                            0.9,
-                                                                                                            0.7,
-                                                                                                            0.9), text_shadow=PiratesGuiGlobals.TextShadow, text=PLocalizer.OptionsPageLogout, image=(self.model.find('**/avatar_c_C_box'), self.model.find('**/avatar_c_C_box'), self.model.find('**/avatar_c_C_box_over')), image_scale=0.37, text_pos=(0, -0.015), pos=(0,
-                                                                                                                                                                                                                                                                                                                                                                           0,
-                                                                                                                                                                                                                                                                                                                                                                           0.2), command=self.__handleLogoutWithoutConfirm)
-            self.logoutButton.hide()
-            if self.disableOptions:
-                optionsState = DGG.DISABLED
-            else:
-                optionsState = DGG.NORMAL
-            self.optionsButton = DirectButton(parent=self.quitFrame, relief=None, text_scale=0.05, text_fg=(1,
-                                                                                                            0.9,
-                                                                                                            0.7,
-                                                                                                            0.9), text_shadow=PiratesGuiGlobals.TextShadow, text='\x01smallCaps\x01%s\x02' % PLocalizer.AvatarChooserOptions, image=(self.model.find('**/avatar_c_C_box'), self.model.find('**/avatar_c_C_box'), self.model.find('**/avatar_c_C_box_over')), image_scale=0.37, text_pos=(0, -0.015), pos=(0,
-                                                                                                                                                                                                                                                                                                                                                                                                          0,
-                                                                                                                                                                                                                                                                                                                                                                                                          0.21), command=self.__handleOptions, state=optionsState)
-            if self.disableOptions:
-                self.optionsButton.setColorScale(Vec4(0.7, 0.7, 0.7, 0.7))
-            self.upgradeButton = DirectButton(parent=self.quitFrame, relief=None, text_scale=0.05, text_fg=(1,
-                                                                                                            0.9,
-                                                                                                            0.7,
-                                                                                                            0.9), text_shadow=PiratesGuiGlobals.TextShadow, text='\x01smallCaps\x01%s\x02' % PLocalizer.AvatarChooserUpgrade, image=(self.model.find('**/avatar_c_C_box'), self.model.find('**/avatar_c_C_box'), self.model.find('**/avatar_c_C_box_over')), image_scale=0.37, text_pos=(0, -0.015), pos=(0,
-                                                                                                                                                                                                                                                                                                                                                                                                          0,
-                                                                                                                                                                                                                                                                                                                                                                                                          0.07), command=self.__handleUpgrade)
-            if base.cr.isPaid() == OTPGlobals.AccessFull:
-                self.upgradeButton.hide()
-                self.optionsButton.setPos(0, 0, 0.07)
-            self.disableQuit = base.config.GetBool('location-kiosk', 0)
-            if self.disableQuit:
-                quitState = DGG.DISABLED
-            else:
-                quitState = DGG.NORMAL
-            self.quitButton = DirectButton(parent=self.quitFrame, state=quitState, relief=None, text_scale=0.05, text_fg=(1,
-                                                                                                                          0.9,
-                                                                                                                          0.7,
-                                                                                                                          0.9), text_shadow=PiratesGuiGlobals.TextShadow, text='\x01smallCaps\x01%s\x02' % PLocalizer.AvatarChooserQuit, image=(self.model.find('**/avatar_c_C_box'), self.model.find('**/avatar_c_C_box'), self.model.find('**/avatar_c_C_box_over')), image_scale=0.37, text_pos=(0, -0.015), pos=(0, 0, -0.07), command=self.__handleQuit)
-            if self.disableQuit:
-                self.quitButton.setColorScale(Vec4(0.7, 0.7, 0.7, 0.7))
+
+        self.accept('enter', self.__handleEnter)
+        self.accept('arrow_up', self.__handleArrowUp)
+        self.accept('arrow_down', self.__handleArrowDown)
+        self.deleteButton = DirectButton(parent=self.highlightFrame, relief=None, text_scale=0.045, text_fg=(1,
+                                                                                                             0.9,
+                                                                                                             0.7,
+                                                                                                             0.9), text_shadow=PiratesGuiGlobals.TextShadow, text=('', '', PLocalizer.AvatarChooserDelete, ''), image=(self.model.find('**/avatar_c_B_delete'), self.model.find('**/avatar_c_B_delete'), self.model.find('**/avatar_c_B_delete_over')), image_scale=0.37, text_pos=(0, -0.1), pos=(0.51, 0, -0.08), scale=1.3, command=self.__handleDelete)
+        self.quitFrame = DirectFrame(parent=base.a2dBottomRight, relief=None, image=self.model.find('**/avatar_c_C_back'), image_scale=0.37, pos=(-0.4, 0, 0.21), scale=0.9)
+        self.quitFrameForeground = DirectFrame(parent=self.quitFrame, relief=None, image=self.model.find('**/avatar_c_C_frame'), image_scale=0.37, pos=(0,
+                                                                                                                                                        0,
+                                                                                                                                                        0))
+        self.logoutButton = DirectButton(parent=self.quitFrame, relief=None, text_scale=0.045, text_fg=(1,
+                                                                                                        0.9,
+                                                                                                        0.7,
+                                                                                                        0.9), text_shadow=PiratesGuiGlobals.TextShadow, text=PLocalizer.OptionsPageLogout, image=(self.model.find('**/avatar_c_C_box'), self.model.find('**/avatar_c_C_box'), self.model.find('**/avatar_c_C_box_over')), image_scale=0.37, text_pos=(0, -0.015), pos=(0,
+                                                                                                                                                                                                                                                                                                                                                                       0,
+                                                                                                                                                                                                                                                                                                                                                                       0.2), command=self.__handleLogoutWithoutConfirm)
+        self.logoutButton.hide()
+        if self.disableOptions:
+            optionsState = DGG.DISABLED
+        else:
+            optionsState = DGG.NORMAL
+
+        self.optionsButton = DirectButton(parent=self.quitFrame, relief=None, text_scale=0.05, text_fg=(1,
+                                                                                                        0.9,
+                                                                                                        0.7,
+                                                                                                        0.9), text_shadow=PiratesGuiGlobals.TextShadow, text='\x01smallCaps\x01%s\x02' % PLocalizer.AvatarChooserOptions, image=(self.model.find('**/avatar_c_C_box'), self.model.find('**/avatar_c_C_box'), self.model.find('**/avatar_c_C_box_over')), image_scale=0.37, text_pos=(0, -0.015), pos=(0,
+                                                                                                                                                                                                                                                                                                                                                                                                      0,
+                                                                                                                                                                                                                                                                                                                                                                                                      0.07), command=self.__handleOptions, state=optionsState)
+        if self.disableOptions:
+            self.optionsButton.setColorScale(Vec4(0.7, 0.7, 0.7, 0.7))
+
+        self.disableQuit = base.config.GetBool('location-kiosk', 0)
+        if self.disableQuit:
+            quitState = DGG.DISABLED
+        else:
+            quitState = DGG.NORMAL
+
+        self.quitButton = DirectButton(parent=self.quitFrame, state=quitState, relief=None, text_scale=0.05, text_fg=(1,
+                                                                                                                      0.9,
+                                                                                                                      0.7,
+                                                                                                                      0.9), text_shadow=PiratesGuiGlobals.TextShadow, text='\x01smallCaps\x01%s\x02' % PLocalizer.AvatarChooserQuit, image=(self.model.find('**/avatar_c_C_box'), self.model.find('**/avatar_c_C_box'), self.model.find('**/avatar_c_C_box_over')), image_scale=0.37, text_pos=(0, -0.015), pos=(0, 0, -0.07), command=self.__handleQuit)
+        if self.disableQuit:
+            self.quitButton.setColorScale(Vec4(0.7, 0.7, 0.7, 0.7))
+
         self.renameButton = DirectButton(parent=base.a2dTopRight, relief=None, text_scale=0.05, text_fg=(1,
                                                                                                          0.9,
                                                                                                          0.7,
@@ -347,7 +345,6 @@ class AvatarChooser(DirectObject, StateData):
         self.logo.setPos(0, 0, 0.1)
         self.logo.setScale(0.66)
         charGui.removeNode()
-        return
 
     def __createAvatarButtons(self):
         subCard = loader.loadModel('models/gui/toplevel_gui')
@@ -386,30 +383,32 @@ class AvatarChooser(DirectObject, StateData):
                         z = slot * spacing - 0.08
                         textPos = (0, -0.015)
                         image = (self.model.find('**/avatar_c_A_middle'), self.model.find('**/avatar_c_A_middle'), self.model.find('**/avatar_c_A_middle_over'), self.model.find('**/avatar_c_A_middle'))
-                    if av == OTPGlobals.AvatarSlotAvailable:
+
+                if av == OTPGlobals.AvatarSlotAvailable:
+                    text = '\x01smallCaps\x01%s\x02' % PLocalizer.AvatarChooserCreate
+                    if -3 in avData:
+                        command = self.__handleCreate
+                    else:
+                        command = self.popupFeatureBrowser
+                    state = DGG.NORMAL
+                elif av == OTPGlobals.AvatarPendingCreate:
+                    text = PLocalizer.AvatarChooserUnderConstruction
+                    command = None
+                    state = DGG.DISABLED
+                    imageColor = Vec4(0.7, 0.7, 0.7, 1)
+                else:
+                    if av == OTPGlobals.AvatarSlotUnavailable:
                         text = '\x01smallCaps\x01%s\x02' % PLocalizer.AvatarChooserCreate
                         if -3 in avData:
                             command = self.__handleCreate
                         else:
                             command = self.popupFeatureBrowser
                         state = DGG.NORMAL
-                    elif av == OTPGlobals.AvatarPendingCreate:
-                        text = PLocalizer.AvatarChooserUnderConstruction
-                        command = None
-                        state = DGG.DISABLED
-                        imageColor = Vec4(0.7, 0.7, 0.7, 1)
-                    else:
-                        if av == OTPGlobals.AvatarSlotUnavailable:
-                            text = '\x01smallCaps\x01%s\x02' % PLocalizer.AvatarChooserCreate
-                            if -3 in avData:
-                                command = self.__handleCreate
-                            else:
-                                command = self.popupFeatureBrowser
-                            state = DGG.NORMAL
-                        avName = av.dna.getDNAName()
-                        text = avName
-                        command = self.__handleHighlight
-                        state = DGG.NORMAL
+                    avName = av.dna.getDNAName()
+                    text = avName
+                    command = self.__handleHighlight
+                    state = DGG.NORMAL
+
                 dib = DirectButton(relief=None, parent=subFrame, state=state, text_fg=textFg, text_scale=textScale, text_shadow=PiratesGuiGlobals.TextShadow, text=text, image=image, image_color=imageColor, image_scale=0.37, text_pos=textPos, pos=(x, 0, z), command=command, extraArgs=[subId, slot])
                 avatarButtons.append(dib)
 
@@ -419,11 +418,11 @@ class AvatarChooser(DirectObject, StateData):
         self.isLoaded = 1
         if self.queueComplete == False:
             self.__deactivateCreateButtons()
-        return
 
     def unload(self):
         if self.isLoaded == 0:
             return
+
         loader.unloadSfx(self.oceanSfx)
         loader.unloadSfx(self.woodCreaksSfx)
         del self.oceanSfx
@@ -436,11 +435,13 @@ class AvatarChooser(DirectObject, StateData):
         if self.av:
             self.av.delete()
             del self.av
+
         if self.ship:
             self.ship.destroy()
             self.ship = None
             taskMgr.remove('avatarChooserShipRockTask')
             self.shipRoot = None
+
         self.water.delete()
         del self.water
         self.scene.removeNode()
@@ -1095,14 +1096,13 @@ class AvatarChooser(DirectObject, StateData):
                 width = 1.8
             else:
                 width = 1.6
+
             height = 1.6
             x = -width / 2
             y = -height / 2
             self.currentSubId = self.subIds[self.currentSubIndex]
-            subAccess = base.cr.accountDetailRecord.subDetails[self.currentSubId].subAccess
-            self.gameOptions = GameOptions('Game Options', x, y, width, height, base.options, access=subAccess, chooser=self)
+            self.gameOptions = GameOptions('Game Options', x, y, width, height, base.options, chooser=self)
             self.gameOptions.show()
-        return
 
     def __handleQuit(self):
         self.doneStatus = {'mode': 'exit'}
@@ -1144,8 +1144,6 @@ class AvatarChooser(DirectObject, StateData):
         self.deleteButton.setColorScale(color)
         self.optionsButton['state'] = DGG.DISABLED
         self.optionsButton.setColorScale(color)
-        self.upgradeButton['state'] = DGG.DISABLED
-        self.upgradeButton.setColorScale(color)
         if base.config.GetBool('allow-linked-accounts', 0):
             self.nextSubButton['state'] = DGG.DISABLED
             self.nextSubButton.setColorScale(color)
@@ -1175,21 +1173,22 @@ class AvatarChooser(DirectObject, StateData):
             self.shareButton.clearColorScale()
         self.deleteButton['state'] = DGG.NORMAL
         self.deleteButton.clearColorScale()
-        self.upgradeButton['state'] = DGG.NORMAL
-        self.upgradeButton.clearColorScale()
         if not self.disableOptions:
             self.optionsButton['state'] = DGG.NORMAL
             self.optionsButton.clearColorScale()
+
         if base.config.GetBool('allow-linked-accounts', 0):
             self.nextSubButton['state'] = DGG.NORMAL
             self.nextSubButton.clearColorScale()
             self.prevSubButton['state'] = DGG.NORMAL
             self.prevSubButton.clearColorScale()
+
         if self.choice == (0, 0):
             potAv = None
         else:
             subId, slot = self.choice
             potAv = base.cr.avList[subId][slot]
+
         if potAv and potAv not in (OTPGlobals.AvatarSlotUnavailable, OTPGlobals.AvatarSlotAvailable, OTPGlobals.AvatarPendingCreate):
             if not potAv.online and (potAv.creator or not base.config.GetBool('allow-linked-accounts', 0)):
                 self.deleteButton['state'] = DGG.NORMAL
@@ -1199,22 +1198,22 @@ class AvatarChooser(DirectObject, StateData):
                 self.deleteButton['state'] = DGG.DISABLED
                 if base.config.GetBool('allow-linked-accounts', 0):
                     self.shareButton['state'] = DGG.DISABLED
+
             if potAv.online:
                 self.playButton['state'] = DGG.DISABLED
             elif potAv.shared or potAv.creator or not base.config.GetBool('allow-linked-accounts', 0):
                 self.playButton['state'] = DGG.NORMAL
             else:
                 self.playButton['state'] = DGG.DISABLED
+
         if self.queueComplete == False:
             self.__deactivatePlayButton()
             self.__deactivateCreateButtons()
-        return
 
     def __handleFirstAdd(self, value):
         self.firstAddDialog.destroy()
         self.firstAddDialog = None
         self.allowInput()
-        return
 
     def __handleFinalize(self, value):
         subId, slot = self.choice
@@ -1329,11 +1328,9 @@ class AvatarChooser(DirectObject, StateData):
                 self.nextSubButton.hide()
         elif base.config.GetBool('allow-linked-accounts', 0):
             self.nextSubButton.show()
+
         self.currentSubId = self.subIds[self.currentSubIndex]
-        subName = base.cr.accountDetailRecord.subDetails[self.currentSubId].subName
-        subAccess = base.cr.accountDetailRecord.subDetails[self.currentSubId].subAccess
-        subAccessStr = PLocalizer.AccessLevel[subAccess]
-        subLabelText = '\x01white\x01%s\x02\n\x01smallCaps\x01%s\x02' % (subName, subAccessStr)
+        subLabelText = '\x01white\x01%s\x02' % base.cr.launcher.getPlayToken()
         self.subLabel['text'] = subLabelText
         for frame in self.subFrames.values():
             frame.hide()

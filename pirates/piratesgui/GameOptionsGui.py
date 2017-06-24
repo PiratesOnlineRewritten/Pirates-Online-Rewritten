@@ -36,7 +36,7 @@ class GameOptionsGui(DirectFrame):
      texture_scale_low, texture_scale_medium, texture_scale_high, texture_scale_maximum]
     textureOptionList = [texture_low, texture_medium, texture_high, texture_maximum]
 
-    def __init__(self, gameOptions, title, x, y, width, height, options=None, file_path=None, pipe=None, access=0, chooser=0, keyMappings=None):
+    def __init__(self, gameOptions, title, x, y, width, height, options=None, file_path=None, pipe=None, chooser=0, keyMappings=None):
         self.width = width
         self.height = height
         self.gameOptions = gameOptions
@@ -177,74 +177,74 @@ class GameOptionsGui(DirectFrame):
             else:
                 self.windowVar = [
                  PLocalizer.GameOptionsFullscreenMode]
-            self.windowModeRadios = self.createRadioButtonGroupVertical(parent, x, y, ox, sy, self.windowVar, 0.12, self.windowChoices, 1.2, self.windowRadioButtonCB)
-            if self.gameOptions and self.gameOptions.freeLock:
-                subCard = loader.loadModel('models/gui/toplevel_gui')
-                fullScreenRadioButton = self.windowModeRadios[-1]
-                fullScreenRadioButton['state'] = DGG.DISABLED
-                lockPos = fullScreenRadioButton.getPos()
-                lockPos[0] -= 0.04
-                appendMe = DirectFrame(parent=self.displayFrame, relief=None, state=DGG.DISABLED, geom=subCard.find('**/pir_t_gui_gen_key_subscriber'), geom_scale=0.2, geom_pos=lockPos)
-                appendMe.setAlphaScale(1.0, 2)
-                subCard.removeNode()
-            x += 0.3
-            oy = sy
-            text = PLocalizer.GameOptionsEmbeddedRestriction
-            self.restrictToEmbeddedMsg = self.create_label(x + 0.05, y + oy * len(self.windowChoices), text, parent, 0.9, text_align=TextNode.ACenter, color=(0.7,
-                                                                                                                                                              0.7,
-                                                                                                                                                              0.7,
-                                                                                                                                                              1))
-            if base.appRunner is not None and base.appRunner.windowProperties is not None:
-                y += oy
-            text = PLocalizer.GameOptionsWindowedResolutions
-            self.windowed_resolutions = []
-            if hasattr(base, 'windowed_resolution_table'):
-                resolution_table = base.windowed_resolution_table
-            else:
-                resolution_table = self.resolution_table
-            for windowed_resolution in resolution_table:
-                self.windowed_resolutions.append(windowed_resolution[0].__repr__() + 'x' + windowed_resolution[1].__repr__())
 
-            def resolution_compare(x, y):
-                xs = x.split('x')
-                ys = y.split('x')
-                if xs[0] == ys[0]:
-                    return int(xs[1]) - int(ys[1])
-                else:
-                    return int(xs[0]) - int(ys[0])
-
-            self.windowed_resolutions.sort(resolution_compare)
-            self.windowedResolutionMenu = OptionMenu(parent=parent, scale=0.05, pos=(x + 0.2, 0, y), items=self.windowed_resolutions, command=self.windowedResolutionMenuCB)
+        self.windowModeRadios = self.createRadioButtonGroupVertical(parent, x, y, ox, sy, self.windowVar, 0.12, self.windowChoices, 1.2, self.windowRadioButtonCB)
+        if self.gameOptions:
+            subCard = loader.loadModel('models/gui/toplevel_gui')
+            fullScreenRadioButton = self.windowModeRadios[-1]
+            fullScreenRadioButton['state'] = DGG.DISABLED
+            lockPos = fullScreenRadioButton.getPos()
+            lockPos[0] -= 0.04
+            appendMe = DirectFrame(parent=self.displayFrame, relief=None, state=DGG.DISABLED, geom=subCard.find('**/pir_t_gui_gen_key_subscriber'), geom_scale=0.2, geom_pos=lockPos)
+            appendMe.setAlphaScale(1.0, 2)
+            subCard.removeNode()
+        x += 0.3
+        oy = sy
+        text = PLocalizer.GameOptionsEmbeddedRestriction
+        self.restrictToEmbeddedMsg = self.create_label(x + 0.05, y + oy * len(self.windowChoices), text, parent, 0.9, text_align=TextNode.ACenter, color=(0.7,
+                                                                                                                                                          0.7,
+                                                                                                                                                          0.7,
+                                                                                                                                                          1))
+        if base.appRunner is not None and base.appRunner.windowProperties is not None:
             y += oy
-            text = PLocalizer.GameOptionsFullscreenResolutions
-            fullscreen_resolutions = []
-            if hasattr(base, 'fullscreen_resolution_table'):
-                resolution_table = base.fullscreen_resolution_table
+        text = PLocalizer.GameOptionsWindowedResolutions
+        self.windowed_resolutions = []
+        if hasattr(base, 'windowed_resolution_table'):
+            resolution_table = base.windowed_resolution_table
+        else:
+            resolution_table = self.resolution_table
+        for windowed_resolution in resolution_table:
+            self.windowed_resolutions.append(windowed_resolution[0].__repr__() + 'x' + windowed_resolution[1].__repr__())
+
+        def resolution_compare(x, y):
+            xs = x.split('x')
+            ys = y.split('x')
+            if xs[0] == ys[0]:
+                return int(xs[1]) - int(ys[1])
             else:
-                resolution_table = self.resolution_table
-            for fullscreen_resolution in resolution_table:
-                fullscreen_resolutions.append(fullscreen_resolution[0].__repr__() + 'x' + fullscreen_resolution[1].__repr__())
+                return int(xs[0]) - int(ys[0])
 
-            fullscreen_resolutions.sort(resolution_compare)
-            self.fullscreenResolutionMenu = OptionMenu(parent=parent, scale=0.05, pos=(x + 0.2, 0, y), items=fullscreen_resolutions, command=self.fullscreenResolutionMenuCB)
-            y -= 2 * oy
-            sl = 1.0
-            sc = 0.35
-            enableDynamicPipeSwitching = 0
-            if enableDynamicPipeSwitching:
-                base.makeAllPipes()
-                self.pipe_names = []
-                for apipe in base.pipeList:
-                    self.pipe_names.append(apipe.getInterfaceName())
+        self.windowed_resolutions.sort(resolution_compare)
+        self.windowedResolutionMenu = OptionMenu(parent=parent, scale=0.05, pos=(x + 0.2, 0, y), items=self.windowed_resolutions, command=self.windowedResolutionMenuCB)
+        y += oy
+        text = PLocalizer.GameOptionsFullscreenResolutions
+        fullscreen_resolutions = []
+        if hasattr(base, 'fullscreen_resolution_table'):
+            resolution_table = base.fullscreen_resolution_table
+        else:
+            resolution_table = self.resolution_table
+        for fullscreen_resolution in resolution_table:
+            fullscreen_resolutions.append(fullscreen_resolution[0].__repr__() + 'x' + fullscreen_resolution[1].__repr__())
 
-                self.pipeMenu = OptionMenu(parent=parent, scale=0.05, pos=(x + 0.2, 0, y), items=self.pipe_names, command=self.pipeMenuCB)
-            if base.config.GetBool('enable-stereo-display', 0):
-                if base.appRunner is None or base.appRunner.windowProperties is None:
-                    x -= 0.4
-                text = PLocalizer.GameOptionsStereo
-                self.create_label(x + 0.15, y, text, parent, sl)
-                self.stereoCheck = CheckButton(parent=parent, relief=None, scale=sc, pos=(x + 0.1, 0, y + 0.015), command=self.stereoCheckCB)
-        return
+        fullscreen_resolutions.sort(resolution_compare)
+        self.fullscreenResolutionMenu = OptionMenu(parent=parent, scale=0.05, pos=(x + 0.2, 0, y), items=fullscreen_resolutions, command=self.fullscreenResolutionMenuCB)
+        y -= 2 * oy
+        sl = 1.0
+        sc = 0.35
+        enableDynamicPipeSwitching = 0
+        if enableDynamicPipeSwitching:
+            base.makeAllPipes()
+            self.pipe_names = []
+            for apipe in base.pipeList:
+                self.pipe_names.append(apipe.getInterfaceName())
+
+            self.pipeMenu = OptionMenu(parent=parent, scale=0.05, pos=(x + 0.2, 0, y), items=self.pipe_names, command=self.pipeMenuCB)
+        if base.config.GetBool('enable-stereo-display', 0):
+            if base.appRunner is None or base.appRunner.windowProperties is None:
+                x -= 0.4
+            text = PLocalizer.GameOptionsStereo
+            self.create_label(x + 0.15, y, text, parent, sl)
+            self.stereoCheck = CheckButton(parent=parent, relief=None, scale=sc, pos=(x + 0.1, 0, y + 0.015), command=self.stereoCheckCB)
 
     def setupAudioFrame(self):
         self.audioFrame = DirectFrame(parent=self.upperFrame, relief=None)
@@ -264,6 +264,7 @@ class GameOptionsGui(DirectFrame):
         def sound_volume_update_function(value):
             if self.gameOptions is not None:
                 self.gameOptions.options.sound_volume = value
+
             if base.sfxManagerList:
                 index = 0
                 length = len(base.sfxManagerList)
@@ -272,8 +273,6 @@ class GameOptionsGui(DirectFrame):
                     sfx_manager.setVolume(value)
                     index += 1
 
-            return
-
         text = PLocalizer.GameOptionsSoundEffectsVolume
         default_value = 0.5
         resolution = 0.01
@@ -281,6 +280,7 @@ class GameOptionsGui(DirectFrame):
             self.sound_volume_slider = self.create_slider(sound_volume_update_function, self.gameOptions.options.sound_volume, x, y, resolution, text, parent)
         else:
             self.sound_volume_slider = self.create_slider(sound_volume_update_function, default_value, x, y, resolution, text, parent)
+
         x = 0.1
         y -= 0.1
         text = PLocalizer.GameOptionsMusic
@@ -296,9 +296,9 @@ class GameOptionsGui(DirectFrame):
         def music_volume_update_function(value):
             if self.gameOptions is not None:
                 self.gameOptions.options.music_volume = value
+
             if base.musicManager:
                 base.musicManager.setVolume(value)
-            return
 
         text = PLocalizer.GameOptionsSoundEffectsVolume
         default_value = 0.5
@@ -307,13 +307,13 @@ class GameOptionsGui(DirectFrame):
             self.music_volume_slider = self.create_slider(music_volume_update_function, self.gameOptions.options.music_volume, x, y, resolution, text, parent)
         else:
             self.music_volume_slider = self.create_slider(music_volume_update_function, default_value, x, y, resolution, text, parent)
+
         x = 0.1
         y -= 0.1
         text = PLocalizer.GameOptionsFirstMate
         self.create_label(x, y, text, parent, 1.2)
         x += 0.38
         self.firstMateCheck = CheckButton(parent=parent, relief=None, scale=0.4, pos=(x, 0, y + 0.015), command=self.firstMateCheckCB)
-        return
 
     def setupTutorialFrame(self):
         self.tutorialFrame = DirectFrame(parent=self.upperFrame, relief=None)
@@ -334,7 +334,6 @@ class GameOptionsGui(DirectFrame):
         self.advCheck = CheckButton(parent=parent, relief=None, scale=0.4, pos=(x, 0, y + 0.015), command=self.advCheckCB)
         text = PLocalizer.GameOptionsAdvanced
         self.create_label(x + 0.05, y, text, parent)
-        return
 
     def setupInterfaceFrame(self):
         self.interfaceFrame = DirectFrame(parent=self.upperFrame, relief=None)

@@ -54,8 +54,7 @@ DisconnectGraphicsError = 5
 DisconnectReasons = {DisconnectUnknown: 'unknown',DisconnectBookExit: 'book exit',DisconnectCloseWindow: 'closed window',DisconnectPythonError: 'python error',DisconnectSwitchShards: 'switch shards',DisconnectGraphicsError: 'graphics error'}
 DatabaseDialogTimeout = 20.0
 DatabaseGiveupTimeout = 45.0
-PeriodTimerWarningTime = (
- 600, 300, 60)
+PeriodTimerWarningTime = (600, 300, 60)
 WalkCutOff = 0.5
 RunCutOff = 8.0
 FloorOffset = 0.025
@@ -272,6 +271,7 @@ AccessUnknown = 0
 AccessVelvetRope = 1
 AccessFull = 2
 AccessInvalid = 3
+AvatarNumSlots = 4
 AvatarPendingCreate = -1
 AvatarSlotUnavailable = -2
 AvatarSlotAvailable = -3

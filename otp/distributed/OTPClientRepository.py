@@ -716,7 +716,6 @@ class OTPClientRepository(ClientRepositoryBase):
         self.ignore('lostConnectionAck')
         self.lostConnectionBox.cleanup()
         messenger.send('connectionRetrying')
-        return
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterAfkTimeout(self):
@@ -735,8 +734,8 @@ class OTPClientRepository(ClientRepositoryBase):
         if self.afkDialog:
             self.afkDialog.cleanup()
             self.afkDialog = None
+
         self.handler = None
-        return
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterPeriodTimeout(self):
@@ -756,91 +755,28 @@ class OTPClientRepository(ClientRepositoryBase):
         if self.periodDialog:
             self.periodDialog.cleanup()
             self.periodDialog = None
+
         self.handler = None
-        return
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterWaitForAvatarList(self):
-        self.handler = self.handleWaitForAvatarList
         self._requestAvatarList()
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def _requestAvatarList(self):
-        self.sendGetAvatarsMsg()
+        self.csm.requestAvatars()
         self.waitForDatabaseTimeout(requestName='WaitForAvatarList')
         self.acceptOnce(OtpAvatarManager.OtpAvatarManager.OnlineEvent, self._requestAvatarList)
-
-    @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
-    def sendGetAvatarsMsg(self):
-        datagram = PyDatagram()
-        datagram.addUint16(CLIENT_GET_AVATARS)
-        self.send(datagram)
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def exitWaitForAvatarList(self):
         self.cleanupWaitingForDatabase()
         self.ignore(OtpAvatarManager.OtpAvatarManager.OnlineEvent)
         self.handler = None
-        return
 
-    @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
-    def handleWaitForAvatarList(self, msgType, di):
-        if msgType == CLIENT_GET_AVATARS_RESP:
-            self.handleGetAvatarsRespMsg(di)
-        elif msgType == CLIENT_GET_AVATARS_RESP2:
-            pass
-        else:
-            self.handleMessageType(msgType, di)
-
-    @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
-    def handleGetAvatarsRespMsg(self, di):
-        returnCode = di.getUint8()
-        if returnCode == 0:
-            avatarTotal = di.getUint16()
-            avList = []
-            for i in range(0, avatarTotal):
-                avNum = di.getUint32()
-                avNames = [
-                 '', '', '', '']
-                avNames[0] = di.getString()
-                avNames[1] = di.getString()
-                avNames[2] = di.getString()
-                avNames[3] = di.getString()
-                avDNA = di.getString()
-                avPosition = di.getUint8()
-                aname = di.getUint8()
-                potAv = PotentialAvatar(avNum, avNames, avDNA, avPosition, aname)
-                avList.append(potAv)
-
-            self.avList = avList
-            self.loginFSM.request('chooseAvatar', [self.avList])
-        else:
-            self.notify.error('Bad avatar list return code: ' + str(returnCode))
-            self.loginFSM.request('shutdown')
-
-    @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
-    def handleGetAvatarsResp2Msg(self, di):
-        returnCode = di.getUint8()
-        if returnCode == 0:
-            avatarTotal = di.getUint16()
-            avList = []
-            for i in range(0, avatarTotal):
-                avNum = di.getUint32()
-                avNames = [
-                 '', '', '', '']
-                avNames[0] = di.getString()
-                avDNA = None
-                avPosition = di.getUint8()
-                aname = None
-                potAv = PotentialAvatar(avNum, avNames, avDNA, avPosition, aname)
-                avList.append(potAv)
-
-            self.avList = avList
-            self.loginFSM.request('chooseAvatar', [self.avList])
-        else:
-            self.notify.error('Bad avatar list return code: ' + str(returnCode))
-            self.loginFSM.request('shutdown')
-        return
+    def handleAvatarsList(self, avatars):
+        self.avList = avatars
+        self.loginFSM.request('chooseAvatar', [self.avList])
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterChooseAvatar(self, avList):
@@ -886,8 +822,7 @@ class OTPClientRepository(ClientRepositoryBase):
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterWaitForDeleteAvatarResponse(self, potAv):
-        self.handler = self.handleWaitForDeleteAvatarResponse
-        self.sendDeleteAvatarMsg(potAv.id)
+        self.csm.sendDeleteAvatar(potAv.id)
         self.waitForDatabaseTimeout(requestName='WaitForDeleteAvatarResponse')
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
@@ -901,14 +836,6 @@ class OTPClientRepository(ClientRepositoryBase):
     def exitWaitForDeleteAvatarResponse(self):
         self.cleanupWaitingForDatabase()
         self.handler = None
-        return
-
-    @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
-    def handleWaitForDeleteAvatarResponse(self, msgType, di):
-        if msgType == CLIENT_DELETE_AVATAR_RESP:
-            self.handleGetAvatarsRespMsg(di)
-        else:
-            self.handleMessageType(msgType, di)
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterRejectRemoveAvatar(self, reasonCode):
@@ -1837,40 +1764,42 @@ class OTPClientRepository(ClientRepositoryBase):
             if not self._isValidPlayerLocation(parentId, zoneId):
                 base.cr.centralLogger.writeClientEvent('got generate for player avatar %s in invalid location (%s, %s)' % (doId, parentId, zoneId))
                 return True
+
         return False
 
     def handleGenerateWithRequired(self, di):
+        doId = di.getUint32()
         parentId = di.getUint32()
         zoneId = di.getUint32()
         classId = di.getUint16()
-        doId = di.getUint32()
         dclass = self.dclassesByNumber[classId]
         if self._isInvalidPlayerAvatarGenerate(doId, dclass, parentId, zoneId):
             return
+
         dclass.startGenerate()
         distObj = self.generateWithRequiredFields(dclass, doId, di, parentId, zoneId)
         dclass.stopGenerate()
 
     def handleGenerateWithRequiredOther(self, di):
+        doId = di.getUint32()
         parentId = di.getUint32()
         zoneId = di.getUint32()
         classId = di.getUint16()
-        doId = di.getUint32()
         dclass = self.dclassesByNumber[classId]
         if self._isInvalidPlayerAvatarGenerate(doId, dclass, parentId, zoneId):
             return
+
         deferrable = getattr(dclass.getClassDef(), 'deferrable', False)
         if not self.deferInterval or self.noDefer:
             deferrable = False
+
         now = globalClock.getFrameTime()
         if self.deferredGenerates or deferrable:
             if self.deferredGenerates or now - self.lastGenerate < self.deferInterval:
                 self.deferredGenerates.append((CLIENT_ENTER_OBJECT_REQUIRED_OTHER, doId))
                 dg = Datagram(di.getDatagram())
                 di = DatagramIterator(dg, di.getCurrentIndex())
-                self.deferredDoIds[doId] = (
-                 (
-                  parentId, zoneId, classId, doId, di), deferrable, dg, [])
+                self.deferredDoIds[doId] = ((parentId, zoneId, classId, doId, di), deferrable, dg, [])
                 if len(self.deferredGenerates) == 1:
                     taskMgr.remove('deferredGenerate')
                     taskMgr.doMethodLater(self.deferInterval, self.doDeferredGenerate, 'deferredGenerate')
@@ -1881,30 +1810,30 @@ class OTPClientRepository(ClientRepositoryBase):
             self.doGenerate(parentId, zoneId, classId, doId, di)
 
     def handleGenerateWithRequiredOtherOwner(self, di):
-        classId = di.getUint16()
         doId = di.getUint32()
         parentId = di.getUint32()
         zoneId = di.getUint32()
+        classId = di.getUint16()
         dclass = self.dclassesByNumber[classId]
         dclass.startGenerate()
         distObj = self.generateWithRequiredOtherFieldsOwner(dclass, doId, di)
         dclass.stopGenerate()
 
     def handleQuietZoneGenerateWithRequired(self, di):
+        doId = di.getUint32()
         parentId = di.getUint32()
         zoneId = di.getUint32()
         classId = di.getUint16()
-        doId = di.getUint32()
         dclass = self.dclassesByNumber[classId]
         dclass.startGenerate()
         distObj = self.generateWithRequiredFields(dclass, doId, di, parentId, zoneId)
         dclass.stopGenerate()
 
     def handleQuietZoneGenerateWithRequiredOther(self, di):
+        doId = di.getUint32()
         parentId = di.getUint32()
         zoneId = di.getUint32()
         classId = di.getUint16()
-        doId = di.getUint32()
         dclass = self.dclassesByNumber[classId]
         dclass.startGenerate()
         distObj = self.generateWithRequiredOtherFields(dclass, doId, di, parentId, zoneId)
