@@ -145,145 +145,148 @@ class PiratesBase(OTPBase):
             if use_recommended_options:
                 options.recommendedOptions(base.pipe, False)
                 options.log('Recommended Game Options')
-            overwrite_options = True
-            options.verifyOptions(base.pipe, overwrite_options)
-            string = options.optionsToPrcData()
-            loadPrcFileData('game_options', string)
-            self.options = options
-            self.shipsVisibleFromIsland = self.options.ocean_visibility
-            self.overrideShipVisibility = False
-            base.windowType = 'onscreen'
-            self.detachedWP = WindowProperties()
-            self.embeddedWP = WindowProperties()
-            if self.hasEmbedded:
-                if embedded.isMainWindowVisible():
-                    self.showEmbeddedFrame()
-                else:
-                    self.hideEmbeddedFrame()
+
+        overwrite_options = True
+        options.verifyOptions(base.pipe, overwrite_options)
+        string = options.optionsToPrcData()
+        loadPrcFileData('game_options', string)
+        self.options = options
+        self.shipsVisibleFromIsland = self.options.ocean_visibility
+        self.overrideShipVisibility = False
+        base.windowType = 'onscreen'
+        self.detachedWP = WindowProperties()
+        self.embeddedWP = WindowProperties()
+        if self.hasEmbedded:
+            if embedded.isMainWindowVisible():
+                self.showEmbeddedFrame()
             else:
-                if self.appRunner:
-                    self.openDefaultWindow()
-                else:
-                    wp = WindowProperties()
-                    wp.setSize(options.getWidth(), options.getHeight())
-                    wp.setFullscreen(options.getFullscreen())
-                    self.openDefaultWindow(props=wp)
-                self.eventMgr.doEvents()
-                if config.GetInt('fancy-loading-screen', False):
-                    self.loadingScreen = LoadingScreen.LoadingScreen(None)
-                else:
-                    self.loadingScreen = FancyLoadingScreen.FancyLoadingScreen(None)
-                self.loadingScreen.showTarget(pickapirate=True)
-                self.loadingScreen.show()
-                self.loadingScreen.beginStep('PiratesBase', 34, 25)
-                self.loadingScreen.tick()
-                options.options_to_config()
-                options.setRuntimeOptions()
-                if base.wantEnviroDR:
-                    base.cam.node().setCameraMask(OTPRender.MainCameraBitmask)
-                    self.setupEnviroCamera()
-                    self.setupAutoPixelZoom()
-                else:
-                    base.cam.node().setCameraMask(OTPRender.MainCameraBitmask | OTPRender.EnviroCameraBitmask)
-                self.loadingScreen.tick()
-                self.__alreadyExiting = False
-                self.exitFunc = self.userExit
-                TextureStage.getDefault().setPriority(10)
-                self.useDrive()
-                self.disableMouse()
-                if not self.config.GetBool('location-kiosk', 0):
-                    for key in PiratesGlobals.ScreenshotHotkeyList:
-                        self.accept(key, self.takeScreenShot)
+                self.hideEmbeddedFrame()
+        else:
+            if self.appRunner:
+                self.openDefaultWindow()
+            else:
+                wp = WindowProperties()
+                wp.setSize(options.getWidth(), options.getHeight())
+                wp.setFullscreen(options.getFullscreen())
+                self.openDefaultWindow(props=wp)
 
-                    self.screenshotViewer = None
-                    if self.config.GetBool('want-screenshot-viewer', 0):
-                        self.accept(PiratesGlobals.ScreenshotViewerHotkey, self.showScreenshots)
-                self.wantMarketingViewer = self.config.GetBool('want-marketing-viewer', 0)
-                self.marketingViewerOn = False
-                if self.wantMarketingViewer:
-                    for key in PiratesGlobals.MarketingHotkeyList:
-                        self.accept(key, self.toggleMarketingViewer)
+        self.eventMgr.doEvents()
+        if config.GetInt('fancy-loading-screen', False):
+            self.loadingScreen = LoadingScreen.LoadingScreen(None)
+        else:
+            self.loadingScreen = FancyLoadingScreen.FancyLoadingScreen(None)
+        self.loadingScreen.showTarget(pickapirate=True)
+        self.loadingScreen.show()
+        self.loadingScreen.beginStep('PiratesBase', 34, 25)
+        self.loadingScreen.tick()
+        options.options_to_config()
+        options.setRuntimeOptions()
+        if base.wantEnviroDR:
+            base.cam.node().setCameraMask(OTPRender.MainCameraBitmask)
+            self.setupEnviroCamera()
+            self.setupAutoPixelZoom()
+        else:
+            base.cam.node().setCameraMask(OTPRender.MainCameraBitmask | OTPRender.EnviroCameraBitmask)
+        self.loadingScreen.tick()
+        self.__alreadyExiting = False
+        self.exitFunc = self.userExit
+        TextureStage.getDefault().setPriority(10)
+        self.useDrive()
+        self.disableMouse()
+        if not self.config.GetBool('location-kiosk', 0):
+            for key in PiratesGlobals.ScreenshotHotkeyList:
+                self.accept(key, self.takeScreenShot)
 
-                self.accept('panda3d-render-error', self.panda3dRenderError)
-                camera.setPosHpr(0, 0, 0, 0, 0, 0)
-                self.camLens.setMinFov(PiratesGlobals.DefaultCameraFov)
-                self.camLens.setNearFar(PiratesGlobals.DefaultCameraNear, PiratesGlobals.DefaultCameraFar)
-                farCullNode = PlaneNode('farCull')
-                farCullNode.setPlane(Plane(Vec3(0, -1, 0), Point3(0, 0, 0)))
-                farCullNode.setClipEffect(0)
-                self.farCull = camera.attachNewNode(farCullNode)
-                self.positionFarCull()
-                globalClockMaxDt = self.config.GetFloat('pirates-max-dt', 0.2)
-                globalClock.setMaxDt(globalClockMaxDt)
-                self.loadingScreen.tick()
-                if self.config.GetBool('want-particles', 1):
-                    self.notify.debug('Enabling particles')
-                    self.enableParticles()
-            self.loadingScreen.tick()
-            self.notify.debug('Enabling new ship controls')
-            self.avatarPhysicsMgr = PhysicsManager()
-            integrator = LinearEulerIntegrator()
-            self.avatarPhysicsMgr.attachLinearIntegrator(integrator)
-            integrator = AngularEulerIntegrator()
-            self.avatarPhysicsMgr.attachAngularIntegrator(integrator)
-            self.taskMgr.add(self.doAvatarPhysics, 'physics-avatar')
-            fn = ForceNode('ship viscosity')
-            fnp = NodePath(fn)
-            fnp.reparentTo(render)
-            viscosity = LinearFrictionForce(0.0, 1.0, 0)
-            viscosity.setCoef(0.5)
-            viscosity.setAmplitude(2)
-            fn.addForce(viscosity)
-            self.avatarPhysicsMgr.addLinearForce(viscosity)
-            self.loadingScreen.tick()
-            fn = ForceNode('avatarControls')
-            fnp = NodePath(fn)
-            fnp.reparentTo(render)
-            controlForce = LinearControlForce()
-            self.controlForce = controlForce
-            controlForce.setAmplitude(5)
-            fn.addForce(controlForce)
-            self.avatarPhysicsMgr.addLinearForce(controlForce)
-            self.loadingScreen.tick()
-            self.accept('PandaPaused', self.disableAllAudio)
-            self.accept('PandaRestarted', self.enableAllAudio)
-            self.emoteGender = None
-            shadow = loader.loadModel('models/misc/drop_shadow.bam')
-            shadow.findTexture('*').setQualityLevel(Texture.QLBest)
-            self.loadingScreen.tick()
-            taskMgr.setupTaskChain('phasePost', numThreads=0, threadPriority=TPHigh)
-            launcher.addPhasePostProcess(3, self.phase3Post, taskChain='phasePost')
-            launcher.addPhasePostProcess(4, self.phase4Post, taskChain='phasePost')
-            launcher.addPhasePostProcess(5, self.phase5Post, taskChain='phasePost')
-            self.whiteList = PWhiteList()
-            tpMgr = TextPropertiesManager.getGlobalPtr()
-            WLDisplay = TextProperties()
-            WLDisplay.setSlant(0.3)
-            WLEnter = TextProperties()
-            WLEnter.setTextColor(1.0, 0.0, 0.0, 1)
-            tpMgr.setProperties('WLDisplay', WLDisplay)
-            tpMgr.setProperties('WLEnter', WLEnter)
-            del tpMgr
-            CullBinManager.getGlobalPtr().addBin('ShipRigging', CullBinEnums.BTBackToFront, 52)
-            CullBinManager.getGlobalPtr().addBin('pre-additive', CullBinEnums.BTFixed, 53)
-            CullBinManager.getGlobalPtr().addBin('additive', CullBinEnums.BTBackToFront, 54)
-            self.showShipFlats = False
-            self.hideShipNametags = False
-            self.showGui = True
-            self.memoryMonitorMinimumPercentage = 90
-            self.cpuSpeedDialog = None
-            self.peakProcessMemory = 0
-            self.peakMemoryLoad = 0
-            self.maximumCpuFrequency = 0
-            self.currentCpuFrequency = 0
-            self.displayCpuFrequencyDialog = False
-            self.taskMgr.doMethodLater(120.0, self.memoryMonitorTask, 'memory-monitor-task')
-            self.useStencils = self.win.getGsg().getSupportsStencil()
-            self.supportAlphaFb = self.win.getFbProperties().getAlphaBits()
-            taskMgr.setupTaskChain('background', frameBudget=0.001, threadPriority=TPLow)
-            gsg = base.win.getGsg()
-            if gsg.getShaderModel() < gsg.SM20:
-                base.options.shader_runtime = 0
+            self.screenshotViewer = None
+            if self.config.GetBool('want-screenshot-viewer', 0):
+                self.accept(PiratesGlobals.ScreenshotViewerHotkey, self.showScreenshots)
+        self.wantMarketingViewer = self.config.GetBool('want-marketing-viewer', 0)
+        self.marketingViewerOn = False
+        if self.wantMarketingViewer:
+            for key in PiratesGlobals.MarketingHotkeyList:
+                self.accept(key, self.toggleMarketingViewer)
+
+        self.accept('panda3d-render-error', self.panda3dRenderError)
+        camera.setPosHpr(0, 0, 0, 0, 0, 0)
+        self.camLens.setMinFov(PiratesGlobals.DefaultCameraFov)
+        self.camLens.setNearFar(PiratesGlobals.DefaultCameraNear, PiratesGlobals.DefaultCameraFar)
+        farCullNode = PlaneNode('farCull')
+        farCullNode.setPlane(Plane(Vec3(0, -1, 0), Point3(0, 0, 0)))
+        farCullNode.setClipEffect(0)
+        self.farCull = camera.attachNewNode(farCullNode)
+        self.positionFarCull()
+        globalClockMaxDt = self.config.GetFloat('pirates-max-dt', 0.2)
+        globalClock.setMaxDt(globalClockMaxDt)
+        self.loadingScreen.tick()
+        if self.config.GetBool('want-particles', 1):
+            self.notify.debug('Enabling particles')
+            self.enableParticles()
+        self.loadingScreen.tick()
+        self.notify.debug('Enabling new ship controls')
+        self.avatarPhysicsMgr = PhysicsManager()
+        integrator = LinearEulerIntegrator()
+        self.avatarPhysicsMgr.attachLinearIntegrator(integrator)
+        integrator = AngularEulerIntegrator()
+        self.avatarPhysicsMgr.attachAngularIntegrator(integrator)
+        self.taskMgr.add(self.doAvatarPhysics, 'physics-avatar')
+        fn = ForceNode('ship viscosity')
+        fnp = NodePath(fn)
+        fnp.reparentTo(render)
+        viscosity = LinearFrictionForce(0.0, 1.0, 0)
+        viscosity.setCoef(0.5)
+        viscosity.setAmplitude(2)
+        fn.addForce(viscosity)
+        self.avatarPhysicsMgr.addLinearForce(viscosity)
+        self.loadingScreen.tick()
+        fn = ForceNode('avatarControls')
+        fnp = NodePath(fn)
+        fnp.reparentTo(render)
+        controlForce = LinearControlForce()
+        self.controlForce = controlForce
+        controlForce.setAmplitude(5)
+        fn.addForce(controlForce)
+        self.avatarPhysicsMgr.addLinearForce(controlForce)
+        self.loadingScreen.tick()
+        self.accept('PandaPaused', self.disableAllAudio)
+        self.accept('PandaRestarted', self.enableAllAudio)
+        self.emoteGender = None
+        shadow = loader.loadModel('models/misc/drop_shadow.bam')
+        shadow.findTexture('*').setQualityLevel(Texture.QLBest)
+        self.loadingScreen.tick()
+        taskMgr.setupTaskChain('phasePost', numThreads=0, threadPriority=TPHigh)
+        launcher.addPhasePostProcess(3, self.phase3Post, taskChain='phasePost')
+        launcher.addPhasePostProcess(4, self.phase4Post, taskChain='phasePost')
+        launcher.addPhasePostProcess(5, self.phase5Post, taskChain='phasePost')
+        self.whiteList = PWhiteList()
+        tpMgr = TextPropertiesManager.getGlobalPtr()
+        WLDisplay = TextProperties()
+        WLDisplay.setSlant(0.3)
+        WLEnter = TextProperties()
+        WLEnter.setTextColor(1.0, 0.0, 0.0, 1)
+        tpMgr.setProperties('WLDisplay', WLDisplay)
+        tpMgr.setProperties('WLEnter', WLEnter)
+        del tpMgr
+        CullBinManager.getGlobalPtr().addBin('ShipRigging', CullBinEnums.BTBackToFront, 52)
+        CullBinManager.getGlobalPtr().addBin('pre-additive', CullBinEnums.BTFixed, 53)
+        CullBinManager.getGlobalPtr().addBin('additive', CullBinEnums.BTBackToFront, 54)
+        self.showShipFlats = False
+        self.hideShipNametags = False
+        self.showGui = True
+        self.memoryMonitorMinimumPercentage = 90
+        self.cpuSpeedDialog = None
+        self.peakProcessMemory = 0
+        self.peakMemoryLoad = 0
+        self.maximumCpuFrequency = 0
+        self.currentCpuFrequency = 0
+        self.displayCpuFrequencyDialog = False
+        self.taskMgr.doMethodLater(120.0, self.memoryMonitorTask, 'memory-monitor-task')
+        self.useStencils = self.win.getGsg().getSupportsStencil()
+        self.supportAlphaFb = self.win.getFbProperties().getAlphaBits()
+        taskMgr.setupTaskChain('background', frameBudget=0.001, threadPriority=TPLow)
+        gsg = base.win.getGsg()
+        if gsg.getShaderModel() < gsg.SM20:
+            base.options.shader_runtime = 0
+
         self.noticeSystemOn = 1
         self.lodTrav = CollisionTraverser('base.lodTrav')
         self.zoneLODEventHandler = CollisionHandlerEvent()
@@ -293,14 +296,13 @@ class PiratesBase(OTPBase):
         self.transitions.loadLetterbox()
         self.transitions.letterbox.setColorScale(0, 0, 0, 1)
         self.loadingScreen.endStep('PiratesBase')
-        return
 
     def setNoticeSystem(self, on):
         if self.noticeSystemOn == on:
             return
-        else:
-            self.noticeSystemOn = on
-            messenger.send('noticeStateChanged')
+
+        self.noticeSystemOn = on
+        messenger.send('noticeStateChanged')
 
     def enableFirstMate(self, bEnableFirstMate):
         self.firstMateVoiceOn = bEnableFirstMate
@@ -313,15 +315,15 @@ class PiratesBase(OTPBase):
             self.cpuSpeedDialog.destroy()
             del self.cpuSpeedDialog
             self.cpuSpeedDialog = None
-        return
 
     def cpuSpeedDialogCommand(self, value):
         if value == DGG.DIALOG_OK:
             pass
-        if value == DGG.DIALOG_CANCEL:
+        elif value == DGG.DIALOG_CANCEL:
             base.options.cpu_frequency_warning = 0
             base.options.save(Options.DEFAULT_FILE_PATH, Options.NEW_STATE)
             base.options.log('Options Saved: Cpu Frequency Warning Disable')
+
         self.deleteDialogs()
 
     def displayCpuSpeedDialog(self, message):

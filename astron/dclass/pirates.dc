@@ -207,26 +207,6 @@ struct Location {
 
 typedef Location Locations[];
 
-struct BuffData {
-  switch (uint16) {
-  case 0:
-    break;
-  case 1:
-    uint8 val1;
-    break;
-  case 2:
-    uint8 val1;
-    uint8 val2;
-    break;
-  case 3:
-    uint8 val1;
-    break;
-  case 4:
-    int16/100 val1;
-    break;
-  };
-};
-
 struct Buff {
   uint8 effectId;
   DoId attackerId;
@@ -234,7 +214,7 @@ struct Buff {
   int16 duration;
   int16 timeLeft;
   uint8 recur;
-  BuffData data;
+  blob data;
 };
 
 typedef Buff BuffList[];
@@ -538,79 +518,11 @@ struct InventoryAccumulatorSlot {
 };
 
 struct InventoryItem {
-  switch (uint16) {
-  case 51:
-    uint16 id;
-    uint8 location;
-    uint8 upgrades[0-3];
-    break;
-  case 52:
-    uint16 id;
-    uint8 location;
-    uint8 colorId;
-    break;
-  case 53:
-  case 54:
-  case 55:
-  case 56:
-    uint16 id;
-    uint8 location;
-    break;
-  case 57:
-    uint16 id;
-    uint8 location;
-    uint16 count;
-    break;
-  case 58:
-  case 59:
-    uint32 count;
-    break;
-  case 0:
-    uint16 id;
-    uint8 location;
-    break;
-  default:
-    int64 doIdOrQuantity;
-    break;
-  };
+  blob data;
 };
 
 struct InventoryItemDB {
-  switch (uint16) {
-  case 51:
-    uint16 id;
-    uint8 location;
-    uint8 upgrades[0-3];
-    break;
-  case 52:
-    uint16 id;
-    uint8 location;
-    uint8 colorId;
-    break;
-  case 53:
-  case 54:
-  case 55:
-  case 56:
-    uint16 id;
-    uint8 location;
-    break;
-  case 57:
-    uint16 id;
-    uint8 location;
-    uint16 count;
-    break;
-  case 58:
-  case 59:
-    uint32 count;
-    break;
-  case 0:
-    uint16 id;
-    uint8 location;
-    break;
-  default:
-    uint32 count;
-    break;
-  };
+  blob data;
 };
 
 dclass DistributedInventory : DistributedObject {
@@ -718,7 +630,7 @@ dclass DistributedInteractive : DistributedNode, DistributedLocatableObject {
   rejectInteraction();
   acceptInteraction();
   rejectExit();
-  offerOptions(uint8array, uint8array);
+  offerOptions(uint8[], uint8[]);
   selectOption(uint8) airecv clsend;
   setUserId(DoId) broadcast ram;
   setUniqueId(string) required broadcast ram;
@@ -781,7 +693,7 @@ dclass DistributedSimpleShip : DistributedMovingObject, Teamable, DistributedFla
   setArmorStates(uint16/100, uint16/100, uint16/100) required db broadcast ram ownrecv;
   setMastStates(uint16/100, uint16/100, uint16/100, uint16/100, uint16/100) required broadcast db ram ownrecv;
   setHealthState(uint16/100) required broadcast ram db ownrecv;
-  setCrew(uint32array) required broadcast ram ownrecv;
+  setCrew(uint32[]) required broadcast ram ownrecv;
   setBandId(uint32, uint32) broadcast ram;
   setOwnerId(uint32) required broadcast ram db ownrecv;
   setCannons(uint32 [], uint32) broadcast ram;
@@ -803,8 +715,8 @@ dclass DistributedSimpleShip : DistributedMovingObject, Teamable, DistributedFla
   swingToShip(uint8) broadcast;
   setWishName(string) required db ownrecv;
   setWishNameState(string) required db ownrecv;
-  setCargo(uint8array) required broadcast ram ownrecv;
-  notifyReceivedLoot(uint8array) broadcast;
+  setCargo(uint8[]) required broadcast ram ownrecv;
+  notifyReceivedLoot(uint8[]) broadcast;
   setCaptainId(DoId) broadcast ram;
   setBadge(int8, int8) required broadcast ram;
   setRespectDeployBarriers(bool, uint32) broadcast ram;
@@ -882,59 +794,20 @@ struct AvatarType {
   uint8 boss;
 };
 
-typedef string QuestId;
-
-typedef string QuestGiverId;
-
 struct QuestTaskState {
-  switch (uint16) {
-  case 1:
-    uint16 attempts;
-    break;
-  case 4:
-    uint16 attempts;
-    break;
-  case 10:
-    uint16 attempts;
-    break;
-  case 11:
-    uint16 attempts;
-    break;
-  case 17:
-    uint16 attempts;
-    break;
-  case 19:
-    AvatarType enemyType;
-    break;
-  case 20:
-    AvatarType faction;
-    uint8 hull;
-    break;
-  case 32:
-  case 33:
-  case 34:
-    uint16 bonusProgress;
-    uint16 bonusGoal;
-    break;
-  case 0:
-    break;
-  default:
-    break;
-  };
-  uint16 progress;
-  uint16 goal;
+  blob data;
 };
 
 struct QuestRewardStruct {
   uint16 rewardType;
   uint16 amount;
-  QuestId questId;
+  string questId;
 };
 
 dclass DistributedQuest : DistributedObject {
   string DcObjectType;
-  setQuestId(QuestId) required broadcast db;
-  setGiverId(QuestGiverId) required broadcast db;
+  setQuestId(string) required broadcast db;
+  setGiverId(string) required broadcast db;
   announceNewQuest() broadcast ram;
   setCombineOp(uint8) required broadcast db;
   setTaskStates(QuestTaskState []) required broadcast db;
@@ -950,40 +823,18 @@ dclass DistributedQuest : DistributedObject {
 };
 
 struct QuestOffer {
-  QuestId questId;
+  string questId;
   QuestTaskState initialTaskStates[];
   QuestRewardStruct rewardStructs[];
 };
 
 struct QuestLadderOffer {
-  QuestId questId;
+  string questId;
   QuestRewardStruct rewardStructs[];
 };
 
 struct QuestStep {
-  uint32 originDoId;
-  uint32 stepDoId;
-  switch (uint8) {
-  case 9:
-    PosH posH;
-    string islandUid;
-    string targetAreaUid;
-    AvatarType targetAvatarType;
-    break;
-  case 10:
-    PosH posH;
-    string islandUid;
-    string targetAreaUid;
-    int16 nodeSizes[2];
-    int16 nearOffset[3];
-    int16 nearVis[3];
-    break;
-  default:
-    PosH posH;
-    string islandUid;
-    string targetAreaUid;
-    break;
-  };
+  blob data;
 };
 
 dclass DistributedQuestGiver {
@@ -991,43 +842,43 @@ dclass DistributedQuestGiver {
   setQuestLadderOffer(QuestLadderOffer [], int8);
   displayNewQuests();
   setOfferResponse(int8, int8) airecv clsend;
-  setQuestsCompleted(int8, QuestId [], QuestId [], QuestId [], uint32 []);
+  setQuestsCompleted(int8, string [], string [], string [], uint32 []);
   playDialogMovie(string);
   dialogMovieComplete() airecv clsend;
-  requestQuestReset(QuestId);
-  requestBranchReset(QuestId);
+  requestQuestReset(string);
+  requestBranchReset(string);
   requestDialog();
   assignBranchOffer(QuestOffer) airecv clsend;
   requestDialogInteraction(string) airecv clsend;
   endDialogInteraction(string) airecv clsend;
-  requestDialogQuestOffer(QuestId, string) airecv clsend;
-  requestDialogQuestAssignment(QuestId, string) airecv clsend;
-  requestDialogQuestAdvancement(QuestId, string) airecv clsend;
+  requestDialogQuestOffer(string, string) airecv clsend;
+  requestDialogQuestAssignment(string, string) airecv clsend;
+  requestDialogQuestAdvancement(string, string) airecv clsend;
   requestNPCHostile(string, string) airecv clsend;
   assignDialogQuestOffer() airecv clsend;
   setDialogQuestOffer(QuestOffer) ownrecv;
 };
 
 dclass DistributedQuestAvatar {
-  setActiveQuest(QuestId) ownrecv required db;
+  setActiveQuest(string) ownrecv required db;
   setQuestHistory(uint16 []) ownrecv required db;
   setQuestLadderHistory(uint16 []) ownrecv required db;
   setCurrentQuestChoiceContainers(uint16 []) ownrecv required db;
   setQuestStep(QuestStep) ownrecv;
-  requestActiveQuest(QuestId) airecv ownsend;
-  findNewActiveQuest(QuestId) airecv ownsend;
-  requestDropQuest(QuestId) airecv ownsend;
-  requestShareQuest(QuestId) airecv ownsend;
-  requestQuestStep(QuestId) airecv ownsend;
-  popupProgressBlocker(QuestId);
-  handleQuestDropped(QuestId) ownrecv;
+  requestActiveQuest(string) airecv ownsend;
+  findNewActiveQuest(string) airecv ownsend;
+  requestDropQuest(string) airecv ownsend;
+  requestShareQuest(string) airecv ownsend;
+  requestQuestStep(string) airecv ownsend;
+  popupProgressBlocker(string);
+  handleQuestDropped(string) ownrecv;
   useDowsingRod() airecv ownsend;
   dowsingRodResult(uint8) ownrecv;
 };
 
 struct ItemNameHolder {
   string typedName;
-  uint8array nameIndices;
+  uint8[] nameIndices;
 };
 
 struct Accessory {
@@ -1057,6 +908,9 @@ struct TattooInfo {
   uint8 location;
 };
 
+struct WeaponInfo {
+};
+
 dclass DistributedShopKeeper {
   requestMakeSale(InventoryItem [], InventoryItem []) airecv clsend;
   requestMakeShipSale(InventoryItem [], InventoryItem [], ItemNameHolder []) airecv clsend;
@@ -1080,7 +934,7 @@ dclass DistributedShopKeeper {
   responseShipRepair(uint32) ownrecv;
   makeTattooResponse(uint16, uint16, bool) ownrecv;
   makeBarberResponse(uint32, uint8, bool) ownrecv;
-  responseClothingList(uint32, uint32array []) ownrecv;
+  responseClothingList(uint32, uint32[] []) ownrecv;
   responseTattooList(uint32, TattooInfo []) ownrecv;
   responseJewelryList(uint32, JewelryInfo []) ownrecv;
 };
@@ -1114,8 +968,8 @@ dclass WeaponBase {
   useShipSkill(SkillId, SkillId, uint8, DoId, SkillEffects, ShipEffects, uint32) broadcast;
   requestProjectileSkill(SkillId, SkillId, PosHpr, uint32, uint8) clsend airecv;
   useProjectileSkill(SkillId, SkillId, PosHpr, uint32, uint8) broadcast;
-  suggestProjectileSkillResult(SkillId, SkillId, uint8, DoId, DoIdList, Pos, Normal, uint8array, uint32) clsend airecv;
-  setProjectileSkillResult(SkillId, SkillId, uint8, DoId, DoIdList, SkillEffects, SkillEffects, SkillEffectsList, Pos, Normal, uint8array, DoId, uint32) broadcast;
+  suggestProjectileSkillResult(SkillId, SkillId, uint8, DoId, DoIdList, Pos, Normal, uint8[], uint32) clsend airecv;
+  setProjectileSkillResult(SkillId, SkillId, uint8, DoId, DoIdList, SkillEffects, SkillEffects, SkillEffectsList, Pos, Normal, uint8[], DoId, uint32) broadcast;
 };
 
 dclass DistributedBattleAvatar : WeaponBase, DistributedReputationAvatar, Teamable {
@@ -1332,7 +1186,7 @@ struct MissionData {
   uint8 repairCost;
   uint16 exp;
   uint16 gold;
-  uint8array cargo;
+  uint8[] cargo;
   uint8 numCrew;
 };
 
@@ -1374,7 +1228,7 @@ struct PlayerData {
   uint8 repairCost;
   uint16 exp;
   uint16 gold;
-  uint8array cargo;
+  uint8[] cargo;
   LootBox lootBoxes[];
   uint8 numCrew;
 };
@@ -1432,7 +1286,7 @@ dclass DistributedPlayerPirate : DistributedPlayer, HumanDNA, DistributedBattleA
   setAvatarViewTarget(uint32, string) ownsend airecv;
   acknowledgeViewTarget(uint32) ownrecv;
   requestClothesList() ownsend airecv;
-  receiveClothesList(uint32array []) ownrecv;
+  receiveClothesList(uint32[] []) ownrecv;
   requestChangeClothes() ownsend airecv;
   requestMAPClothes(MAPClothes []) ownsend airecv;
   setOnWelcomeWorld(bool) required ownrecv airecv db;
@@ -1475,7 +1329,7 @@ dclass DistributedPlayerPirate : DistributedPlayer, HumanDNA, DistributedBattleA
   setDefaultShard(uint32) ownsend ownrecv required db;
   setDefaultZone(uint32) ownrecv required db;
   setLastLogout(uint32) required db;
-  setCustomMessages(uint16array) ownrecv required db;
+  setCustomMessages(uint16[]) ownrecv required db;
   setEmote(int32) broadcast ram airecv ownsend;
   playEmote(int32) broadcast;
   setSCEmote(uint16) broadcast ownsend airecv;
@@ -1505,7 +1359,7 @@ dclass DistributedPlayerPirate : DistributedPlayer, HumanDNA, DistributedBattleA
   sendJewelryMessage(uint32) ownrecv;
   sendTattooMessage(uint32) ownrecv;
   sendClothingMessage(uint32, uint16) ownrecv;
-  sendReputationMessage(uint32, uint16array, uint16array, uint16, uint16, uint16, uint16, uint16) ownrecv;
+  sendReputationMessage(uint32, uint16[], uint16[], uint16, uint16, uint16, uint16, uint16) ownrecv;
   sendRenownMessage(uint32, uint16, uint16, uint8, uint8) ownrecv;
   sendSalvageMessage(uint32, uint16) ownrecv;
   sendFreeInventoryMessage(uint8) ownrecv;
@@ -1925,13 +1779,19 @@ dclass DistributedDefenseCannon : DistributedIslandCannon {
   requestUpgradeToRepeater() airecv clsend;
 };
 
+struct Delay {
+  uint8/100 delay;
+}
+
+typedef Delay Delays[];
+
 dclass DistributedShipBroadside : DistributedWeapon {
-  requestBroadside(uint8, uint8/100 [], PosList, uint32, uint8) airecv clsend;
-  doBroadside(uint8, uint8/100 [], PosList, uint32, uint8, int16) broadcast;
+  requestBroadside(uint8, Delays, PosList, uint32, uint8) airecv clsend;
+  doBroadside(uint8, Delays, PosList, uint32, uint8, int16) broadcast;
   setShipId(uint32) required broadcast ram;
   setGeomParentId(uint32) required broadcast ram;
-  setLeftBroadside(uint16array) required broadcast ram;
-  setRightBroadside(uint16array) required broadcast ram;
+  setLeftBroadside(uint16[]) required broadcast ram;
+  setRightBroadside(uint16[]) required broadcast ram;
   setBroadside : setLeftBroadside, setRightBroadside;
   setBaseTeam(int8) required broadcast ram;
   setAmmoType(SkillId) required broadcast ram;
@@ -2192,9 +2052,11 @@ dclass DistributedLiarsDice : DistributedDiceGame {
 
 typedef uint8(0-255) PlayingCard;
 
-typedef PlayingCard CardHand[];
+struct CardHandArray {
+  PlayingCard card;
+}
 
-typedef CardHand CardHandArray[];
+typedef CardHandArray[] CardHand;
 
 struct PokerAction {
   uint8 action;
@@ -2264,7 +2126,7 @@ dclass DistributedBishopsHandTable : DistributedGameTable {
 
 dclass DistributedBlackjackTable : DistributedGameTable {
   setBetMultiplier(uint32) required broadcast;
-  setTableState(CardHandArray [], int32 []) required broadcast ram;
+  setTableState(CardHand [], int32 []) required broadcast ram;
   setEvent(uint8, BlackjackAction) broadcast;
   requestClientAction(uint8) airecv clsend;
   clientAction(BlackjackAction) airecv clsend;
@@ -2471,8 +2333,8 @@ dclass DistributedDinghy : DistributedInteractive {
   selectBandShip(uint32) clsend airecv;
   selectGuildShip(uint32) clsend airecv;
   selectPublicShip(uint32) clsend airecv;
-  responseFriendsList(uint32, uint32array);
-  responseGuildMatesList(uint32, uint32array);
+  responseFriendsList(uint32, uint32[]);
+  responseGuildMatesList(uint32, uint32[]);
 };
 
 dclass DistributedShipDeployer : DistributedNode {
@@ -2648,10 +2510,6 @@ dclass DistributedLootManager : DistributedObject {
 };
 
 struct FSMArgs {
-  switch (string) {
-  default:
-    break;
-  };
 };
 
 dclass DistributedFSM : DistributedObject {
@@ -2661,16 +2519,7 @@ dclass DistributedFSM : DistributedObject {
 };
 
 struct TeleportActorArgs {
-  switch (string) {
-  case "CompleteShow":
-    bool doEffect;
-    break;
-  case "GoToQuietZone":
-    DoId shardId;
-    break;
-  default:
-    break;
-  };
+  blob data;
 };
 
 dclass DistributedTeleportActor : DistributedFSM {
@@ -2680,25 +2529,7 @@ dclass DistributedTeleportActor : DistributedFSM {
 };
 
 struct TutorialTeleportActorArgs {
-  switch (string) {
-  case "CompleteShow":
-    bool doEffect;
-    break;
-  case "GoToQuietZone":
-    DoId shardId;
-    break;
-  case "OpenWorld":
-    Locations worlds;
-    DoId worldDoId;
-    break;
-  case "OpenGame":
-    DoId tutorialId;
-    DoId areaDoId;
-    PosHpr spawnPt;
-    break;
-  default:
-    break;
-  };
+  blob data;
 };
 
 dclass TutorialTeleportActor : DistributedTeleportActor {
@@ -2707,27 +2538,7 @@ dclass TutorialTeleportActor : DistributedTeleportActor {
 };
 
 struct AreaTeleportActorArgs {
-  switch (string) {
-  case "CompleteShow":
-    bool doEffect;
-    break;
-  case "GoToQuietZone":
-    DoId shardId;
-    break;
-  case "GameClosed":
-    Locations worlds;
-    break;
-  case "OpenWorld":
-    Locations worlds;
-    DoId worldDoId;
-    break;
-  case "OpenGame":
-    DoId areaDoId;
-    PosHpr spawnPt;
-    break;
-  default:
-    break;
-  };
+  blob data;
 };
 
 dclass AreaTeleportActor : DistributedTeleportActor {
@@ -2736,27 +2547,7 @@ dclass AreaTeleportActor : DistributedTeleportActor {
 };
 
 struct InstanceTeleportActorArgs {
-  switch (string) {
-  case "CompleteShow":
-    bool doEffect;
-    break;
-  case "GoToQuietZone":
-    DoId shardId;
-    break;
-  case "GameClosed":
-    Locations worlds;
-    break;
-  case "OpenWorld":
-    Locations worlds;
-    DoId worldDoId;
-    break;
-  case "OpenGame":
-    DoId areaDoId;
-    PosHpr spawnPt;
-    break;
-  default:
-    break;
-  };
+  blob data;
 };
 
 dclass InstanceTeleportActor : DistributedTeleportActor {
@@ -2771,27 +2562,7 @@ dclass DoorTeleportActor : AreaTeleportActor {
 };
 
 struct InteriorDoorActorArgs {
-  switch (string) {
-  case "CompleteShow":
-    bool doEffect;
-    break;
-  case "GoToQuietZone":
-    DoId shardId;
-    break;
-  case "GameClosed":
-    Locations worlds;
-    break;
-  case "OpenWorld":
-    Locations worlds;
-    DoId worldDoId;
-    break;
-  case "OpenGame":
-    DoId areaDoId;
-    DoId doorId;
-    break;
-  default:
-    break;
-  };
+  blob data;
 };
 
 dclass InteriorDoorTeleportActor : DoorTeleportActor {
@@ -2800,28 +2571,7 @@ dclass InteriorDoorTeleportActor : DoorTeleportActor {
 };
 
 struct ExteriorDoorActorArgs {
-  switch (string) {
-  case "CompleteShow":
-    bool doEffect;
-    break;
-  case "GoToQuietZone":
-    DoId shardId;
-    break;
-  case "GameClosed":
-    Locations worlds;
-    break;
-  case "OpenWorld":
-    Locations worlds;
-    DoId worldDoId;
-    break;
-  case "OpenGame":
-    DoId areaDoId;
-    ZoneId doorZone;
-    DoId doorId;
-    break;
-  default:
-    break;
-  };
+  blob data;
 };
 
 dclass ExteriorDoorTeleportActor : DoorTeleportActor {
@@ -2833,28 +2583,7 @@ dclass JailTeleportActor : DistributedTeleportActor {
 };
 
 struct ShipTeleportActorArgs {
-  switch (string) {
-  case "CompleteShow":
-    bool doEffect;
-    break;
-  case "GoToQuietZone":
-    DoId shardId;
-    break;
-  case "GameClosed":
-    Locations worlds;
-    break;
-  case "OpenWorld":
-    Locations worlds;
-    DoId worldDoId;
-    break;
-  case "OpenGame":
-    DoId shipParent;
-    ZoneId shipZone;
-    DoId shipDoId;
-    break;
-  default:
-    break;
-  };
+  blob data;
 };
 
 dclass ShipTeleportActor : DistributedTeleportActor {
@@ -2908,7 +2637,7 @@ dclass DistributedRepairGame : DistributedObject {
   reportMincroGameProgress(uint8(0-5), int8, uint8) clsend airecv;
   setMincroGameProgress(uint8(0-5), int8);
   setAllMincroGameProgress(int8 []);
-  setAvIds2CurrentGameList(uint8(0-5) [0-5], uint32 [0-5]);
+  setAvIds2CurrentGameList(uint8 [0-5], uint32 [0-5]);
   reportMincroGameScore(uint8(0-5), uint32) clsend airecv;
   cycleComplete(uint8, uint32 [0-5], uint16 [0-5], uint32);
   shipDamaged(bool, uint8);
@@ -3044,10 +2773,9 @@ dclass DistributedQuestProp : DistributedBattleable, Lootable {
   breakProp() broadcast ram;
   freePlayer();
   throwWarning();
-  setQuestIds(QuestId []) required broadcast ram;
-  setCompletedQuestIds(QuestId []) required broadcast ram;
-  setNotCompletedQuestIds(QuestId []) required broadcast ram;
+  setQuestIds(string []) required broadcast ram;
+  setCompletedQuestIds(string []) required broadcast ram;
+  setNotCompletedQuestIds(string []) required broadcast ram;
   sendUpdateMessage(uint8) broadcast;
   sendLocalSound(uint8, bool);
 };
-
