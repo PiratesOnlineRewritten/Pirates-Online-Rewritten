@@ -27,9 +27,12 @@ want-ssl-scheme #f
 # Loading Screen:
 fancy-loading-screen #t
 
-# ANTIALIASING
+# Antialiasing:
 framebuffer-multisample 1
 multisamples 2
 
-# STICKY KEYS
+# Sticky Keys:
 disable-sticky-keys 1
+
+# Other:
+want-logout #f

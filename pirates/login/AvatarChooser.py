@@ -103,10 +103,12 @@ class AvatarChooser(DirectObject, StateData):
         taskMgr.setupTaskChain('phasePost', threadPriority=TPHigh)
         if self.isLoaded == 0:
             self.load()
+
         base.disableMouse()
         self.quitButton.show()
-        if base.cr.loginInterface.supportsRelogin():
+        if base.cr.loginInterface.supportsRelogin() and base.config.GetBool('want-logout', False):
             self.logoutButton.show()
+
         self.scene.reparentTo(render)
         camera.reparentTo(render)
         camera.setPosHpr(-29.0187, 37.0125, 24.75, 4.09, 1.0, 0.0)
