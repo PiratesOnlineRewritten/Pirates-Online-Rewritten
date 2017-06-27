@@ -15,7 +15,3 @@ class DistributedTravelAgent(DistributedObjectGlobal):
     @report(types=['args'], dConfigParam='dteleport')
     def d_requestLoginTeleport(self, shardId=0):
         self.sendUpdate('requestLoginTeleport', [shardId])
-
-    @report(types=['args'], dConfigParam='dteleport')
-    def d_requestInstanceTeleport(self, shardId=0):
-        self.sendUpdate('requestInstanceTeleport', [shardId])

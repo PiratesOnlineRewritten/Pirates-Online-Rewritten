@@ -94,7 +94,7 @@ from pirates.instance import DistributedWelcomeWorld/AI
 from pirates.instance import DistributedInstanceWorld/AI
 from pirates.instance import DistributedTeleportZone/AI/UD
 from pirates.instance import DistributedTeleportMgr/AI
-from pirates.instance import DistributedTravelAgent/UD
+from pirates.instance import DistributedTravelAgent/AI/UD
 from pirates.instance import DistributedMatchMaker/AI/UD
 from pirates.instance import DistributedTeleportHandler/AI
 from pirates.uberdog import DistributedAvatarManager/AI/UD
@@ -1475,18 +1475,11 @@ dclass DistributedTeleportMgr : DistributedObject {
   notifyFriendVisit(uint32);
 };
 
-dclass DistributedTravelAgent : DistributedObject {
-  registerShard(uint32, uint8, uint32, uint32, uint32, uint32);
-  shardOffline(uint32);
-  requestPopLimits(uint32);
-  initiateTeleportUD(string, uint8, uint8, uint32, string, uint32, uint32 [], uint32, uint32, int32, shipList [], uint32, uint32);
+dclass DistributedTravelAgent : DistributedObjectGlobal {
   requestTutorialTeleport() clsend;
   requestWelcomeWorldTeleport() clsend;
   requestLoginTeleport(DoId) clsend;
-  requestLeaveWelcomeWorldTeleport(DoId, DoId);
-  requestPlayerTeleport(DoId, DoId, DoId);
-  requestShardTeleport(DoId, DoId);
-  requestInstanceTeleport(DoId [], uint8, string);
+  initiateTeleport(DoId, bool) airecv;
 };
 
 dclass DistributedMatchMaker : DistributedObject {

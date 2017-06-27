@@ -680,7 +680,7 @@ class DistributedIsland(DistributedGameArea, DistributedCartesianGrid, ZoneLOD, 
     def initializeNametag3d(self):
         self.deleteNametag3d()
         self.nametag.setFont(PiratesGlobals.getPirateFont())
-        nametagNode = self.nametag.getNametag3d().upcastToPandaNode()
+        nametagNode = self.nametag.getNametag3d()
         self.nametag3d.attachNewNode(nametagNode)
         self.nametag3d.setFogOff()
         self.nametag3d.setLightOff()

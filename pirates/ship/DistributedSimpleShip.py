@@ -1883,7 +1883,7 @@ class DistributedSimpleShip(DistributedMovingObject, Teamable, DistributedFlagsh
         if not self.nametag:
             return 0
         self.deleteNametag3d()
-        nametagNode = self.nametag.getNametag3d().upcastToPandaNode()
+        nametagNode = self.nametag.getNametag3d()
         self.nametag3d.attachNewNode(nametagNode)
         self.nametag3d.setLightOff()
         self.iconNodePath = self.nametag.getNameIcon()

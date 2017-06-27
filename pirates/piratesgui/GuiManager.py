@@ -2105,7 +2105,7 @@ class GuiManager(FSM.FSM):
         self.lookoutPopup2D.setContents(Nametag.CSpeech | Nametag.CThought)
         self.lookoutPopup2D.setActive(True)
         self.lookoutPopup.addNametag(self.lookoutPopup2D)
-        self.lookoutPopup2DNode = base.a2dBottomRight.attachNewNode(self.lookoutPopup2D.upcastToPandaNode())
+        self.lookoutPopup2DNode = base.a2dBottomRight.attachNewNode(self.lookoutPopup2D)
         self.lookoutPopup2DNode.setPosHprScale(-0.6, 0, 0.18, 0, 0, 0, 0.04, 0.04, 0.04)
         self.lookoutPopup2DNode.setColorScale(0.92, 0.82, 0.65, 1.0)
         self.lookoutPopup.setFont(PiratesGlobals.getInterfaceFont())

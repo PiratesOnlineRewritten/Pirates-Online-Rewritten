@@ -8,7 +8,6 @@ class Pirate(Human):
         Human.__init__(self, other)
         self.avatarType = AvatarTypes.Pirate
 
-
 class PirateHeadPortrait(Human):
 
     def __init__(self):

@@ -17,19 +17,47 @@ class NametagGroup(object):
     def __init__(self):
         self.avatar = None
         self.font = None
+        self.name = ''
+        self.displayName = ''
         self.colorCode = 0
         self.active = False
         self.contents = 0
         self.nameIcon = NodePath('icon')
+        self.nameWordwrap = 0
 
         self.nametag2d = Nametag2d()
         self.nametag3d = Nametag3d()
+        self.nametags = []
 
     def getNametag2d(self):
         return self.nametag2d
 
     def getNametag3d(self):
         return self.nametag3d
+
+    def hasNametag(self, nametag):
+        return nametag in self.nametags
+
+    def addNametag(self, nametag):
+        if self.hasNametag(nametag):
+            return
+
+        self.nametags.append(nametag)
+
+    def removeNametag(self, nametag):
+        if not self.hasNametag(nametag):
+            return
+
+        self.nametags.remove(nametag)
+
+    def manage(self, manager):
+        pass
+
+    def unmanage(self, manager):
+        pass
+
+    def getUniqueId(self):
+        return 'NametagGroup-%s' % id(self)
 
     def setAvatar(self, avatar):
         self.avatar = avatar
@@ -42,6 +70,18 @@ class NametagGroup(object):
 
     def getFont(self):
         return self.font
+
+    def setName(self, name):
+        self.name = name
+
+    def getName(self):
+        return self.name
+
+    def setDisplayName(self, displayName):
+        self.displayName = displayName
+
+    def getDisplayName(self):
+        return self.displayName
 
     def setColorCode(self, colorCode):
         self.colorCode = colorCode
@@ -63,3 +103,9 @@ class NametagGroup(object):
 
     def getNameIcon(self):
         return self.nameIcon
+
+    def setNameWordwrap(self, nameWordwrap):
+        self.nameWordwrap = nameWordwrap
+
+    def getNameWordwrap(self):
+        return self.nameWordwrap

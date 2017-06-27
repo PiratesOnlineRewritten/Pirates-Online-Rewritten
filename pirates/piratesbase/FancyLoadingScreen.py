@@ -546,22 +546,27 @@ class FancyLoadingScreen(DirectObject.DirectObject):
                         screenshot = random.choice(screenshot)
                     else:
                         screenshot = screenshot[0]
-                    self.__setLoadingArt(screenshot)
-                    if pickapirate:
-                        targetName = PLocalizer.LoadingScreen_PickAPirate
-                    if exit:
-                        targetName = None
-                    if ocean:
-                        targetName = PLocalizer.LoadingScreen_Ocean
-                    if jail:
-                        targetName = PLocalizer.LoadingScreen_Jail
-                    targetName = PLocalizer.LocationNames.get(targetId)
-                base.setLocationCode('Loading: %s' % targetName)
-                if targetName is None:
-                    return
+
+            self.__setLoadingArt(screenshot)
+            if pickapirate:
+                targetName = PLocalizer.LoadingScreen_PickAPirate
+
+            if exit:
+                targetName = None
+
+            if ocean:
+                targetName = PLocalizer.LoadingScreen_Ocean
+
+            if jail:
+                targetName = PLocalizer.LoadingScreen_Jail
+
+            targetName = PLocalizer.LocationNames.get(targetId)
+            base.setLocationCode('Loading: %s' % targetName)
+            if targetName is None:
+                return
+
             if len(targetName):
                 self.__setLocationText(targetName)
-        return
 
     def __setLoadingArt(self, screenshot):
         if self.currScreenshot:

@@ -24,7 +24,7 @@ class StatusTray(GuiTray.GuiTray):
     def __init__(self, parent, showSkills=0, **kw):
         GuiTray.GuiTray.__init__(self, parent, 0.75, 0.15, **kw)
         self.initialiseoptions(StatusTray)
-        self.name = None
+        self.name = ''
         self.sticky = False
         self.level = 0
         self.doId = 0

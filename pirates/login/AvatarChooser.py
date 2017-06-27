@@ -723,8 +723,10 @@ class AvatarChooser(DirectObject, StateData):
         if not self.queueComplete:
             if not self.notQueueCompleteDialog:
                 self.notQueueCompleteDialog = PDialog.PDialog(text=PLocalizer.AvatarChooserQueued, style=OTPDialog.Acknowledge, command=self.__handleNotQueueComplete)
+
             self.notQueueCompleteDialog.show()
             return
+
         if not self.allPhasesComplete:
             if self.notDownloadDialog:
                 self.notDownloadDialog.show()
@@ -732,56 +734,44 @@ class AvatarChooser(DirectObject, StateData):
                 self.notDownloadDialog = PDialog.PDialog(text=PLocalizer.AvatarChooserNotDownload, style=OTPDialog.Acknowledge, command=self.__handleNotDownload)
                 base.cr.centralLogger.writeClientEvent('User encountered phase blocker at pick-a-pirate')
                 self.notDownloadDialog.show()
+
             return
+
         if (0, 0) == self.choice:
             self.__handleCreate(self.currentSubId, 0)
             return
+
         subId, slot = self.choice
         potAv = base.cr.avList[subId][slot]
+        avatarId = potAv.id
+
         if potAv in (OTPGlobals.AvatarSlotUnavailable, OTPGlobals.AvatarSlotAvailable, OTPGlobals.AvatarPendingCreate):
             return
+
         self.notify.info('AvatarChooser: wants to play slot: %s avId: %s subId: %s' % (slot, potAv.id, subId))
-        self.accept('rejectPlayAvatar', self.__rejectPlayAvatar)
-        self.accept('playAvatarResponse', self.__playAvatarResponse)
         winInfo = base.win.getProperties()
         x = winInfo.getXSize()
         y = winInfo.getYSize()
         ratio = float(x) / y
-        self.fadeFrame = DirectFrame(parent=aspect2dp, frameSize=(-1.0 * ratio, 1.0 * ratio, -1.0, 1.0))
-        self.fadeFrame.setTransparency(1)
-        self.fadeInterval = Sequence(Func(self.blockInput), Func(self.fadeFrame.show), LerpColorScaleInterval(self.fadeFrame, 0.3, Vec4(0.0, 0.0, 0.0, 1.0), Vec4(0.0, 0.0, 0.0, 0.0), blendType='easeInOut'), Func(base.transitions.fadeOut, t=0), Func(base.cr.avatarManager.sendRequestPlayAvatar, potAv.id, subId), Func(base.cr.waitForDatabaseTimeout, requestName='WaitForPlayAvatarResponse'))
-        self.fadeInterval.start()
         base.emoteGender = base.cr.avList[subId][slot].dna.gender
-
-    def __rejectPlayAvatar(self, reasonId, avatarId):
-        self.notify.warning('rejectPlayAvatar: %s' % reasonId)
-        self.ignore('rejectPlayAvatar')
-        self.ignore('playAvatarResponse')
-        base.cr.cleanupWaitingForDatabase()
-        self.rejectPlayAvatarDialog = PDialog.PDialog(text=PLocalizer.AvatarChooserRejectPlayAvatar, style=OTPDialog.Acknowledge, command=self.__handleRejectPlayAvatar)
-
-    def __handleRejectPlayAvatar(self, value):
-        base.cr.loginFSM.request('shutdown')
-
-    def __playAvatarResponse(self, avatarId, subId, access, founder):
         subId, slot = self.choice
         self.notify.info('AvatarChooser: acquired avatar slot: %s avId: %s subId: %s' % (slot, avatarId, subId))
         UserFunnel.loggingAvID('write', avatarId)
         UserFunnel.loggingSubID('write', subId)
-        self.ignore('rejectPlayAvatar')
-        self.ignore('playAvatarResponse')
         base.cr.cleanupWaitingForDatabase()
         self.doneStatus = {'mode': 'chose'}
         messenger.send(self.doneEvent, [self.doneStatus])
-        messenger.send('destroyFeedbackPanel')
+        base.transitions.fadeOut()
 
     def __activatePlayButton(self):
         if not self.allPhasesComplete:
             self.playButton['text'] = '\x01smallCaps\x01%s\x02' % PLocalizer.AvatarChooserLoading
             return
+
         if not self.queueComplete:
             self.playButton['text'] = '\x01smallCaps\x01%s\x02' % PLocalizer.AvatarChooserInQueue
             return
+
         self.playButton['state'] = DGG.NORMAL
         self.playButton['text'] = '\x01smallCaps\x01%s\x02' % PLocalizer.AvatarChooserPlay
         self.playButton.setColor(1, 1, 1, 1)
@@ -790,8 +780,10 @@ class AvatarChooser(DirectObject, StateData):
     def __activateCreateButtons(self):
         if not self.allPhasesComplete:
             return
+
         if not self.queueComplete:
             return
+
         for currSubId, currSubVal in base.cr.avList.items():
             for currIdx in range(len(currSubVal)):
                 if currSubVal[currIdx] == OTPGlobals.AvatarSlotAvailable:
@@ -823,9 +815,11 @@ class AvatarChooser(DirectObject, StateData):
             disableQueueDefault = 1
         else:
             disableQueueDefault = 0
+
         if config.GetBool('disable-server-queueing', disableQueueDefault):
             self._setQueueComplete()
             return
+
         self.httpClient = HTTPClient()
         import urllib2
         proxies = urllib2.getproxies()
@@ -834,6 +828,7 @@ class AvatarChooser(DirectObject, StateData):
             self.httpClient.setProxySpec(proxies.get('http'))
         else:
             self.notify.info('queuing proxy is none')
+
         loginTokenKey = config.GetString('queueing-token-1', 'SESSION_TOKEN')
         self.notify.info('using queueing token 1 of %s' % loginTokenKey)
         self.loginToken = launcher.getValue(loginTokenKey, None)
@@ -842,16 +837,17 @@ class AvatarChooser(DirectObject, StateData):
         if self.queueStatus and self.queueStatus == 'PLAY':
             self._setQueueComplete()
             return
+
         self.queueFreqSeconds = launcher.getValue('QUEUE_FREQ_SECONDS', None)
         self.queueUrl = launcher.getValue('QUEUE_URL', None)
         if self.loginToken is not None and self.queueStatus == 'QUEUE' and self.queueFreqSeconds is not None and self.queueUrl is not None:
             self.queueFreqSeconds = int(self.queueFreqSeconds)
             self._startQueueTask()
             return
+
         self.loginStatusRequest = None
         self.loginStatusTask = taskMgr.add(self._checkLoginStatus, 'AvatarChooser-CheckLoginStatus')
         self.loginStatusTask.delayTime = 0.1
-        return
 
     def _checkLoginStatus(self, task):
         if not self.loginStatusRequest:
@@ -864,15 +860,19 @@ class AvatarChooser(DirectObject, StateData):
                 loginStatusUrl += 'username=%s&password=%s' % (testLogin, testPass)
                 if config.GetBool('server-queueing-force', 0):
                     self.forceQueueStr = '&wannaqueue=1'
+
                 loginStatusUrl += self.forceQueueStr
+
             loginStatusUrl += '&fromGame=1'
             self.notify.info('Checking login status at: %s' % (loginStatusUrl,))
             self.statusRF = Ramfile()
             self.loginStatusRequest = self.httpClient.makeChannel(False)
             self.loginStatusRequest.beginGetDocument(DocumentSpec(loginStatusUrl))
             self.loginStatusRequest.downloadToRam(self.statusRF)
+
         if self.loginStatusRequest.run():
             return task.again
+
         requestData = ''
         if self.loginStatusRequest.isValid() and self.loginStatusRequest.isDownloadComplete():
             requestData = self.statusRF.getData()
@@ -881,6 +881,7 @@ class AvatarChooser(DirectObject, StateData):
             self.notify.info('LoginStatus check failed: %s' % (self.loginStatusRequest.getStatusString(),))
             self.loginStatusRequest = None
             return task.again
+
         results = {}
         for line in requestData.split('\n'):
             pair = line.split('=', 1)
@@ -891,9 +892,11 @@ class AvatarChooser(DirectObject, StateData):
         if self.queueStatus == 'PLAY':
             self._setQueueComplete()
             return task.done
+
         if self.queueStatus != 'QUEUE':
             self.notify.warning('Received invalid LOGIN_ACTION: %s' % (self.queueStatus,))
             sys.exit(1)
+
         loginTokenKey = config.GetString('queueing-token-2', 'SESSION_TOKEN')
         self.notify.info('using queueing token 2 of %s' % loginTokenKey)
         self.loginToken = results.get(loginTokenKey, self.loginToken)
@@ -903,6 +906,7 @@ class AvatarChooser(DirectObject, StateData):
             self.notify.warning('No login token or queueUrl, trying again:')
             self.loginStatusRequest = None
             return task.again
+
         if config.GetBool('server-queueing-force', 0):
             self.notify.info('forcing queue')
             self.forceQueueStr = '&wannaqueue=1'
@@ -919,6 +923,7 @@ class AvatarChooser(DirectObject, StateData):
             self.accept('f1', clearForceQueue)
         else:
             self.forceQueueStr = ''
+
         self._startQueueTask()
         return task.done
 

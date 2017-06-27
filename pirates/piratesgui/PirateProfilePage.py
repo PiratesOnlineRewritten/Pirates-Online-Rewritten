@@ -50,6 +50,7 @@ class SkillFrame(DirectFrame):
             range = ReputationGlobals.MinigameLevelCap
         else:
             range = ReputationGlobals.LevelCap
+
         self.meter = DirectWaitBar(parent=self, relief=DGG.RAISED, borderWidth=(0.002,
                                                                                 0.002), range=range, value=0, frameColor=(0.05,
                                                                                                                           0.05,
@@ -60,7 +61,6 @@ class SkillFrame(DirectFrame):
                                                                                                                                                                                                  0.02), text='', text_align=TextNode.ARight, text_scale=PiratesGuiGlobals.TextScaleSmall, text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_pos=(0.375,
                                                                                                                                                                                                                                                                                                                                                                                  0.03,
                                                                                                                                                                                                                                                                                                                                                                                  0), textMayChange=1)
-        return
 
 
 class SocialButton(GuiButton.GuiButton):
@@ -89,16 +89,12 @@ class SocialButton(GuiButton.GuiButton):
                 self.button3 = GuiButton.GuiButton(parent=self.circle, relief=None, image=(topgui.find('**/pir_t_gui_but_circle_slash'), topgui.find('**/pir_t_gui_but_circle_slash'), topgui.find('**/pir_t_gui_but_circle_slash_over'), topgui.find('**/pir_t_gui_but_circle_slash')), image_scale=0.35, command=command, helpText=helpText, helpPos=(-0.1, 0, -0.07), helpOpaque=1)
             else:
                 self.button = OnscreenImage(parent=self.circle, image=image, scale=scale)
-            breakImage = topgui.find('**/pir_t_gui_but_circle_slash')
-            bsUpscale = 8.0
-            if type(scale) in [type(1.1), type(1)]:
-                bsScale = float(scale) * bsUpscale
-            bsScale = scale[0] * bsUpscale
+
+        breakImage = topgui.find('**/pir_t_gui_but_circle_slash')
         self.breakSymbol = OnscreenImage(parent=self.circle, image=breakImage, scale=0.32, pos=(0,
                                                                                                 0,
                                                                                                 0))
         self.breakSymbol.hide()
-        return
 
     def enable(self):
         self.breakSymbol.hide()

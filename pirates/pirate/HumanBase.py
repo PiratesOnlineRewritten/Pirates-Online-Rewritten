@@ -7,11 +7,10 @@ class HumanBase():
         self.setDNAString(dna)
 
     def setDNAString(self, dnaString=None):
-        if dnaString == None:
+        if not dnaString:
             self.setDefaultDNA()
         else:
             self.style = copy.deepcopy(dnaString)
-        return
 
     def setDefaultDNA(self):
         newDNA = HumanDNA.HumanDNA()

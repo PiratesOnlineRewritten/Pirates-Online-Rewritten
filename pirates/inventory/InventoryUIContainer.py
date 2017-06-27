@@ -21,38 +21,39 @@ class InventoryUIContainer(DirectFrame, InventoryRequestBase.InventoryRequestBas
     notify = directNotify.newCategory('InventoryUIContainer')
 
     def __init__(self, manager, sizeX=1.0, sizeZ=1.0, countX=None, countZ=None, cellInfo=None):
-        if not manager.hasContainerBeenAdded(self):
-            optiondefs = (
-             (
-              'state', DGG.NORMAL, self.setState),)
-            self.defineoptions({}, optiondefs)
-            DirectFrame.__init__(self, parent=NodePath())
-            InventoryRequestBase.InventoryRequestBase.__init__(self)
-            self.manager = manager
-            self.manager.addContainer(self)
-            self.sizeX = sizeX
-            self.sizeZ = sizeZ
-            self.cellSizeX = sizeX
-            self.cellSizeZ = sizeZ
-            self.screenSizeMult = 0.5
-            self.screenSizeX = (base.a2dRight - base.a2dLeft) * self.screenSizeMult
-            self.screenSizeZ = (base.a2dTop - base.a2dBottom) * self.screenSizeMult
-            self.cellList = []
-            self.containerType = CONTAINER_NORMAL
-            self.cellClickedCommand = self.cellClick
-            self.rightClickAction = {}
-            self.rolloverSound = None
-            self.setupBackground()
-            self.setupCellImage()
-            self.titleImageOpen = None
-            self.titleImageClosed = None
-            self.titleName = None
-            self.setTitleInfo()
-            if countX and countZ:
-                self.setupGrid(countX, countZ)
-            self.manageCells(cellInfo)
-            self.accept('localLevelUp', self.checkReqs)
-        return
+        optiondefs = (('state', DGG.NORMAL, self.setState),)
+        self.defineoptions({}, optiondefs)
+        DirectFrame.__init__(self, parent=NodePath())
+
+        if manager.hasContainerBeenAdded(self):
+            return
+
+        InventoryRequestBase.InventoryRequestBase.__init__(self)
+        self.manager = manager
+        self.manager.addContainer(self)
+        self.sizeX = sizeX
+        self.sizeZ = sizeZ
+        self.cellSizeX = sizeX
+        self.cellSizeZ = sizeZ
+        self.screenSizeMult = 0.5
+        self.screenSizeX = (base.a2dRight - base.a2dLeft) * self.screenSizeMult
+        self.screenSizeZ = (base.a2dTop - base.a2dBottom) * self.screenSizeMult
+        self.cellList = []
+        self.containerType = CONTAINER_NORMAL
+        self.cellClickedCommand = self.cellClick
+        self.rightClickAction = {}
+        self.rolloverSound = None
+        self.setupBackground()
+        self.setupCellImage()
+        self.titleImageOpen = None
+        self.titleImageClosed = None
+        self.titleName = None
+        self.setTitleInfo()
+        if countX and countZ:
+            self.setupGrid(countX, countZ)
+
+        self.manageCells(cellInfo)
+        self.accept('localLevelUp', self.checkReqs)
 
     def manageCells(self, cellInfo):
         pass
@@ -76,7 +77,6 @@ class InventoryUIContainer(DirectFrame, InventoryRequestBase.InventoryRequestBas
         self.cellClickedCommand = None
         self.manager = None
         DirectFrame.destroy(self)
-        return
 
     def clearOut(self):
         for cell in self.cellList:
@@ -90,6 +90,7 @@ class InventoryUIContainer(DirectFrame, InventoryRequestBase.InventoryRequestBas
             cell.unbind(DGG.WITHOUT)
             if cell.boundEvent:
                 cell.ignore(cell.boundEvent)
+
             cell.destroy()
 
         self.cellList = []

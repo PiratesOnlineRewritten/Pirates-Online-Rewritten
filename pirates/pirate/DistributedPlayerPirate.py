@@ -105,231 +105,238 @@ class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, Distribu
     def __init__(self, cr):
         try:
             self.DistributedPirate_initialized
+            return
         except:
             self.DistributedPirate_initialized = 1
-            self.onWelcomeWorld = False
-            if not self.GoldFounderIcon:
-                gui = loader.loadModel('models/gui/toplevel_gui')
-                self.GoldFounderIcon = gui.find('**/founders_coin').copyTo(NodePath('coinTop'))
-                self.GoldFounderIcon.setScale(2.8)
-                self.SilverFounderIcon = gui.find('**/founders_silver_coin').copyTo(NodePath('coinTop'))
-                self.SilverFounderIcon.setScale(2.8)
-                tpMgr = TextPropertiesManager.getGlobalPtr()
-                tpMgr.setGraphic('goldFounderIcon', self.GoldFounderIcon)
-                tpMgr.setGraphic('silverFounderIcon', self.SilverFounderIcon)
-                gold = TextProperties()
-                gold.setTextColor(1, 0.8, 0.4, 1)
-                tpMgr.setProperties('goldFounder', gold)
-                silver = TextProperties()
-                silver.setTextColor(0.75, 0.75, 0.75, 1)
-                tpMgr.setProperties('silverFounder', silver)
-                crewPurpleColor = TextProperties()
-                crewPurpleColor.setTextColor(0.9, 0.5, 1.0, 1)
-                tpMgr.setProperties('crewPurple', crewPurpleColor)
-                afkGrayColor = TextProperties()
-                afkGrayColor.setTextColor(0.5, 0.5, 0.5, 1)
-                tpMgr.setProperties('afkGray', afkGrayColor)
-                injuredRedColor = TextProperties()
-                injuredRedColor.setTextColor(1.0, 0.0, 0.0, 1)
-                tpMgr.setProperties('injuredRed', injuredRedColor)
-                ignoredPinkColor = TextProperties()
-                ignoredPinkColor.setTextColor(1.0, 0.0, 1.0, 1)
-                tpMgr.setProperties('ignoredPink', ignoredPinkColor)
-                injuredRedTimerColor = TextProperties()
-                injuredRedTimerColor.setTextColor(1.0, 0.0, 0.0, 1)
-                injuredRedTimerColor.setTextScale(2.0)
-                tpMgr.setProperties('injuredRedTimer', injuredRedTimerColor)
-            if not self.tempDoubleXPStatus:
-                x2XPGui = loader.loadModel('models/gui/toplevel_gui')
-                self.x2XPIcon = gui.find('**/2xp')
-                self.x2XPIcon.setScale(4.5)
-                tpMgr.setGraphic('x2XPAwardIcon', self.x2XPIcon)
-            if not self.crewIconId:
-                self.crewIconId = True
-                crewIconGui = loader.loadModel(CrewIconSelector.CREW_ICON_BAM)
-                self.crewIconDict = {}
-                for k, v in CrewIconSelector.CREW_ICONS.iteritems():
-                    np = crewIconGui.find('**/%s' % v)
-                    self.crewIconDict[k] = np.copyTo(NodePath())
-                    self.crewIconDict[k].setScale(8.8)
-                    if k == 1:
-                        np = crewIconGui.find('**/icon_glow')
-                        self.myCrewColorGlow = np.copyTo(self.crewIconDict[k])
-                        self.myCrewColorGlow.setScale(1.25)
-                        self.myCrewColorGlow.setColor(0, 1, 0, 1)
-                    elif k == 2:
-                        np = crewIconGui.find('**/icon_glow')
-                        self.otherCrewColorGlow = np.copyTo(self.crewIconDict[k])
-                        self.otherCrewColorGlow.setScale(1.25)
-                        self.otherCrewColorGlow.setColor(1, 0, 0, 1)
-                    tpMgr.setGraphic('crewIcon%s' % k, self.crewIconDict[k])
 
-            if not self.badgeIconDict:
-                self.badgeIconDict = {}
-                for titleId in TitleGlobals.TitlesDict.keys():
-                    titleModel = loader.loadModel(TitleGlobals.getModelPath(titleId))
-                    for rank in range(TitleGlobals.getMaxRank(titleId) + 1):
-                        icName = TitleGlobals.getIconName(titleId, rank)
-                        if not icName:
-                            continue
-                        icon = titleModel.find('**/' + icName)
-                        if not icon or icon.isEmpty():
-                            continue
-                        imgScale = TitleGlobals.getScale(titleId)
-                        icon.setScale(0.71 * imgScale)
-                        iconKey = 'badge-%s-%s' % (titleId, rank)
-                        self.badgeIconDict[iconKey] = icon
-                        tg = TextGraphic(icon, -0.25, 0.75, -0.31, 0.69)
-                        tpMgr.setGraphic(iconKey, tg)
+        self.onWelcomeWorld = False
+        if not self.GoldFounderIcon:
+            gui = loader.loadModel('models/gui/toplevel_gui')
+            self.GoldFounderIcon = gui.find('**/founders_coin').copyTo(NodePath('coinTop'))
+            self.GoldFounderIcon.setScale(2.8)
+            self.SilverFounderIcon = gui.find('**/founders_silver_coin').copyTo(NodePath('coinTop'))
+            self.SilverFounderIcon.setScale(2.8)
+            tpMgr = TextPropertiesManager.getGlobalPtr()
+            tpMgr.setGraphic('goldFounderIcon', self.GoldFounderIcon)
+            tpMgr.setGraphic('silverFounderIcon', self.SilverFounderIcon)
+            gold = TextProperties()
+            gold.setTextColor(1, 0.8, 0.4, 1)
+            tpMgr.setProperties('goldFounder', gold)
+            silver = TextProperties()
+            silver.setTextColor(0.75, 0.75, 0.75, 1)
+            tpMgr.setProperties('silverFounder', silver)
+            crewPurpleColor = TextProperties()
+            crewPurpleColor.setTextColor(0.9, 0.5, 1.0, 1)
+            tpMgr.setProperties('crewPurple', crewPurpleColor)
+            afkGrayColor = TextProperties()
+            afkGrayColor.setTextColor(0.5, 0.5, 0.5, 1)
+            tpMgr.setProperties('afkGray', afkGrayColor)
+            injuredRedColor = TextProperties()
+            injuredRedColor.setTextColor(1.0, 0.0, 0.0, 1)
+            tpMgr.setProperties('injuredRed', injuredRedColor)
+            ignoredPinkColor = TextProperties()
+            ignoredPinkColor.setTextColor(1.0, 0.0, 1.0, 1)
+            tpMgr.setProperties('ignoredPink', ignoredPinkColor)
+            injuredRedTimerColor = TextProperties()
+            injuredRedTimerColor.setTextColor(1.0, 0.0, 0.0, 1)
+            injuredRedTimerColor.setTextScale(2.0)
+            tpMgr.setProperties('injuredRedTimer', injuredRedTimerColor)
 
-            if not self.gmNameTag:
-                self.gmNameTagIcon = loader.loadModel('models/gui/gmLogo_tflip')
-                self.gmNameTagIcon.setScale(2.5)
-                tpMgr.setGraphic('gmNameTagLogo', self.gmNameTagIcon)
-                gmGoldColor = TextProperties()
-                gmGoldColor.setTextColor(1, 0.9, 0.7, 1)
-                tpMgr.setProperties('goldGM', gmGoldColor)
-                gmRedColor = TextProperties()
-                gmRedColor.setTextColor(1.0, 0.1, 0.1, 1)
-                tpMgr.setProperties('redGM', gmRedColor)
-                gmGreenColor = TextProperties()
-                gmGreenColor.setTextColor(0.3, 0.7, 0.25, 1)
-                tpMgr.setProperties('greenGM', gmGreenColor)
-                gmBlueColor = TextProperties()
-                gmBlueColor.setTextColor(0.35, 0.7, 1, 1)
-                tpMgr.setProperties('blueGM', gmBlueColor)
-                gmWhiteColor = TextProperties()
-                gmWhiteColor.setTextColor(1, 1, 1, 1)
-                tpMgr.setProperties('whiteGM', gmWhiteColor)
-            if not self.confusedIcon:
-                self.confusedIcon = gui.find('**/pir_t_gui_but_chatIncomplete').copyTo(NodePath('confusedTop'))
-                self.confusedIcon.setScale(10.0)
-                tpMgr.setGraphic('confusedIcon', self.confusedIcon)
-            self.name = ''
-            self.title = ''
-            self.lastLoop = None
-            DistributedPirateBase.__init__(self, cr)
-            DistributedBattleAvatar.__init__(self, cr)
-            DistributedPlayer.__init__(self, cr)
-            DistributedQuestAvatar.__init__(self)
-            self.inPvp = False
-            self._inPvpSV = StateVar(self.inPvp)
-            self.inParlorGame = False
-            self._zombieSV = StateVar(self.zombie)
-            self.setPickable(1)
-            self.interactioneer = None
-            self.crewShip = None
-            self.crewShipId = 0
-            self.pendingSetCrewShip = None
-            self.activeShipId = 0
-            self.pendingTeleportMgr = None
-            self.crewInterest = None
-            self.captainId = 0
-            self.chestIcon = None
-            self.lootCarried = 0
-            self.inventoryId = 0
-            self.undead = 0
-            self.undeadStyle = ''
-            self.skeleton = None
-            self.stickyTargets = []
-            self.attuneEffect = None
-            self.avatarFriendsList = set()
-            self.playerFriendsList = set()
-            self.guildName = PLocalizer.GuildNoGuild
-            self.guildId = -1
-            self.guildRank = -1
-            self.defaultShard = 0
-            self.returnLocation = ''
-            self.currentIsland = ''
-            self.jailCellIndex = 0
-            self.beacon = None
-            self.teleportFriendDoId = 0
-            self._beaconVisibleSV = StateVar(False)
-            self._pvpTeamSV = StateVar(0)
-            self.teleportFlags = PiratesGlobals.TFInInitTeleport
-            self.teleportConfirmCallbacks = {}
-            self.questRewardFlags = 0
-            self.bandMember = None
-            self.gameAccess = OTPGlobals.AccessUnknown
-            self.founder = False
-            self.port = 0
-            self.waterRipple = None
-            self.waterWake = None
-            self.waterSplash = None
-            self.founderIcon = None
-            self.badge = None
-            self.shipBadge = None
-            self.lastPVPSinkTime = 0
-            self.lastShipPVPDecayTime = 0
-            self.infamySea = 0
-            self.lastPVPDefeatTime = 0
-            self.lastLandPVPDecayTime = 0
-            self.infamyLand = 0
-            self.isLookingForCrew = 0
-            self.tutorialState = 0
-            self.hasCrewIcon = 0
-            self.isAFK = False
-            self.status = 0
-            self.isPaid = False
-            self.populated = 0
-            self.updatePaidStatus()
-            self.tempDoubleXPStatus = 0
-            self.tempDoubleXPStatusMessaged = False
-            self.gmNameTagEnabled = 0
-            self.gmNameTagColor = 'whiteGM'
-            self.gmNameTagString = ''
-            self.BandId = None
-            self.cursed = False
-            self.injuredSetup = 0
-            self.injuredTimeLeft = 0
-            self.layingOnGround = 0
-            self.dizzyEffect = None
-            self.dizzyEffect2 = None
-            self.beingHealed = False
-            self.healEffects = []
-            self.healEffectIval = None
-            self.isPlundering = 0
-            self.isConfused = False
-            self.wlEnabled = False
-            self.initDazed()
-            self.creatureId = -1
-            self.creature = None
-            self.transformationEffect = None
-            self.transformationIval = None
-            self.gTransNodeFwdPt = None
-            self.cRay = None
-            self.cRayNode = None
-            self.lifter = None
-            self.alligatorSound = loadSfx(SoundGlobals.SFX_MINIGAME_POTION_FX_ALLIGATOR)
-            self.crabSound = loadSfx(SoundGlobals.SFX_MINIGAME_POTION_FX_CRAB)
-            self.scorpionSound = loadSfx(SoundGlobals.SFX_MINIGAME_POTION_FX_SCORPION)
-            self.genericTransformation = loadSfx(SoundGlobals.SFX_MINIGAME_POTION_FX_TRANFORMATION)
-            self.scaleChangeEffect = None
-            self.scaleChangeIval = None
-            self.isGiant = False
-            self.isTiny = False
-            self.growSound = loadSfx(SoundGlobals.SFX_MINIGAME_POTION_FX_GROW)
-            self.shrinkSound = loadSfx(SoundGlobals.SFX_MINIGAME_POTION_FX_SHRINK)
-            self.crazySkinColorEffect = None
-            self.crazySkinColorIval = None
-            self.transformSeqEffect = None
-            self.injuredFrame = None
-            self.ghostEffect = None
-            self.isGhost = 0
-            self.needRegenFlag = 0
-            self.bloodFireTime = 0.0
-            self.auraActivated = 0
-            self.auraIval = None
-            self.fishSwivel = NodePath('fishSwivel')
-            self.shownFish = None
-            self.shownFishSeq = None
-            self.popupDialog = None
-            self.injuredTrack = None
-            self.__surpressedRepFlags = []
-            self.__tutorialEnabled = True
-            self.swingTrack = None
+        if not self.tempDoubleXPStatus:
+            x2XPGui = loader.loadModel('models/gui/toplevel_gui')
+            self.x2XPIcon = gui.find('**/2xp')
+            self.x2XPIcon.setScale(4.5)
+            tpMgr.setGraphic('x2XPAwardIcon', self.x2XPIcon)
 
-        return
+        if not self.crewIconId:
+            self.crewIconId = True
+            crewIconGui = loader.loadModel(CrewIconSelector.CREW_ICON_BAM)
+            self.crewIconDict = {}
+            for k, v in CrewIconSelector.CREW_ICONS.iteritems():
+                np = crewIconGui.find('**/%s' % v)
+                self.crewIconDict[k] = np.copyTo(NodePath())
+                self.crewIconDict[k].setScale(8.8)
+                if k == 1:
+                    np = crewIconGui.find('**/icon_glow')
+                    self.myCrewColorGlow = np.copyTo(self.crewIconDict[k])
+                    self.myCrewColorGlow.setScale(1.25)
+                    self.myCrewColorGlow.setColor(0, 1, 0, 1)
+                elif k == 2:
+                    np = crewIconGui.find('**/icon_glow')
+                    self.otherCrewColorGlow = np.copyTo(self.crewIconDict[k])
+                    self.otherCrewColorGlow.setScale(1.25)
+                    self.otherCrewColorGlow.setColor(1, 0, 0, 1)
+
+                tpMgr.setGraphic('crewIcon%s' % k, self.crewIconDict[k])
+
+        if not self.badgeIconDict:
+            self.badgeIconDict = {}
+            for titleId in TitleGlobals.TitlesDict.keys():
+                titleModel = loader.loadModel(TitleGlobals.getModelPath(titleId))
+                for rank in range(TitleGlobals.getMaxRank(titleId) + 1):
+                    icName = TitleGlobals.getIconName(titleId, rank)
+                    if not icName:
+                        continue
+
+                    icon = titleModel.find('**/' + icName)
+                    if not icon or icon.isEmpty():
+                        continue
+
+                    imgScale = TitleGlobals.getScale(titleId)
+                    icon.setScale(0.71 * imgScale)
+                    iconKey = 'badge-%s-%s' % (titleId, rank)
+                    self.badgeIconDict[iconKey] = icon
+                    tg = TextGraphic(icon, -0.25, 0.75, -0.31, 0.69)
+                    tpMgr.setGraphic(iconKey, tg)
+
+        if not self.gmNameTag:
+            self.gmNameTagIcon = loader.loadModel('models/gui/gmLogo_tflip')
+            self.gmNameTagIcon.setScale(2.5)
+            tpMgr.setGraphic('gmNameTagLogo', self.gmNameTagIcon)
+            gmGoldColor = TextProperties()
+            gmGoldColor.setTextColor(1, 0.9, 0.7, 1)
+            tpMgr.setProperties('goldGM', gmGoldColor)
+            gmRedColor = TextProperties()
+            gmRedColor.setTextColor(1.0, 0.1, 0.1, 1)
+            tpMgr.setProperties('redGM', gmRedColor)
+            gmGreenColor = TextProperties()
+            gmGreenColor.setTextColor(0.3, 0.7, 0.25, 1)
+            tpMgr.setProperties('greenGM', gmGreenColor)
+            gmBlueColor = TextProperties()
+            gmBlueColor.setTextColor(0.35, 0.7, 1, 1)
+            tpMgr.setProperties('blueGM', gmBlueColor)
+            gmWhiteColor = TextProperties()
+            gmWhiteColor.setTextColor(1, 1, 1, 1)
+            tpMgr.setProperties('whiteGM', gmWhiteColor)
+
+        if not self.confusedIcon:
+            self.confusedIcon = gui.find('**/pir_t_gui_but_chatIncomplete').copyTo(NodePath('confusedTop'))
+            self.confusedIcon.setScale(10.0)
+            tpMgr.setGraphic('confusedIcon', self.confusedIcon)
+
+        self.title = ''
+        self.lastLoop = None
+        DistributedPirateBase.__init__(self, cr)
+        DistributedBattleAvatar.__init__(self, cr)
+        DistributedPlayer.__init__(self, cr)
+        DistributedQuestAvatar.__init__(self)
+        self.name = ''
+        self.inPvp = False
+        self._inPvpSV = StateVar(self.inPvp)
+        self.inParlorGame = False
+        self._zombieSV = StateVar(self.zombie)
+        self.setPickable(1)
+        self.interactioneer = None
+        self.crewShip = None
+        self.crewShipId = 0
+        self.pendingSetCrewShip = None
+        self.activeShipId = 0
+        self.pendingTeleportMgr = None
+        self.crewInterest = None
+        self.captainId = 0
+        self.chestIcon = None
+        self.lootCarried = 0
+        self.inventoryId = 0
+        self.undead = 0
+        self.undeadStyle = ''
+        self.skeleton = None
+        self.stickyTargets = []
+        self.attuneEffect = None
+        self.avatarFriendsList = set()
+        self.playerFriendsList = set()
+        self.guildName = PLocalizer.GuildNoGuild
+        self.guildId = -1
+        self.guildRank = -1
+        self.defaultShard = 0
+        self.returnLocation = ''
+        self.currentIsland = ''
+        self.jailCellIndex = 0
+        self.beacon = None
+        self.teleportFriendDoId = 0
+        self._beaconVisibleSV = StateVar(False)
+        self._pvpTeamSV = StateVar(0)
+        self.teleportFlags = PiratesGlobals.TFInInitTeleport
+        self.teleportConfirmCallbacks = {}
+        self.questRewardFlags = 0
+        self.bandMember = None
+        self.gameAccess = OTPGlobals.AccessUnknown
+        self.founder = False
+        self.port = 0
+        self.waterRipple = None
+        self.waterWake = None
+        self.waterSplash = None
+        self.founderIcon = None
+        self.badge = None
+        self.shipBadge = None
+        self.lastPVPSinkTime = 0
+        self.lastShipPVPDecayTime = 0
+        self.infamySea = 0
+        self.lastPVPDefeatTime = 0
+        self.lastLandPVPDecayTime = 0
+        self.infamyLand = 0
+        self.isLookingForCrew = 0
+        self.tutorialState = 0
+        self.hasCrewIcon = 0
+        self.isAFK = False
+        self.status = 0
+        self.isPaid = False
+        self.populated = 0
+        self.updatePaidStatus()
+        self.tempDoubleXPStatus = 0
+        self.tempDoubleXPStatusMessaged = False
+        self.gmNameTagEnabled = 0
+        self.gmNameTagColor = 'whiteGM'
+        self.gmNameTagString = ''
+        self.BandId = None
+        self.cursed = False
+        self.injuredSetup = 0
+        self.injuredTimeLeft = 0
+        self.layingOnGround = 0
+        self.dizzyEffect = None
+        self.dizzyEffect2 = None
+        self.beingHealed = False
+        self.healEffects = []
+        self.healEffectIval = None
+        self.isPlundering = 0
+        self.isConfused = False
+        self.wlEnabled = False
+        self.initDazed()
+        self.creatureId = -1
+        self.creature = None
+        self.transformationEffect = None
+        self.transformationIval = None
+        self.gTransNodeFwdPt = None
+        self.cRay = None
+        self.cRayNode = None
+        self.lifter = None
+        self.alligatorSound = loadSfx(SoundGlobals.SFX_MINIGAME_POTION_FX_ALLIGATOR)
+        self.crabSound = loadSfx(SoundGlobals.SFX_MINIGAME_POTION_FX_CRAB)
+        self.scorpionSound = loadSfx(SoundGlobals.SFX_MINIGAME_POTION_FX_SCORPION)
+        self.genericTransformation = loadSfx(SoundGlobals.SFX_MINIGAME_POTION_FX_TRANFORMATION)
+        self.scaleChangeEffect = None
+        self.scaleChangeIval = None
+        self.isGiant = False
+        self.isTiny = False
+        self.growSound = loadSfx(SoundGlobals.SFX_MINIGAME_POTION_FX_GROW)
+        self.shrinkSound = loadSfx(SoundGlobals.SFX_MINIGAME_POTION_FX_SHRINK)
+        self.crazySkinColorEffect = None
+        self.crazySkinColorIval = None
+        self.transformSeqEffect = None
+        self.injuredFrame = None
+        self.ghostEffect = None
+        self.isGhost = 0
+        self.needRegenFlag = 0
+        self.bloodFireTime = 0.0
+        self.auraActivated = 0
+        self.auraIval = None
+        self.fishSwivel = NodePath('fishSwivel')
+        self.shownFish = None
+        self.shownFishSeq = None
+        self.popupDialog = None
+        self.injuredTrack = None
+        self.__surpressedRepFlags = []
+        self.__tutorialEnabled = True
+        self.swingTrack = None
 
     def disable(self):
         DistributedPirateBase.disable(self)
@@ -413,23 +420,25 @@ class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, Distribu
     def delete(self):
         try:
             self.DistributedPlayerPirate_deleted
+            return
         except:
             self.DistributedPlayerPirate_deleted = 1
-            DistributedPirateBase.delete(self)
-            DistributedPlayer.delete(self)
-            DistributedBattleAvatar.delete(self)
-            DistributedQuestAvatar.delete(self)
-            if self.skeleton:
-                self.skeleton.delete()
-                self.skeleton = None
-            if self.shownFish:
-                self.shownFish.destroy()
-                self.shownFish = None
-            if self.shownFishSeq:
-                self.shownFishSeq.pause()
-                self.shownFishSeq = None
 
-        return
+        DistributedPirateBase.delete(self)
+        DistributedPlayer.delete(self)
+        DistributedBattleAvatar.delete(self)
+        DistributedQuestAvatar.delete(self)
+        if self.skeleton:
+            self.skeleton.delete()
+            self.skeleton = None
+
+        if self.shownFish:
+            self.shownFish.destroy()
+            self.shownFish = None
+
+        if self.shownFishSeq:
+            self.shownFishSeq.pause()
+            self.shownFishSeq = None
 
     def generate(self):
         DistributedPirateBase.generate(self)

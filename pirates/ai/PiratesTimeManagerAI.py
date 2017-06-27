@@ -1,8 +1,5 @@
-from direct.distributed.DistributedObjectAI import DistributedObjectAI
+from otp.ai.TimeManagerAI import TimeManagerAI
 from direct.directnotify import DirectNotifyGlobal
 
-class PiratesTimeManagerAI(DistributedObjectAI):
+class PiratesTimeManagerAI(TimeManagerAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('PiratesTimeManagerAI')
-
-    def __init__(self, air):
-        DistributedObjectAI.__init__(self, air)

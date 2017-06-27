@@ -442,25 +442,19 @@ class PiratesClientRepository(OTPClientRepository):
         pass
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
-    def handleAvatarResponseMsg(self, di):
-        self.loadingScreen.endStep('waitForAv')
-        avatarId = di.getUint32()
-        returnCode = di.getUint8()
-        if returnCode == 0:
-            self.loadingScreen.show(waitForLocation=True, expectedLoadScale=4)
-            self.loadingScreen.beginStep('LocalAvatar', 36, 120)
-            localAvatar = LocalPirate(self)
-            localAvatar.dclass = self.dclassesByName['DistributedPlayerPirate']
-            localAvatar.doId = avatarId
-            self.localAvatarDoId = avatarId
-            self.doId2do[avatarId] = localAvatar
-            localAvatar.setLocation(parentId=None, zoneId=None)
-            localAvatar.generate()
-            localAvatar.updateAllRequiredFields(localAvatar.dclass, di)
-            self.loadingScreen.endStep('LocalAvatar')
-            self.loginFSM.request('playingGame')
-        else:
-            self.notify.error('Bad avatar: return code %d' % returnCode)
+    def handleAvatarResponseMsg(self, avatarId, di):
+        self.loadingScreen.show(waitForLocation=True, expectedLoadScale=4)
+        self.loadingScreen.beginStep('LocalAvatar', 36, 120)
+        localAvatar = LocalPirate(self)
+        localAvatar.dclass = self.dclassesByName['DistributedPlayerPirate']
+        localAvatar.doId = avatarId
+        self.localAvatarDoId = avatarId
+        self.doId2do[avatarId] = localAvatar
+        localAvatar.setLocation(parentId=None, zoneId=None)
+        localAvatar.generate()
+        localAvatar.updateAllRequiredFields(localAvatar.dclass, di)
+        self.loadingScreen.endStep('LocalAvatar')
+        self.loginFSM.request('playingGame')
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterWaitForDeleteAvatarResponse(self, potentialAvatar):
@@ -539,7 +533,6 @@ class PiratesClientRepository(OTPClientRepository):
         self.handlerArgs = None
         self.ignore('startTutorial')
         taskMgr.remove('waitingForTutorial')
-        return
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def __requestTutorial(self, hoodId, zoneId, avId):
@@ -554,7 +547,6 @@ class PiratesClientRepository(OTPClientRepository):
     @report(types=['args', 'deltaStamp', 'module'], dConfigParam='teleport')
     def enterWaitOnEnterResponses(self, shardId, hoodId, zoneId, avId):
         self.cleanGameExit = False
-        self.handler = self.handleWaitOnEnterResponses
         self.handlerArgs = {'hoodId': hoodId,'zoneId': zoneId,'avId': avId}
         self.distributedDistrict = self.activeDistrictMap.get(shardId)
         self.waitForDatabaseTimeout(requestName='WaitOnEnterResponses')
@@ -581,6 +573,7 @@ class PiratesClientRepository(OTPClientRepository):
         if not self.__gotTimeSync:
             self.notify.info('Waiting for time sync.')
             return
+
         hoodId = self.handlerArgs['hoodId']
         zoneId = self.handlerArgs['zoneId']
         avId = self.handlerArgs['avId']
@@ -611,10 +604,12 @@ class PiratesClientRepository(OTPClientRepository):
             info = self.avatarFriendsManager.getFriendInfo(avId)
             if info:
                 playerId = info.playerId
+
         if not playerId:
             avatar = self.doId2do.get(avId)
             if avatar:
                 playerId = avatar.DISLid
+
         return playerId
 
     def identifyFriend(self, doId):
@@ -880,6 +875,14 @@ class PiratesClientRepository(OTPClientRepository):
 
     def hasToggledEffects(self):
         return self.effectToggles != {}
+
+    def handleGenerateWithRequiredOtherOwner(self, di):
+        if self.loginFSM.getCurrentState().getName() == 'waitForSetAvatarResponse':
+            doId = di.getUint32()
+            parentId = di.getUint32()
+            zoneId = di.getUint32()
+            dclassId = di.getUint16()
+            self.handleAvatarResponseMsg(doId, di)
 
     @report(types=['args', 'deltaStamp'], dConfigParam='dteleport')
     def addTaggedInterest(self, parentId, zoneId, mainTag, desc, otherTags=[], event=None):

@@ -848,11 +848,9 @@ class OTPClientRepository(ClientRepositoryBase):
         self.ignore('rejectRemoveAvatarAck')
         self.rejectRemoveAvatarBox.cleanup()
         del self.rejectRemoveAvatarBox
-        return
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterWaitForSetAvatarResponse(self, potAv):
-        self.handler = self.handleWaitForSetAvatarResponse
         self.sendSetAvatarMsg(potAv)
         self.waitForDatabaseTimeout(requestName='WaitForSetAvatarResponse')
 
@@ -860,7 +858,6 @@ class OTPClientRepository(ClientRepositoryBase):
     def exitWaitForSetAvatarResponse(self):
         self.cleanupWaitingForDatabase()
         self.handler = None
-        return
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def sendSetAvatarMsg(self, potAv):
@@ -871,10 +868,7 @@ class OTPClientRepository(ClientRepositoryBase):
     def sendSetAvatarIdMsg(self, avId):
         if avId != self.__currentAvId:
             self.__currentAvId = avId
-            datagram = PyDatagram()
-            datagram.addUint16(CLIENT_SET_AVATAR)
-            datagram.addUint32(avId)
-            self.send(datagram)
+            self.csm.sendChooseAvatar(avId)
             if avId == 0:
                 self.stopPeriodTimer()
             else:
@@ -883,23 +877,6 @@ class OTPClientRepository(ClientRepositoryBase):
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def handleAvatarResponseMsg(self, di):
         pass
-
-    @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
-    def handleWaitForSetAvatarResponse(self, msgType, di):
-        if msgType == CLIENT_GET_AVATAR_DETAILS_RESP:
-            self.handleAvatarResponseMsg(di)
-        elif msgType == CLIENT_GET_PET_DETAILS_RESP:
-            self.handleAvatarResponseMsg(di)
-        elif msgType == CLIENT_GET_FRIEND_LIST_RESP:
-            self.handleGetFriendsList(di)
-        elif msgType == CLIENT_GET_FRIEND_LIST_EXTENDED_RESP:
-            self.handleGetFriendsListExtended(di)
-        elif msgType == CLIENT_FRIEND_ONLINE:
-            self.handleFriendOnline(di)
-        elif msgType == CLIENT_FRIEND_OFFLINE:
-            self.handleFriendOffline(di)
-        else:
-            self.handleMessageType(msgType, di)
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterPlayingGame(self):
@@ -914,6 +891,7 @@ class OTPClientRepository(ClientRepositoryBase):
     def detectLeaks(self, okTasks=None, okEvents=None):
         if not __dev__ or configIsToday('allow-unclean-exit'):
             return
+
         leakedTasks = self.detectLeakedTasks(okTasks)
         leakedEvents = self.detectLeakedEvents(okEvents)
         leakedIvals = self.detectLeakedIntervals()
@@ -930,9 +908,12 @@ class OTPClientRepository(ClientRepositoryBase):
                 else:
                     logFunc = self.notify.warning
                     allowExit = False
+
                 if base.config.GetBool('direct-gui-edit', 0):
                     logFunc('There are leaks: %s tasks, %s events, %s ivals, %s garbage cycles\nLeaked Events may be due to direct gui editing' % (leakedTasks, leakedEvents, leakedIvals, leakedGarbage))
+
                 logFunc('There are leaks: %s tasks, %s events, %s ivals, %s garbage cycles' % (leakedTasks, leakedEvents, leakedIvals, leakedGarbage))
+
             if allowExit:
                 self.notify.info('Allowing client to leave, panda error code %s' % errorCode)
             else:
@@ -943,14 +924,17 @@ class OTPClientRepository(ClientRepositoryBase):
     def detectLeakedGarbage(self, callback=None):
         if not __debug__:
             return 0
+
         self.notify.info('checking for leaked garbage...')
         if gc.garbage:
             self.notify.warning('garbage already contains %d items' % len(gc.garbage))
+
         report = GarbageReport.GarbageReport('logout', verbose=True)
         numCycles = report.getNumCycles()
         if numCycles:
             msg = "You can't leave until you take out your garbage. See report above & base.garbage"
             self.notify.info(msg)
+
         report.destroy()
         return numCycles
 
@@ -1053,62 +1037,48 @@ class OTPClientRepository(ClientRepositoryBase):
         self.uberZoneInterest = None
         if not hasattr(self, 'cleanGameExit'):
             self.cleanGameExit = True
+
         if self.cleanGameExit:
             if self.isShardInterestOpen():
                 self.notify.error('enterGameOff: shard interest is still open')
         elif self.isShardInterestOpen():
             self.notify.warning('unclean exit, abandoning shard')
             self._abandonShard()
+
         self.cleanupWaitAllInterestsComplete()
         del self.cleanGameExit
         self.cache.flush()
         self.doDataCache.flush()
         self.handler = self.handleMessageType
-        return
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def exitGameOff(self):
         self.handler = None
-        return
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterWaitOnEnterResponses(self, shardId, hoodId, zoneId, avId):
         self.cleanGameExit = False
-        self.handler = self.handleWaitOnEnterResponses
         self.handlerArgs = {'hoodId': hoodId,'zoneId': zoneId,'avId': avId}
         if shardId is not None:
             district = self.activeDistrictMap.get(shardId)
         else:
             district = None
+
         if not district:
             self.distributedDistrict = self.getStartingDistrict()
             if self.distributedDistrict is None:
                 self.loginFSM.request('noShards')
                 return
+
             shardId = self.distributedDistrict.doId
         else:
             self.distributedDistrict = district
+
         self.notify.info('Entering shard %s' % shardId)
         localAvatar.setLocation(shardId, zoneId)
         base.localAvatar.defaultShard = shardId
         self.waitForDatabaseTimeout(requestName='WaitOnEnterResponses')
         self.handleSetShardComplete()
-        return
-
-    @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
-    def handleWaitOnEnterResponses(self, msgType, di):
-        if msgType == CLIENT_GET_FRIEND_LIST_RESP:
-            self.handleGetFriendsList(di)
-        elif msgType == CLIENT_GET_FRIEND_LIST_EXTENDED_RESP:
-            self.handleGetFriendsListExtended(di)
-        elif msgType == CLIENT_FRIEND_ONLINE:
-            self.handleFriendOnline(di)
-        elif msgType == CLIENT_FRIEND_OFFLINE:
-            self.handleFriendOffline(di)
-        elif msgType == CLIENT_GET_PET_DETAILS_RESP:
-            self.handleGetAvatarDetailsResp(di)
-        else:
-            self.handleMessageType(msgType, di)
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def handleSetShardComplete(self):
@@ -1134,6 +1104,7 @@ class OTPClientRepository(ClientRepositoryBase):
             pyc = HashVal()
             if not __dev__:
                 self.hashFiles(pyc)
+
             self.timeManager.d_setSignature(self.userSignature, h.asBin(), pyc.asBin())
             self.timeManager.sendCpuInfo()
             if self.timeManager.synchronize('startup'):
@@ -1142,7 +1113,6 @@ class OTPClientRepository(ClientRepositoryBase):
             else:
                 self.notify.info('No sync from TimeManager.')
                 self.gotTimeSync()
-        return
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def exitWaitOnEnterResponses(self):

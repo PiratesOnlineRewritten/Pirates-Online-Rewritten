@@ -486,20 +486,18 @@ class CreateAvatarFSM(OperationFSM):
         self.demand('CreateAvatar')
 
     def enterCreateAvatar(self):
-        dna = HumanDNA()
-        dna.makeFromNetString(self.dna)
-        name = 'dbp'
-        toonFields = {
-            'setName': (name,),
+        pirateFields = {
+            'setName': ('dbp',),
             'WishNameState': ('OPEN',),
             'WishName': ('',),
             'setDNAString': (self.dna,),
             'setDISLid': (self.target,)
         }
+
         self.csm.air.dbInterface.createObject(
             self.csm.air.dbId,
             self.csm.air.dclassesByName['DistributedPlayerPirateUD'],
-            toonFields,
+            pirateFields,
             self.__handleCreate)
 
     def __handleCreate(self, avId):
@@ -883,9 +881,6 @@ class LoadAvatarFSM(AvatarOperationFSM):
             STATESERVER_OBJECT_SET_OWNER)
         datagram.addChannel(self.target<<32 | self.avId)
         self.csm.air.send(datagram)
-
-        # Tell the GlobalPartyManager as well:
-        self.csm.air.globalPartyMgr.avatarJoined(self.avId)
 
         self.csm.air.writeServerEvent('avatarChosen', self.avId, self.target)
         self.demand('Off')

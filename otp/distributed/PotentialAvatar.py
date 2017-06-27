@@ -19,4 +19,3 @@ class PotentialAvatar():
         self.online = online
         self.defaultShard = defaultShard
         self.lastLogout = lastLogout
-        return

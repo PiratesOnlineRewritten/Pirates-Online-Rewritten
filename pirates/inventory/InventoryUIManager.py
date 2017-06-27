@@ -110,7 +110,6 @@ class InventoryUIManager(DirectFrame):
         self.displayHuman.mixingEnabled = False
         self.localDrinkingPotion = 0
         base.iEx = InventoryExchange
-        return
 
     def destroy(self):
         self.heldItem = None
@@ -129,6 +128,7 @@ class InventoryUIManager(DirectFrame):
             self.displayHuman.remove()
             self.displayHuman.removeNode()
             self.displayHuman = None
+
         self.takeAllSound.stop()
         loader.unloadSfx(self.takeAllSound)
         self.takeGoldSound.stop()
@@ -138,7 +138,6 @@ class InventoryUIManager(DirectFrame):
         self.trashSound.stop()
         loader.unloadSfx(self.trashSound)
         DirectFrame.destroy(self)
-        return
 
     def start(self):
         taskMgr.add(self.trackMouse, 'InventoryUIManagerTrack')

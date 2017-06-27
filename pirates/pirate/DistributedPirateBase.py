@@ -16,7 +16,6 @@ class DistributedPirateBase(DistributedObject.DistributedObject, Pirate.Pirate):
         Pirate.Pirate.__init__(self)
         self.beacon = None
         self.dnaKey = None
-        return
 
     def delete(self):
         Pirate.Pirate.delete(self)
@@ -34,6 +33,7 @@ class DistributedPirateBase(DistributedObject.DistributedObject, Pirate.Pirate):
     def showBeacon(self, team):
         if self.beacon:
             self.hideBeacon()
+
         if team > 0:
             self.beaconNodePath = self.nametag3d.attachNewNode('beacon')
             self.beacon = Beacon.getBeacon(self.beaconNodePath)
@@ -45,8 +45,8 @@ class DistributedPirateBase(DistributedObject.DistributedObject, Pirate.Pirate):
     def hideBeacon(self):
         if self.beacon:
             self.beacon.remove()
+
         self.beacon = None
-        return
 
     def getDnaKey(self):
         myDna = self.getStyle()

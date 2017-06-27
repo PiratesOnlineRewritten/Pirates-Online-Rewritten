@@ -6,3 +6,6 @@ class DistributedPlayerPirateAI(DistributedObjectAI):
 
     def __init__(self, air):
         DistributedObjectAI.__init__(self, air)
+
+    def d_relayTeleportLoc(self, shardId, zoneId, teleportMgrDoId):
+        self.sendUpdateToAvatarId(self.doId, 'relayTeleportLoc', [shardId, zoneId, teleportMgrDoId])

@@ -51,6 +51,7 @@ class DistributedAvatar(DistributedActor, Avatar):
     def delete(self):
         try:
             self.DistributedAvatar_deleted
+            return
         except:
             self.DistributedAvatar_deleted = 1
 

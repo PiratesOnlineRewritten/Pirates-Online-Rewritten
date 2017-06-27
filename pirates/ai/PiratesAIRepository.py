@@ -2,9 +2,11 @@ import time
 import random
 from panda3d.core import *
 from pirates.distributed.PiratesInternalRepository import PiratesInternalRepository
+from otp.distributed.OtpDoGlobals import *
 from pirates.piratesbase import PiratesGlobals
 from pirates.distributed.PiratesDistrictAI import PiratesDistrictAI
 from pirates.world import WorldGlobals
+from pirates.ai.PiratesTimeManagerAI import PiratesTimeManagerAI
 
 class PiratesAIRepository(PiratesInternalRepository):
 
@@ -56,3 +58,8 @@ class PiratesAIRepository(PiratesInternalRepository):
         """
         Create "global" objects, e.g. TimeManager et al.
         """
+
+        self.timeManager = PiratesTimeManagerAI(self)
+        self.timeManager.generateWithRequired(2)
+
+        self.travelAgent = self.generateGlobalObject(OTP_DO_ID_PIRATES_TRAVEL_AGENT, 'DistributedTravelAgent')

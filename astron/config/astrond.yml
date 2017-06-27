@@ -23,6 +23,10 @@ uberdogs:
       id: 4665
       anonymous: true
 
+    - class: DistributedTravelAgent
+      id: 4679
+      anonymous: false
+
 roles:
     - type: clientagent
       bind: 127.0.0.1:7198

@@ -21,25 +21,25 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
     def __init__(self, cr):
         try:
             self.DistributedPlayer_initialized
+            return
         except:
             self.DistributedPlayer_initialized = 1
-            DistributedAvatar.DistributedAvatar.__init__(self, cr)
-            PlayerBase.PlayerBase.__init__(self)
-            self.__teleportAvailable = 0
-            self.inventory = None
-            self.experience = None
-            self.friendsList = []
-            self.oldFriendsList = None
-            self.timeFriendsListChanged = None
-            self.ignoreList = []
-            self.lastFailedTeleportMessage = {}
-            self._districtWeAreGeneratedOn = None
-            self.DISLname = ''
-            self.DISLid = 0
-            self.autoRun = 0
-            self.whiteListEnabled = base.config.GetBool('whitelist-chat-enabled', 1)
 
-        return
+        DistributedAvatar.DistributedAvatar.__init__(self, cr)
+        PlayerBase.PlayerBase.__init__(self)
+        self.__teleportAvailable = 0
+        self.inventory = None
+        self.experience = None
+        self.friendsList = []
+        self.oldFriendsList = None
+        self.timeFriendsListChanged = None
+        self.ignoreList = []
+        self.lastFailedTeleportMessage = {}
+        self._districtWeAreGeneratedOn = None
+        self.DISLname = ''
+        self.DISLid = 0
+        self.autoRun = 0
+        self.whiteListEnabled = base.config.GetBool('whitelist-chat-enabled', 1)
 
     def disable(self):
         DistributedAvatar.DistributedAvatar.disable(self)
@@ -47,13 +47,16 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
     def delete(self):
         try:
             self.DistributedPlayer_deleted
+            return
         except:
             self.DistributedPlayer_deleted = 1
-            del self.experience
-            if self.inventory:
-                self.inventory.unload()
-            del self.inventory
-            DistributedAvatar.DistributedAvatar.delete(self)
+
+        del self.experience
+        if self.inventory:
+            self.inventory.unload()
+
+        del self.inventory
+        DistributedAvatar.DistributedAvatar.delete(self)
 
     def generate(self):
         DistributedAvatar.DistributedAvatar.generate(self)
@@ -64,21 +67,20 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
             if not self.cr._isValidPlayerLocation(parentId, zoneId):
                 self.cr.disableDoId(self.doId)
                 self.cr.deleteObject(self.doId)
+
         return None
 
     def isGeneratedOnDistrict(self, districtId=None):
         if districtId is None:
             return self._districtWeAreGeneratedOn is not None
-        else:
-            return self._districtWeAreGeneratedOn == districtId
-        return
+
+        return self._districtWeAreGeneratedOn == districtId
 
     def getArrivedOnDistrictEvent(self, districtId=None):
         if districtId is None:
             return 'arrivedOnDistrict'
-        else:
-            return 'arrivedOnDistrict-%s' % districtId
-        return
+
+        return 'arrivedOnDistrict-%s' % districtId
 
     def arrivedOnDistrict(self, districtId):
         curFrameTime = globalClock.getFrameTime()
@@ -86,6 +88,7 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
             if districtId == 0 and self._districtWeAreGeneratedOn:
                 self.notify.warning('ignoring arrivedOnDistrict 0, since arrivedOnDistrict %d occured on the same frame' % self._districtWeAreGeneratedOn)
                 return
+
         self._districtWeAreGeneratedOn = districtId
         self.frameTimeWeArrivedOnDistrict = globalClock.getFrameTime()
         messenger.send(self.getArrivedOnDistrictEvent(districtId))
@@ -93,7 +96,6 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
 
     def setLeftDistrict(self):
         self._districtWeAreGeneratedOn = None
-        return
 
     def hasParentingRules(self):
         if self is localAvatar:
@@ -122,17 +124,19 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
         handle = base.cr.identifyAvatar(fromId)
         if handle == None:
             return
+
         if base.cr.avatarFriendsManager.checkIgnored(fromId):
             self.d_setWhisperIgnored(fromId)
             return
+
         if fromId in self.ignoreList:
             self.d_setWhisperIgnored(fromId)
             return
+
         chatString = SCDecoders.decodeSCStaticTextMsg(msgIndex)
         if chatString:
             self.displayWhisper(fromId, chatString, WhisperPopup.WTQuickTalker)
             base.talkAssistant.receiveAvatarWhisperSpeedChat(TalkAssistant.SPEEDCHAT_NORMAL, msgIndex, fromId)
-        return
 
     def whisperSCCustomTo(self, msgIndex, sendToId, toPlayer):
         if toPlayer:
