@@ -171,15 +171,6 @@ class GameOptionsGui(DirectFrame):
                  PLocalizer.GameOptionsFullscreenMode]
 
         self.windowModeRadios = self.createRadioButtonGroupVertical(parent, x, y, ox, sy, self.windowVar, 0.12, self.windowChoices, 1.2, self.windowRadioButtonCB)
-        if self.gameOptions:
-            subCard = loader.loadModel('models/gui/toplevel_gui')
-            fullScreenRadioButton = self.windowModeRadios[-1]
-            fullScreenRadioButton['state'] = DGG.DISABLED
-            lockPos = fullScreenRadioButton.getPos()
-            lockPos[0] -= 0.04
-            appendMe = DirectFrame(parent=self.displayFrame, relief=None, state=DGG.DISABLED, geom=subCard.find('**/pir_t_gui_gen_key_subscriber'), geom_scale=0.2, geom_pos=lockPos)
-            appendMe.setAlphaScale(1.0, 2)
-            subCard.removeNode()
         x += 0.3
         oy = sy
         text = PLocalizer.GameOptionsEmbeddedRestriction
@@ -223,7 +214,7 @@ class GameOptionsGui(DirectFrame):
         y -= 2 * oy
         sl = 1.0
         sc = 0.35
-        enableDynamicPipeSwitching = 0
+        enableDynamicPipeSwitching = config.GetBool('enable-pipe-selector', False)
         if enableDynamicPipeSwitching:
             base.makeAllPipes()
             self.pipe_names = []
