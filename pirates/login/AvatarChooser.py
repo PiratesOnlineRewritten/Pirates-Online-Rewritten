@@ -236,11 +236,8 @@ class AvatarChooser(DirectObject, StateData):
         self.ropeFrame = DirectFrame(parent=self.avatarListFrame, relief=None, image=self.model.find('**/avatar_c_A_rope'), image_scale=0.36, pos=(0, 0, -0.015))
         self.subFrame = BorderFrame(parent=self.avatarListFrame, frameSize=(-0.25, 0.25, -0.04, 0.09), borderScale=0.2, pos=(0, 0, -0.16), modelName='general_frame_f')
         triangleGui = loader.loadModel('models/gui/triangle')
-        self.subLabel = DirectLabel(parent=self.subFrame, relief=None, text='', text_scale=0.045, text_fg=(1,
-                                                                                                           0.9,
-                                                                                                           0.7,
-                                                                                                           0.9), text_pos=(0,
-                                                                                                                           0.035), textMayChange=1)
+        self.subLabel = DirectLabel(parent=self.subFrame, relief=None, text='', text_scale=0.045, text_fg=(1, 0.9, 0.7, 0.9), text_pos=(0, 0.015), textMayChange=1)
+
         if base.config.GetBool('allow-linked-accounts', 0):
             self.nextSubButton = DirectButton(parent=self.subFrame, relief=None, image=(triangleGui.find('**/triangle'), triangleGui.find('**/triangle_down'), triangleGui.find('**/triangle_over')), pos=(0.31,
                                                                                                                                                                                                            0,
@@ -406,7 +403,7 @@ class AvatarChooser(DirectObject, StateData):
                         else:
                             command = self.popupFeatureBrowser
                         state = DGG.NORMAL
-                    avName = av.dna.getDNAName()
+                    avName = av.name
                     text = avName
                     command = self.__handleHighlight
                     state = DGG.NORMAL
