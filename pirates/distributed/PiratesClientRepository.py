@@ -200,6 +200,7 @@ class PiratesClientRepository(OTPClientRepository):
         NametagGlobals.setMasterArrowsOn(0)
         self._tagsToInterests = {}
         self._interestsToTags = {}
+        self._idsToInterest = {}
         self._worldStack = []
         if __dev__:
             __builtin__.go = self.getDo
@@ -891,6 +892,7 @@ class PiratesClientRepository(OTPClientRepository):
 
             self._interestsToTags[handle.asInt()] = tags
 
+        self._idsToInterest[handle.asInt()] = handle
         return handle.asInt()
 
     @report(types=['args', 'deltaStamp'], dConfigParam='dteleport')
@@ -899,11 +901,11 @@ class PiratesClientRepository(OTPClientRepository):
         if tags:
             for tag in tags:
                 handles = self._tagsToInterests.get(tag)
-                handles.remove(interestHandle)
+                handles.remove(self._idsToInterest.get(interestHandle))
                 if not handles:
                     self._tagsToInterests.pop(tag)
 
-            self.removeInterest(interestHandle, event)
+            self.removeInterest(self._idsToInterest.pop(interestHandle), event)
 
         return tags
 
@@ -933,7 +935,7 @@ class PiratesClientRepository(OTPClientRepository):
 
     @report(types=['args', 'deltaStamp'], dConfigParam='dteleport')
     def getInterestTags(self, interestHandle):
-        return self._interestsToTags.get(interestHandle, [])
+        return self._interestsToTags.get(self._idsToInterest.get(interestHandle), [])
 
     @report(types=['args', 'deltaStamp'], dConfigParam='dteleport')
     def getInterestHandles(self, tag):
