@@ -41,14 +41,7 @@ class GameOptionsGui(DirectFrame):
         self.height = height
         self.gameOptions = gameOptions
         self.pipeMenu = None
-        DirectFrame.__init__(self, relief=None, image=loader.loadModel('models/misc/fade'), image_scale=(5,
-                                                                                                         2,
-                                                                                                         2), image_color=(0,
-                                                                                                                          0,
-                                                                                                                          0,
-                                                                                                                          0.8), image_pos=(0.5,
-                                                                                                                                           0,
-                                                                                                                                           0.8), state=DGG.NORMAL, pos=(x, 0.0, y), sortOrder=20)
+        DirectFrame.__init__(self, relief=None, image=loader.loadModel('models/misc/fade'), image_scale=(5, 2, 2), image_color=(0, 0, 0, 0.8), image_pos=(0.5, 0, .8), state=DGG.NORMAL, pos=(x, 0.0, y), sortOrder=20)
         self.initialiseoptions(GameOptionsGui)
         self.setBin('gui-fixed', 10)
         self.setupUpperFrame()
@@ -67,7 +60,6 @@ class GameOptionsGui(DirectFrame):
         self.defaultDialog = None
         self.restoreDialog = None
         self.showedNoteOnChange = False
-        return
 
     def setupUpperFrame(self):
         gui_main = loader.loadModel('models/gui/gui_main')
@@ -923,7 +915,7 @@ class GameOptionsGui(DirectFrame):
         return
 
     def showNoteOnChange(self):
-        if not self.showedNoteOnChange:
+        if not hasattr(self, 'showedNoteOnChange') or not self.showedNoteOnChange:
             self.gameOptions.display_noteOnChange_dialog()
             self.showedNoteOnChange = True
 
