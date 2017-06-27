@@ -11,7 +11,7 @@ model-path ../resources/phase_5
 default-model-extension .bam
 
 # Audio:
-audio-library-name p3openal_audio
+audio-library-name p3fmod_audio
 
 # DClass (reverse order...):
 dc-file astron/dclass/pirates.dc

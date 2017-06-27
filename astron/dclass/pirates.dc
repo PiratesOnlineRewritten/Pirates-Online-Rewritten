@@ -1271,6 +1271,7 @@ struct MAPClothes {
 dclass DistributedPlayerPirate : DistributedPlayer, HumanDNA, DistributedBattleAvatar, DistributedQuestAvatar {
   setParentingRules(string, string) broadcast ram;
   setAvatarType(AvatarType) required broadcast ram;
+  setDNAString(blob) required broadcast ram db;
   cueRegenerate() broadcast;
   submitErrorLog(string) airecv clsend;
   requestBodyShapeTranslation(uint8) ownsend airecv;

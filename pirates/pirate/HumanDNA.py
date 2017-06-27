@@ -1460,3 +1460,295 @@ class HumanDNA(AvatarDNA.AvatarDNA):
         self.head.hair.beard = 5
         self.head.hair.mustache = 4
         self.head.hair.color = 2
+
+    def makeNetString(self):
+        dg = PyDatagram()
+
+        # Gender
+        dg.addUint8(self.gender == 'm')
+
+        # Body
+        dg.addUint8(self.body.shape)
+        dg.addFloat64(self.body.height)
+        dg.addUint8(self.body.color)
+        dg.addUint8(self.body.skin)
+
+        # Head
+        dg.addFloat64(self.body.headSize)
+        dg.addFloat64(self.head.headWidth)
+        dg.addFloat64(self.head.headHeight)
+        dg.addFloat64(self.head.headRoundness)
+
+        # Jaw
+        dg.addFloat64(self.head.jawWidth)
+        dg.addFloat64(self.head.jawRoundness)
+        dg.addFloat64(self.head.jawChinSize)
+        dg.addFloat64(self.head.jawAngle)
+        dg.addFloat64(self.head.jawLength)
+
+        # Mouth
+        dg.addFloat64(self.head.mouthWidth)
+        dg.addFloat64(self.head.mouthLipThickness)
+        dg.addFloat64(self.head.mouthFrown)
+
+        # Cheek
+        dg.addFloat64(self.head.cheekBoneHeight)
+        dg.addFloat64(self.head.cheekBoneWidth)
+        dg.addFloat64(self.head.cheekFat)
+
+        # Brow
+        dg.addFloat64(self.head.browWidth)
+        dg.addFloat64(self.head.browProtruding)
+        dg.addFloat64(self.head.browAngle)
+        dg.addFloat64(self.head.browHeight)
+
+        # Eye
+        dg.addFloat64(self.head.eyeCorner)
+        dg.addFloat64(self.head.eyeOpeningSize)
+        dg.addFloat64(self.head.eyeBulge)
+
+        # Nose
+        dg.addFloat64(self.head.noseBridgeWidth)
+        dg.addFloat64(self.head.noseNostrilWidth)
+        dg.addFloat64(self.head.noseLength)
+        dg.addFloat64(self.head.noseBump)
+        dg.addFloat64(self.head.noseNostrilHeight)
+        dg.addFloat64(self.head.noseNostrilAngle)
+        dg.addFloat64(self.head.noseNostrilIndent)
+        dg.addFloat64(self.head.noseBridgeBroke)
+        dg.addFloat64(self.head.noseNostrilBroke)
+
+        # Ear
+        dg.addFloat64(self.head.earScale)
+        dg.addFloat64(self.head.earFlapAngle)
+        dg.addFloat64(self.head.earPosition)
+        dg.addFloat64(self.head.earLobe)
+
+        # Hair
+        dg.addUint8(self.head.texture)
+        dg.addUint8(self.head.hair.hair)
+        dg.addUint8(self.head.hair.beard)
+        dg.addUint8(self.head.hair.mustache)
+        dg.addUint8(self.head.hair.color)
+        dg.addUint8(self.head.hair.highlight)
+
+        # Eye 2
+        dg.addUint8(self.head.eyes.color)
+
+        # Clothes
+        dg.addUint8(self.clothes.hat)
+        dg.addUint8(self.clothes.hatTexture)
+        dg.addUint8(self.clothes.shirt)
+        dg.addUint8(self.clothes.shirtTexture)
+        dg.addUint8(self.clothes.pant)
+        dg.addUint8(self.clothes.pantTexture)
+        dg.addUint8(self.clothes.sock)
+        dg.addUint8(self.clothes.sockTexture)
+        dg.addUint8(self.clothes.shoe)
+        dg.addUint8(self.clothes.shoeTexture)
+        dg.addUint8(self.clothes.vest)
+        dg.addUint8(self.clothes.vestTexture)
+        dg.addUint8(self.clothes.coat)
+        dg.addUint8(self.clothes.coatTexture)
+        dg.addUint8(self.clothes.belt)
+        dg.addUint8(self.clothes.beltTexture)
+
+        # Clothes color
+        dg.addUint8(self.clothes.shirtColor)
+        dg.addUint8(self.clothes.vestColor)
+        dg.addUint8(self.clothes.coatColor)
+        dg.addUint8(self.clothes.pantColor)
+        dg.addUint8(self.clothes.sashColor)
+        dg.addUint8(self.clothes.shoeColor)
+
+        # Tattoo
+        dg.addUint8(self.tattooChest[0])
+        dg.addFloat64(self.tattooChest[1])
+        dg.addFloat64(self.tattooChest[2])
+        dg.addUint8(self.tattooChest[3])
+        dg.addUint8(self.tattooChest[4])
+        dg.addUint8(self.tattooChest[5])
+        dg.addUint8(self.tattooZone2[0])
+        dg.addFloat64(self.tattooZone2[1])
+        dg.addFloat64(self.tattooZone2[2])
+        dg.addUint8(self.tattooZone2[3])
+        dg.addUint8(self.tattooZone2[4])
+        dg.addUint8(self.tattooZone2[5])
+        dg.addUint8(self.tattooZone3[0])
+        dg.addFloat64(self.tattooZone3[1])
+        dg.addFloat64(self.tattooZone3[2])
+        dg.addUint8(self.tattooZone3[3])
+        dg.addUint8(self.tattooZone3[4])
+        dg.addUint8(self.tattooZone3[5])
+        dg.addUint8(self.tattooZone4[0])
+        dg.addFloat64(self.tattooZone4[1])
+        dg.addFloat64(self.tattooZone4[2])
+        dg.addUint8(self.tattooZone4[3])
+        dg.addUint8(self.tattooZone4[4])
+        dg.addUint8(self.tattooZone4[5])
+        dg.addUint8(self.tattooZone5[0])
+        dg.addFloat64(self.tattooZone5[1])
+        dg.addFloat64(self.tattooZone5[2])
+        dg.addUint8(self.tattooZone5[3])
+        dg.addUint8(self.tattooZone5[4])
+        dg.addUint8(self.tattooZone5[5])
+        dg.addUint8(self.tattooZone6[0])
+        dg.addFloat64(self.tattooZone6[1])
+        dg.addFloat64(self.tattooZone6[2])
+        dg.addUint8(self.tattooZone6[3])
+        dg.addUint8(self.tattooZone6[4])
+        dg.addUint8(self.tattooZone6[5])
+        dg.addUint8(self.tattooZone7[0])
+        dg.addFloat64(self.tattooZone7[1])
+        dg.addFloat64(self.tattooZone7[2])
+        dg.addUint8(self.tattooZone7[3])
+        dg.addUint8(self.tattooZone7[4])
+        dg.addUint8(self.tattooZone7[5])
+        dg.addUint8(self.tattooZone8[0])
+        dg.addFloat64(self.tattooZone8[1])
+        dg.addFloat64(self.tattooZone8[2])
+        dg.addUint8(self.tattooZone8[3])
+        dg.addUint8(self.tattooZone8[4])
+        dg.addUint8(self.tattooZone8[5])
+
+        # Jewelry
+        dg.addUint8(self.jewelryZone1[0])
+        dg.addUint8(self.jewelryZone1[1])
+        dg.addUint8(self.jewelryZone1[2])
+        dg.addUint8(self.jewelryZone2[0])
+        dg.addUint8(self.jewelryZone2[1])
+        dg.addUint8(self.jewelryZone2[2])
+        dg.addUint8(self.jewelryZone3[0])
+        dg.addUint8(self.jewelryZone3[1])
+        dg.addUint8(self.jewelryZone3[2])
+        dg.addUint8(self.jewelryZone4[0])
+        dg.addUint8(self.jewelryZone4[1])
+        dg.addUint8(self.jewelryZone4[2])
+        dg.addUint8(self.jewelryZone5[0])
+        dg.addUint8(self.jewelryZone5[1])
+        dg.addUint8(self.jewelryZone5[2])
+        dg.addUint8(self.jewelryZone6[0])
+        dg.addUint8(self.jewelryZone6[1])
+        dg.addUint8(self.jewelryZone6[2])
+        dg.addUint8(self.jewelryZone7[0])
+        dg.addUint8(self.jewelryZone7[1])
+        dg.addUint8(self.jewelryZone7[2])
+        dg.addUint8(self.jewelryZone8[0])
+        dg.addUint8(self.jewelryZone8[1])
+        dg.addUint8(self.jewelryZone8[2])
+        return dg.getMessage()
+
+    def makeFromNetString(self, netString):
+        dg = PyDatagram(netString)
+        dgi = PyDatagramIterator(dg)
+
+        # Gender
+        self.setGender('m' if dgi.getUint8() else 'f')
+
+        # Body
+        self.setBodyShape(dgi.getUint8())
+        self.setBodyHeight(dgi.getFloat64())
+        self.setBodyColor(dgi.getUint8())
+        self.setBodySkin(dgi.getUint8())
+
+        # Head
+        self.setHeadSize(dgi.getFloat64())
+        self.setHeadWidth(dgi.getFloat64())
+        self.setHeadHeight(dgi.getFloat64())
+        self.setHeadRoundness(dgi.getFloat64())
+
+        # Jaw
+        self.setJawWidth(dgi.getFloat64())
+        self.setJawRoundness(dgi.getFloat64())
+        self.setJawChinSize(dgi.getFloat64())
+        self.setJawAngle(dgi.getFloat64())
+        self.setJawLength(dgi.getFloat64())
+
+        # Mouth
+        self.setMouthWidth(dgi.getFloat64())
+        self.setMouthLipThickness(dgi.getFloat64())
+        self.setMouthFrown(dgi.getFloat64())
+
+        # Cheek
+        self.setCheekBoneHeight(dgi.getFloat64())
+        self.setCheekBoneWidth(dgi.getFloat64())
+        self.setCheekFat(dgi.getFloat64())
+
+        # Brow
+        self.setBrowWidth(dgi.getFloat64())
+        self.setBrowProtruding(dgi.getFloat64())
+        self.setBrowAngle(dgi.getFloat64())
+        self.setBrowHeight(dgi.getFloat64())
+
+        # Eye
+        self.setEyeCorner(dgi.getFloat64())
+        self.setEyeOpeningSize(dgi.getFloat64())
+        self.setEyeBulge(dgi.getFloat64())
+
+        # Nose
+        self.setNoseBridgeWidth(dgi.getFloat64())
+        self.setNoseNostrilWidth(dgi.getFloat64())
+        self.setNoseLength(dgi.getFloat64())
+        self.setNoseBump(dgi.getFloat64())
+        self.setNoseNostrilHeight(dgi.getFloat64())
+        self.setNoseNostrilAngle(dgi.getFloat64())
+        self.setNoseNostrilIndent(dgi.getFloat64())
+        self.setNoseBridgeBroke(dgi.getFloat64())
+        self.setNoseNostrilBroke(dgi.getFloat64())
+
+        # Ear
+        self.setEarScale(dgi.getFloat64())
+        self.setEarFlapAngle(dgi.getFloat64())
+        self.setEarPosition(dgi.getFloat64())
+        self.setEarLobe(dgi.getFloat64())
+
+        # Hair
+        self.setHeadTexture(dgi.getUint8())
+        self.setHairHair(dgi.getUint8())
+        self.setHairBeard(dgi.getUint8())
+        self.setHairMustache(dgi.getUint8())
+        self.setHairColor(dgi.getUint8())
+        self.setHighLightColor(dgi.getUint8())
+
+        # Eye 2
+        self.setEyesColor(dgi.getUint8())
+
+        # Clothes
+        self.setClothesHat(dgi.getUint8(), dgi.getUint8())
+        self.setClothesShirt(dgi.getUint8(), dgi.getUint8())
+        self.setClothesPant(dgi.getUint8(), dgi.getUint8())
+        self.setClothesSock(dgi.getUint8(), dgi.getUint8())
+        self.setClothesShoe(dgi.getUint8(), dgi.getUint8())
+        self.setClothesVest(dgi.getUint8(), dgi.getUint8())
+        self.setClothesCoat(dgi.getUint8(), dgi.getUint8())
+        self.setClothesBelt(dgi.getUint8(), dgi.getUint8())
+
+        # Clothes color
+        self.setClothesTopColor(dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.setClothesBotColor(dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+
+        # Tattoo
+        self.setTattooChest(dgi.getUint8(), dgi.getFloat64(), dgi.getFloat64(), dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.setTattooZone2(dgi.getUint8(), dgi.getFloat64(), dgi.getFloat64(), dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.setTattooZone3(dgi.getUint8(), dgi.getFloat64(), dgi.getFloat64(), dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.setTattooZone4(dgi.getUint8(), dgi.getFloat64(), dgi.getFloat64(), dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.setTattooZone5(dgi.getUint8(), dgi.getFloat64(), dgi.getFloat64(), dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.setTattooZone6(dgi.getUint8(), dgi.getFloat64(), dgi.getFloat64(), dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.setTattooZone7(dgi.getUint8(), dgi.getFloat64(), dgi.getFloat64(), dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.setTattooZone8(dgi.getUint8(), dgi.getFloat64(), dgi.getFloat64(), dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+
+        # Jewelry
+        self.setJewelryZone1(dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.setJewelryZone2(dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.setJewelryZone3(dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.setJewelryZone4(dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.setJewelryZone5(dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.setJewelryZone6(dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.setJewelryZone7(dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+        self.setJewelryZone8(dgi.getUint8(), dgi.getUint8(), dgi.getUint8())
+
+        assert dgi.getRemainingSize() == 0
+
+    @classmethod
+    def isValidNetString(cls, netString):
+        return len(netString) == len(cls().makeNetString())

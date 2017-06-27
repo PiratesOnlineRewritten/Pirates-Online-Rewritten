@@ -11,6 +11,7 @@ from direct.distributed.PyDatagram import *
 from direct.fsm.FSM import FSM
 from pandac.PandaModules import *
 from otp.distributed import OtpDoGlobals
+from pirates.pirate.HumanDNA import HumanDNA
 
 # Import from PyCrypto only if we are using a database that requires it. This
 # allows local hosted and developer builds of the game to run without it:
@@ -446,11 +447,11 @@ class CreateAvatarFSM(OperationFSM):
 
     def enterStart(self, dna, index):
         # Basic sanity-checking:
-        if index >= 6:
+        if index >= 4:
             self.demand('Kill', 'Invalid index specified!')
             return
 
-        if not ToonDNA().isValidNetString(dna):
+        if not HumanDNA().isValidNetString(dna):
             self.demand('Kill', 'Invalid DNA specified!')
             return
 
@@ -473,8 +474,8 @@ class CreateAvatarFSM(OperationFSM):
 
         self.avList = self.account['ACCOUNT_AV_SET']
         # Sanitize:
-        self.avList = self.avList[:6]
-        self.avList += [0] * (6-len(self.avList))
+        self.avList = self.avList[:4]
+        self.avList += [0] * (4-len(self.avList))
 
         # Make sure the index is open:
         if self.avList[self.index]:
@@ -485,11 +486,9 @@ class CreateAvatarFSM(OperationFSM):
         self.demand('CreateAvatar')
 
     def enterCreateAvatar(self):
-        dna = ToonDNA()
+        dna = HumanDNA()
         dna.makeFromNetString(self.dna)
-        colorString = TTLocalizer.NumToColor[dna.headColor]
-        animalType = TTLocalizer.AnimalToSpecies[dna.getAnimal()]
-        name = ' '.join((colorString, animalType))
+        name = 'dbp'
         toonFields = {
             'setName': (name,),
             'WishNameState': ('OPEN',),
@@ -499,7 +498,7 @@ class CreateAvatarFSM(OperationFSM):
         }
         self.csm.air.dbInterface.createObject(
             self.csm.air.dbId,
-            self.csm.air.dclassesByName['DistributedToonUD'],
+            self.csm.air.dclassesByName['DistributedPlayerPirateUD'],
             toonFields,
             self.__handleCreate)
 
@@ -573,7 +572,7 @@ class GetAvatarsFSM(AvatarOperationFSM):
                 def response(dclass, fields, avId=avId):
                     if self.state != 'QueryAvatars':
                         return
-                    if dclass != self.csm.air.dclassesByName['DistributedToonUD']:
+                    if dclass != self.csm.air.dclassesByName['DistributedPlayerPirateUD']:
                         self.demand('Kill', "One of the account's avatars is invalid!")
                         return
                     self.avatarFields[avId] = fields
@@ -605,7 +604,7 @@ class GetAvatarsFSM(AvatarOperationFSM):
                 self.csm.air.dbInterface.updateObject(
                     self.csm.air.dbId,
                     avId,
-                    self.csm.air.dclassesByName['DistributedToonUD'],
+                    self.csm.air.dclassesByName['DistributedPlayerPirateUD'],
                     {'WishNameState': [actualNameState]}
                 )
                 if actualNameState == 'PENDING':
@@ -704,7 +703,7 @@ class SetNameTypedFSM(AvatarOperationFSM):
                                              self.__handleAvatar)
 
     def __handleAvatar(self, dclass, fields):
-        if dclass != self.csm.air.dclassesByName['DistributedToonUD']:
+        if dclass != self.csm.air.dclassesByName['DistributedPlayerPirateUD']:
             self.demand('Kill', "One of the account's avatars is invalid!")
             return
 
@@ -726,7 +725,7 @@ class SetNameTypedFSM(AvatarOperationFSM):
                 self.csm.air.dbInterface.updateObject(
                     self.csm.air.dbId,
                     self.avId,
-                    self.csm.air.dclassesByName['DistributedToonUD'],
+                    self.csm.air.dclassesByName['DistributedPlayerPirateUD'],
                     {'WishNameState': ('PENDING',),
                      'WishName': (self.name,)})
 
@@ -755,7 +754,7 @@ class SetNamePatternFSM(AvatarOperationFSM):
                                              self.__handleAvatar)
 
     def __handleAvatar(self, dclass, fields):
-        if dclass != self.csm.air.dclassesByName['DistributedToonUD']:
+        if dclass != self.csm.air.dclassesByName['DistributedPlayerPirateUD']:
             self.demand('Kill', "One of the account's avatars is invalid!")
             return
 
@@ -784,7 +783,7 @@ class SetNamePatternFSM(AvatarOperationFSM):
         self.csm.air.dbInterface.updateObject(
             self.csm.air.dbId,
             self.avId,
-            self.csm.air.dclassesByName['DistributedToonUD'],
+            self.csm.air.dclassesByName['DistributedPlayerPirateUD'],
             {'WishNameState': ('',),
              'WishName': ('',),
              'setName': (name,)})
@@ -812,7 +811,7 @@ class AcknowledgeNameFSM(AvatarOperationFSM):
                                              self.__handleAvatar)
 
     def __handleAvatar(self, dclass, fields):
-        if dclass != self.csm.air.dclassesByName['DistributedToonUD']:
+        if dclass != self.csm.air.dclassesByName['DistributedPlayerPirateUD']:
             self.demand('Kill', "One of the account's avatars is invalid!")
             return
 
@@ -838,7 +837,7 @@ class AcknowledgeNameFSM(AvatarOperationFSM):
         self.csm.air.dbInterface.updateObject(
             self.csm.air.dbId,
             self.avId,
-            self.csm.air.dclassesByName['DistributedToonUD'],
+            self.csm.air.dclassesByName['DistributedPlayerPirateUD'],
             {'WishNameState': (wishNameState,),
              'WishName': (wishName,),
              'setName': (name,)},
@@ -868,7 +867,7 @@ class LoadAvatarFSM(AvatarOperationFSM):
                                              self.__handleAvatar)
 
     def __handleAvatar(self, dclass, fields):
-        if dclass != self.csm.air.dclassesByName['DistributedToonUD']:
+        if dclass != self.csm.air.dclassesByName['DistributedPlayerPirateUD']:
             self.demand('Kill', "One of the account's avatars is invalid!")
             return
 
@@ -913,7 +912,7 @@ class LoadAvatarFSM(AvatarOperationFSM):
 
         # Activate the avatar on the DBSS:
         self.csm.air.sendActivate(
-            self.avId, 0, 0, self.csm.air.dclassesByName['DistributedToonUD'], {})
+            self.avId, 0, 0, self.csm.air.dclassesByName['DistributedPlayerPirateUD'], {})
 
         # Next, add them to the avatar channel:
         datagram = PyDatagram()

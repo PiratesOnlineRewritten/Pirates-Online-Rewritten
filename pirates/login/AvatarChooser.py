@@ -657,42 +657,29 @@ class AvatarChooser(DirectObject, StateData):
 
         if self.subAvButtons[sub][slot]['state'] == DGG.NORMAL and initialSlot != slot:
             self.__handleHighlight(sub, slot)
-        return
 
     def __handleCreate(self, subId, slot):
         if not self.queueComplete:
             if not self.notQueueCompleteDialog:
                 self.notQueueCompleteDialog = PDialog.PDialog(text=PLocalizer.AvatarChooserQueued, style=OTPDialog.Acknowledge, command=self.__handleNotQueueComplete)
+
             self.notQueueCompleteDialog.show()
             return
-        self.choice = (
-         subId, slot)
-        self.accept('rejectAvatarSlot', self.__rejectAvatarSlot)
-        self.accept('avatarSlotResponse', self.__avatarSlotResponse)
-        base.cr.avatarManager.sendRequestAvatarSlot(subId, slot)
-        base.cr.waitForDatabaseTimeout(requestName='WaitForCreateAvatarResponse')
-        self.blockInput()
 
-    def __rejectAvatarSlot(self, reasonId, subId, slot):
-        self.notify.warning('rejectAvatarSlot: %s' % reasonId)
-        self.ignore('rejectAvatarSlot')
-        self.ignore('avatarSlotResponse')
-        base.cr.cleanupWaitingForDatabase()
-        self.allowInput()
-
-    def __avatarSlotResponse(self, subId, slot):
+        self.choice = (subId, slot)
         UserFunnel.loggingAvID('write', 'NEW')
         UserFunnel.loggingSubID('write', subId)
         self.ignore('rejectAvatarSlot')
         self.ignore('avatarSlotResponse')
         base.cr.cleanupWaitingForDatabase()
         self.doneStatus = {'mode': 'create'}
-        self.acceptOnce(base.transitions.FadeOutEvent, lambda : messenger.send(self.doneEvent, [self.doneStatus]))
+        messenger.send(self.doneEvent, [self.doneStatus])
         base.transitions.fadeOut()
 
     def __handleShare(self):
         if self.shareConfirmDialog:
             self.shareConfirmDialog.destroy()
+
         subId, slot = self.choice
         potAv = base.cr.avList[subId][slot]
         name = potAv.dna.getDNAName()

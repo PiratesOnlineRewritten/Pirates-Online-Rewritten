@@ -2,6 +2,7 @@ from direct.directnotify.DirectNotifyGlobal import directNotify
 from direct.distributed.DistributedObjectGlobal import DistributedObjectGlobal
 from otp.distributed.PotentialAvatar import PotentialAvatar
 from otp.otpbase import OTPGlobals
+from pirates.pirate.HumanDNA import HumanDNA
 
 class ClientServicesManager(DistributedObjectGlobal):
     notify = directNotify.newCategory('ClientServicesManager')
@@ -18,19 +19,30 @@ class ClientServicesManager(DistributedObjectGlobal):
         self.sendUpdate('requestAvatars')
 
     def setAvatars(self, avatars):
-        avList = {0: [OTPGlobals.AvatarSlotAvailable for _ in xrange(0, OTPGlobals.AvatarNumSlots)]}
-        #for avNum, avName, avDNA, avPosition, nameState in avatars:
-        #    nameOpen = int(nameState == 1)
-        #    names = [avName, '', '', '']
-        #    if nameState == 2: # PENDING
-        #        names[1] = avName
-        #    elif nameState == 3: # APPROVED
-        #        names[2] = avName
-        #    elif nameState == 4: # REJECTED
-        #        names[3] = avName
-        #    avList.append(PotentialAvatar(avNum, names, avDNA, avPosition, nameOpen))
+        avatarList = {}
+        data = []
 
-        self.cr.handleAvatarsList(avList)
+        for avNum, avName, avDNA, avPosition, nameState in avatars:
+            nameOpen = int(nameState == 1)
+            names = [avName, '', '', '']
+            if nameState == 2: # PENDING
+                names[1] = avName
+            elif nameState == 3: # APPROVED
+                names[2] = avName
+            elif nameState == 4: # REJECTED
+                names[3] = avName
+
+            dna = HumanDNA()
+            dna.makeFromNetString(avDNA)
+
+            data.append(PotentialAvatar(avNum, names, dna, avPosition, nameOpen))
+
+        data.extend([OTPGlobals.AvatarSlotAvailable] * (OTPGlobals.AvatarNumSlots - len(data)))
+
+        # TODO: implement support for sub accounts.
+        avatarList[0] = data
+
+        self.cr.handleAvatarsList(avatarList)
 
     def sendCreateAvatar(self, avDNA, _, index):
         self.sendUpdate('createAvatar', [avDNA.makeNetString(), index])

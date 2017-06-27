@@ -1,3 +1,4 @@
+from panda3d.core import *
 from otp.nametag import NametagGlobals
 from otp.nametag.Nametag2d import Nametag2d
 from otp.nametag.Nametag3d import Nametag3d
@@ -19,6 +20,7 @@ class NametagGroup(object):
         self.colorCode = 0
         self.active = False
         self.contents = 0
+        self.nameIcon = NodePath('icon')
 
         self.nametag2d = Nametag2d()
         self.nametag3d = Nametag3d()
@@ -58,3 +60,6 @@ class NametagGroup(object):
 
     def getContents(self):
         return self.contents
+
+    def getNameIcon(self):
+        return self.nameIcon

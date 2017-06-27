@@ -309,19 +309,19 @@ class PiratesClientRepository(OTPClientRepository):
             self.notify.info('handleAvatarChooserDone: shutting down')
             self.loginFSM.request('shutdown')
             return
+
         subId, slot = self.avChoice.getChoice()
         self.avChoice.exit()
         self.handleAvatarChoice(done, subId, slot)
 
     def handleAvatarChoice(self, done, subId, slot):
-        access = self.accountDetailRecord.subDetails[subId].subAccess
-        base.setEmbeddedFrameMode(access)
         if done == 'chose':
             av = self.avList[subId][slot]
             if av.dna.getTutorial() < 3 and self.skipTutorial == 0:
                 self.tutorial = 1
             else:
                 self.tutorial = 0
+
             self.loadingScreen.beginStep('waitForAv')
             self.loginFSM.request('waitForSetAvatarResponse', [av])
         elif done == 'create':
@@ -334,14 +334,13 @@ class PiratesClientRepository(OTPClientRepository):
             self.avChoice.exit()
             self.avChoice.unload()
             self.avChoice = None
+
         if self.avChoiceDoneEvent:
             self.ignore(self.avChoiceDoneEvent)
             self.avChoiceDoneEvent = None
-        return
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterCreateAvatar(self, avList, index, subId):
-        self.handler = self.handleCreateAvatar
         if self.skipTutorial:
             self.tutorial = 0
             self.avCreate = MakeAPirate(avList, 'makeAPirateComplete', subId, index, self.isPaid())
@@ -353,7 +352,7 @@ class PiratesClientRepository(OTPClientRepository):
             self.tutorial = 1
             dna = HumanDNA.HumanDNA()
             newPotAv = PotentialAvatar(0, ['dbp', '', '', ''], dna, index, 0)
-            self.avatarManager.sendRequestCreateAvatar(subId)
+            self.csm.sendCreateAvatar(newPotAv.dna, '', newPotAv.position)
             self.accept('createdNewAvatar', self.handleAvatarCreated, [newPotAv])
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
@@ -382,27 +381,8 @@ class PiratesClientRepository(OTPClientRepository):
             self.avCreate.unload()
             self.avCreate = None
             self.handler = None
+
         self.ignore('createdNewAvatar')
-        return
-
-    @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
-    def handleCreateAvatar(self, msgType, di):
-        if msgType == CLIENT_CREATE_AVATAR_RESP:
-            self.handleCreateAvatarResponseMsg(di)
-        else:
-            self.handleMessageType(msgType, di)
-
-    @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
-    def handleCreateAvatarResponseMsg(self, di):
-        echoContext = di.getUint16()
-        returnCode = di.getUint8()
-        if returnCode == 0:
-            self.avId = di.getUint32()
-            newPotAv = PotentialAvatar(self.avId, [
-             self.newName, '', '', ''], self.newDNA, self.newPosition, 1)
-            self.loginFSM.request('waitForSetAvatarResponse', [newPotAv])
-        else:
-            self.notify.error('name rejected')
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def sendGetAvatarsMsg(self):
@@ -442,8 +422,7 @@ class PiratesClientRepository(OTPClientRepository):
                 elif av == OTPGlobals.AvatarPendingCreate:
                     data.append(OTPGlobals.AvatarPendingCreate)
                 else:
-                    avNames = [
-                     av['name'], av['wishName'], '', '']
+                    avNames = [av['name'], av['wishName'], '', '']
                     aName = 0
                     pa = PotentialAvatar(av['id'], avNames, av['dna'], av['slot'], aName, av['creator'] == self.accountDetailRecord.playerAccountId, av['shared'], av['online'], wishState=av['wishState'], wishName=av['wishName'], defaultShard=av['defaultShard'], lastLogout=av['lastLogout'])
                     data.append(pa)
@@ -481,7 +460,6 @@ class PiratesClientRepository(OTPClientRepository):
             self.loginFSM.request('playingGame')
         else:
             self.notify.error('Bad avatar: return code %d' % returnCode)
-        return
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterWaitForDeleteAvatarResponse(self, potentialAvatar):
