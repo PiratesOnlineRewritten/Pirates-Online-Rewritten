@@ -200,7 +200,6 @@ class PiratesClientRepository(OTPClientRepository):
         NametagGlobals.setMasterArrowsOn(0)
         self._tagsToInterests = {}
         self._interestsToTags = {}
-        self._idsToInterest = {}
         self._worldStack = []
         if __dev__:
             __builtin__.go = self.getDo
