@@ -11,7 +11,6 @@ from pirates.piratesgui.BorderFrame import BorderFrame
 from pirates.piratesgui.GuiButton import GuiButton
 from pirates.piratesgui.DialogButton import DialogButton
 from pirates.piratesbase import PLocalizer
-from pirates.piratesbase import Freebooter
 from otp.otpgui import OTPDialog
 from otp.otpbase import OTPGlobals
 from otp.otpbase import OTPRender

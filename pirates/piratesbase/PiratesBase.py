@@ -43,14 +43,11 @@ from pirates.piratesbase import UserFunnel
 class PiratesBase(OTPBase):
     notify = DirectNotifyGlobal.directNotify.newCategory('PiratesBase')
     lowMemoryStreamAudio = ConfigVariableBool('low-memory-stream-audio', 1)
-    resolution_table = [
-     (
-      800, 600), (1024, 768), (1280, 1024), (1600, 1200)]
+    resolution_table = [(800, 600), (1024, 768), (1280, 1024), (1600, 1200)]
     widescreen_resolution_table = [(1280, 720), (1920, 1080)]
     MinimumHorizontalResolution = 800
     MinimumVerticalResolution = 600
-    apiNames = [
-     'pandagl', 'pandadx8', 'pandadx9', 'tinydisplay']
+    apiNames = ['pandagl', 'pandadx8', 'pandadx9', 'tinydisplay']
 
     def __init__(self):
         OTPBase.__init__(self, windowType='none')
@@ -92,11 +89,6 @@ class PiratesBase(OTPBase):
         self.musicMgr = None
         use_recommended_options = False
         options = Options()
-        if __dev__:
-            Options.DEFAULT_FILE_PATH = Filename.expandFrom('$HOME/game_options.txt').toOsSpecific()
-            Options.DEFAULT_API_FILE_PATH = Filename.expandFrom('$HOME/game_api.txt').toOsSpecific()
-            Options.WORKING_FILE_PATH = Filename.expandFrom('$HOME/last_working_options.txt').toOsSpecific()
-            Options.POSSIBLE_WORKING_FILE_PATH = Filename.expandFrom('$HOME/p_working_options.txt').toOsSpecific()
         options_loaded = options.load(Options.DEFAULT_FILE_PATH)
         self.notify.info('Requested graphics API = %s' % options.api)
         if options.api == 'default' and self.config.GetBool('use-graphics-api-auto-select', True):
@@ -151,7 +143,7 @@ class PiratesBase(OTPBase):
                 options.recommendedOptions(base.pipe, False)
                 options.log('Recommended Game Options')
 
-        overwrite_options = True
+        overwrite_options = config.GetBool('allow-options-override', False)
         options.verifyOptions(base.pipe, overwrite_options)
         string = options.optionsToPrcData()
         loadPrcFileData('game_options', string)
