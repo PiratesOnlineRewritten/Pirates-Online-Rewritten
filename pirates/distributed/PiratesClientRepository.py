@@ -891,24 +891,23 @@ class PiratesClientRepository(OTPClientRepository):
         handle = self.addInterest(parentId, zoneId, description, event)
         if handle:
             for tag in tags:
-                self._tagsToInterests.setdefault(tag, []).append(handle.asInt())
+                self._tagsToInterests.setdefault(tag, []).append(handle)
 
             self._interestsToTags[handle.asInt()] = tags
 
-        self._idsToInterest[handle.asInt()] = handle
-        return handle.asInt()
+        return handle
 
     @report(types=['args', 'deltaStamp'], dConfigParam='dteleport')
     def removeTaggedInterest(self, interestHandle, event=None):
-        tags = self._interestsToTags.pop(interestHandle, [])
+        tags = self._interestsToTags.pop(interestHandle.asInt(), [])
         if tags:
             for tag in tags:
                 handles = self._tagsToInterests.get(tag)
-                handles.remove(self._idsToInterest.get(interestHandle))
+                handles.remove(interestHandle)
                 if not handles:
                     self._tagsToInterests.pop(tag)
 
-            self.removeInterest(self._idsToInterest.pop(interestHandle), event)
+            self.removeInterest(interestHandle, event)
 
         return tags
 
@@ -929,7 +928,6 @@ class PiratesClientRepository(OTPClientRepository):
                 subEvent = '%s-%s' % (event, x)
                 self.acceptOnce(subEvent, subInterestClosed, extraArgs=[handle])
                 tags = self.removeTaggedInterest(handle, event=subEvent)
-
         else:
             for x, handle in enumerate(handles):
                 tags = self.removeTaggedInterest(handle)
@@ -938,7 +936,7 @@ class PiratesClientRepository(OTPClientRepository):
 
     @report(types=['args', 'deltaStamp'], dConfigParam='dteleport')
     def getInterestTags(self, interestHandle):
-        return self._interestsToTags.get(self._idsToInterest.get(interestHandle), [])
+        return self._interestsToTags.get(interestHandle.asInt(), [])
 
     @report(types=['args', 'deltaStamp'], dConfigParam='dteleport')
     def getInterestHandles(self, tag):
