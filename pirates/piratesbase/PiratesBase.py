@@ -620,8 +620,8 @@ class PiratesBase(OTPBase):
         OTPBase.setupRender2d(self)
         self.a2dTopRight.reparentTo(self.aspect2d, sort=1)
 
-    def setupMouse(self, win):
-        OTPBase.setupMouse(self, win)
+    def setupMouse(self, win, fMultiWin=False):
+        response = OTPBase.setupMouse(self, win, fMultiWin)
         mk = self.mouseWatcher.getParent()
         bt = mk.attachNewNode(ButtonThrower('uber'))
         bt.node().setPrefix('uber-')
@@ -632,6 +632,7 @@ class PiratesBase(OTPBase):
         mods.addButton(KeyboardButton.meta())
         bt.node().setModifierButtons(mods)
         self.buttonThrowers.append(bt)
+        return response
 
     def doAvatarPhysics(self, state):
         dt = ClockObject.getGlobalClock().getDt()

@@ -133,3 +133,7 @@ logs/
 
 # Accounts
 account-bridge/
+
+# Editor
+editor/
+editor-src/
