@@ -12,8 +12,8 @@ class ClientServicesManager(DistributedObjectGlobal):
 
         self.sendUpdate('login', [self.cr.playToken or 'dev'])
 
-    def acceptLogin(self, timestamp):
-        messenger.send(self.doneEvent, [{'mode': 'success', 'timestamp': timestamp}])
+    def acceptLogin(self):
+        messenger.send(self.doneEvent, [{'mode': 'success'}])
 
     def requestAvatars(self):
         self.sendUpdate('requestAvatars')

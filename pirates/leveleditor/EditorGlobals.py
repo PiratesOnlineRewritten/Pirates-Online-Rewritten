@@ -1,7 +1,6 @@
 from pandac.PandaModules import *
 from direct.interval.IntervalGlobal import *
 from direct.showbase.DirectObject import *
-from pirates.mockup import PythonNodePath
 from pirates.effects import DynamicLight
 from pirates.creature import Creature
 from pirates.creature.Alligator import Alligator
