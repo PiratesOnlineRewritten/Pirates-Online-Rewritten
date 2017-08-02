@@ -10,7 +10,7 @@ from pirates.world import WorldGlobals
 from pirates.ai.PiratesTimeManagerAI import PiratesTimeManagerAI
 
 class PiratesAIRepository(PiratesInternalRepository):
-    notify = directNotify.newCategory('PiratesUberRepository')
+    notify = directNotify.newCategory('PiratesAIRepository')
     notify.setInfo(True)
 
     def __init__(self, baseChannel, serverId, districtName):
