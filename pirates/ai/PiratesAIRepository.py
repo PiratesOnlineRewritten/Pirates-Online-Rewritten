@@ -1,6 +1,7 @@
 import time
 import random
 from panda3d.core import *
+from direct.directnotify.DirectNotifyGlobal import directNotify
 from pirates.distributed.PiratesInternalRepository import PiratesInternalRepository
 from otp.distributed.OtpDoGlobals import *
 from pirates.piratesbase import PiratesGlobals
@@ -9,6 +10,8 @@ from pirates.world import WorldGlobals
 from pirates.ai.PiratesTimeManagerAI import PiratesTimeManagerAI
 
 class PiratesAIRepository(PiratesInternalRepository):
+    notify = directNotify.newCategory('PiratesUberRepository')
+    notify.setInfo(True)
 
     def __init__(self, baseChannel, serverId, districtName):
         PiratesInternalRepository.__init__(self, baseChannel, serverId, dcSuffix='AI')

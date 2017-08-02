@@ -1,9 +1,12 @@
+from direct.directnotify.DirectNotifyGlobal import directNotify
 from pirates.distributed.PiratesInternalRepository import PiratesInternalRepository
 from direct.distributed.PyDatagram import *
 from otp.distributed.DistributedDirectoryAI import DistributedDirectoryAI
 from otp.distributed.OtpDoGlobals import *
 
 class PiratesUberRepository(PiratesInternalRepository):
+    notify = directNotify.newCategory('PiratesUberRepository')
+    notify.setInfo(True)
 
     def __init__(self, baseChannel, serverId):
         PiratesInternalRepository.__init__(self, baseChannel, serverId, dcSuffix='UD')
