@@ -7,7 +7,9 @@ from otp.distributed.OtpDoGlobals import *
 from pirates.piratesbase import PiratesGlobals
 from pirates.distributed.PiratesDistrictAI import PiratesDistrictAI
 from pirates.world import WorldGlobals
+from pirates.piratesbase.UniqueIdManager import UniqueIdManager
 from pirates.ai.PiratesTimeManagerAI import PiratesTimeManagerAI
+from pirates.world.WorldCreatorAI import WorldCreatorAI
 
 class PiratesAIRepository(PiratesInternalRepository):
     notify = directNotify.newCategory('PiratesAIRepository')
@@ -19,6 +21,7 @@ class PiratesAIRepository(PiratesInternalRepository):
         self.districtName = districtName
         self.zoneAllocator = UniqueIdAllocator(PiratesGlobals.DynamicZonesBegin, PiratesGlobals.DynamicZonesEnd)
         self.zoneId2owner = {}
+        self.uidMgr = UniqueIdManager(self)
 
     def handleConnected(self):
         self.districtId = self.allocateChannel()
@@ -26,11 +29,10 @@ class PiratesAIRepository(PiratesInternalRepository):
         self.distributedDistrict.setName(self.districtName)
         self.distributedDistrict.setMainWorld(WorldGlobals.PiratesWorldSceneFile)
         self.distributedDistrict.generateWithRequiredAndId(self.districtId, self.getGameDoId(), 2)
-
-        # Claim ownership of that district...
         self.setAI(self.districtId, self.ourChannel)
 
         self.createGlobals()
+        self.createZones()
 
         self.distributedDistrict.b_setAvailable(1)
         self.notify.info('District is now ready.')
@@ -66,3 +68,11 @@ class PiratesAIRepository(PiratesInternalRepository):
         self.timeManager.generateWithRequired(2)
 
         self.travelAgent = self.generateGlobalObject(OTP_DO_ID_PIRATES_TRAVEL_AGENT, 'DistributedTravelAgent')
+    
+    def createZones(self):
+        """
+        Create "zone" objects, e.g. DistributedOceanGrid et al.
+        """
+
+        self.worldCreator = WorldCreatorAI(self)
+        self.worldCreator.loadObjectsFromFile(WorldGlobals.PiratesWorldSceneFile)

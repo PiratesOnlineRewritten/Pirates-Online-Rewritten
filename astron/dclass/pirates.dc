@@ -311,7 +311,6 @@ dclass DistributedInstanceBase : DistributedObject {
   setFileName(string) required broadcast ram;
   setType(uint8) required broadcast ram;
   setSpawnInfo(int32/10, int32/10, int32/10, int16, uint32, uint32 []);
-  requestSpawnLoc() airecv clsend;
   avatarDied() airecv clsend;
 };
 
@@ -1826,7 +1825,6 @@ dclass DistributedGameArea : DistributedNode {
   setName(string) required broadcast ram;
   addSpawnTriggers(triggerSphere []) broadcast ram;
   spawnNPC(string, uint32) airecv clsend;
-  requestNPCRemoval(uint32) airecv clsend;
 };
 
 dclass DistributedGAInterior : DistributedGameArea, DistributedCartesianGrid {
@@ -1840,7 +1838,7 @@ struct PortCollisionSphere {
   Pos pos;
 };
 
-dclass DistributedIsland : DistributedGameArea, DistributedCartesianGrid, Teamable {
+dclass DistributedIsland : DistributedCartesianGrid, DistributedGameArea, Teamable {
   setParentingRules(string, string) required broadcast ram;
   setIslandTransform(int32/10, int32/10, int32/10, int32/10) broadcast required ram;
   setZoneSphereSize(uint16, uint16, uint16) required broadcast ram;

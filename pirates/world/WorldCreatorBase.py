@@ -129,7 +129,7 @@ class WorldCreatorBase():
                 if hasattr(newObj, 'getUniqueId'):
                     objKey = newObj.getUniqueId()
             self.loadObjectDict(objDict, newObj, objKey, dynamic, fileName=fileName, actualParentObj=newActualParent)
-        self._restoreWorld(prevWorld)
+        #self._restoreWorld(prevWorld)
         return newObj
 
     def _restoreWorld(self, prevWorld):

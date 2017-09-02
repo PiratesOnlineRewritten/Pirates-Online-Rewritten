@@ -44,6 +44,7 @@ class AIBase():
         self.musicManager = None
         self.jobMgr = jobMgr
         self.hidden = NodePath('hidden')
+        self.render = NodePath('render')
         self.graphicsEngine = GraphicsEngine()
         globalClock = ClockObject.getGlobalClock()
         self.trueClock = TrueClock.getGlobalPtr()
@@ -55,6 +56,7 @@ class AIBase():
         __builtins__['globalClock'] = globalClock
         __builtins__['vfs'] = vfs
         __builtins__['hidden'] = self.hidden
+        __builtins__['render'] = self.render
         AIBase.notify.info('__dev__ == %s' % __dev__)
         __builtins__['wantTestObject'] = self.config.GetBool('want-test-object', 0)
         self.wantStats = self.config.GetBool('want-pstats', 0)
