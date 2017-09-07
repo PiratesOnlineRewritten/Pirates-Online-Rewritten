@@ -102,6 +102,7 @@ class ShipFactory():
         self.preprocessHull(ShipGlobals.BLACK_PEARL)
         self.preprocessHull(ShipGlobals.GOLIATH)
         self.preprocessHull(ShipGlobals.SHIP_OF_THE_LINE)
+        self.preprocessHull(ShipGlobals.EL_PATRONS_SHIP)
 
     def preprocessMast(self, mastClass):
         self.mastSets[mastClass] = ShipBlueprints.generateMastCache(mastClass)
