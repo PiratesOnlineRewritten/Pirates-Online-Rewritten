@@ -17,6 +17,7 @@
 # Stop resources and cache from syncing
 **/cache/
 **/resources/
+**/c/
 .idea/
 
 # Byte-compiled / optimized / DLL files
