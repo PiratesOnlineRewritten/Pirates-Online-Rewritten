@@ -13,4 +13,4 @@ ppython2 -h >nul 2>&1 && (
     ppython -m pirates.piratesbase.PiratesStart
 )
 pause
-goto :goto
+goto :main
