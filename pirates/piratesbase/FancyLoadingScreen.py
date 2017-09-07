@@ -655,7 +655,7 @@ class FancyLoadingScreen(DirectObject.DirectObject):
 
     def cleanupLoadingScreen(self):
         if self.debugMode:
-            self.loadingBarRoot.removeChildren()
+            self.loadingBarRoot.get_children().detach()
             self.cleanupAnalysis()
             self.stepInfo = {}
             self.unmappedTicks = []
@@ -701,7 +701,7 @@ class FancyLoadingScreen(DirectObject.DirectObject):
             button.destroy()
 
         self.analysisButtons = []
-        self.analysisBarRoot.removeChildren()
+        self.analysisBarRoot.get_children().detach()
         self.analysisBar.hide()
         self.analyzeMode = False
         self.analysisSegs = None

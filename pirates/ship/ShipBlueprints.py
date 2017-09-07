@@ -456,7 +456,7 @@ def generateMastCache(mastClass):
         data.genericGeomSets.append(reducedSet)
         data.customGeomSets.append(customSet)
 
-    NodePath(data.charRoot).removeChildren()
+    NodePath(data.charRoot).get_children().detach()
     data.collisions.reparentTo(NodePath(data.charRoot))
     return data
 

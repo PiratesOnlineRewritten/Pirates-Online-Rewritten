@@ -130,7 +130,7 @@ class InventoryUICardContainer(InventoryUIStackContainer.InventoryUIStackContain
         self.cardDict = {}
         self.updateList = []
         InventoryUIContainer.InventoryUIContainer.clearOut(self)
-        self.cardGroup.removeChildren()
+        self.cardGroup.get_children().detact()
         self.ignore('seachestOpened')
 
     def refresh(self):

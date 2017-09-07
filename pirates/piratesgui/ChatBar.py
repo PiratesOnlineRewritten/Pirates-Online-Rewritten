@@ -155,7 +155,7 @@ class ChatBar(DirectFrame, FSM):
             self.chatTabs.destroy()
         if self.whisperTabs:
             self.whisperTabs.destroy()
-        self.removeChildren()
+        self.get_children().detach()
         gui = loader.loadModel('models/gui/chat_frame_b')
         skullbg = loader.loadModel('models/gui/chat_frame_a')
         skullbg2 = loader.loadModel('models/gui/chat_frame_a')

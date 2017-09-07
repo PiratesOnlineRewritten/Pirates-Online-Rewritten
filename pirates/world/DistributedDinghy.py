@@ -44,7 +44,7 @@ class DistributedDinghy(DistributedInteractive):
         if self.invReq:
             DistributedInventoryBase.cancelGetInventory(localAvatar.getInventoryId())
             self.invReq = None
-        self.removeChildren()
+        self.get_children().detach()
         return
 
     def delete(self):

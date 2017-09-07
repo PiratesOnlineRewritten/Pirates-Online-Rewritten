@@ -40,14 +40,9 @@ class Grabber(Creature, TentacleUtils):
         self.joints = None
         self.idle = None
         self.iTask = None
-        self.hitIval = Sequence(self.colorScaleInterval(0.3, (1, 0, 0, 1), (1, 1, 1,
-                                                                            1)), self.colorScaleInterval(0.3, (1,
-                                                                                                               1,
-                                                                                                               1,
-                                                                                                               1), (1,
-                                                                                                                    0,
-                                                                                                                    0,
-                                                                                                                    1)))
+        self.hitIval = Sequence(
+            self.colorScaleInterval(0.3, (1, 0, 0, 1), (1, 1, 1,1)), 
+            self.colorScaleInterval(0.3, (1, 1, 1, 1), (1, 0, 0, 1)))
         self.generateCreature()
         self.target = loader.loadModel('models/misc/smiley')
         self.target.reparentTo(self.getGrabTargetNode())
@@ -94,7 +89,7 @@ class Grabber(Creature, TentacleUtils):
         axis.setDepthTest(0)
         joints = self.getJoints()
         for joint in joints:
-            joint.removeChildren()
+            joint.get_children().detach()
             axis.instanceTo(joint.attachNewNode('buffer'))
 
     def uniqueName(self, name):
@@ -119,8 +114,7 @@ class Grabber(Creature, TentacleUtils):
 
     def chooseIdle(self, task):
         transInfo = {'a': {'b': ('idle_a_to_b', 1),'c': ('idle_c_to_a', -1)},'b': {'a': ('idle_a_to_b', -1),'c': ('idle_b_to_c', 1),'d': ('idle_a_to_b', -1)},'c': {'a': ('idle_c_to_a', 1),'b': ('idle_b_to_c', -1),'d': ('idle_a_to_b', -1)},'d': {'b': ('idle_a_to_b', 1),'c': ('idle_c_to_a', -1)}}
-        options = [
-         'a', 'b', 'c', 'd']
+        options = ['a', 'b', 'c', 'd']
         options.remove(self.idle)
         next = random.choice(options)
         info = transInfo[self.idle].get(next)

@@ -348,7 +348,7 @@ class AreaBuilderBase(DirectObject.DirectObject):
                         footprintNodes[minimapId] = footprintNode
                 geom.reparentTo(footprintNode, sort=sort)
 
-        self.footprintObjects.removeChildren()
+        self.footprintObjects.get_children().detach()
         for node in footprintNodes.values():
             node.flattenStrong()
 
@@ -1170,7 +1170,7 @@ class AreaBuilderBase(DirectObject.DirectObject):
                 model.low = None
                 model.superLow = None
         if base.gridDetail != 'high' and not lowendHighNP.isEmpty():
-            model.high.removeChildren()
+            model.high.get_children().detach()
             lowendHighNP.node().replaceNode(model.high.node())
         numChildren = model.lod.getNumChildren()
         numSwitches = model.lod.node().getNumSwitches()
@@ -1315,7 +1315,7 @@ class AreaBuilderBase(DirectObject.DirectObject):
 
         self.cleanUpList = []
         self.unloadObjects()
-        self.areaGeometry.removeChildren()
+        self.areaGeometry.get_children().detach()
         self.collisions.detachNode()
         self.collisions = self.areaGeometry.attachNewNode('collisions')
         self.staticGridRoot.detachNode()

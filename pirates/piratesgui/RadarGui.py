@@ -774,8 +774,8 @@ class RadarGui(GuiTray, FSM):
         localAvatar.guiMgr.nextMinimap()
 
     def setMinimap(self, map):
-        self.mapScale.removeChildren()
-        self.edge.removeChildren()
+        self.mapScale.get_children().detach()
+        self.edge.get_children().detach()
         if map:
             self.avArrow.detachNode()
             if map.allowOnScreen():

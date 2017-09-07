@@ -54,7 +54,7 @@ class DistributedShipDeployer(DistributedNode, GridChild):
         self.ignore(self.uniqueName('exitShipDeploy-MinSphere'))
         self.ignore('settingLocalShip')
         self.unlockMessages()
-        self.removeChildren()
+        self.get_children().detach()
         self.minSphere = None
         self.maxSphereSoft = None
         self.maxSphereHard = None
