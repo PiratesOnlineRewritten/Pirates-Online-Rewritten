@@ -168,7 +168,7 @@ class PiratesBase(OTPBase):
                 self.openDefaultWindow(props=wp)
 
         self.eventMgr.doEvents()
-        if config.GetBool('fancy-loading-screen', False):
+        if not config.GetBool('fancy-loading-screen', False):
             self.loadingScreen = LoadingScreen.LoadingScreen(None)
         else:
             self.loadingScreen = FancyLoadingScreen.FancyLoadingScreen(None)
