@@ -83,6 +83,7 @@ clock-frame-rate 120
 enable-pipe-selector #f
 enable-stereo-display #t
 want-gameoptions-hdr #t
+enable-frame-rate-counter #t
 
 # Screenshot Viewer:
 want-screenshot-viewer #t

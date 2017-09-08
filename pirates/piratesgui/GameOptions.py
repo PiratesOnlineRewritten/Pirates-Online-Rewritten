@@ -321,6 +321,8 @@ class Options(OptionSpace):
                 self.write_integer(output_file, self.memory)
                 self.write_string(output_file, 'mouse_look ')
                 self.write_integer(output_file, self.mouse_look)
+                self.write_string(output_file, 'frame_rate ')
+                self.write_integer(output_file, self.frame_rate)
                 self.write_string(output_file, 'ship_look ')
                 self.write_integer(output_file, self.ship_look)
                 self.write_string(output_file, 'gamma ')
@@ -443,6 +445,7 @@ class Options(OptionSpace):
             self.terrain_detail_level = self.validate(int, 'terrain_detail_level', 2)
             self.memory = self.validate(int, 'memory', 0)
             self.mouse_look = self.validate(int, 'mouse_look', 0, [0, 1])
+            self.frame_rate = self.validate(int, 'frame_rate', 0, [0, 1])
             self.ship_look = self.validate(int, 'ship_look', 1, [0, 1])
             base.setShipLookAhead(self.ship_look)
             self.gamma = self.validate(float, 'gamma', 0.0)
@@ -597,6 +600,7 @@ class Options(OptionSpace):
         base.enableSoundEffects(self.sound)
         base.enableMusic(self.music)
         base.enableFirstMate(self.first_mate_voice)
+        base.setFrameRateMeter(self.frame_rate)
         if base.sfxManagerList:
             index = 0
             length = len(base.sfxManagerList)
@@ -678,6 +682,7 @@ class Options(OptionSpace):
         self.terrain_detail_level = Options.option_high
         self.memory = 0
         self.mouse_look = 0
+        self.frame_rate = 0
         self.ship_look = 1
         self.gamma = self.gamma_save_offset
         self.gamma_enable = 0
@@ -1247,6 +1252,7 @@ class Options(OptionSpace):
         self.output('terrain_detail_level ', self.terrain_detail_level)
         self.output('memory ', self.memory)
         self.output('mouse_look ', self.mouse_look)
+        self.output('frame_rate', self.frame_rate)
         self.output('ship_look ', self.ship_look)
         self.output('gamma ', self.gamma - self.gamma_save_offset)
         self.output('gamma_enable ', self.gamma_enable)

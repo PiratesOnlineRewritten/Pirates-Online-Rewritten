@@ -331,10 +331,21 @@ class GameOptionsGui(DirectFrame):
         text = PLocalizer.GameOptionsInvertMouseLook
         self.create_label(x, y, text, parent, sl)
         self.invertMouseCheck = CheckButton(parent=parent, relief=None, scale=sc, pos=(x + 0.36, 0, y + 0.015), command=self.invertMouseCheckCB)
+
+        x2 = x + 0.42
+        y2 = y
+
+        if base.config.GetBool('enable-frame-rate-counter', False):
+            text = PLocalizer.GameOptionsFrameRate
+            self.create_label(x2, y2, text, parent, sl)
+            self.frameRateCheck = CheckButton(parent=parent, relief=None, scale=sc, pos=(x2 + 0.37, 0, y2 + 0.015), command=self.frameRateCheckCB)
+            y2 += oy
+
         y += oy
         text = PLocalizer.GameOptionsShipLook
         self.create_label(x, y, text, parent, sl)
         self.shipLookCheck = CheckButton(parent=parent, relief=None, scale=sc, pos=(x + 0.36, 0, y + 0.015), command=self.shipLookCheckCB)
+
         y += oy
         text = PLocalizer.GameOptionsGUIScale
         self.create_label(x, y, text, parent, sl)
@@ -817,6 +828,8 @@ class GameOptionsGui(DirectFrame):
             self.music_volume_slider['value'] = self.gameOptions.options.music_volume
             self.firstMateCheck['value'] = self.gameOptions.options.first_mate_voice
             self.invertMouseCheck['value'] = self.gameOptions.options.mouse_look
+            if hasattr(self, 'frameRateCheck'):
+                self.frameRateCheck['value'] = self.gameOptions.options.frame_rate
             self.shipLookCheck['value'] = self.gameOptions.options.ship_look
             self.rotateCompassOnLandCheck['value'] = self.gameOptions.options.land_map_radar_axis
             self.rotateCompassAtSeaCheck['value'] = self.gameOptions.options.ocean_map_radar_axis
@@ -1070,6 +1083,14 @@ class GameOptionsGui(DirectFrame):
         self.gameOptions.options.mouse_look = val
         self.update()
         return
+
+    def frameRateCheckCB(self, val):
+        if self.gameOptions is None:
+            return None
+
+        self.gameOptions.options.frame_rate = val
+        base.setFrameRateMeter(val)
+        self.update()    
 
     def cpuFrequencyWarningCheckCB(self, val):
         if self.gameOptions is None:
