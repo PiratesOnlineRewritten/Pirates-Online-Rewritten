@@ -168,7 +168,9 @@ class PiratesBase(OTPBase):
                 self.openDefaultWindow(props=wp)
 
         self.eventMgr.doEvents()
-        if not config.GetBool('fancy-loading-screen', False):
+        options.options_to_config()
+        options.setRuntimeOptions()
+        if not options.fancy_loading_screen:
             self.loadingScreen = LoadingScreen.LoadingScreen(None)
         else:
             self.loadingScreen = FancyLoadingScreen.FancyLoadingScreen(None)
@@ -176,8 +178,6 @@ class PiratesBase(OTPBase):
         self.loadingScreen.show()
         self.loadingScreen.beginStep('PiratesBase', 34, 25)
         self.loadingScreen.tick()
-        options.options_to_config()
-        options.setRuntimeOptions()
         if base.wantEnviroDR:
             base.cam.node().setCameraMask(OTPRender.MainCameraBitmask)
             self.setupEnviroCamera()

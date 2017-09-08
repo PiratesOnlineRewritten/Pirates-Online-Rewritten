@@ -325,6 +325,8 @@ class Options(OptionSpace):
                 self.write_integer(output_file, self.mouse_look)
                 self.write_string(output_file, 'frame_rate ')
                 self.write_integer(output_file, self.frame_rate)
+                self.write_string(output_file, 'fancy_loading_screen')
+                self.write_integer(output_file, self.fancy_loading_screen)
                 self.write_string(output_file, 'ship_look ')
                 self.write_integer(output_file, self.ship_look)
                 self.write_string(output_file, 'gamma ')
@@ -449,6 +451,7 @@ class Options(OptionSpace):
             self.memory = self.validate(int, 'memory', 0)
             self.mouse_look = self.validate(int, 'mouse_look', 0, [0, 1])
             self.frame_rate = self.validate(int, 'frame_rate', 0, [0, 1])
+            self.fancy_loading_screen = self.validate(int, 'fancy_loading_screen', 1, [0, 1])
             self.ship_look = self.validate(int, 'ship_look', 1, [0, 1])
             base.setShipLookAhead(self.ship_look)
             self.gamma = self.validate(float, 'gamma', 0.0)
@@ -687,6 +690,7 @@ class Options(OptionSpace):
         self.memory = 0
         self.mouse_look = 0
         self.frame_rate = 0
+        self.fancy_loading_screen = 1
         self.ship_look = 1
         self.gamma = self.gamma_save_offset
         self.gamma_enable = 0
@@ -1258,6 +1262,7 @@ class Options(OptionSpace):
         self.output('memory ', self.memory)
         self.output('mouse_look ', self.mouse_look)
         self.output('frame_rate', self.frame_rate)
+        self.output('fancy_loading_screen', self.fancy_loading_screen)
         self.output('ship_look ', self.ship_look)
         self.output('gamma ', self.gamma - self.gamma_save_offset)
         self.output('gamma_enable ', self.gamma_enable)

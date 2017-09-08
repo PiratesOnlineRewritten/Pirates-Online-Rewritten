@@ -348,6 +348,11 @@ class GameOptionsGui(DirectFrame):
             self.frameRateCheck = CheckButton(parent=parent, relief=None, scale=sc, pos=(x2 + 0.37, 0, y2 + 0.015), command=self.frameRateCheckCB)
             y2 += oy
 
+        text = PLocalizer.GameOptionsFancyLoadingScreen
+        self.create_label(x2, y2, text, parent, sl)
+        self.fancyLoadingScreenCheck = CheckButton(parent=parent, relief=None, scale=sc, pos=(x2 + 0.4, 0, y2 + 0.015), command=self.fancyLoadingScreenCheckCB)
+        y2 += oy
+
         y += oy
         text = PLocalizer.GameOptionsShipLook
         self.create_label(x, y, text, parent, sl)
@@ -839,6 +844,7 @@ class GameOptionsGui(DirectFrame):
             self.invertMouseCheck['value'] = self.gameOptions.options.mouse_look
             if hasattr(self, 'frameRateCheck'):
                 self.frameRateCheck['value'] = self.gameOptions.options.frame_rate
+            self.fancyLoadingScreenCheck['value'] = self.gameOptions.options.fancy_loading_screen
             self.shipLookCheck['value'] = self.gameOptions.options.ship_look
             self.rotateCompassOnLandCheck['value'] = self.gameOptions.options.land_map_radar_axis
             self.rotateCompassAtSeaCheck['value'] = self.gameOptions.options.ocean_map_radar_axis
@@ -1107,7 +1113,17 @@ class GameOptionsGui(DirectFrame):
 
         self.gameOptions.options.frame_rate = val
         base.setFrameRateMeter(val)
-        self.update()    
+        self.update()   
+
+    def fancyLoadingScreenCheckCB(self, val):
+        if self.gameOptions is None:
+            return None
+
+        if self.gameOptions.options.fancy_loading_screen != val:
+            self.gameOptions.display_restart_dialog()
+
+        self.gameOptions.options.fancy_loading_screen = val
+        self.update()   
 
     def cpuFrequencyWarningCheckCB(self, val):
         if self.gameOptions is None:
