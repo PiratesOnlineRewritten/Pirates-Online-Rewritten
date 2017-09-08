@@ -168,7 +168,7 @@ class PiratesBase(OTPBase):
                 self.openDefaultWindow(props=wp)
 
         self.eventMgr.doEvents()
-        if config.GetInt('fancy-loading-screen', False):
+        if config.GetBool('fancy-loading-screen', False):
             self.loadingScreen = LoadingScreen.LoadingScreen(None)
         else:
             self.loadingScreen = FancyLoadingScreen.FancyLoadingScreen(None)
@@ -194,9 +194,9 @@ class PiratesBase(OTPBase):
             for key in PiratesGlobals.ScreenshotHotkeyList:
                 self.accept(key, self.takeScreenShot)
 
-            self.screenshotViewer = None
-            if self.config.GetBool('want-screenshot-viewer', 0):
-                self.accept(PiratesGlobals.ScreenshotViewerHotkey, self.showScreenshots)
+        self.screenshotViewer = None
+        if self.config.GetBool('want-screenshot-viewer', 0):
+            self.accept(PiratesGlobals.ScreenshotViewerHotkey, self.showScreenshots)
         self.wantMarketingViewer = self.config.GetBool('want-marketing-viewer', 0)
         self.marketingViewerOn = False
         if self.wantMarketingViewer:
