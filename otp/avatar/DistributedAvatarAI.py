@@ -1,15 +1,15 @@
 from otp.otpbase import OTPGlobals
 from direct.fsm import ClassicFSM
 from direct.fsm import State
-from direct.distributed import DistributedSmoothNodeAI
+from direct.distributed.DistributedSmoothNodeAI import DistributedSmoothNodeAI
 from direct.task import Task
 from direct.directnotify import DirectNotifyGlobal
 
-class DistributedAvatarAI(DistributedObjectAI):
+class DistributedAvatarAI(DistributedSmoothNodeAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedAvatarAI')
 
-def __init__(self, air):
-        DistributedSmoothNodeAI.DistributedSmoothNodeAI.__init__(self, air)
+    def __init__(self, air):
+        DistributedSmoothNodeAI.__init__(self, air)
         self.name = ''
 
     def b_setName(self, name):
