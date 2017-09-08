@@ -473,14 +473,11 @@ class GameOptionsGui(DirectFrame):
             self.textureDetailRadios = self.createRadioButtonGroup(parent, rx, y, sx, 0.03, self.textureDetailVar, 0.15, [
              PLocalizer.GameOptionsLow, PLocalizer.GameOptionsMedium, PLocalizer.GameOptionsHigh], 0.8, self.textureDetailRadiosCB)
         y += oy
-        text = PLocalizer.GameOptionsTextureCompressed
-        self.create_label(x, y, text, parent, sl)
-        self.compressedTextureCheck = CheckButton(parent=parent, relief=None, scale=sc, pos=(x + 0.42, 0, y + 0.015), command=self.compressedTextureCheckCB)
-        y += oy
         text = PLocalizer.GameOptionsAggressiveMemory
         self.create_label(x, y, text, parent, sl)
         self.aggressiveMemoryCheck = CheckButton(parent=parent, relief=None, scale=sc, pos=(x + 0.62, 0, y + 0.015), command=self.aggressiveMemoryCheckCB)
         y += oy
+        y2 = y
         if self.gameOptions is not None and self.gameOptions.shader_support:
             text = PLocalizer.GameOptionsShaderLevel + ' ' + self.gameOptions.shader_model.__repr__() + ' *'
             self.create_label(x, y, text, parent, sl)
@@ -496,11 +493,15 @@ class GameOptionsGui(DirectFrame):
             self.create_label(x, y, text, parent, sl)
             self.smoothEdgesCheck = CheckButton(parent=parent, relief=None, scale=sc, pos=(x + 0.315, 0, y + 0.015), command=self.smoothEdgesCheckCB)
         y += oy
+        x2 = x + 0.42
         text = PLocalizer.GameOptionsRenderedShadows
-        self.create_label(x, y, text, parent, sl)
-        self.renderedShadowsCheck = CheckButton(parent=parent, relief=None, scale=sc, pos=(x + 0.38, 0, y + 0.015), command=self.renderedShadowsCheckCB)
+        self.create_label(x2, y2, text, parent, sl)
+        self.renderedShadowsCheck = CheckButton(parent=parent, relief=None, scale=sc, pos=(x2 + 0.38, 0, y2 + 0.015), command=self.renderedShadowsCheckCB)
+        y2 += oy + 0.01
+        text = PLocalizer.GameOptionsTextureCompressed
+        self.create_label(x2, y2, text, parent, sl)
+        self.compressedTextureCheck = CheckButton(parent=parent, relief=None, scale=sc, pos=(x2 + 0.42, 0, y2 + 0.015), command=self.compressedTextureCheckCB)
         text = PLocalizer.GameOptionsRestartRequired
-        y += oy + 0.01
         self.create_label(x, y, text, parent, 0.9, color=(0.7, 0.7, 0.7, 1))
         return
 

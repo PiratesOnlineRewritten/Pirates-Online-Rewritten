@@ -615,7 +615,7 @@ class Options(OptionSpace):
         self.setRuntimeGridDetailLevel(self.terrain_detail_level)
         self.setRuntimeAvatarDetailLevel(self.character_detail_level)
         if self.smoothEdges:
-            render.setAntialias(AntialiasAttrib.MMAuto)
+            render.setAntialias(AntialiasAttrib.MAuto)
         if hasattr(base, 'setLowMemory'):
             base.setLowMemory(self.memory)
         if base.win and base.win.getGsg():
