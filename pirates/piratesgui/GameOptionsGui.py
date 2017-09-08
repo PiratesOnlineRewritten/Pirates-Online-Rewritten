@@ -292,11 +292,18 @@ class GameOptionsGui(DirectFrame):
             self.music_volume_slider = self.create_slider(music_volume_update_function, default_value, x, y, resolution, text, parent)
 
         x = 0.1
+        x2 = x + 0.42
         y -= 0.1
         text = PLocalizer.GameOptionsFirstMate
         self.create_label(x, y, text, parent, 1.2)
         x += 0.38
         self.firstMateCheck = CheckButton(parent=parent, relief=None, scale=0.4, pos=(x, 0, y + 0.015), command=self.firstMateCheckCB)
+
+        text = PLocalizer.GameOptionsBackgroundAudio
+        self.create_label(x2, y, text, parent, 1.2)
+        x2 += 0.41
+        self.backgroundAudioCheck = CheckButton(parent=parent, relief=None, scale=0.4, pos=(x2, 0, y + 0.015), command=self.backgroundAudioCheckCB)
+
 
     def setupTutorialFrame(self):
         self.tutorialFrame = DirectFrame(parent=self.upperFrame, relief=None)
@@ -828,6 +835,7 @@ class GameOptionsGui(DirectFrame):
             self.musicCheck['value'] = self.gameOptions.options.music
             self.music_volume_slider['value'] = self.gameOptions.options.music_volume
             self.firstMateCheck['value'] = self.gameOptions.options.first_mate_voice
+            self.backgroundAudioCheck['value'] = self.gameOptions.options.background_audio
             self.invertMouseCheck['value'] = self.gameOptions.options.mouse_look
             if hasattr(self, 'frameRateCheck'):
                 self.frameRateCheck['value'] = self.gameOptions.options.frame_rate
@@ -1069,6 +1077,14 @@ class GameOptionsGui(DirectFrame):
         base.enableFirstMate(val)
         self.update()
         return
+
+    def backgroundAudioCheckCB(self, val):
+        if self.gameOptions is None:
+            return
+        self.gameOptions.options.background_audio = val
+        self.update()
+        return
+
 
     def shipLookCheckCB(self, val):
         if self.gameOptions is None:

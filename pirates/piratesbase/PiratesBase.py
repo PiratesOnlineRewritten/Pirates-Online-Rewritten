@@ -244,7 +244,7 @@ class PiratesBase(OTPBase):
         fn.addForce(controlForce)
         self.avatarPhysicsMgr.addLinearForce(controlForce)
         self.loadingScreen.tick()
-        self.accept('PandaPaused', self.disableAllAudio)
+        self.accept('PandaPaused', self.disableAudio)
         self.accept('PandaRestarted', self.enableAllAudio)
         self.emoteGender = None
         shadow = loader.loadModel('models/misc/drop_shadow.bam')
@@ -293,6 +293,10 @@ class PiratesBase(OTPBase):
         self.transitions.loadLetterbox()
         self.transitions.letterbox.setColorScale(0, 0, 0, 1)
         self.loadingScreen.endStep('PiratesBase')
+
+    def disableAudio(self):
+        if not self.options.background_audio:
+            self.disableAllAudio()
 
     def setNoticeSystem(self, on):
         if self.noticeSystemOn == on:

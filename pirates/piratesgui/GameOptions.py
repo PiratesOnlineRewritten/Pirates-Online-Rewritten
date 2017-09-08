@@ -207,7 +207,7 @@ class DisplayOptions():
 class Options(OptionSpace):
     notify = DirectNotifyGlobal.directNotify.newCategory('Options')
     debug = False
-    options_version = 16
+    options_version = 17
     DEFAULT_API_FILE_PATH = 'game_api.txt'
     DEFAULT_FILE_PATH = 'game_options.txt'
     WORKING_FILE_PATH = 'last_working_options.txt'
@@ -303,6 +303,8 @@ class Options(OptionSpace):
                 self.write_float(output_file, self.music_volume)
                 self.write_string(output_file, 'first_mate_voice ')
                 self.write_float(output_file, self.first_mate_voice)
+                self.write_string(output_file, 'background_audio ')
+                self.write_integer(output_file, self.background_audio)
                 self.write_string(output_file, 'gui_scale ')
                 self.write_float(output_file, self.gui_scale)
                 self.write_string(output_file, 'chatbox_scale ')
@@ -435,6 +437,7 @@ class Options(OptionSpace):
             self.music = self.validate(int, 'music', 1)
             self.music_volume = self.validate(float, 'music_volume', 1.0)
             self.first_mate_voice = self.validate(int, 'first_mate_voice', 1)
+            self.background_audio = self.validate(int, 'background_audio', 0, [0, 1])
             self.gui_scale = self.validate(float, 'gui_scale', 0.5)
             self.chatbox_scale = self.validate(float, 'chatbox_scale', 0.0)
             self.special_effects = self.validate(int, 'special_effects', 2)
@@ -674,6 +677,7 @@ class Options(OptionSpace):
         self.music = 1
         self.music_volume = 1.0
         self.first_mate_voice = 1
+        self.background_audio = 0
         self.gui_scale = 0.5
         self.chatbox_scale = 0.0
         self.special_effects = self.SpecialEffectsHigh
@@ -1244,6 +1248,7 @@ class Options(OptionSpace):
         self.output('music ', self.music)
         self.output('music_volume ', self.music_volume)
         self.output('first_mate_voice ', self.first_mate_voice)
+        self.output('background_audio', self.background_audio)
         self.output('gui_scale ', self.gui_scale)
         self.output('chatbox_scale ', self.chatbox_scale)
         self.output('special_effects ', self.special_effects)
