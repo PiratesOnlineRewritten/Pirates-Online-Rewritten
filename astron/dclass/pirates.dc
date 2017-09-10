@@ -1438,40 +1438,16 @@ dclass PiratesTimeManager : TimeManager {
 
 typedef uint32 shipList[];
 
+struct InterestLocations {
+  uint32 zoneId;
+  uint32 parentId;
+}
+
 dclass DistributedTeleportMgr : DistributedObject {
-  setParentingRules(string, string) broadcast ram;
-  initiateTeleport(uint8, uint8, uint32, string, uint32, string, int32, uint32, uint32) airecv clsend;
-  initiateTeleportAI(uint8, string);
-  teleportHasBegun(uint8, uint8, string, int32);
-  beginTeleportPull(uint32 [], string, uint8, string, uint32, uint8, uint32, uint32, int32, resultPair [], shipList [], uint32, uint32);
-  beginDeployThenTeleportPull(uint32, string, uint32);
-  requestTargetsLocation(uint32) airecv clsend;
-  _localTeleportToIdResponse(uint32, uint32);
-  requestTeleportToIsland(string) airecv clsend;
-  teleportToIslandResponse(uint32, uint32);
-  stowawayTeleportResponse(uint32, uint32);
-  requestTeleportToFishingShip() airecv clsend;
-  teleportToFishingShipResponse(uint32);
-  requestClearPreventDamage() airecv clsend;
-  requestCrossShardDeploy(uint32, string, uint32) clsend airecv;
-  setWelcomeShardMin(uint16);
-  createShardTeleport(DoId);
-  createLoginTeleport(DoId);
-  createTutorialTeleport(DoId);
-  createWelcomeWorldTeleport(DoId);
-  createLeaveWelcomeWorldTeleport(DoId, DoId);
-  createPlayerTeleport(DoId, DoId);
-  createInstanceTeleport(DoId [], uint8, string, DoId);
-  requestShardTeleport(DoId) clsend airecv;
-  requestPlayerTeleport(DoId, DoId) clsend airecv;
-  requestIslandTeleport(string) clsend airecv;
   requestInstanceTeleport(uint8, string) clsend airecv;
-  requestLocalTeleport() clsend airecv;
-  teleportMutexAcquired(uint32) airecv;
-  teleportMutexAcquiredWithId(uint32, DoId) airecv;
-  teleportMutexDeclined(uint32) airecv;
-  failTeleportRequest(int8);
-  notifyFriendVisit(uint32);
+  confirmTeleport(bool, InterestLocations [], DoId, DoId);
+  teleportInterestShard() clsend airecv;
+  teleportComplete() clsend airecv;
 };
 
 dclass DistributedTravelAgent : DistributedObjectGlobal {
@@ -1496,7 +1472,6 @@ dclass DistributedMatchMaker : DistributedObject {
 
 dclass DistributedTeleportHandler : DistributedObject {
   startTeleportProcess(uint32, uint32, uint32) airecv clsend;
-  continueTeleportToTZ() airecv clsend;
   waitInTZ(uint32 [], uint32) broadcast ram;
   teleportToInstanceReady(uint32) airecv clsend;
   continueTeleportToInstance(uint32, uint32, uint32, string, uint32, uint32, uint32, string, uint32) broadcast ram;

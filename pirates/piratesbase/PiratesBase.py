@@ -293,6 +293,7 @@ class PiratesBase(OTPBase):
         self.transitions.loadLetterbox()
         self.transitions.letterbox.setColorScale(0, 0, 0, 1)
         self.loadingScreen.endStep('PiratesBase')
+        self.accept('f4', lambda: self.oobe())
 
     def disableAudio(self):
         if not self.options.background_audio:

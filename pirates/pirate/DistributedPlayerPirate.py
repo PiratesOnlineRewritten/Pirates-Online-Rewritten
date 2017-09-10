@@ -1428,12 +1428,12 @@ class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, Distribu
         if self.pendingTeleportMgr:
             base.cr.relatedObjectMgr.abortRequest(self.pendingTeleportMgr)
             self.pendingTeleportMgr = None
+
         self.pendingTeleportMgr = base.cr.relatedObjectMgr.requestObjects([teleportMgrDoId], eachCallback=self.readyToTeleport)
-        return
 
     @report(types=['deltaStamp', 'module'], dConfigParam='teleport')
     def readyToTeleport(self, teleportMgr):
-        teleportMgr.initiateTeleport(self.teleportToType, self.teleportToName, shardId=self.getDefaultShard(), locationUid=self.returnLocation)
+        teleportMgr.initiateTeleport(0, '', shardId=self.getDefaultShard(), locationUid=self.returnLocation)
 
     def requestActivityAccepted(self):
         self.guiMgr.lookoutPage.requestActivityAccepted()

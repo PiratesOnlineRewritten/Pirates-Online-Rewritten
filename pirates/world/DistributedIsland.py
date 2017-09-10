@@ -191,14 +191,12 @@ class DistributedIsland(DistributedGameArea, DistributedCartesianGrid, ZoneLOD, 
             self.setZoneLevelOuter()
         localAvatar.clearInterestNamed(None, ['IslandLocal'])
         DistributedGameArea.handleOffStage(self)
-        DistributedCartesianGrid.handleOffStage(self)
         ZoneLOD.handleOffStage(self)
         return
 
     @report(types=['args'], dConfigParam=['connector', 'death-debug', 'dteleport'])
     def handleOnStage(self):
         DistributedGameArea.handleOnStage(self)
-        DistributedCartesianGrid.handleOnStage(self)
         ZoneLOD.handleOnStage(self)
         self.startCustomEffects()
         if self.lastZoneLevel == 0:

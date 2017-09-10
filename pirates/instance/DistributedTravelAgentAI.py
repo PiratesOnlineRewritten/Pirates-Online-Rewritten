@@ -13,7 +13,7 @@ class DistributedTravelAgentAI(DistributedObjectGlobalAI):
             if not avatar:
                 return
 
-            avatar.d_relayTeleportLoc(self.air.districtId, 0, 0)
+            avatar.d_relayTeleportLoc(self.air.districtId, 0, self.air.teleportMgr.doId)
 
         self.acceptOnce('generate-%d' % avatarId, handleGenerated)
         self.air.setAI(avatarId, self.air.ourChannel)

@@ -43,14 +43,10 @@ class DistributedInstanceBase(NodePath, DistributedObject, StagedObject):
         if self.pendingJail:
             self.cr.relatedObjectMgr.abortRequest(self.pendingJail)
             self.pendingJail = None
-        del self.islands
-        del self.playerSpawnPts
-        del self.playerBootPts
-        del self.worldGrid
+
         self.removeNode()
         self.cr.clearActiveWorld(self)
         DistributedObject.delete(self)
-        return
 
     def announceGenerate(self):
         self.reparentTo(render)
@@ -76,8 +72,6 @@ class DistributedInstanceBase(NodePath, DistributedObject, StagedObject):
 
     def setWorldGrid(self, grid):
         self.worldGrid = grid
-        if not self.isOnStage() and self.worldGrid:
-            self.worldGrid.goOffStage()
 
     def hasWater(self):
         if not self.isGenerated():
@@ -217,8 +211,6 @@ class DistributedInstanceBase(NodePath, DistributedObject, StagedObject):
             for area in self.islands.values():
                 area.goOffStage(area in cacheAreas)
 
-            if self.worldGrid:
-                self.worldGrid.goOffStage()
         StagedObject.handleOffStage(self)
 
     @report(types=['frameCount', 'args'], dConfigParam=['connector', 'jail'])
@@ -226,7 +218,6 @@ class DistributedInstanceBase(NodePath, DistributedObject, StagedObject):
         StagedObject.handleOnStage(self)
         self.cr.setActiveWorld(self)
         self.unstash()
-        self.worldGrid.goOnStage()
         for island in self.islands.values():
             if island:
                 island.goOnStage()

@@ -959,19 +959,19 @@ class PiratesClientRepository(OTPClientRepository):
         return self.removeTaggedInterest(self._worldStack.pop(-1), event)
 
     def getWorldStack(self):
-        return [ self.getInterestLocations(handle)[0] for handle in self._worldStack ]
+        return [] #[ self.getInterestLocations(handle)[0] for handle in self._worldStack ]
 
     @report(types=['args', 'deltaStamp'], dConfigParam='dteleport')
     def setWorldStack(self, worldLocations, event=None):
-        currentLocations = self.getWorldStack()
-        matches = [ pair[0] for pair in zip(currentLocations, worldLocations) if pair[0] == pair[1] ]
-        for x in range(len(currentLocations) - len(matches)):
-            self.popWorldInterest()
+        #currentLocations = self.getWorldStack()
+        #matches = [ pair[0] for pair in zip(currentLocations, worldLocations) if pair[0] == pair[1] ]
+        #for x in range(len(currentLocations) - len(matches)):
+        #    self.popWorldInterest()
 
-        for parentId, zoneId in worldLocations[len(matches):]:
+        for parentId, zoneId in worldLocations:#[len(matches):]:
             self.pushWorldInterest(parentId, zoneId, event=event)
 
-        return len(matches)
+        return 0#len(matches)
 
     @report(types=['args', 'deltaStamp'], dConfigParam='dteleport')
     def closeShard(self):

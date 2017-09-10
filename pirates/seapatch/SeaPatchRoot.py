@@ -33,6 +33,9 @@ class SeaPatchRoot(object):
     def animateUv(self, doAnimate):
         pass
 
+    def addFlatWell(self, name, area, zc0, zc1, zr0, zr1):
+        pass
+
     def enable(self):
         pass
 

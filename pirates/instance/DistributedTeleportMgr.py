@@ -37,7 +37,7 @@ class DistributedTeleportMgr(DistributedObject.DistributedObject):
         self.miniLog = None
         self.teleportQueue = []
         self.teleportQueueProcess = None
-        return
+        self.__teleportCallback = None
 
     def generate(self):
         DistributedObject.DistributedObject.generate(self)
@@ -241,9 +241,8 @@ class DistributedTeleportMgr(DistributedObject.DistributedObject):
         if friendDoId:
             self.d_requestPlayerTeleport(friendDoId, shardId)
         else:
-            if instanceName == '':
-                self.notify.error('cannot perform this teleport without instanceName')
             self.d_requestInstanceTeleport(instanceType, instanceName)
+
         return
         currInteractive = base.cr.interactionMgr.getCurrentInteractive()
         if currInteractive:
@@ -493,7 +492,7 @@ class DistributedTeleportMgr(DistributedObject.DistributedObject):
         else:
             localAvatar.confirmTeleport(teleportConfirmation, feedback=True)
 
-    def d_requestInstanceTeleport(self, instanceType, instanceName, skipConfirm=False):
+    def d_requestInstanceTeleport(self, instanceType, instanceName, skipConfirm=True):
 
         def teleportConfirmation(confirmed):
             if confirmed:
@@ -503,6 +502,61 @@ class DistributedTeleportMgr(DistributedObject.DistributedObject):
             teleportConfirmation(True)
         else:
             localAvatar.confirmTeleport(teleportConfirmation, feedback=True)
+
+    def confirmTeleport(self, success, locations, worldDoId, areaDoId):
+        if not success:
+            self.notify.error('Failed to confirm teleport!')
+
+        if not locations or not worldDoId or not areaDoId:
+            self.notify.error('Invalid interest locations!')
+
+        self.teleportAddInterest(locations, worldDoId, areaDoId)
+
+    def teleportAddInterest(self, worldLocations, worldDoId, areaDoId):
+        if not self.__teleportCallback:
+            self.__teleportCallback = self.teleportAddInterestShard
+
+        self.cr.queueAllInterestsCompleteEvent()
+        self.cr.setAllInterestsCompleteCallback(lambda: self.__teleportCallback(
+            worldDoId, areaDoId))
+
+        self.cr.setWorldStack(worldLocations, event=self.getAddInterestEventName())
+
+    def teleportAddInterestShard(self, worldDoId, areaDoId):
+        world = self.cr.getDo(worldDoId)
+
+        if not world:
+            self.notify.error('Failed to get unknown world object %d!' % worldDoId)
+
+        world.goOnStage()
+        self.__teleportCallback = self.teleportAddInterestArea
+        self.sendUpdate('teleportInterestShard', [])
+
+    def teleportAddInterestArea(self, worldDoId, areaDoId):
+        area = self.cr.getDo(areaDoId)
+
+        if not area:
+            self.notify.error('Failed to get unknown area object %d!' % areaDoId)
+
+        area.goOnStage()
+        self.__teleportCallback = None
+        self.teleportAddInterestComplete(area)
+
+    def teleportAddInterestComplete(self, area):
+        localAvatar.reparentTo(area)
+        localAvatar.spawnWiggle()
+        localAvatar.enableGridInterest()
+
+        #try:
+        #    localAvatar.sendCurrentPosition()
+        #except ValueError:
+        #    localAvatar.reverseLs()
+        #    self.notify.error('avatar placed at bad position %s in area %s (%s) at spawnPt %s' % (str(localAvatar.getPos()), area, area.uniqueId, str(self.spawnPt)))
+
+        self.cr.loadingScreen.hide()
+        base.transitions.fadeIn()
+        #localAvatar.b_setGameState('LandRoam')
+        self.sendUpdate('teleportComplete', [])
 
     def notifyFriendVisit(self, avId):
         av = base.cr.identifyAvatar(avId)

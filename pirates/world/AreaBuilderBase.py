@@ -1181,7 +1181,7 @@ class AreaBuilderBase(DirectObject.DirectObject):
         for i in range(numChildren - 1):
             model.lod.node().addSwitch(switches[i][0], switches[i][1])
 
-        model.lod.node().addSwitch(1000000, switches[numChildren - 1][1])
+        #model.lod.node().addSwitch(1000000, switches[numChildren - 1][1])
         return model
 
     def setupSwitchDistances(self, lodNode, root):

@@ -128,7 +128,7 @@ class EnvironmentEffects(DirectObject):
                          locator]
                     else:
                         list = self.holidayLocators.get(effectEntry)
-                        list.append(locator)
+                        #list.append(locator)
                         self.holidayLocators[effectEntry] = list
                 elif not locator.isEmpty():
                     effectParent = locator
