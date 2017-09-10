@@ -10,15 +10,15 @@ class AreaBuilderBaseAI(DirectObject):
         self.air = air
         self.parent = parent
         self.objectList = {}
-    
+
     def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic):
         newObj = None
 
         if objType == ObjectList.AREA_TYPE_ISLAND:
             newObj = self.__createIsland(objectData, parent, parentUid, objKey, dynamic)
-        
+
         return newObj
-    
+
     def __createIsland(self, objectData, parent, parentUid, objKey, dynamic):
         island = DistributedIslandAI(self.air)
         island.setUniqueId(objKey)
@@ -32,7 +32,7 @@ class AreaBuilderBaseAI(DirectObject):
         self.addObject(island)
 
         return island
-    
+
     def addObject(self, object):
         if not object:
             self.notify.warning('Cannot add an invalid object!')
@@ -41,10 +41,10 @@ class AreaBuilderBaseAI(DirectObject):
         if object.doId in self.objectList:
             self.notify.warning('Cannot add an already existing object %d!' % object.doId)
             return
-        
+
         self.parent.uidMgr.addUid(object.getUniqueId(), object.doId)
         self.objectList[object.doId] = object
-    
+
     def removeObject(self, object):
         if not object:
             self.notify.warning('Cannot remove an invalid object!')
@@ -53,16 +53,16 @@ class AreaBuilderBaseAI(DirectObject):
         if object.doId not in self.objectList:
             self.notify.warning('Cannot remove a non-existant object %d!' % object.doId)
             return
-        
+
         self.parent.uidMgr.removeUid(object.getUniqueId())
         del self.objectList[object.doId]
-    
+
     def deleteObject(self, doId):
         object = self.objectList.get(doId)
 
         if not doId:
             self.notify.warning('Cannot delete an invalid object!')
             return
-        
+
         object.requestDelete()
         self.removeObject(object)

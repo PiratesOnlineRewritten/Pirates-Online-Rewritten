@@ -1446,8 +1446,9 @@ struct InterestLocations {
 dclass DistributedTeleportMgr : DistributedObject {
   requestInstanceTeleport(uint8, string) clsend airecv;
   confirmTeleport(bool, InterestLocations [], DoId, DoId);
-  teleportInterestShard() clsend airecv;
+  teleportInitiated() clsend airecv;
   teleportComplete() clsend airecv;
+  teleportCleanup();
 };
 
 dclass DistributedTravelAgent : DistributedObjectGlobal {

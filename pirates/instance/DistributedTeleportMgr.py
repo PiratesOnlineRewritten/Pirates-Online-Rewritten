@@ -529,8 +529,9 @@ class DistributedTeleportMgr(DistributedObject.DistributedObject):
             self.notify.error('Failed to get unknown world object %d!' % worldDoId)
 
         world.goOnStage()
+
         self.__teleportCallback = self.teleportAddInterestArea
-        self.sendUpdate('teleportInterestShard', [])
+        self.sendUpdate('teleportInitiated', [])
 
     def teleportAddInterestArea(self, worldDoId, areaDoId):
         area = self.cr.getDo(areaDoId)
@@ -539,13 +540,16 @@ class DistributedTeleportMgr(DistributedObject.DistributedObject):
             self.notify.error('Failed to get unknown area object %d!' % areaDoId)
 
         area.goOnStage()
+
         self.__teleportCallback = None
         self.teleportAddInterestComplete(area)
 
     def teleportAddInterestComplete(self, area):
         localAvatar.reparentTo(area)
+        localAvatar.setPosHpr(area, 0, 0, 0, 0, 0, 0)
         localAvatar.spawnWiggle()
         localAvatar.enableGridInterest()
+        #localAvatar.b_setGameState('LandRoam')
 
         #try:
         #    localAvatar.sendCurrentPosition()
@@ -553,10 +557,11 @@ class DistributedTeleportMgr(DistributedObject.DistributedObject):
         #    localAvatar.reverseLs()
         #    self.notify.error('avatar placed at bad position %s in area %s (%s) at spawnPt %s' % (str(localAvatar.getPos()), area, area.uniqueId, str(self.spawnPt)))
 
+        self.sendUpdate('teleportComplete', [])
+
+    def teleportCleanup(self):
         self.cr.loadingScreen.hide()
         base.transitions.fadeIn()
-        #localAvatar.b_setGameState('LandRoam')
-        self.sendUpdate('teleportComplete', [])
 
     def notifyFriendVisit(self, avId):
         av = base.cr.identifyAvatar(avId)
@@ -564,7 +569,6 @@ class DistributedTeleportMgr(DistributedObject.DistributedObject):
             avName = av.getName()
         else:
             avName = PLocalizer.Someone
+
         localAvatar.setSystemMessage(avId, OTPLocalizer.WhisperComingToVisit % avName)
-        localAvatar.guiMgr.messageStack.addTextMessage(OTPLocalizer.WhisperComingToVisit % avName, icon=('friends',
-                                                                                                         None))
-        return None
+        localAvatar.guiMgr.messageStack.addTextMessage(OTPLocalizer.WhisperComingToVisit % avName, icon=('friends', None))
