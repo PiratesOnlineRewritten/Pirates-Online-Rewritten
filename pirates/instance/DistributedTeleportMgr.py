@@ -517,9 +517,7 @@ class DistributedTeleportMgr(DistributedObject.DistributedObject):
             self.__teleportCallback = self.teleportAddInterestShard
 
         self.cr.queueAllInterestsCompleteEvent()
-        self.cr.setAllInterestsCompleteCallback(lambda: self.__teleportCallback(
-            worldDoId, areaDoId))
-
+        self.cr.setAllInterestsCompleteCallback(lambda: self.__teleportCallback(worldDoId, areaDoId))
         self.cr.setWorldStack(worldLocations, event=self.getAddInterestEventName())
 
     def teleportAddInterestShard(self, worldDoId, areaDoId):
@@ -549,7 +547,7 @@ class DistributedTeleportMgr(DistributedObject.DistributedObject):
         localAvatar.setPosHpr(area, 0, 0, 0, 0, 0, 0)
         localAvatar.spawnWiggle()
         localAvatar.enableGridInterest()
-        #localAvatar.b_setGameState('LandRoam')
+        localAvatar.b_setGameState('LandRoam')
 
         #try:
         #    localAvatar.sendCurrentPosition()

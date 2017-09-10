@@ -11,6 +11,7 @@ from pirates.piratesbase.UniqueIdManager import UniqueIdManager
 from pirates.ai.PiratesTimeManagerAI import PiratesTimeManagerAI
 from pirates.instance.DistributedTeleportMgrAI import DistributedTeleportMgrAI
 from pirates.piratesbase.DistributedTimeOfDayManagerAI import DistributedTimeOfDayManagerAI
+from pirates.distributed.TargetManagerAI import TargetManagerAI
 from pirates.world.WorldCreatorAI import WorldCreatorAI
 
 class PiratesAIRepository(PiratesInternalRepository):
@@ -67,15 +68,18 @@ class PiratesAIRepository(PiratesInternalRepository):
         """
 
         self.timeManager = PiratesTimeManagerAI(self)
-        self.timeManager.generateWithRequired(2)
+        self.timeManager.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
 
         self.travelAgent = self.generateGlobalObject(OTP_DO_ID_PIRATES_TRAVEL_AGENT, 'DistributedTravelAgent')
 
         self.teleportMgr = DistributedTeleportMgrAI(self)
-        self.teleportMgr.generateWithRequired(2)
+        self.teleportMgr.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
 
         self.timeOfDayMgr = DistributedTimeOfDayManagerAI(self)
-        self.timeOfDayMgr.generateWithRequired(2)
+        self.timeOfDayMgr.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
+
+        self.targetMgr = TargetManagerAI(self)
+        self.targetMgr.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
 
     def createZones(self):
         """

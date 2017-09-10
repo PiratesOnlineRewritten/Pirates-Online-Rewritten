@@ -717,7 +717,7 @@ class MotionFSM(FSM):
         if self.av.canMove:
             self.av.startSmooth()
         if self.av.isLocal():
-            self.av.startPosHprBroadcast()
+            #self.av.startPosHprBroadcast()
             self.av.collisionsOn()
             self.motionAnimFSM.startTrackAnimToSpeed()
             self.av.enableAvatarControls()
@@ -733,7 +733,7 @@ class MotionFSM(FSM):
             self.av.stopLookAroundTask()
             if self.av.loadAnimatedHead == False:
                 self.av.headNode.setHpr(self.av.headFudgeHpr)
-            self.av.stopPosHprBroadcast()
+            #self.av.stopPosHprBroadcast()
             self.av.collisionsOff()
             self.motionAnimFSM.stopTrackAnimToSpeed()
             self.av.disableAvatarControls()
