@@ -167,17 +167,20 @@ class MotionAnimFSM(FSM):
                             state = 'WalkForward'
                     else:
                         state = 'Idle'
-                    zeroSpeedLimit = 0.1
-                    if globalClock.getFrameTime() - self.zeroSpeedTimer < zeroSpeedLimit and self.motionFSMLag:
-                        if state != self.state and self.state != 'Idle':
-                            return
-                    if animScaleAdjust:
-                        self.adjustAnimScale(state, forwardSpeed, slideSpeed)
-                if self.state != state:
-                    if self.isInTransition():
-                        self.demand(state)
-                    else:
-                        self.request(state)
+            
+            zeroSpeedLimit = 0.1
+            if globalClock.getFrameTime() - self.zeroSpeedTimer < zeroSpeedLimit and self.motionFSMLag:
+                if state != self.state and self.state != 'Idle':
+                    return
+            
+            if animScaleAdjust:
+                self.adjustAnimScale(state, forwardSpeed, slideSpeed)
+            
+            if self.state != state:
+                if self.isInTransition():
+                    self.demand(state)
+                else:
+                    self.request(state)
             self.lastMoveSpeed = forwardSpeed
             self.zeroSpeedTimer = globalClock.getFrameTime()
         finally:
@@ -220,17 +223,17 @@ class MotionAnimFSM(FSM):
                     state = 'SpinRight'
                 else:
                     state = 'Idle'
-                if self.state != state:
-                    if self.av.doId < 300000000:
-                        pass
-                    if self.isInTransition():
-                        self.demand(state)
-                    else:
-                        self.request(state)
-                    if self.av.isLocal() and self.av.getGameState() == 'Emote':
-                        messenger.send('localAvatarExitEmote')
-                    if not self.av.isLocal() and self.av.getGameState() == 'Emote':
-                        self.av.playEmote(self.av.emoteId)
+            
+            if self.state != state:
+                if self.isInTransition():
+                    self.demand(state)
+                else:
+                    self.request(state)
+                
+                if self.av.isLocal() and self.av.getGameState() == 'Emote':
+                    messenger.send('localAvatarExitEmote')
+                if not self.av.isLocal() and self.av.getGameState() == 'Emote':
+                    self.av.playEmote(self.av.emoteId)
         finally:
             self.fsmLock.release()
 
@@ -239,13 +242,15 @@ class MotionAnimFSM(FSM):
 
     @report(types=['args', 'deltaStamp'], dConfigParam=['jump'])
     def handleAirborneEvent(self, event):
+        return # TODO: FIXME!
         if event == 'Jump':
             self.av.b_playMotionAnim(self.ANIMSTATE.Jump)
-        if event == 'Land':
+        elif event == 'Land':
             self.av.b_playMotionAnim(self.ANIMSTATE.Land)
 
     @report(types=['args', 'deltaStamp'], dConfigParam=['jump'])
     def playMotionAnim(self, anim, local=True):
+        return # TODO: FIXME!
         if anim == self.ANIMSTATE.Jump:
             if local:
                 self.jump()
@@ -263,6 +268,7 @@ class MotionAnimFSM(FSM):
 
     @report(types=['args', 'deltaStamp'], dConfigParam=['jump'])
     def jump(self):
+        return # TODO: FIXME!
         self.fsmLock.acquire()
         try:
             animInfo = ItemGlobals.getJumpAnimInfo(self.av.getCurrentWeapon())
@@ -714,8 +720,8 @@ class MotionFSM(FSM):
         self.av.loop(anim, rate, blendT=0.0)
 
     def enterOn(self):
-        if self.av.canMove:
-            self.av.startSmooth()
+        #if self.av.canMove:
+        #    self.av.startSmooth()
         if self.av.isLocal():
             #self.av.startPosHprBroadcast()
             self.av.collisionsOn()
@@ -752,7 +758,7 @@ class MotionFSM(FSM):
             self.startCheckUnderWater()
 
     def exitMoveLock(self):
-        self.av.stopSmooth()
+        #self.av.stopSmooth()
         if self.av.isLocal():
             self.av.stopLookAroundTask()
             if self.av.loadAnimatedHead == False:

@@ -20,6 +20,8 @@ class AreaBuilderBaseAI(DirectObject):
         return newObj
 
     def __createIsland(self, objectData, parent, parentUid, objKey, dynamic):
+        if objectData.get('Name', 'default') != 'PortRoyalIsland': # TODO: Remove this shit...
+            return
         island = DistributedIslandAI(self.air)
         island.setUniqueId(objKey)
         island.setName(objectData.get('Name', 'island'))

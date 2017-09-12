@@ -75,6 +75,7 @@ disable-sticky-keys 1
 # Other:
 want-logout #f
 skip-tutorial #f
+notify-level warning
 
 # Clock:
 clock-mode limited
