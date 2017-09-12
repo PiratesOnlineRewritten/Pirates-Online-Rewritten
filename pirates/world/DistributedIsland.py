@@ -316,7 +316,7 @@ class DistributedIsland(DistributedGameArea, DistributedCartesianGrid, ZoneLOD, 
             self.updateAvReturnLocation(child)
             messenger.send('docked')
             self.accept('ship_vis_change', self.shipVisibilityChanged)
-            if not base.cr.config.GetBool('remove-island-barriers', 0):
+            if base.cr.config.GetBool('remove-island-barriers', False):
                 self.setupPlayerBarrier()
             base.hideShipNametags = True
             messenger.send('hide-ship-nametags')

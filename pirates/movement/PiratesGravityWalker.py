@@ -1,7 +1,6 @@
 from direct.controls.GravityWalker import GravityWalker
 from direct.showbase.InputStateGlobal import inputState
 from pandac.PandaModules import *
-from direct.task.Task import Task
 
 class PiratesGravityWalker(GravityWalker):
     notify = directNotify.newCategory('PiratesGravityWalker')
@@ -22,6 +21,7 @@ class PiratesGravityWalker(GravityWalker):
         if base.localAvatar.getAutoRun():
             forward = 1
             reverse = 0
+        
         self.speed = forward and self.avatarControlForwardSpeed or reverse and -self.avatarControlReverseSpeed
         self.slideSpeed = reverse and slideLeft and -self.avatarControlReverseSpeed * 0.75 or reverse and slideRight and self.avatarControlReverseSpeed * 0.75 or slideLeft and -self.avatarControlForwardSpeed * 0.75 or slideRight and self.avatarControlForwardSpeed * 0.75
         self.rotationSpeed = turnLeft and self.avatarControlRotateSpeed or turnRight and -self.avatarControlRotateSpeed
@@ -114,7 +114,7 @@ class PiratesGravityWalker(GravityWalker):
                         right.normalize()
                     self.vel = Vec3(self.vel + right * slideDistance)
                 self.vel = Vec3(rotMat.xform(self.vel))
-                step = self.vel + self.priorParent * dt
+                step = self.vel + (self.priorParent * dt)
                 self.avatarNodePath.setFluidPos(Point3(self.avatarNodePath.getPos() + step))
                 self.vel /= dt
             self.avatarNodePath.setH(self.avatarNodePath.getH() + rotation)
@@ -129,12 +129,10 @@ class PiratesGravityWalker(GravityWalker):
     def disableJump(self):
         if base.localAvatar.controlManager.forceAvJumpToken is None:
             base.localAvatar.controlManager.disableAvatarJump()
-        return
 
     def enableJump(self):
         if base.localAvatar.controlManager.forceAvJumpToken is not None:
             base.localAvatar.controlManager.enableAvatarJump()
-        return
 
     def abortJump(self):
         taskMgr.remove('jumpWait')
