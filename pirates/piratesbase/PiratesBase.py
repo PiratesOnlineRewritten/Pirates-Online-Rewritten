@@ -68,10 +68,12 @@ class PiratesBase(OTPBase):
         self.bamCache = BamCache.getGlobalPtr()
         if self.config.GetBool('want-dev', 0):
             flavor = self.config.GetString('dev-branch-flavor', '')
+            flavor = "".join([c for c in flavor if c.isalpha() or c.isdigit() or c=='_']).rstrip()
+            print(':%s: Loading dev branch flavor: %s' % (self.__class__.__name__, flavor))
             if flavor:
-                cachePath = '/c/cache_%s' % (flavor,)
+                cachePath = '../cache/cache_%s' % (flavor,)
             else:
-                cachePath = '/c/cache'
+                cachePath = '../cache/cache'
             self.bamCache.setRoot(Filename(cachePath))
         else:
             self.bamCache.setRoot(Filename('./cache'))
@@ -294,8 +296,9 @@ class PiratesBase(OTPBase):
         self.transitions.letterbox.setColorScale(0, 0, 0, 1)
         self.loadingScreen.endStep('PiratesBase')
 
-        self.accept('f4', lambda: self.oobe())
-        self.accept('f5', lambda: self.localAvatar.setZ(self.localAvatar.getZ() + 15))
+        if config.GetBool('want-dev', False):
+            self.accept('f4', lambda: self.oobe())
+            self.accept('f5', lambda: self.localAvatar.setZ(self.localAvatar.getZ() + 15))
 
     def disableAudio(self):
         if not self.options.background_audio:
