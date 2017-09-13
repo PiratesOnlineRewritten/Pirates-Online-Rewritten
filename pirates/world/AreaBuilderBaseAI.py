@@ -1,7 +1,6 @@
 from direct.showbase.DirectObject import DirectObject
 from direct.directnotify.DirectNotifyGlobal import directNotify
 from pirates.leveleditor import ObjectList
-from pirates.world.DistributedIslandAI import DistributedIslandAI
 
 class AreaBuilderBaseAI(DirectObject):
     notify = directNotify.newCategory('AreaBuilderBaseAI')
@@ -16,12 +15,19 @@ class AreaBuilderBaseAI(DirectObject):
 
         if objType == ObjectList.AREA_TYPE_ISLAND:
             newObj = self.__createIsland(objectData, parent, parentUid, objKey, dynamic)
+        else:
+            parent = self.air.worldCreator.world.uidMgr.justGetMeMeObject(parentUid)
+
+            if not parent:
+                return newObj
+
+            parent.builder.createObject(objType, objectData, parent, parentUid, objKey, dynamic)
 
         return newObj
 
     def __createIsland(self, objectData, parent, parentUid, objKey, dynamic):
-        if objectData.get('Name', 'default') != 'PortRoyalIsland': # TODO: Remove this shit...
-            return
+        from pirates.world.DistributedIslandAI import DistributedIslandAI
+
         island = DistributedIslandAI(self.air)
         island.setUniqueId(objKey)
         island.setName(objectData.get('Name', 'island'))

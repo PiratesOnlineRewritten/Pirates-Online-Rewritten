@@ -1,6 +1,7 @@
 from direct.distributed.DistributedNodeAI import DistributedNodeAI
 from direct.directnotify import DirectNotifyGlobal
 from pirates.piratesbase.UniqueIdManager import UniqueIdManager
+from pirates.world.GridAreaBuilderAI import GridAreaBuilderAI
 
 class DistributedGameAreaAI(DistributedNodeAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedGameAreaAI')
@@ -13,6 +14,7 @@ class DistributedGameAreaAI(DistributedNodeAI):
         self.uniqueId = ''
         self.name = ''
         self.uidMgr = UniqueIdManager(self.air)
+        self.builder = GridAreaBuilderAI(self.air, self)
 
     def setModelPath(self, modelPath):
         self.modelPath = modelPath
