@@ -138,3 +138,6 @@ account-bridge/
 # Editor
 editor/
 editor-src/
+
+# Personal PRC
+**/personal.prc

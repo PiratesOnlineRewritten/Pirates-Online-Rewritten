@@ -16,6 +16,10 @@ args = parser.parse_args()
 for prc in args.config:
     loadPrcFile(prc)
 
+import os
+if os.path.exists('config/personal.prc'):
+    loadPrcFile('config/personal.prc')
+
 localconfig = ''
 if args.base_channel: localconfig += 'air-base-channel %s\n' % args.base_channel
 if args.max_channels: localconfig += 'air-channel-allocation %s\n' % args.max_channels
