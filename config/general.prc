@@ -63,7 +63,7 @@ restore-initial-pose #f
 
 # Cache:
 model-cache-max-kbytes 262144
-want-disk-cache 1
+want-disk-cache #t
 state-cache #t
 transform-cache #t
 model-cache-textures #f
@@ -316,6 +316,7 @@ enable-pipe-selector #f
 enable-stereo-display #t
 want-gameoptions-hdr #t
 enable-frame-rate-counter #t
+allow-options-override #f # BROKEN WITH CERTAIN DRIVERS
 
 # Screenshot Viewer:
 want-screenshot-viewer #t
@@ -328,5 +329,9 @@ sync-video #f
 skip-tutorial #t
 force-tutorial #f
 
+# World:
+default-world PortRoyalWorld
+
 # Developer:
 want-dev #t
+#dev-branch-flavor development
