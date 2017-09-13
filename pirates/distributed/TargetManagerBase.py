@@ -9,7 +9,7 @@ class TargetManagerBase():
         del self.objectDict
 
     def getUniqueId(self, obj):
-        return obj.id()
+        return obj.get_key()
 
     def addTarget(self, nodePathId, obj):
         self.objectDict[nodePathId] = obj
@@ -21,5 +21,5 @@ class TargetManagerBase():
     def getObjectFromNodepath(self, nodePath):
         target = nodePath.getNetPythonTag('MonstrousObject')
         if not target:
-            target = self.objectDict.get(nodePath.id(), None)
+            target = self.objectDict.get(nodePath.get_key(), None)
         return target

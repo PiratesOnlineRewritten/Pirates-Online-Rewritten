@@ -1078,7 +1078,7 @@ class CombatAnimations():
         except StandardError, e:
             raise StandardError('(localAv %s) Invalid projectile parameters(%s,%s,%s,%s,%s,%s,%s)' % (av.isLocal(), startPos, endPos, duration, startVel, endPlaneZ, wayPoint, timeToWayPoint))
 
-        ival = Sequence(projInterval, Func(self.removeCollider, av, collNode), Func(grenade.destroy), name='Grenade-%s-%s' % (av.doId, grenade.id()))
+        ival = Sequence(projInterval, Func(self.removeCollider, av, collNode), Func(grenade.destroy), name='Grenade-%s-%s' % (av.doId, grenade.get_key()))
         grenade.setIval(ival, start=True)
         return
 
