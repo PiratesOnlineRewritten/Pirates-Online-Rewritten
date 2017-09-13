@@ -1,8 +1,11 @@
 from direct.distributed.DistributedObjectAI import DistributedObjectAI
 from direct.directnotify import DirectNotifyGlobal
+from direct.task import Task
 from pirates.piratesbase.TimeOfDayManagerBase import TimeOfDayManagerBase
 from pirates.piratesbase import TODDefs
+from pirates.piratesbase import PiratesGlobals
 from direct.distributed.ClockDelta import globalClockDelta
+import random
 
 class DistributedTimeOfDayManagerAI(DistributedObjectAI, TimeOfDayManagerBase):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedTimeOfDayManagerAI')
@@ -11,8 +14,8 @@ class DistributedTimeOfDayManagerAI(DistributedObjectAI, TimeOfDayManagerBase):
         DistributedObjectAI.__init__(self, air)
         TimeOfDayManagerBase.__init__(self)
 
-        self.cycleType = TODDefs.TOD_REGULAR_CYCLE
-        self.cycleSpeed = 0
+        self.cycleType = config.GetInt('tod-starting-cycle', TODDefs.TOD_REGULAR_CYCLE)
+        self.cycleSpeed = config.GetInt('tod-cycle-speed', 1)
         self.startingNetTime = globalClockDelta.getRealNetworkTime(bits=32)
         self.timeOffset = 0
         self.isPaused = 0
@@ -21,7 +24,27 @@ class DistributedTimeOfDayManagerAI(DistributedObjectAI, TimeOfDayManagerBase):
         self.startPhase = 0
         self.targetPhase = 0
         self.targetTime = 0
-        self.isJolly = 0
+        self.isJolly = int(config.GetBool('start-moon-jolly', False))
+
+    def announceGenerate(self):
+        DistributedObjectAI.announceGenerate(self)
+        self.cycleTask = taskMgr.doMethodLater(1, self.__runCycle, 'runCycle-%d' % self.doId)
+
+    def delete(self):
+        DistributedObjectAI.delete(self)
+        taskMgr.remove(self.cycleTask)
+
+    def __runCycle(self, task):
+        if self.isPaused:
+            return task.again
+
+        REALSECONDS_PER_GAMEHOUR = PiratesGlobals.TOD_REALSECONDS_PER_GAMEDAY / self.cycleSpeed
+        self.timeOffset += REALSECONDS_PER_GAMEHOUR 
+
+        if self.getCurrentIngameTime() >= PiratesGlobals.TOD_GAMEHOURS_IN_GAMEDAY:
+            self.timeOffset = 0
+
+        return task.again
 
     def syncTOD(self, cycleType, cycleSpeed, startingNetTime, timeOffset):
         self.cycleType = cycleType
@@ -53,7 +76,12 @@ class DistributedTimeOfDayManagerAI(DistributedObjectAI, TimeOfDayManagerBase):
         return self.isPaused
 
     def requestSync(self):
-        pass
+        avatar = self.air.getAvatarIdFromSender()
+
+        if not avatar:
+            return
+
+        self.sendUpdateToAvatarId(avatar, 'syncTOD', [self.cycleType, self.cycleSpeed, self.startingNetTime, self.timeOffset])
 
     def setEnvSubs(self, subList):
         self.subList = subList
@@ -96,3 +124,24 @@ class DistributedTimeOfDayManagerAI(DistributedObjectAI, TimeOfDayManagerBase):
 
     def getMoonJolly(self):
         return self.isJolly
+
+    def getCurrentIngameTime(self, time=None):
+        cycleSpeed = self.cycleSpeed
+        if cycleSpeed <= 0:
+            cycleSpeed = 1
+
+        if time is None:
+            currentTime = globalClockDelta.networkToLocalTime(
+                globalClockDelta.getFrameNetworkTime(bits=32))
+        else:
+            currentTime = time
+        REALSECONDS_PER_GAMEDAY = PiratesGlobals.TOD_REALSECONDS_PER_GAMEDAY / cycleSpeed
+        REALSECONDS_PER_GAMEHOUR = float(
+            REALSECONDS_PER_GAMEDAY /
+            PiratesGlobals.TOD_GAMEHOURS_IN_GAMEDAY)
+        cycleDuration = REALSECONDS_PER_GAMEHOUR * \
+            PiratesGlobals.TOD_GAMEHOURS_IN_GAMEDAY
+        timeElapsed = currentTime - self.startingNetTime
+        timeIntoCycle = (timeElapsed + self.timeOffset) % cycleDuration
+        hoursIntoCycle = timeIntoCycle / REALSECONDS_PER_GAMEHOUR
+        return hoursIntoCycle
