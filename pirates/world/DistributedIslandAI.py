@@ -6,6 +6,7 @@ from pirates.battle.Teamable import Teamable
 
 class DistributedIslandAI(DistributedGameAreaAI, DistributedCartesianGridAI, Teamable):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedIslandAI')
+    notify.setInfo(True)
 
     def __init__(self, air):
         DistributedCartesianGridAI.__init__(self, air, ISLAND_GRID_STARTING_ZONE, ISLAND_GRID_SIZE,

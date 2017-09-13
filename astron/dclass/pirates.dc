@@ -622,7 +622,7 @@ dclass DistributedLocatableObject : DistributedObject {
   locationChange(string);
 };
 
-dclass DistributedInteractive : DistributedNode, DistributedLocatableObject {
+dclass DistributedInteractive : DistributedLocatableObject, DistributedNode {
   requestInteraction(uint32, uint8, bool) clsend airecv;
   requestExit() clsend airecv;
   demandExit() clsend airecv;
