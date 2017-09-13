@@ -2,6 +2,7 @@ from pirates.world.AreaBuilderBaseAI import AreaBuilderBaseAI
 from direct.directnotify.DirectNotifyGlobal import directNotify
 from pirates.interact.DistributedSearchableContainerAI import DistributedSearchableContainerAI
 from pirates.minigame.DistributedFishingSpotAI import DistributedFishingSpotAI
+from pirates.minigame.DistributedPotionCraftingTableAI import DistributedPotionCraftingTableAI
 from pirates.piratesbase import PiratesGlobals
 
 class GridAreaBuilderAI(AreaBuilderBaseAI):
@@ -11,6 +12,7 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         AreaBuilderBaseAI.__init__(self, air, parent)
         self.wantSearchables = config.GetBool('want-searchables', True)
         self.wantFishing = config.GetBool('want-fishing', True)
+        self.wantPotionTable = config.GetBool('want-potion-table', True)
 
     def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic):
         newObj = None
@@ -19,6 +21,8 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
             newobj = self.__generateSearchableContainer(parent, parentUid, objKey, objectData)
         elif objType == 'FishingSpot' and self.wantFishing:
             newObj = self.__generateFishingSpot(parent, parentUid, objKey, objectData)
+        elif objType == 'PotionTable' and self.wantPotionTable:
+            newObj = self.__generatePotionTable(parent, parentUid, objKey, objectData)
 
         return newObj
 
@@ -58,3 +62,18 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         self.notify.debug('Generating Fishing Spot (%s) under zone %d in %s at %s with doId %d' % (objKey, fishingSpot.zoneId, locationName, fishingSpot.getPos(), fishingSpot.doId))
 
         return fishingSpot
+
+    def __generatePotionTable(self, parent, parentUid, objKey, objectData):
+        table = DistributedPotionCraftingTableAI(self.air)
+
+        table.setPos(objectData['Pos'])
+        table.setHpr(objectData['Hpr'])
+        table.setScale(objectData['Scale'])
+
+        parent.generateChildWithRequired(table, PiratesGlobals.IslandLocalZone)
+        self.addObject(table)
+
+        locationName = parent.getLocalizerName()
+        self.notify.debug('Generating Potion Crafting Table (%s) under zone %d in %s at %s with doId %d' % (objKey, table.zoneId, locationName, table.getPos(), table.doId))
+
+        return table
