@@ -28,7 +28,8 @@ class DistributedTimeOfDayManagerAI(DistributedObjectAI, TimeOfDayManagerBase):
 
     def announceGenerate(self):
         DistributedObjectAI.announceGenerate(self)
-        self.cycleTask = taskMgr.doMethodLater(1, self.__runCycle, 'runCycle-%d' % self.doId)
+
+        self.cycleTask = taskMgr.doMethodLater(1, self.__runCycle, self.uniqueName('runCycle'))
 
     def delete(self):
         DistributedObjectAI.delete(self)
@@ -76,12 +77,12 @@ class DistributedTimeOfDayManagerAI(DistributedObjectAI, TimeOfDayManagerBase):
         return self.isPaused
 
     def requestSync(self):
-        avatar = self.air.getAvatarIdFromSender()
+        avatar = self.air.doId2do.get(self.air.getAvatarIdFromSender())
 
         if not avatar:
             return
 
-        self.sendUpdateToAvatarId(avatar, 'syncTOD', [self.cycleType, self.cycleSpeed, self.startingNetTime, self.timeOffset])
+        self.sendUpdateToAvatarId(avatar.doId, 'syncTOD', [self.cycleType, self.cycleSpeed, self.startingNetTime, self.timeOffset])
 
     def setEnvSubs(self, subList):
         self.subList = subList
@@ -135,12 +136,10 @@ class DistributedTimeOfDayManagerAI(DistributedObjectAI, TimeOfDayManagerBase):
                 globalClockDelta.getFrameNetworkTime(bits=32))
         else:
             currentTime = time
+       
         REALSECONDS_PER_GAMEDAY = PiratesGlobals.TOD_REALSECONDS_PER_GAMEDAY / cycleSpeed
-        REALSECONDS_PER_GAMEHOUR = float(
-            REALSECONDS_PER_GAMEDAY /
-            PiratesGlobals.TOD_GAMEHOURS_IN_GAMEDAY)
-        cycleDuration = REALSECONDS_PER_GAMEHOUR * \
-            PiratesGlobals.TOD_GAMEHOURS_IN_GAMEDAY
+        REALSECONDS_PER_GAMEHOUR = float(REALSECONDS_PER_GAMEDAY / PiratesGlobals.TOD_GAMEHOURS_IN_GAMEDAY)
+        cycleDuration = REALSECONDS_PER_GAMEHOUR * PiratesGlobals.TOD_GAMEHOURS_IN_GAMEDAY
         timeElapsed = currentTime - self.startingNetTime
         timeIntoCycle = (timeElapsed + self.timeOffset) % cycleDuration
         hoursIntoCycle = timeIntoCycle / REALSECONDS_PER_GAMEHOUR
