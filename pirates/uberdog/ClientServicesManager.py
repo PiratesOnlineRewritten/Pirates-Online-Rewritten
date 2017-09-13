@@ -40,7 +40,7 @@ class ClientServicesManager(DistributedObjectGlobal):
         data.extend([OTPGlobals.AvatarSlotAvailable] * (OTPGlobals.AvatarNumSlots - len(data)))
 
         # TODO: implement support for sub accounts.
-        avatarList[0] = data
+        avatarList[1] = data
 
         self.cr.handleAvatarsList(avatarList)
 
