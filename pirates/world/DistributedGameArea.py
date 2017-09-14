@@ -345,59 +345,58 @@ class DistributedGameArea(DistributedNode, MappableArea, StagedObject):
             self.envEffects = SwampEffects.SwampEffects(self, self.modelPath)
             base.musicMgr.requestCurMusicFadeOut(removeFromPlaylist=False)
             base.musicMgr.request(SoundGlobals.MUSIC_SWAMP, priority=1, volume=0.6)
-        else:
-            if self.environment == 'Jungle':
-                self.envEffects = ForestEffects.ForestEffects(self, self.modelPath)
-                base.musicMgr.requestCurMusicFadeOut(removeFromPlaylist=False)
-                base.musicMgr.request(SoundGlobals.MUSIC_JUNGLE, priority=1, volume=0.6)
-            elif self.environment == 'Cave':
-                self.envEffects = CaveEffects.CaveEffects(self, self.modelPath)
-                base.musicMgr.requestCurMusicFadeOut(removeFromPlaylist=False)
-                if self.uniqueId == LocationIds.RAVENS_COVE_MINE:
-                    base.musicMgr.request(SoundGlobals.getMainMusic(self.uniqueId), priority=1, volume=0.6)
-                else:
-                    base.musicMgr.request(SoundGlobals.MUSIC_CAVE, priority=1, volume=0.6)
-            elif self.uniqueId in ('1189479168.0sdnaik0', '1150922126.8akelts'):
-                r = Reflection.getGlobalReflection()
-                water = SeaPatch(self, reflection=r)
-                water.loadSeaPatchFile('out.spf')
-                self.water = water
-                self.initializeIslandWaterParameters(self.geom)
+        elif self.environment == 'Jungle':
+            self.envEffects = ForestEffects.ForestEffects(self, self.modelPath)
+            base.musicMgr.requestCurMusicFadeOut(removeFromPlaylist=False)
+            base.musicMgr.request(SoundGlobals.MUSIC_JUNGLE, priority=1, volume=0.6)
+        elif self.environment == 'Cave':
+            self.envEffects = CaveEffects.CaveEffects(self, self.modelPath)
+            base.musicMgr.requestCurMusicFadeOut(removeFromPlaylist=False)
+            if self.uniqueId == LocationIds.RAVENS_COVE_MINE:
+                base.musicMgr.request(SoundGlobals.getMainMusic(self.uniqueId), priority=1, volume=0.6)
             else:
-                self.envEffects = EnvironmentEffects(self, self.modelPath)
-                if interior:
-                    pass
-            if loadIslandMusic:
-                if not base.localAvatar.isInInvasion():
-                    base.musicMgr.requestFadeOut(SoundGlobals.MUSIC_TORMENTA)
-                    base.musicMgr.requestFadeOut(SoundGlobals.MUSIC_TORMENTA_COMBAT)
+                base.musicMgr.request(SoundGlobals.MUSIC_CAVE, priority=1, volume=0.6)
+        elif self.uniqueId in ('1189479168.0sdnaik0', '1150922126.8akelts'):
+            r = Reflection.getGlobalReflection()
+            water = SeaPatch(self, reflection=r)
+            water.loadSeaPatchFile('out.spf')
+            self.water = water
+            self.initializeIslandWaterParameters(self.geom)
+        else:
+            self.envEffects = EnvironmentEffects(self, self.modelPath)
+            if interior:
+                pass
+        if loadIslandMusic:
+            if not base.localAvatar.isInInvasion():
+                base.musicMgr.requestFadeOut(SoundGlobals.MUSIC_TORMENTA)
+                base.musicMgr.requestFadeOut(SoundGlobals.MUSIC_TORMENTA_COMBAT)
 
-                def getCurrentIslandMusic():
-                    priZeros = []
-                    for music in base.musicMgr.playlist:
-                        if music.priority == 0:
-                            priZeros.append(music)
+            def getCurrentIslandMusic():
+                priZeros = []
+                for music in base.musicMgr.playlist:
+                    if music.priority == 0:
+                        priZeros.append(music)
 
-                    return priZeros
+                return priZeros
 
-                def changeMusic(music, pri):
-                    for priZero in getCurrentIslandMusic():
-                        base.musicMgr.requestFadeOut(priZero.name, removeFromPlaylist=True)
+            def changeMusic(music, pri):
+                for priZero in getCurrentIslandMusic():
+                    base.musicMgr.requestFadeOut(priZero.name, removeFromPlaylist=True)
 
-                    base.musicMgr.request(music, priority=0, volume=0.6)
+                base.musicMgr.request(music, priority=0, volume=0.6)
 
-                mainMusic = SoundGlobals.getMainMusic(self.uniqueId)
-                altMusic = SoundGlobals.getAltMusic(self.uniqueId)
-                if mainMusic and altMusic:
-                    base.musicMgr.requestCurMusicFadeOut(removeFromPlaylist=True)
-                    todMgr = base.cr.timeOfDayManager
-                    todMgr.addTimeOfDayToggle('Day-Night Area Music', 6.0, 20.0, changeMusic, [mainMusic, 0], changeMusic, [altMusic, 0])
-                elif mainMusic:
-                    base.musicMgr.requestCurMusicFadeOut(removeFromPlaylist=True)
-                    base.musicMgr.request(mainMusic, volume=0.6)
-                elif altMusic:
-                    base.musicMgr.requestCurMusicFadeOut(removeFromPlaylist=True)
-                    base.musicMgr.request(altMusic, volume=0.6)
+            mainMusic = SoundGlobals.getMainMusic(self.uniqueId)
+            altMusic = SoundGlobals.getAltMusic(self.uniqueId)
+            if mainMusic and altMusic:
+                base.musicMgr.requestCurMusicFadeOut(removeFromPlaylist=True)
+                todMgr = base.cr.timeOfDayManager
+                todMgr.addTimeOfDayToggle('Day-Night Area Music', 6.0, 20.0, changeMusic, [mainMusic, 0], changeMusic, [altMusic, 0])
+            elif mainMusic:
+                base.musicMgr.requestCurMusicFadeOut(removeFromPlaylist=True)
+                base.musicMgr.request(mainMusic, volume=0.6)
+            elif altMusic:
+                base.musicMgr.requestCurMusicFadeOut(removeFromPlaylist=True)
+                base.musicMgr.request(altMusic, volume=0.6)
         self.builder.initEffects()
         return
 
@@ -407,17 +406,16 @@ class DistributedGameArea(DistributedNode, MappableArea, StagedObject):
             self.envEffects = None
         if 'swamp' in self.modelPath:
             base.musicMgr.requestFadeOut(SoundGlobals.MUSIC_SWAMP, removeFromPlaylist=True)
-        else:
-            if 'jungle' in self.modelPath:
-                base.musicMgr.requestFadeOut(SoundGlobals.MUSIC_JUNGLE, removeFromPlaylist=True)
-            elif self.uniqueId in getLocationList(LocationIds.ANY_CAVE):
-                base.musicMgr.requestFadeOut(SoundGlobals.MUSIC_CAVE, removeFromPlaylist=True)
-                base.musicMgr.requestFadeOut(SoundGlobals.getMainMusic(self.uniqueId), removeFromPlaylist=True)
-            elif self.uniqueId == '1189479168.0sdnaik0':
-                self.water.delete()
-                self.water = None
-            if base.cr.timeOfDayManager:
-                base.cr.timeOfDayManager.removeTimeOfDayToggle('Day-Night Area Music')
+        elif 'jungle' in self.modelPath:
+            base.musicMgr.requestFadeOut(SoundGlobals.MUSIC_JUNGLE, removeFromPlaylist=True)
+        elif self.uniqueId in getLocationList(LocationIds.ANY_CAVE):
+            base.musicMgr.requestFadeOut(SoundGlobals.MUSIC_CAVE, removeFromPlaylist=True)
+            base.musicMgr.requestFadeOut(SoundGlobals.getMainMusic(self.uniqueId), removeFromPlaylist=True)
+        elif self.uniqueId == '1189479168.0sdnaik0':
+            self.water.delete()
+            self.water = None
+        if base.cr.timeOfDayManager:
+            base.cr.timeOfDayManager.removeTimeOfDayToggle('Day-Night Area Music')
         return
 
     def updateAvReturnLocation(self, av, uniqueId):

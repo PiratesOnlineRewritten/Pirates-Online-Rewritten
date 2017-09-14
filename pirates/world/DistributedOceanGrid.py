@@ -28,9 +28,9 @@ class DistributedOceanGrid(DistributedCartesianGrid, OceanGridBase, MappableGrid
     def announceGenerate(self):
         DistributedCartesianGrid.announceGenerate(self)
         self.setupMinimap()
-        self.stash()
-        self.water.disable()
-
+        #self.stash()
+        #self.water.disable()
+        
     def setLocation(self, parentId, zoneId):
         DistributedCartesianGrid.setLocation(self, parentId, zoneId)
         world = self.cr.getDo(self.parentId)
@@ -112,7 +112,7 @@ class DistributedOceanGrid(DistributedCartesianGrid, OceanGridBase, MappableGrid
 
     @report(types=['args'], dConfigParam=['dteleport'])
     def handleOnStage(self):
-        DistributedCartesianGrid.handleOnStage(self)
+        #DistributedCartesianGrid.handleOnStage(self)
         self.unstash()
         self.water.enable()
 

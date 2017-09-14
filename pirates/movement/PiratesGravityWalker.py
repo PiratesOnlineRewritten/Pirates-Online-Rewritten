@@ -147,3 +147,6 @@ class PiratesGravityWalker(GravityWalker):
     def disableAvatarControls(self):
         GravityWalker.disableAvatarControls(self)
         self.abortJump()
+
+    def setVelocity(self, velocity):
+        self.lifter.setVelocity(velocity)
