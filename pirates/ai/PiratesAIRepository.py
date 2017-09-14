@@ -12,6 +12,7 @@ from pirates.ai.PiratesTimeManagerAI import PiratesTimeManagerAI
 from pirates.instance.DistributedTeleportMgrAI import DistributedTeleportMgrAI
 from pirates.piratesbase.DistributedTimeOfDayManagerAI import DistributedTimeOfDayManagerAI
 from pirates.distributed.TargetManagerAI import TargetManagerAI
+from pirates.battle.DistributedEnemySpawnerAI import DistributedEnemySpawnerAI
 from pirates.world.WorldCreatorAI import WorldCreatorAI
 
 class PiratesAIRepository(PiratesInternalRepository):
@@ -80,6 +81,9 @@ class PiratesAIRepository(PiratesInternalRepository):
 
         self.targetMgr = TargetManagerAI(self)
         self.targetMgr.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
+
+        self.spawner = DistributedEnemySpawnerAI(self)
+        self.spawner.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
 
     def createZones(self):
         """
