@@ -13,12 +13,33 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         self.wantDormantSpawns = config.GetBool('want-dormant-spawns', False)
         self.wantTownfolk = config.GetBool('want-townfolk', False)
         self.wantAnimals = config.GetBool('want-animals', True)
+        self.wantCreatures = config.GetBool('want-creatures', True)
+        self.wantBosses = config.GetBool('want-bosses', True)
 
     def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic):
         newObj = None
 
-        if objType == 'Townsperson' and self.wantTownfolk:
-            newObj = self.__generateTownsperon(objType, objectData, parent, parentUid, objKey, dynamic)
+        if objType == 'Townsperson':
+            if self.wantTownfolk:
+                newObj = self.__generateTownsperon(objType, objectData, parent, parentUid, objKey, dynamic)
+        elif objType == 'Spawn Node':
+            if self.wantEnemies:
+                pass
+        elif objType == 'Dormant NPC Spawn Node':
+            if self.wantEnemies and self.wantDormantSpawns:
+                pass
+        elif objType == 'Animal':
+            if self.wantAnimals:
+                pass
+        elif objType == 'Creature':
+            if self.wantCreatures and self.wantEnemies:
+                pass
+        elif objType == 'Skeleton':
+            if self.wantEnemies and self.wantBosses:
+                pass
+        elif objType == 'NavySailor':
+            if self.wantEnemies and self.wantBosses:
+                pass
         else:
             self.notify.warning('Received unknown generate: %s' % objType)
 

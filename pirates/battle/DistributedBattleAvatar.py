@@ -3028,7 +3028,7 @@ class DistributedBattleAvatar(DistributedReputationAvatar, WeaponBase, Teamable)
         self.inInvasion = value
 
     def isInInvasion(self):
-        return self.inInvasion
+        return True #self.inInvasion
 
     def getEfficiency(self):
         return self.efficiency

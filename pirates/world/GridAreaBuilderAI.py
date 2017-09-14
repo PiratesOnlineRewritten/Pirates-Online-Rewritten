@@ -33,9 +33,7 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
 
         container.setUniqueId(objKey)
 
-        pos = objectData['Pos']
-        container.setPos(pos.getX(), pos.getY(), pos.getZ())
-
+        container.setPos(objectData['Pos'])
         container.setHpr(objectData['Hpr'])
         container.setScale(objectData['Scale'])
         container.setType(objectData.get('type', 'Crate'))

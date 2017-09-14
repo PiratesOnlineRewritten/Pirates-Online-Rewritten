@@ -46,7 +46,7 @@ class AreaBuilderBaseAI(DirectObject):
         self.parent.generateChildWithRequired(island, island.startingZone)
         self.addObject(island)
 
-        print 'Generated Island %s (%s) in zone %d with doId %d' % (island.getLocalizerName(), objKey, island.zoneId, island.doId)
+        self.notify.info('Generated Island %s (%s) in zone %d with doId %d' % (island.getLocalizerName(), objKey, island.zoneId, island.doId))
 
         return island
 
