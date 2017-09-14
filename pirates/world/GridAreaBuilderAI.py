@@ -5,6 +5,8 @@ from pirates.minigame.DistributedFishingSpotAI import DistributedFishingSpotAI
 from pirates.minigame.DistributedPotionCraftingTableAI import DistributedPotionCraftingTableAI
 from pirates.world.DistributedBuildingDoorAI import DistributedBuildingDoorAI
 from pirates.world.DistributedDinghyAI import DistributedDinghyAI
+from pirates.treasuremap.DistributedBuriedTreasureAI import DistributedBuriedTreasureAI
+from pirates.treasuremap.DistributedSurfaceTreasureAI import DistributedSurfaceTreasureAI
 from pirates.piratesbase import PiratesGlobals
 
 class GridAreaBuilderAI(AreaBuilderBaseAI):
@@ -17,6 +19,7 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         self.wantPotionTable = config.GetBool('want-potion-table', True)
         self.wantBuildingInteriors = config.GetBool('want-building-interiors', True)
         self.wantDinghys = config.GetBool('want-dignhys', True)
+        self.wantSpawnNodes = config.GetBool('want-spawn-nodes', True)
 
     def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic):
         newObj = None
@@ -33,6 +36,8 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
             newObj = self.__generateBuildingExterior(parent, parentUid, objKey, objectData)
         elif objType == 'Dinghy' and self.wantDinghys:
             newObj = self.__generateDinghy(parent, parentUid, objKey, objectData)
+        elif objType == 'Object Spawn Node' and self.wantSpawnNodes:
+            newObj = self.__generateObjectSpawnNode(parent, parentUid, objKey, objectData)
 
         return newObj
 
@@ -53,7 +58,7 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         parent.generateChildWithRequired(container, PiratesGlobals.IslandLocalZone)
         self.addObject(container)
 
-        return container
+        return self.parentToCellOrigin(parent, container)
 
     def __generateFishingSpot(self, parent, parentUid, objKey, objectData):
         fishingSpot = DistributedFishingSpotAI(self.air)
@@ -150,4 +155,23 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         parent.generateChildWithRequired(dinghy, PiratesGlobals.IslandLocalZone)
         self.addObject(dinghy)
 
-        return dinghy
+        return self.parentToCellOrigin(parent, dinghy)
+
+    def __generateObjectSpawnNode(self, parent, parentUid, objKey, objectData):
+        if objectData['Spawnables'] == 'Surface Treasure':
+            spawnClass = DistributedSurfaceTreasureAI
+        else:
+            spawnClass = DistributedBuriedTreasureAI
+
+        spawnNode = spawnClass(self.air)
+        spawnNode.setPos(objectData.get('Pos'))
+        spawnNode.setHpr(objectData['Hpr'])
+        spawnNode.setScale(objectData['Scale'])
+        spawnNode.setStartingDepth(int(objectData['startingDepth']))
+        spawnNode.setCurrentDepth(spawnNode.getStartingDepth())
+        spawnNode.setVisZone(objectData.get('VisZone', ''))
+
+        parent.generateChildWithRequired(spawnNode, PiratesGlobals.IslandLocalZone)
+        self.addObject(spawnNode)
+
+        return self.parentToCellOrigin(parent, spawnNode)
