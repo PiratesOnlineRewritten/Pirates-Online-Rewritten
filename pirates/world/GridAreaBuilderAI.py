@@ -4,6 +4,7 @@ from pirates.interact.DistributedSearchableContainerAI import DistributedSearcha
 from pirates.minigame.DistributedFishingSpotAI import DistributedFishingSpotAI
 from pirates.minigame.DistributedPotionCraftingTableAI import DistributedPotionCraftingTableAI
 from pirates.world.DistributedBuildingDoorAI import DistributedBuildingDoorAI
+from pirates.world.DistributedDinghyAI import DistributedDinghyAI
 from pirates.piratesbase import PiratesGlobals
 
 class GridAreaBuilderAI(AreaBuilderBaseAI):
@@ -15,6 +16,7 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         self.wantFishing = config.GetBool('want-fishing', True)
         self.wantPotionTable = config.GetBool('want-potion-table', True)
         self.wantBuildingInteriors = config.GetBool('want-building-interiors', True)
+        self.wantDinghys = config.GetBool('want-dignhys', True)
 
     def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic):
         newObj = None
@@ -29,9 +31,8 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
             newObj = self.air.spawner.createObject(objType, objectData, parent, parentUid, objKey, dynamic)
         elif objType == 'Building Exterior' and self.wantBuildingInteriors:
             newObj = self.__generateBuildingExterior(parent, parentUid, objKey, objectData)
-
-        if newObj is not None:
-            print('Generated: %s' % newObj.__class__.__name__) 
+        elif objType == 'Dinghy' and self.wantDinghys:
+            newObj = self.__generateDinghy(parent, parentUid, objKey, objectData)
 
         return newObj
 
@@ -139,3 +140,14 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
             print 'Generated Interior %s (%s)' % (interior.getLocalizerName(), objKey)
 
         return interior
+
+    def __generateDinghy(self, parent, parentUid, objKey, objectData):
+        dinghy = DistributedDinghyAI(self.air)
+        dinghy.setPos(objectData.get('Pos'))
+        dinghy.setHpr(objectData['Hpr'])
+        dinghy.setInteractRadius(float(objectData['Aggro Radius']))
+
+        parent.generateChildWithRequired(dinghy, PiratesGlobals.IslandLocalZone)
+        self.addObject(dinghy)
+
+        return dinghy
