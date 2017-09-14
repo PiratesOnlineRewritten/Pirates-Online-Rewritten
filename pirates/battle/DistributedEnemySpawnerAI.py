@@ -1,5 +1,6 @@
 from direct.distributed.DistributedObjectAI import DistributedObjectAI
 from direct.directnotify import DirectNotifyGlobal
+from pirates.creature.DistributedAnimalAI import DistributedAnimalAI
 from pirates.npc.DistributedNPCTownfolkAI import DistributedNPCTownfolkAI
 from pirates.piratesbase import PiratesGlobals
 from pirates.pirate import AvatarTypes
@@ -9,12 +10,12 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
 
     def __init__(self, air):
         DistributedObjectAI.__init__(self, air)
-        self.wantEnemies = config.GetBool('want-enemies', True)
+        self.wantEnemies = config.GetBool('want-enemies', False)
         self.wantDormantSpawns = config.GetBool('want-dormant-spawns', False)
         self.wantTownfolk = config.GetBool('want-townfolk', False)
-        self.wantAnimals = config.GetBool('want-animals', True)
-        self.wantCreatures = config.GetBool('want-creatures', True)
-        self.wantBosses = config.GetBool('want-bosses', True)
+        self.wantAnimals = config.GetBool('want-animals', False)
+        self.wantCreatures = config.GetBool('want-creatures', False)
+        self.wantBosses = config.GetBool('want-bosses', False)
 
     def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic):
         newObj = None
@@ -24,13 +25,13 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
                 newObj = self.__generateTownsperon(objType, objectData, parent, parentUid, objKey, dynamic)
         elif objType == 'Spawn Node':
             if self.wantEnemies:
-                pass
+                newObj = self.__generateEnemy(objType, objectData, parent, parentUid, objKey, dynamic)
         elif objType == 'Dormant NPC Spawn Node':
             if self.wantEnemies and self.wantDormantSpawns:
-                pass
+                newObj = self.__generateEnemy(objType, objectData, parent, parentUid, objKey, dynamic)
         elif objType == 'Animal':
             if self.wantAnimals:
-                pass
+                newObj = self.__generateAnimal(objType, objectData, parent, parentUid, objKey, dynamic)
         elif objType == 'Creature':
             if self.wantCreatures and self.wantEnemies:
                 pass
@@ -99,3 +100,40 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         self.notify.debug('Generating Townfolk "%s" (%s) under zone %d in %s at %s with doId %d' % (townfolkName, objKey, townfolk.zoneId, locationName, townfolk.getPos(), townfolk.doId))
 
         return townfolk
+
+    def __generateEnemy(self, objType, objectData, parent, parentUid, objKey, dynamic):
+        pass
+
+    def __generateAnimal(self, objType, objectData, parent, parentUid, objKey, dynamic):
+
+        species = objectData.get('Species', None)
+        if not species:
+            self.notify.warning('Failed to generate Animal %s; Species was not defined' % objKey)
+            return
+
+        if not hasattr(AvatarTypes, species):
+            self.notify.warning('Failed to generate Animal %s; %s is not a valid species' % (objKey, species))
+            return
+        avatarType = getattr(AvatarTypes, species, AvatarTypes.Chicken)
+
+        animalClass = DistributedAnimalAI
+        if species == 'Raven':
+            self.notify.warning('Attempted to spawn unsupported Animal: %s' % species)
+            return
+
+        animal = animalClass(self.air)
+
+        animal.setPos(objectData.get('Pos'))
+        animal.setHpr(objectData.get('Hpr'))
+        animal.setSpawnPos(*objectData.get('Pos'))
+        animal.setScale(objectData.get('Scale'))
+        animal.setUniqueId(objKey)
+
+        animal.setAvatarType(avatarType)
+
+        parent.generateChildWithRequired(animal, PiratesGlobals.IslandLocalZone)
+
+        locationName = parent.getLocalizerName()
+        print('Generating %s (%s) under zone %d in %s at %s with doId %d' % (species, objKey, animal.zoneId, locationName, animal.getPos(), animal.doId))
+
+        return animal

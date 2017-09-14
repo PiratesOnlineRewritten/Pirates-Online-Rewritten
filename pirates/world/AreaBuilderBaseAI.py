@@ -1,6 +1,8 @@
 from direct.showbase.DirectObject import DirectObject
 from direct.directnotify.DirectNotifyGlobal import directNotify
 from pirates.leveleditor import ObjectList
+from direct.distributed.GridParent import GridParent
+
 
 class AreaBuilderBaseAI(DirectObject):
     notify = directNotify.newCategory('AreaBuilderBaseAI')
@@ -9,6 +11,22 @@ class AreaBuilderBaseAI(DirectObject):
         self.air = air
         self.parent = parent
         self.objectList = {}
+
+    def parentToCellOrigin(self, parent, instance):
+        if not instance:
+            self.notify.warning('Cannot parent invalid instance type to %r!' % parent)
+            return
+
+        cell = GridParent.getCellOrigin(parent, instance.zoneId)
+        pos = instance.getPos()
+
+        instance.reparentTo(cell)
+        instance.setPos(parent, pos)
+
+        instance.d_setPos(*instance.getPos())
+        instance.d_setHpr(*instance.getHpr())
+
+        return instance
 
     def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic, parentIsObj=False, fileName=None, actualParentObj=None):
         newObj = None
@@ -46,7 +64,9 @@ class AreaBuilderBaseAI(DirectObject):
         self.parent.generateChildWithRequired(island, island.startingZone)
         self.addObject(island)
 
-        self.notify.info('Generated Island %s (%s) in zone %d with doId %d' % (island.getLocalizerName(), objKey, island.zoneId, island.doId))
+        if self.air.worldCreator.wantPrintout:
+            print '-' * 100
+            print 'Generated Island %s (%s) in zone %d with doId %d' % (island.getLocalizerName(), objKey, island.zoneId, island.doId)
 
         return island
 

@@ -9,19 +9,12 @@ class DistributedGameAreaAI(DistributedNodeAI):
 
     def __init__(self, air):
         DistributedNodeAI.__init__(self, air)
-        self.wantObjectPrintout = config.GetBool('want-object-printout', False)
         self.modelPath = ''
         self.links = []
         self.uniqueId = ''
-        self.name = ''
+        self.name = PLocalizer.Unknown
         self.uidMgr = UniqueIdManager(self.air)
         self.builder = GridAreaBuilderAI(self.air, self)
-
-    def announceGenerate(self):
-        if self.wantObjectPrintout:
-            print('-' * 200)
-            self.builder.notify.setDebug(True)
-            print(':%s(debug): Creating %s under zone %d with doId %d' % (self.__class__.__name__, self.getLocalizerName(), self.zoneId, self.doId))
 
     def setModelPath(self, modelPath):
         self.modelPath = modelPath
