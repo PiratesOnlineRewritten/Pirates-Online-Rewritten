@@ -622,7 +622,7 @@ dclass DistributedLocatableObject : DistributedObject {
   locationChange(string);
 };
 
-dclass DistributedInteractive : DistributedLocatableObject, DistributedNode {
+dclass DistributedInteractive : DistributedNode, DistributedLocatableObject {
   requestInteraction(uint32, uint8, bool) clsend airecv;
   requestExit() clsend airecv;
   demandExit() clsend airecv;
@@ -1441,7 +1441,7 @@ typedef uint32 shipList[];
 struct InterestLocations {
   uint32 zoneId;
   uint32 parentId;
-}
+};
 
 dclass DistributedTeleportMgr : DistributedObject {
   requestInstanceTeleport(uint8, string) clsend airecv;
@@ -1750,7 +1750,7 @@ dclass DistributedDefenseCannon : DistributedIslandCannon {
 
 struct Delay {
   uint8/100 delay;
-}
+};
 
 typedef Delay Delays[];
 
@@ -2022,7 +2022,7 @@ typedef uint8(0-255) PlayingCard;
 
 struct CardHandArray {
   PlayingCard card;
-}
+};
 
 typedef CardHandArray[] CardHand;
 
