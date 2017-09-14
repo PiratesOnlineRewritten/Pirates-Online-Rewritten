@@ -330,7 +330,7 @@ skip-tutorial #t
 force-tutorial #f
 
 # World:
-default-world PortRoyalWorld
+#default-world PortRoyalWorld
 
 # Developer:
 want-dev #t

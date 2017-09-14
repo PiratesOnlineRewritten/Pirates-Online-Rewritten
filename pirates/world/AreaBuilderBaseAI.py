@@ -10,7 +10,7 @@ class AreaBuilderBaseAI(DirectObject):
         self.parent = parent
         self.objectList = {}
 
-    def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic):
+    def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic, parentIsObj=False, fileName=None, actualParentObj=None):
         newObj = None
 
         if objType == ObjectList.AREA_TYPE_ISLAND:
@@ -28,16 +28,25 @@ class AreaBuilderBaseAI(DirectObject):
     def __createIsland(self, objectData, parent, parentUid, objKey, dynamic):
         from pirates.world.DistributedIslandAI import DistributedIslandAI
 
+        worldIsland = self.air.worldCreator.getIslandWorldDataByUid(objKey)
+
         island = DistributedIslandAI(self.air)
         island.setUniqueId(objKey)
-        island.setName(objectData.get('Name', 'island'))
-        island.setModelPath(objectData['Visual']['Model'])
-        island.setPos(objectData.get('Pos', (0, 0, 0)))
-        island.setHpr(objectData.get('Hpr', (0, 0, 0)))
-        island.setScale(objectData.get('Scale', 1))
-        island.setUndockable(objectData.get('Undockable', False))
+        island.setName(worldIsland.get('Name', 'island'))
+        island.setModelPath(worldIsland['Visual']['Model'])
+        island.setPos(worldIsland.get('Pos', (0, 0, 0)))
+        island.setHpr(worldIsland.get('Hpr', (0, 0, 0)))
+        island.setScale(worldIsland.get('Scale', 1))
+        island.setUndockable(worldIsland.get('Undockable', False))
+
+        for obj in worldIsland['Objects'].values():
+            if obj['Type'] == 'LOD Sphere':
+                island.setZoneSphereSize(*obj['Radi'])
+
         self.parent.generateChildWithRequired(island, island.startingZone)
         self.addObject(island)
+
+        print 'Generated Island %s (%s) in zone %d with doId %d' % (island.getLocalizerName(), objKey, island.zoneId, island.doId)
 
         return island
 

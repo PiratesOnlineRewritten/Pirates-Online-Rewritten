@@ -18,11 +18,13 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         newObj = None
 
         if objType == 'Searchable Container' and self.wantSearchables:
-            newobj = self.__generateSearchableContainer(parent, parentUid, objKey, objectData)
+            newObj = self.__generateSearchableContainer(parent, parentUid, objKey, objectData)
         elif objType == 'FishingSpot' and self.wantFishing:
             newObj = self.__generateFishingSpot(parent, parentUid, objKey, objectData)
         elif objType == 'PotionTable' and self.wantPotionTable:
             newObj = self.__generatePotionTable(parent, parentUid, objKey, objectData)
+        elif objType in ['Animal', 'Townsperson', 'Spawn Node', 'Dormant NPC Spawn Node', 'Skeleton', 'NavySailor', 'Creature', 'Ghost']:
+            newObj = self.air.spawner.createObject(objType, objectData, parent, parentUid, objKey, dynamic)
 
         return newObj
 
@@ -30,7 +32,10 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         container = DistributedSearchableContainerAI(self.air)
 
         container.setUniqueId(objKey)
-        container.setPos(objectData['Pos'])
+
+        pos = objectData['Pos']
+        container.setPos(pos.getX(), pos.getY(), pos.getZ())
+
         container.setHpr(objectData['Hpr'])
         container.setScale(objectData['Scale'])
         container.setType(objectData.get('type', 'Crate'))
