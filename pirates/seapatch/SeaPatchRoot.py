@@ -2,14 +2,15 @@ from panda3d.core import Vec2, VBase2, VBase4, Vec4, PerlinNoise3
 from direct.directnotify.DirectNotifyGlobal import directNotify
 import math
 
-WTZ = None #TODO
-WTV = None #TODO
-WTU = None #TODO
-WFSin = None #TODO
-WFNoise = PerlinNoise3()
 
 class SeaPatchRoot(object):
     notify = directNotify.newCategory('SeaPatchRoot')
+
+    WTZ = None #TODO
+    WTV = None #TODO
+    WTU = None #TODO
+    WFSin = None #TODO
+    WFNoise = PerlinNoise3()
 
     def __init__(self):
         self.seaLevel = 0
@@ -91,10 +92,10 @@ class SeaPatchRoot(object):
         pass
 
     def calcColor(self, color, height, x, y):
-        pass
+        print 'calcColor: color: %s height: %s x: %s y: %s' % (color, height, x, y)
 
     def calcReflection(self, todo1, todo2):
-        pass
+        print '1: %s 2: %s' % (todo1, todo2)
 
     def setSeaLevel(self, seaLevel):
         self.seaLevel = seaLevel
