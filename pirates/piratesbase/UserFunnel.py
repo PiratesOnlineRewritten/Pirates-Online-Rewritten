@@ -180,6 +180,9 @@ class UserFunnel:
         return event_dict
 
     def start_session(self):
+        if not self.ready:
+            return
+        
         self.add_to_event_queue(self.get_session_start_event())
         self.session_start_time = time.time()
         self.notify.debug('Starting session')
@@ -192,8 +195,12 @@ class UserFunnel:
         return event_dict
 
     def end_session(self):
+        if not self.ready:
+            return
+
         if self.session_start_time is None:
             return
+
         length = time.time() - self.session_start_time
         self.add_to_event_queue(self.get_session_end_event(length))
         self.notify.debug('Ending session; Length: %d' % length)
