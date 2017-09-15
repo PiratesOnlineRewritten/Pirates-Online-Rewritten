@@ -162,7 +162,8 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         dinghy = DistributedDinghyAI(self.air)
         dinghy.setPos(objectData.get('Pos', (0, 0, 0)))
         dinghy.setHpr(objectData.get('Hpr', (0, 0, 0)))
-        dinghy.setInteractRadius(float(objectData['Aggro Radius']))
+        dinghy.setInteractRadius(float(objectData.get('Aggro Radius', 12)))
+
 
         parent.generateChildWithRequired(dinghy, PiratesGlobals.IslandLocalZone)
         self.addObject(dinghy)
