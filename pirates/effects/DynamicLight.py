@@ -51,62 +51,59 @@ class DynamicLight(NodePath):
             return None
         if type == DYN_LIGHT_AMBIENT:
             light = AmbientLight('AmbientLight')
-        else:
-            if type == DYN_LIGHT_DIRECTIONAL:
-                light = DirectionalLight('DirectionalLight')
-                self.stopFlickering()
+        elif type == DYN_LIGHT_DIRECTIONAL:
+            light = DirectionalLight('DirectionalLight')
+            self.stopFlickering()
+        elif type == DYN_LIGHT_POINT:
+            light = PointLight('PointLight')
+            if self.modular:
+                light.setAttenuation(VBase3(*self.baseAtten))
+        elif type == DYN_LIGHT_SPOT:
+            light = Spotlight('Spotlight')
+            if self.modular:
+                light.setAttenuation(VBase3(*self.baseAtten))
+                light.setExponent(self.baseExp)
             else:
-                if type == DYN_LIGHT_POINT:
-                    light = PointLight('PointLight')
-                    if self.modular:
-                        light.setAttenuation(VBase3(*self.baseAtten))
+                return None
+        self.turnOff()
+        self.type = type
+        if isInit:
+            if self.modular:
+                NodePath.__init__(self, 'modularLight')
+            else:
+                NodePath.__init__(self, 'dynamicLight')
+        if self.lightNodePath:
+            self.lightNodePath.removeNode()
+        self.lightNodePath = self.attachNewNode(light)
+        if self.modular:
+            self.setName('ModularLight')
+        else:
+            self.setName('DynamicLight')
+        if base.config.GetBool('draw-light-icons', 0) or self.drawIcon:
+            if isInit:
+                if self.modular:
+                    newModel = loader.loadModel('models/props/light_tool_bulb_modular')
                 else:
-                    if type == DYN_LIGHT_SPOT:
-                        light = Spotlight('Spotlight')
-                        if self.modular:
-                            light.setAttenuation(VBase3(*self.baseAtten))
-                        light.setExponent(self.baseExp)
-                    else:
-                        return None
-                    self.turnOff()
-                    self.type = type
-                    if isInit:
-                        if self.modular:
-                            NodePath.NodePath.__init__(self, 'modularLight')
-                        else:
-                            NodePath.NodePath.__init__(self, 'dynamicLight')
-                    if self.lightNodePath:
-                        self.lightNodePath.removeNode()
-                    self.lightNodePath = self.attachNewNode(light)
-                    if self.modular:
-                        self.setName('ModularLight')
-                    else:
-                        self.setName('DynamicLight')
-                    if base.config.GetBool('draw-light-icons', 0) or self.drawIcon:
-                        if isInit:
-                            if self.modular:
-                                newModel = loader.loadModel('models/props/light_tool_bulb_modular')
-                            else:
-                                newModel = loader.loadModel('models/props/light_tool_bulb')
-                            newModel.setBillboardPointEye()
-                            newModel.reparentTo(self)
-                            newModel.flattenLight()
-                            self.models.append(newModel)
-                        if hasattr(self, 'lightDirectionModel'):
-                            self.lightDirectionModel.removeNode()
-                            del self.lightDirectionModel
-                        if type == DYN_LIGHT_DIRECTIONAL or type == DYN_LIGHT_SPOT:
-                            lightDirectionModel = loader.loadModel('models/props/light_tool_arrow')
-                            lightDirectionModel.setScale(5.0)
-                            lightDirectionModel.setY(2)
-                            lightDirectionModel.setH(180)
-                            lightDirectionModel.reparentTo(self)
-                            self.lightDirectionModel = lightDirectionModel
-                self.light = light
-                if not self.modular:
-                    self.turnOn()
-            if self.color:
-                self.setColor(self.color)
+                    newModel = loader.loadModel('models/props/light_tool_bulb')
+                    newModel.setBillboardPointEye()
+                    newModel.reparentTo(self)
+                    newModel.flattenLight()
+                    self.models.append(newModel)
+                if hasattr(self, 'lightDirectionModel'):
+                    self.lightDirectionModel.removeNode()
+                    del self.lightDirectionModel
+                if type == DYN_LIGHT_DIRECTIONAL or type == DYN_LIGHT_SPOT:
+                    lightDirectionModel = loader.loadModel('models/props/light_tool_arrow')
+                    lightDirectionModel.setScale(5.0)
+                    lightDirectionModel.setY(2)
+                    lightDirectionModel.setH(180)
+                    lightDirectionModel.reparentTo(self)
+                    self.lightDirectionModel = lightDirectionModel
+        self.light = light
+        if not self.modular:
+            self.turnOn()
+        if self.color:
+            self.setColor(self.color)
         return light
 
     def unload(self):
