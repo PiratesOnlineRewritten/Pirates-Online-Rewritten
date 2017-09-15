@@ -332,6 +332,10 @@ force-tutorial #f
 # World:
 #default-world PortRoyalWorld
 
+# Analytics:
+analytics-game-key 28f391f68f5e07f7713d044ea81f92ca
+analytics-secret-key 9de82d4da112aa45ac0ee63f570c45d4e340812f
+
 # Developer:
 want-dev #t
 #dev-branch-flavor development
