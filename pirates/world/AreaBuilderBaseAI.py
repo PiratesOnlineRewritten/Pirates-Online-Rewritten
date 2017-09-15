@@ -64,9 +64,10 @@ class AreaBuilderBaseAI(DirectObject):
         island.setScale(worldIsland.get('Scale', 1))
         island.setUndockable(worldIsland.get('Undockable', False))
 
-        for obj in worldIsland['Objects'].values():
-            if obj['Type'] == 'LOD Sphere':
-                island.setZoneSphereSize(*obj['Radi'])
+        if 'Objects' in worldIsland:
+            for obj in worldIsland['Objects'].values():
+                if obj['Type'] == 'LOD Sphere':
+                    island.setZoneSphereSize(*obj['Radi'])
 
         self.parent.generateChildWithRequired(island, island.startingZone)
         self.addObject(island)
