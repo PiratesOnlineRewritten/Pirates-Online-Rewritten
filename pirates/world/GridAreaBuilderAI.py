@@ -21,8 +21,9 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         self.wantPotionTable = config.GetBool('want-potion-table', True)
         self.wantBuildingInteriors = config.GetBool('want-building-interiors', True)
         self.wantDinghys = config.GetBool('want-dignhys', True)
-        self.wantSpawnNodes = config.GetBool('want-spawn-nodes', True)
+        self.wantSpawnNodes = config.GetBool('want-spawn-nodes', False)
         self.wantRepairBench = config.GetBool('want-repair-bench', True)
+        self.wantIslandAreas = config.GetBool('want-island-game-areas', True)
 
     def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic):
         newObj = None
@@ -43,6 +44,8 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
             newObj = self.__generateObjectSpawnNode(parent, parentUid, objKey, objectData)
         elif objType == 'RepairBench' and self.wantRepairBench:
             newObj = self.__generateRepairBench(parent, parentUid, objKey, objectData)
+        elif objType == ObjectList.AREA_TYPE_ISLAND_REGION and self.wantIslandAreas:
+            newObj = self.__generateIslandArea(parent, parentUid, objKey, objectData)
 
         return newObj
 
@@ -118,29 +121,30 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
 
         interior.setUniqueId(exteriorUid)
         interior.setModelPath(interiorModel)
-        interior.setName(interiorFile)
+        interior.setName(interior.getLocalizerName())
 
         parent.generateChildWithRequired(interior, interiorZone)
         self.addObject(interior)
 
         # Create exterior doors
         foundDoor = False
-        for childKey, childData in objectData['Objects'].items():
-            childType = childData.get('Type', '')
-            if childType == 'Door Locator Node':
-                extDoor = DistributedBuildingDoorAI(self.air)
+        if 'Objects' in objectData:
+            for childKey, childData in objectData['Objects'].items():
+                childType = childData.get('Type', '')
+                if childType == 'Door Locator Node':
+                    extDoor = DistributedBuildingDoorAI(self.air)
 
-                extDoor.setUniqueId(childKey)
-                extDoor.setPos(childData.get('Pos', (0, 0, 0)))
-                extDoor.setHpr(childData.get('Hpr', (0, 0, 0)))
-                extDoor.setScale(childData.get('Scale', (1, 1, 1)))
+                    extDoor.setUniqueId(childKey)
+                    extDoor.setPos(childData.get('Pos', (0, 0, 0)))
+                    extDoor.setHpr(childData.get('Hpr', (0, 0, 0)))
+                    extDoor.setScale(childData.get('Scale', (1, 1, 1)))
 
-                extDoor.setInteriorId(interior.doId, interior.getUniqueId(), interior.parentId, interior.zoneId)
-                extDoor.setBuildingUid(objKey)
+                    extDoor.setInteriorId(interior.doId, interior.getUniqueId(), interior.parentId, interior.zoneId)
+                    extDoor.setBuildingUid(objKey)
 
-                parent.generateChildWithRequired(extDoor, PiratesGlobals.IslandLocalZone)
+                    parent.generateChildWithRequired(extDoor, PiratesGlobals.IslandLocalZone)
 
-                foundDoor = True
+                    foundDoor = True
 
         if not foundDoor:
             self.notify.warning('%s (%s) has an interior, but no exterior door was found!' % (interior.getLocalizerName(), objKey))
@@ -197,3 +201,28 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
 
         return self.parentToCellOrigin(self.parent, bench)
 
+
+    def __generateIslandArea(self, parent, parentUid, objKey, objectData):
+        from pirates.world.DistributedGameAreaAI import DistributedGameAreaAI
+
+        areaFile = objectData.get('File', None)
+        if not areaFile:
+            self.notify.warning('Failed to generate Island Game Area %s; No file defined' % objKey)
+            return
+
+        # allocate a new zone for this area
+        areaZone = self.air.allocateZone()
+
+        islandArea = DistributedGameAreaAI(self.air)
+        islandArea.setUniqueId(objKey)
+        islandArea.setName(islandArea.getLocalizerName())
+        islandArea.setModelPath(objectData['Visual']['Model'])
+
+        self.parent.generateChildWithRequired(islandArea, areaZone)
+        self.addObject(islandArea)
+
+        # Load objects from area file
+        self.air.worldCreator.loadObjectsFromFile(areaFile + '.py', islandArea)
+
+        if self.air.worldCreator.wantPrintout:
+            print '- Generated Island Game Area %s (%s)' % (islandArea.getLocalizerName(), objKey)
