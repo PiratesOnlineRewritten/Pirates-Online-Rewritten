@@ -11,6 +11,7 @@ class AreaBuilderBaseAI(DirectObject):
         self.air = air
         self.parent = parent
         self.objectList = {}
+        self.wantObjectPrintout = config.GetBool('want-object-printout', False)
 
     def parentToCellOrigin(self, parent, instance):
         if not instance:
@@ -39,7 +40,13 @@ class AreaBuilderBaseAI(DirectObject):
             if not parent:
                 return newObj
 
-            parent.builder.createObject(objType, objectData, parent, parentUid, objKey, dynamic)
+            newObj = parent.builder.createObject(objType, objectData, parent, parentUid, objKey, dynamic)
+
+        if newObj is not None and objType != 'Building Exterior' and objType != ObjectList.AREA_TYPE_ISLAND and self.wantObjectPrintout:
+            indent = '- '
+            if 'Island' not in fileName:
+                indent = '-- '
+            print('%sGenerated %s (%s) in zone %s with doId %d' % (indent, newObj.__class__.__name__, objKey, newObj.zoneId, newObj.doId))
 
         return newObj
 

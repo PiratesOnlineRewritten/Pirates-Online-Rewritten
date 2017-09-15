@@ -3,11 +3,13 @@ from direct.directnotify.DirectNotifyGlobal import directNotify
 from pirates.interact.DistributedSearchableContainerAI import DistributedSearchableContainerAI
 from pirates.minigame.DistributedFishingSpotAI import DistributedFishingSpotAI
 from pirates.minigame.DistributedPotionCraftingTableAI import DistributedPotionCraftingTableAI
+from pirates.minigame.DistributedRepairBenchAI import DistributedRepairBenchAI
 from pirates.world.DistributedBuildingDoorAI import DistributedBuildingDoorAI
 from pirates.world.DistributedDinghyAI import DistributedDinghyAI
 from pirates.treasuremap.DistributedBuriedTreasureAI import DistributedBuriedTreasureAI
 from pirates.treasuremap.DistributedSurfaceTreasureAI import DistributedSurfaceTreasureAI
 from pirates.piratesbase import PiratesGlobals
+from pirates.leveleditor import ObjectList
 
 class GridAreaBuilderAI(AreaBuilderBaseAI):
     notify = directNotify.newCategory('GridAreaBuilderAI')
@@ -20,6 +22,7 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         self.wantBuildingInteriors = config.GetBool('want-building-interiors', True)
         self.wantDinghys = config.GetBool('want-dignhys', True)
         self.wantSpawnNodes = config.GetBool('want-spawn-nodes', True)
+        self.wantRepairBench = config.GetBool('want-repair-bench', True)
 
     def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic):
         newObj = None
@@ -38,6 +41,8 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
             newObj = self.__generateDinghy(parent, parentUid, objKey, objectData)
         elif objType == 'Object Spawn Node' and self.wantSpawnNodes:
             newObj = self.__generateObjectSpawnNode(parent, parentUid, objKey, objectData)
+        elif objType == 'RepairBench' and self.wantRepairBench:
+            newObj = self.__generateRepairBench(parent, parentUid, objKey, objectData)
 
         return newObj
 
@@ -46,11 +51,14 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
 
         container.setUniqueId(objKey)
 
-        container.setPos(objectData['Pos'])
-        container.setHpr(objectData['Hpr'])
-        container.setScale(objectData['Scale'])
+        container.setPos(objectData.get('Pos', (0, 0, 0)))
+        container.setHpr(objectData.get('Hpr', (0, 0, 0)))
+        container.setScale(objectData.get('Scale', (1, 1, 1)))
         container.setType(objectData.get('type', 'Crate'))
-        container.setContainerColor(objectData['Visual'].get('Color', (0, 0, 0, 0)))
+
+        if 'Visual' in objectData and 'Color' in objectData['Visual']:
+            container.setContainerColor(objectData['Visual'].get('Color', (0, 0, 0, 0)))
+
         container.setSearchTime(float(objectData.get('searchTime', '6.0')))
         container.setVisZone(objectData.get('VisZone', ''))
         container.setSphereScale(float(objectData.get('Aggro Radius', 1.0)))
@@ -58,27 +66,27 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         parent.generateChildWithRequired(container, PiratesGlobals.IslandLocalZone)
         self.addObject(container)
 
-        return self.parentToCellOrigin(parent, container)
+        return self.parentToCellOrigin(self.parent, container)
 
     def __generateFishingSpot(self, parent, parentUid, objKey, objectData):
         fishingSpot = DistributedFishingSpotAI(self.air)
 
-        fishingSpot.setPos(objectData['Pos'])
-        fishingSpot.setHpr(objectData['Hpr'])
-        fishingSpot.setScale(objectData['Scale'])
+        fishingSpot.setPos(objectData.get('Pos', (0, 0, 0)))
+        fishingSpot.setHpr(objectData.get('Hpr', (0, 0, 0)))
+        fishingSpot.setScale(objectData.get('Scale', (1, 1, 1)))
         fishingSpot.setOceanOffset(float(objectData.get('Ocean Offset', 1)))
 
         parent.generateChildWithRequired(fishingSpot, PiratesGlobals.IslandLocalZone)
         self.addObject(fishingSpot)
 
-        return fishingSpot
+        return self.parentToCellOrigin(self.parent, fishingSpot)
 
     def __generatePotionTable(self, parent, parentUid, objKey, objectData):
         table = DistributedPotionCraftingTableAI(self.air)
 
-        table.setPos(objectData['Pos'])
-        table.setHpr(objectData['Hpr'])
-        table.setScale(objectData['Scale'])
+        table.setPos(objectData.get('Pos', (0, 0, 0)))
+        table.setHpr(objectData.get('Hpr', (0, 0, 0)))
+        table.setScale(objectData.get('Scale', (1, 1, 1)))
 
         parent.generateChildWithRequired(table, PiratesGlobals.IslandLocalZone)
         self.addObject(table)
@@ -142,20 +150,20 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         self.air.worldCreator.loadObjectsFromFile(interiorFile + '.py', interior)
 
         if self.air.worldCreator.wantPrintout:
-            print 'Generated Interior %s (%s)' % (interior.getLocalizerName(), objKey)
+            print '- Generated Interior %s (%s)' % (interior.getLocalizerName(), objKey)
 
         return interior
 
     def __generateDinghy(self, parent, parentUid, objKey, objectData):
         dinghy = DistributedDinghyAI(self.air)
-        dinghy.setPos(objectData.get('Pos'))
-        dinghy.setHpr(objectData['Hpr'])
+        dinghy.setPos(objectData.get('Pos', (0, 0, 0)))
+        dinghy.setHpr(objectData.get('Hpr', (0, 0, 0)))
         dinghy.setInteractRadius(float(objectData['Aggro Radius']))
 
         parent.generateChildWithRequired(dinghy, PiratesGlobals.IslandLocalZone)
         self.addObject(dinghy)
 
-        return self.parentToCellOrigin(parent, dinghy)
+        return self.parentToCellOrigin(self.parent, dinghy)
 
     def __generateObjectSpawnNode(self, parent, parentUid, objKey, objectData):
         if objectData['Spawnables'] == 'Surface Treasure':
@@ -164,14 +172,28 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
             spawnClass = DistributedBuriedTreasureAI
 
         spawnNode = spawnClass(self.air)
-        spawnNode.setPos(objectData.get('Pos'))
-        spawnNode.setHpr(objectData['Hpr'])
-        spawnNode.setScale(objectData['Scale'])
-        spawnNode.setStartingDepth(int(objectData['startingDepth']))
+        spawnNode.setPos(objectData.get('Pos', (0, 0, 0)))
+        spawnNode.setHpr(objectData.get('Hpr', (0, 0, 0)))
+        spawnNode.setScale(objectData.get('Scale', (1, 1, 1)))
+        spawnNode.setStartingDepth(int(objectData.get('startingDepth', 10)))
         spawnNode.setCurrentDepth(spawnNode.getStartingDepth())
         spawnNode.setVisZone(objectData.get('VisZone', ''))
 
         parent.generateChildWithRequired(spawnNode, PiratesGlobals.IslandLocalZone)
         self.addObject(spawnNode)
 
-        return self.parentToCellOrigin(parent, spawnNode)
+        return self.parentToCellOrigin(self.parent, spawnNode)
+
+    def __generateRepairBench(self, parent, parentUid, objKey, objectData):
+        bench = DistributedRepairBenchAI(self.air)
+
+        bench.setPos(objectData.get('Pos', (0, 0, 0)))
+        bench.setHpr(objectData.get('Hpr', (0, 0, 0)))
+        bench.setScale(objectData.get('Scale', (1, 1, 1)))
+        bench.setDifficulty(int(objectData.get('difficulty', '0')))
+
+        parent.generateChildWithRequired(bench, PiratesGlobals.IslandLocalZone)
+        self.addObject(bench)
+
+        return self.parentToCellOrigin(self.parent, bench)
+
