@@ -32,7 +32,6 @@ from pirates.seapatch.Reflection import Reflection
 from pirates.makeapirate import NameGUI
 from pirates.piratesgui import NonPayerPanel
 from pirates.piratesgui import TrialNonPayerPanel
-from pirates.piratesbase import UserFunnel
 from pirates.pirate import Human
 from pirates.pirate import HumanDNA
 from pirates.audio import SoundGlobals
@@ -620,8 +619,8 @@ class AvatarChooser(DirectObject, StateData):
             return
 
         self.choice = (subId, slot)
-        UserFunnel.loggingAvID('write', 'NEW')
-        UserFunnel.loggingSubID('write', subId)
+
+        base.funnel.add_to_event_queue(base.funnel.get_design_event('NEW_AVATAR', slot))
         self.ignore('rejectAvatarSlot')
         self.ignore('avatarSlotResponse')
         base.cr.cleanupWaitingForDatabase()
@@ -710,8 +709,7 @@ class AvatarChooser(DirectObject, StateData):
         base.emoteGender = base.cr.avList[subId][slot].dna.gender
         subId, slot = self.choice
         self.notify.info('AvatarChooser: acquired avatar slot: %s avId: %s subId: %s' % (slot, avatarId, subId))
-        UserFunnel.loggingAvID('write', avatarId)
-        UserFunnel.loggingSubID('write', subId)
+        base.funnel.add_to_event_queue(base.funnel.get_design_event('CHOOSE_AVATAR', avatarId))
         base.cr.cleanupWaitingForDatabase()
         self.doneStatus = {'mode': 'chose'}
         messenger.send(self.doneEvent, [self.doneStatus])

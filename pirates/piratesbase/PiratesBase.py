@@ -38,7 +38,7 @@ try:
 except ImportError:
     hasEmbedded = 0
 
-from pirates.piratesbase import UserFunnel
+from pirates.piratesbase.UserFunnel import UserFunnel
 
 class PiratesBase(OTPBase):
     notify = DirectNotifyGlobal.directNotify.newCategory('PiratesBase')
@@ -295,6 +295,7 @@ class PiratesBase(OTPBase):
         self.transitions.loadLetterbox()
         self.transitions.letterbox.setColorScale(0, 0, 0, 1)
         self.loadingScreen.endStep('PiratesBase')
+        self.funnel = UserFunnel()
 
         if config.GetBool('want-dev', False):
             self.accept('f4', lambda: self.oobe())
@@ -815,6 +816,8 @@ class PiratesBase(OTPBase):
             return
         self.__alreadyExiting = True
         requestResult = False
+        self.funnel.end_session()
+        self.funnel.submit_events()
         if hasattr(base, 'cr'):
             if self.cr.timeManager:
                 self.cr.timeManager.setDisconnectReason(PiratesGlobals.DisconnectCloseWindow)
