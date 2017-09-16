@@ -1803,7 +1803,7 @@ dclass DistributedGameArea : DistributedNode {
   spawnNPC(string, uint32) airecv clsend;
 };
 
-dclass DistributedGAInterior : DistributedGameArea, DistributedCartesianGrid {
+dclass DistributedGAInterior : DistributedCartesianGrid, DistributedGameArea {
   uint32 AutoInterest[];
   setParentingRules(string, string) required broadcast ram;
   setConnectorId(uint32) required broadcast ram;
