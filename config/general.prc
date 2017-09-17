@@ -56,7 +56,7 @@ framebuffer-srgb #f
 dc-file astron/dclass/pirates.dc
 dc-file astron/dclass/otp.dc
 
-# Animations: 
+# Animations:
 even-animation #t
 interpolate-frames #t
 hardware-animated-vertices #t
