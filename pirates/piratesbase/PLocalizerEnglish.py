@@ -6013,7 +6013,8 @@ LocationNames = {
     LocationIds.PORCS_TAVERN: "Porc's Tavern", 
     LocationIds.AVARICIAS_TAVERN: "Avaricia's Tavern",
     LocationIds.ANTIQUA_ISLAND: 'Antiqua',
-    LocationIds.NASSAU_ISLAND : 'Nassau'
+    LocationIds.NASSAU_ISLAND : 'Nassau',
+    LocationIds.MADRE_DEL_FUEGO_ISLAND: 'Madre Del Fuego'
 }
 LocationNamesNotIsland = {
     LocationIds.PORT_ROYAL_ISLAND: 'Port Royal Town', LocationIds.TORTUGA_ISLAND: 'Tortuga Town', LocationIds.DEL_FUEGO_ISLAND: 'Padres Del Fuego Town', LocationIds.ANVIL_ISLAND: 'Anvil Island Beach', LocationIds.CUBA_ISLAND: 'Cuba Beach'
