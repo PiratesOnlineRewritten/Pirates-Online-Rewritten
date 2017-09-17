@@ -467,13 +467,13 @@ class DistributedIsland(DistributedGameArea, DistributedCartesianGrid, ZoneLOD, 
             if not meshes.isEmpty():
                 mesh = meshes[0]
                 joints = self.islandShoreWave.findAllMatches('**/uvj_WakeWhiteTide1')
-                if joints.getNumPaths():
+                if joints.getNumPaths() and mesh.findTextureStage('default'):
                     mesh.setTexProjector(mesh.findTextureStage('default'), joints[0], parent)
             meshes = self.islandShoreWave.findAllMatches('**/mesh_tide2')
             if not meshes.isEmpty():
                 mesh = meshes[0]
                 joints = self.islandShoreWave.findAllMatches('**/uvj_WakeWhiteTide2')
-                if joints.getNumPaths():
+                if joints.getNumPaths() and mesh.findTextureStage('default'):
                     mesh.setTexProjector(mesh.findTextureStage('default'), joints[0], parent)
             lavaCombo = self.islandShoreWave.findAllMatches('**/lava_combo_*')
             if lavaCombo.getNumPaths():
