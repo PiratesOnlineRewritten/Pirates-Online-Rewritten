@@ -1,9 +1,5 @@
 from pandac.PandaModules import Point3, VBase3, Vec4
 objectStruct = {
-    'AmbientColors': {},
-    'DirectionalColors': {},
-    'FogColors': {},
-    'FogRanges': {},
     'Interact Links': [
         ['1169190957.44mike', '1175644800.0dxschafe', 'Bi-directional'],
         ['1178667904.0dxschafe', '1165018774.94Shochet', 'Bi-directional'],
