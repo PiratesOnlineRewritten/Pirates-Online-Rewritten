@@ -9637,7 +9637,7 @@ objectStruct = {
                     'Pos': Point3(15.291, -917.809, 45.977),
                     'Scale': VBase3(1.0, 1.0, 1.0),
                     'Visual': {
-                        'Model': 'models/tunnels/tunnelcap_jungle'
+                        'Model': 'models/tunnels/tunnelcap_jungle2'
                     }
                 },
                 '1158000768.47dxschafe': {
@@ -9647,7 +9647,7 @@ objectStruct = {
                     'Pos': Point3(-556.387, -1682.19, 8.345),
                     'Scale': VBase3(1.0, 1.0, 1.0),
                     'Visual': {
-                        'Model': 'models/tunnels/tunnelcap_jungle'
+                        'Model': 'models/tunnels/tunnelcap_jungle2'
                     }
                 },
                 '1158001248.92dxschafe': {
@@ -12980,7 +12980,7 @@ objectStruct = {
                     'Pos': Point3(758.532, -1819.073, 9.396),
                     'Scale': VBase3(1.0, 1.0, 1.0),
                     'Visual': {
-                        'Model': 'models/tunnels/tunnelcap_jungle'
+                        'Model': 'models/tunnels/tunnelcap_jungle2'
                     }
                 },
                 '1169504512.0dxschafe': {
@@ -18811,8 +18811,6 @@ objectStruct = {
                 }
             },
             'Undockable': True,
-            'VisSize': '',
-            'VisZone': '36',
             'Visibility': 'Grid',
             'Visual': {
                 'Model': 'models/islands/pir_m_are_isl_nassau'

@@ -12182,6 +12182,9 @@ objectStruct = {
                     'Scale': VBase3(1.0, 1.0, 1.0)
                 }
             },
+            'Undockable': True,
+            'VisSize': '',
+            'VisZone': '36',
             'Visual': {
                 'Model': 'models/islands/bilgewater_zero'
             }
