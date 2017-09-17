@@ -168,6 +168,7 @@ class LocationIds():
     PILLAGERS_PASS = '1170793088.0jubutler'
     ANTIQUA_ISLAND = '1156207188.828659a2'
     NASSAU_ISLAND = '1150922126.828659a2'
+    MADRE_DEL_FUEGO_ISLAND = ''
     WINDWARD_PASSAGE = 'Windward_Passage'
     BRIGAND_BAY = 'Brigand_Bay'
     BLOODY_BAYOU = 'Bloody_Bayou'
