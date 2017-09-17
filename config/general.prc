@@ -24,6 +24,7 @@ model-path ../resources/phase_2
 model-path ../resources/phase_3
 model-path ../resources/phase_4
 model-path ../resources/phase_5
+model-path ../resources/phase_6
 default-model-extension .bam
 
 # Display Pipeline:
@@ -55,7 +56,7 @@ framebuffer-srgb #f
 dc-file astron/dclass/pirates.dc
 dc-file astron/dclass/otp.dc
 
-# Animations: 
+# Animations:
 even-animation #t
 interpolate-frames #t
 hardware-animated-vertices #t

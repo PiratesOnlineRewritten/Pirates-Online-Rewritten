@@ -561,7 +561,7 @@ class Options(OptionSpace):
         config_variable.setValue(self.shader_runtime)
         config_variable = ConfigVariableBool('want-avatar-shadows', 0)
         config_variable.setValue(self.shadow)
-        config_variable = ConfigVariableBool('compressed-textures')
+        config_variable = ConfigVariableInt('compressed-textures')
         config_variable.setValue(self.textureCompressionRuntime)
 
     def getWidth(self):
