@@ -46,10 +46,10 @@ class DistributedIslandAI(DistributedGameAreaAI, DistributedCartesianGridAI, Tea
         self.nextEvent -= 15
         if self.nextEvent <= 0:
             islandId = self.getUniqueId()
-            if islandId == LocationIds.DEL_FUEGO_ISLAND:
+            if islandId == LocationIds.DEL_FUEGO_ISLAND or islandId == LocationIds.MADRE_DEL_FUEGO_ISLAND:
                 self.d_makeLavaErupt()
                 self.nextEvent = max(config.GetInt('eruption-delay', 60), 15) if config.GetBool('want-dev', False) else random.randint(5, 10) * 60
-                self.notify.debug('%s has erupted! Next eruption is in %d seconds' % (self.getLocalizerName(), self.nextEvent))
+                print('%s has erupted! Next eruption is in %d seconds' % (self.getLocalizerName(), self.nextEvent))
 
         return Task.again
 
