@@ -5849,7 +5849,7 @@ LocationUids = {
     'isla tormenta': LocationIds.ISLA_TORMENTA,
     'tormenta': LocationIds.ISLA_TORMENTA,
     'tortuga': LocationIds.TORTUGA_ISLAND,
-    'antigua': LocationIds.ANTIQUA_ISLAND,
+    'antigua': LocationIds.ANTIGUA_ISLAND,
     'nassau': LocationIds.NASSAU_ISLAND 
 }
 LocationNames = {
@@ -6012,7 +6012,7 @@ LocationNames = {
     LocationIds.ISLA_DE_PORC: "Ile d'Etable de Porc", 
     LocationIds.PORCS_TAVERN: "Porc's Tavern", 
     LocationIds.AVARICIAS_TAVERN: "Avaricia's Tavern",
-    LocationIds.ANTIQUA_ISLAND: 'Antiqua',
+    LocationIds.ANTIGUA_ISLAND: 'Antigua',
     LocationIds.NASSAU_ISLAND : 'Nassau',
     LocationIds.MADRE_DEL_FUEGO_ISLAND: 'Madre Del Fuego'
 }

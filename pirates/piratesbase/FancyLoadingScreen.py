@@ -39,7 +39,34 @@ screenShot_Weapon = 'models/gui/loadingScreen_35'
 screenShot_Cutlass = 'models/gui/loadingScreen_37'
 screenShot_EnterGame = 'models/gui/loadingScreen_enter'
 screenShot_ExitGame = 'models/gui/loadingScreen_exit'
-screenShots_Locations = {LocationIds.ANVIL_ISLAND: ['models/gui/loadingScreen_01'],LocationIds.ISLA_CANGREJOS: ['models/gui/loadingScreen_02', 'models/gui/loadingScreen_10'],LocationIds.CUBA_ISLAND: ['models/gui/loadingScreen_05'],LocationIds.CUTTHROAT_ISLAND: ['models/gui/loadingScreen_06'],LocationIds.DEL_FUEGO_ISLAND: ['models/gui/loadingScreen_07'],LocationIds.DRIFTWOOD_ISLAND: ['models/gui/loadingScreen_09'],LocationIds.ISLA_PERDIDA: ['models/gui/loadingScreen_11'],LocationIds.KINGSHEAD_ISLAND: ['models/gui/loadingScreen_14'],LocationIds.OUTCAST_ISLE: ['models/gui/loadingScreen_19'],LocationIds.PORT_ROYAL_ISLAND: ['models/gui/loadingScreen_16'],LocationIds.RUMRUNNER_ISLE: ['models/gui/loadingScreen_17'],LocationIds.ISLA_TORMENTA: ['models/gui/loadingScreen_15'],LocationIds.TORTUGA_ISLAND: ['models/gui/loadingScreen_20'],LocationIds.ANVIL_CAVE_BARBOSA: ['models/gui/loadingScreen_22'],LocationIds.ISLA_AVARICIA: ['models/gui/loadingScreen_24'],LocationIds.ISLA_DE_PORC: ['models/gui/loadingScreen_25'],LocationIds.PORT_ROYAL_CAVE_A: ['models/gui/loadingScreen_32'],LocationIds.PORT_ROYAL_CAVE_B: ['models/gui/loadingScreen_30'],LocationIds.TORTUGA_CAVE: ['models/gui/loadingScreen_31'],LocationIds.DEL_FUEGO_CAVE_C: ['models/gui/loadingScreen_29'],LocationIds.DEL_FUEGO_CAVE_D: ['models/gui/loadingScreen_26'],LocationIds.DEL_FUEGO_CAVE_E: ['models/gui/loadingScreen_27'],LocationIds.TORMENTA_CAVE_B: ['models/gui/loadingScreen_28'],LocationIds.RAVENS_COVE_ISLAND: ['models/gui/loadingScreen_46']}
+screenShots_Locations = {
+    LocationIds.ANVIL_ISLAND: ['models/gui/loadingScreen_01'],
+    LocationIds.ISLA_CANGREJOS: ['models/gui/loadingScreen_02', 'models/gui/loadingScreen_10'],
+    LocationIds.CUBA_ISLAND: ['models/gui/loadingScreen_05'],
+    LocationIds.CUTTHROAT_ISLAND: ['models/gui/loadingScreen_06'],
+    LocationIds.DEL_FUEGO_ISLAND: ['models/gui/loadingScreen_07'],
+    LocationIds.DRIFTWOOD_ISLAND: ['models/gui/loadingScreen_09'],
+    LocationIds.ISLA_PERDIDA: ['models/gui/loadingScreen_11'],
+    LocationIds.KINGSHEAD_ISLAND: ['models/gui/loadingScreen_14'],
+    LocationIds.OUTCAST_ISLE: ['models/gui/loadingScreen_19'],
+    LocationIds.PORT_ROYAL_ISLAND: ['models/gui/loadingScreen_16'],
+    LocationIds.RUMRUNNER_ISLE: ['models/gui/loadingScreen_17'],
+    LocationIds.ISLA_TORMENTA: ['models/gui/loadingScreen_15'],
+    LocationIds.TORTUGA_ISLAND: ['models/gui/loadingScreen_20'],
+    LocationIds.ANVIL_CAVE_BARBOSA: ['models/gui/loadingScreen_22'],
+    LocationIds.ISLA_AVARICIA: ['models/gui/loadingScreen_24'],
+    LocationIds.ISLA_DE_PORC: ['models/gui/loadingScreen_25'],
+    LocationIds.PORT_ROYAL_CAVE_A: ['models/gui/loadingScreen_32'],
+    LocationIds.PORT_ROYAL_CAVE_B: ['models/gui/loadingScreen_30'],
+    LocationIds.TORTUGA_CAVE: ['models/gui/loadingScreen_31'],
+    LocationIds.DEL_FUEGO_CAVE_C: ['models/gui/loadingScreen_29'],
+    LocationIds.DEL_FUEGO_CAVE_D: ['models/gui/loadingScreen_26'],
+    LocationIds.DEL_FUEGO_CAVE_E: ['models/gui/loadingScreen_27'],
+    LocationIds.TORMENTA_CAVE_B: ['models/gui/loadingScreen_28'],
+    LocationIds.NASSAU_ISLAND: ['models/gui/loadingScreen_47'],
+    LocationIds.ANTIGUA_ISLAND: ['models/gui/loadingScreen_48'],
+    LocationIds.MADRE_DEL_FUEGO_ISLAND: ['models/gui/loacingScreen_49']
+}
 screenShots_WinterHolidayLocations = {LocationIds.DEL_FUEGO_ISLAND: ['models/gui/loadingScreen_38'],LocationIds.PORT_ROYAL_ISLAND: ['models/gui/loadingScreen_39'],LocationIds.TORTUGA_ISLAND: ['models/gui/loadingScreen_40']}
 screenShot_Potions = 'models/gui/loadingScreen_41'
 screenShot_BenchRepair = 'models/gui/loadingScreen_42'
@@ -498,75 +525,64 @@ class FancyLoadingScreen(DirectObject.DirectObject):
             base.appRunner.notifyRequest('onLoadingMessagesStop')
         return
 
-    def showTarget(self, targetId=None, ocean=False, jail=False, pickapirate=False, exit=False, potionCrafting=False, benchRepair=False, shipRepair=False, cannonDefense=False, fishing=False):
+    def showTarget(self, targetId=None, ocean=False, jail=False, pickapirate=False, exit=False, potionCrafting=False, benchRepair=False, shipRepair=False, cannonDefense=False):
         if base.config.GetBool('no-loading-screen', 0):
             return
         if pickapirate:
             screenshot = screenShot_EnterGame
+        elif exit:
+            screenshot = screenShot_ExitGame
+        elif ocean:
+            screenshot = screenShot_Dinghy
+        elif jail:
+            screenshot = screenShot_Jail
+        elif potionCrafting:
+            screenshot = screenShot_Potions
+        elif benchRepair:
+            screenshot = screenShot_BenchRepair
+        elif shipRepair:
+            screenshot = screenShot_ShipRepair
+        elif cannonDefense:
+            screenshot = screenShot_CannonDefense
+        elif base.localAvatar.style.getTutorial() < PiratesGlobals.TUT_GOT_CUTLASS:
+            screenshot = screenShot_Weapon
+        elif base.localAvatar.style.getTutorial() < PiratesGlobals.TUT_MET_JOLLY_ROGER:
+            screenshot = screenShot_Cutlass
+        elif base.cr.newsManager:
+            if base.cr.newsManager.getHoliday(21):
+                screenshot = screenShots_WinterHolidayLocations.get(targetId)
+                if not screenshot:
+                    screenshot = screenShots_Locations.get(targetId)
         else:
-            if exit:
-                screenshot = screenShot_ExitGame
-            else:
-                if ocean:
-                    screenshot = screenShot_Dinghy
-                elif jail:
-                    screenshot = screenShot_Jail
-                elif potionCrafting:
-                    screenshot = screenShot_Potions
-                elif benchRepair:
-                    screenshot = screenShot_BenchRepair
-                else:
-                    if shipRepair:
-                        screenshot = screenShot_ShipRepair
-                    elif cannonDefense:
-                        screenshot = screenShot_CannonDefense
-                    elif fishing:
-                        screenshot = screenShot_Fishing
-                    elif base.localAvatar.style.getTutorial() < PiratesGlobals.TUT_GOT_CUTLASS:
-                        screenshot = screenShot_Weapon
-                    elif base.localAvatar.style.getTutorial() < PiratesGlobals.TUT_MET_JOLLY_ROGER:
-                        screenshot = screenShot_Cutlass
-                    elif base.cr.newsManager:
-                        if base.cr.newsManager.getHoliday(21):
-                            screenshot = screenShots_WinterHolidayLocations.get(targetId)
-                            if not screenshot:
-                                screenshot = screenShots_Locations.get(targetId)
-                        else:
-                            screenshot = screenShots_Locations.get(targetId)
-                        if screenshot or areaType_Jungles.has_key(targetId):
-                            screenshot = random.choice(screenShots_Jungles)
-                        elif areaType_Swamps.has_key(targetId):
-                            screenshot = random.choice(screenShots_Swamps)
-                        elif areaType_Caves.has_key(targetId):
-                            screenshot = random.choice(screenShots_Caves)
-                        else:
-                            island = getParentIsland(targetId)
-                            screenshot = screenShots_Locations.get(island, [random.choice(screenShots)])[0]
-                    elif len(screenshot) > 1:
-                        screenshot = random.choice(screenshot)
-                    else:
-                        screenshot = screenshot[0]
+            screenshot = screenShots_Locations.get(targetId)
 
-            self.__setLoadingArt(screenshot)
-            if pickapirate:
-                targetName = PLocalizer.LoadingScreen_PickAPirate
-
-            if exit:
-                targetName = None
-
-            if ocean:
-                targetName = PLocalizer.LoadingScreen_Ocean
-
-            if jail:
-                targetName = PLocalizer.LoadingScreen_Jail
-
+        if screenshot or areaType_Jungles.has_key(targetId):
+            screenshot = random.choice(screenShots_Jungles)
+        elif areaType_Swamps.has_key(targetId):
+            screenshot = random.choice(screenShots_Swamps)
+        elif areaType_Caves.has_key(targetId):
+            screenshot = random.choice(screenShots_Caves)
+        else:
+            island = getParentIsland(targetId)
+            screenshot = screenShots_Locations.get(island, [random.choice(screenShots)])[0]
+        if len(screenshot) > 1 and not isinstance(screenshot, str):
+            screenshot = random.choice(screenshot)
+        self.__setLoadingArt(screenshot)
+        if pickapirate:
+            targetName = PLocalizer.LoadingScreen_PickAPirate
+        elif exit:
+            targetName = None
+        elif ocean:
+            targetName = PLocalizer.LoadingScreen_Ocean
+        elif jail:
+            targetName = PLocalizer.LoadingScreen_Jail
+        else:
             targetName = PLocalizer.LocationNames.get(targetId)
-            base.setLocationCode('Loading: %s' % targetName)
-            if targetName is None:
-                return
-
-            if len(targetName):
-                self.__setLocationText(targetName)
+        base.setLocationCode('Loading: %s' % targetName)
+        if targetName is None:
+            return
+        if len(targetName):
+            self.__setLocationText(targetName)
 
     def __setLoadingArt(self, screenshot):
         if self.currScreenshot:
