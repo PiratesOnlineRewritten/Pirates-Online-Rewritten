@@ -43,9 +43,7 @@ class DistributedPlayerAI(DistributedAvatarAI.DistributedAvatarAI, PlayerBase.Pl
         if self.isPlayerControlled():
             if not self.air._isValidPlayerLocation(parentId, zoneId):
                 self.notify.info('booting player %s for doing setLocation to (%s, %s)' % (self.doId, parentId, zoneId))
-                self.air.writeServerEvent('suspicious', avId=self.doId, issue='invalid setLocation: (%s, %s)' % (
-                    parentId, zoneId))
-
+                self.air.writeServerEvent('suspicious', avId=self.doId, issue='invalid setLocation: (%s, %s)' % (parentId, zoneId))
                 self.requestDelete()
 
     def _doPlayerEnter(self):
@@ -71,10 +69,6 @@ class DistributedPlayerAI(DistributedAvatarAI.DistributedAvatarAI, PlayerBase.Pl
 
     def setChat(self, chatString, chatFlags):
         pass
-
-    def d_setMaxHp(self, maxHp):
-        DistributedAvatarAI.DistributedAvatarAI.d_setMaxHp(self, maxHp)
-        self.air.writeServerEvent('setMaxHp', avId=self.doId, hp='%s' % maxHp)
 
     def d_setSystemMessage(self, aboutId, chatString):
         self.sendUpdate('setSystemMessage', [aboutId, chatString])

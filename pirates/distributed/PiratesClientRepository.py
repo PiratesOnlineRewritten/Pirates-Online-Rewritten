@@ -451,6 +451,7 @@ class PiratesClientRepository(OTPClientRepository):
         self.localAvatarDoId = avatarId
         self.doId2do[avatarId] = localAvatar
         localAvatar.setLocation(parentId=None, zoneId=None)
+        localAvatar.generateInit()
         localAvatar.generate()
         localAvatar.updateAllRequiredFields(localAvatar.dclass, di)
         self.loadingScreen.endStep('LocalAvatar')

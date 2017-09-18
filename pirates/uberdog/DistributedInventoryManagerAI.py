@@ -1,5 +1,6 @@
 from direct.distributed.DistributedObjectGlobalAI import DistributedObjectGlobalAI
 from direct.directnotify import DirectNotifyGlobal
+from pirates.uberdog.UberDogGlobals import InventoryId, InventoryType
 
 class DistributedInventoryManagerAI(DistributedObjectGlobalAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedInventoryManagerAI')
@@ -39,13 +40,19 @@ class DistributedInventoryManagerAI(DistributedObjectGlobalAI):
             if not inventoryId:
                 return self.notify.warning('Invalid inventory found for avatar %d!' % avatar.doId)
 
-            self.__sendInventory(self.inventories.get(inventoryId))
+            self.__sendInventory(avatar, self.inventories.get(inventoryId))
 
         self.air.dbInterface.queryObject(self.air.dbId, avatar.doId, callback=queryAvatar,
             dclass=self.air.dclassesByName['DistributedPlayerPirateAI'])
 
-    def __sendInventory(self, inventory):
+    def __sendInventory(self, avatar, inventory):
         if not inventory:
-            return self.notify.warning('Failed to send results for invalid inventory!')
+            return self.notify.warning('Failed to retrieve inventory for avatar %d!' % avatar.doId)
+
+        avatar.b_setInventoryId(inventory.doId)
+
+        inventory.d_stackLimit(InventoryType.Hp, avatar.getMaxHp())
+        inventory.d_stackLimit(InventoryType.Mojo, avatar.getMaxMojo())
+        inventory.d_stack(InventoryType.Vitae_Level, avatar.getLevel())
 
         inventory.d_requestInventoryComplete()

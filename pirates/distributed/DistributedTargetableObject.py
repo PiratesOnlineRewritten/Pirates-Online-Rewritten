@@ -136,12 +136,12 @@ class DistributedTargetableObject(DistributedNode.DistributedNode):
     def addCombo(self, attackerId, weaponId, skillId, damage=0, skillResult=0):
         if self.comboDiary is None:
             self.comboDiary = ClientComboDiary.ClientComboDiary(self)
+
         self.comboDiary.recordAttack(attackerId, weaponId, skillId, damage, skillResult)
         hasCombo = self.comboDiary.hasCombo(attackerId)
         if hasCombo:
             combo, comboDamage, teamCombo = self.comboDiary.getCombo()
             self.setCombo(combo, self.isTeamCombo, comboDamage)
-        return
 
     def cleanupOuchIval(self):
         pass
@@ -232,7 +232,6 @@ class DistributedTargetableObject(DistributedNode.DistributedNode):
                     self.voodooSmokeEffect2.reparentTo(self)
                     self.voodooSmokeEffect2.setPos(0, 0, 0.2)
                     self.voodooSmokeEffect2.play()
-        return
 
     def pulseGhostGuardEffect(self, color):
         pass
@@ -392,8 +391,7 @@ class DistributedTargetableObject(DistributedNode.DistributedNode):
                 impactT += animT
         targetPos = placeHolder.getPos(render)
         placeHolder.removeNode()
-        return (
-         targetPos, time, impactT)
+        return (targetPos, time, impactT)
 
     def localAttackedMe(self):
         pass
@@ -478,7 +476,6 @@ class DistributedTargetableObject(DistributedNode.DistributedNode):
             self.notify.warning('WeaponGlobals.RESULT_NOT_AVAILABLE')
         else:
             self.notify.error('unknown skillResult: %d' % skillResult)
-        return
 
     def projectileWeaponHit(self, skillId, ammoSkillId, skillResult, targetEffects, pos, normal, codes, attacker, itemEffects=[]):
         self.targetedWeaponHit(skillId, ammoSkillId, skillResult, targetEffects, attacker, pos, itemEffects=itemEffects)
@@ -493,14 +490,12 @@ class DistributedTargetableObject(DistributedNode.DistributedNode):
         if hpLost > 0:
             self.showHpText(-hpLost, pos, bonus)
             self.hpChange(quietly=0)
-        return
 
     def takeMpDamage(self, mpLost, pos, bonus=3):
         if self.mojo == None or mpLost < 0 or self.mojo <= 0:
             return
         if mpLost > 0:
             self.showHpText(-mpLost, pos, bonus)
-        return
 
     def respawn(self):
         pass

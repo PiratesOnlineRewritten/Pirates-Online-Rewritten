@@ -16,8 +16,9 @@ class DistributedBattleAvatarAI(DistributedReputationAvatarAI, Teamable):
         self.ghostColor = 0
         self.ghostPowers = False
         self.shipId = 0
-        self.hp = 0
         self.maxHp = 0
+        self.hp = 0
+        self.quietly = False
         self.luck = 0
         self.maxLuck = 0
         self.mojo = 0
@@ -40,7 +41,7 @@ class DistributedBattleAvatarAI(DistributedReputationAvatarAI, Teamable):
         self.skillEffects = []
         self.ensaredTargetId = 0
         self.level = 0
-    
+
     def setAvatarType(self, avatarType):
         self.avatarType = avatarType
 
@@ -152,10 +153,11 @@ class DistributedBattleAvatarAI(DistributedReputationAvatarAI, Teamable):
     def getMaxHp(self):
         return self.maxHp
 
-    def setHp(self, hp, quietly=False):
+    def setHp(self, hp, quietly):
         self.hp = hp
+        self.quietly = quietly
 
-    def d_setHp(self, hp, quietly=False):
+    def d_setHp(self, hp, quietly):
         self.sendUpdate('setHp', [hp, quietly])
 
     def b_setHp(self, hp, quietly = False):
@@ -163,7 +165,7 @@ class DistributedBattleAvatarAI(DistributedReputationAvatarAI, Teamable):
         self.d_setHp(hp, quietly)
 
     def getHp(self):
-        return (self.hp, False)
+        return (self.hp, self.quietly)
 
     def setLuck(self, luck):
         self.luck = luck
@@ -191,19 +193,6 @@ class DistributedBattleAvatarAI(DistributedReputationAvatarAI, Teamable):
     def getMaxLuck(self):
         return self.maxLuck
 
-    def setMojo(self, mojo):
-        self.mojo = mojo
-
-    def d_setMojo(self, mojo):
-        self.sendUpdate('setMojo', [mojo])
-
-    def b_setMojo(self, mojo):
-        self.setMojo(mojo)
-        self.d_setMojo(self.mojo)
-
-    def getMojo(self):
-        return self.mojo
-
     def setMaxMojo(self, maxMojo):
         self.maxMojo = maxMojo
 
@@ -216,6 +205,19 @@ class DistributedBattleAvatarAI(DistributedReputationAvatarAI, Teamable):
 
     def getMaxMojo(self):
         return self.maxMojo
+
+    def setMojo(self, mojo):
+        self.mojo = mojo
+
+    def d_setMojo(self, mojo):
+        self.sendUpdate('setMojo', [mojo])
+
+    def b_setMojo(self, mojo):
+        self.setMojo(mojo)
+        self.d_setMojo(self.mojo)
+
+    def getMojo(self):
+        return self.mojo
 
     def setSwiftness(self, swiftness):
         self.swiftness = swiftness
