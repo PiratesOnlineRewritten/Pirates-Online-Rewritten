@@ -1,5 +1,6 @@
 from panda3d.core import *
 from direct.showbase import PythonUtil
+import traceback
 import __builtin__
 
 import argparse
@@ -53,6 +54,6 @@ try:
 except SystemExit:
     raise
 except Exception:
-    info = PythonUtil.describeException()
+    info = traceback.format_exc()
     simbase.air.writeServerEvent('uberdog-exception', avId=simbase.air.getAvatarIdFromSender(), accId=simbase.air.getAccountIdFromSender(), info=info)
     raise
