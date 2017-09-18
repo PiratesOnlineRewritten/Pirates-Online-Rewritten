@@ -17,12 +17,12 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
     def __init__(self, air, parent):
         AreaBuilderBaseAI.__init__(self, air, parent)
         self.wantSearchables = config.GetBool('want-searchables', True)
-        self.wantFishing = config.GetBool('want-fishing', True)
-        self.wantPotionTable = config.GetBool('want-potion-table', True)
+        self.wantFishing = config.GetBool('want-fishing-game', True)
+        self.wantPotionTable = config.GetBool('want-potion-game', False)
         self.wantBuildingInteriors = config.GetBool('want-building-interiors', True)
         self.wantDinghys = config.GetBool('want-dignhys', True)
         self.wantSpawnNodes = config.GetBool('want-spawn-nodes', False)
-        self.wantRepairBench = config.GetBool('want-repair-bench', True)
+        self.wantRepairBench = config.GetBool('want-repair-game', True)
         self.wantIslandAreas = config.GetBool('want-island-game-areas', True)
 
     def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic):
@@ -162,7 +162,7 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         dinghy = DistributedDinghyAI(self.air)
         dinghy.setPos(objectData.get('Pos', (0, 0, 0)))
         dinghy.setHpr(objectData.get('Hpr', (0, 0, 0)))
-        dinghy.setInteractRadius(float(objectData.get('Aggro Radius', 12)))
+        dinghy.setInteractRadius(float(objectData.get('Aggro Radius', 25)))
 
 
         parent.generateChildWithRequired(dinghy, PiratesGlobals.IslandLocalZone)
