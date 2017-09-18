@@ -579,9 +579,9 @@ dclass TradeManager : DistributedObject {
   createTradeResponse(uint32, uint32);
 };
 
-dclass DistributedInventoryManager : Manager {
+dclass DistributedInventoryManager : DistributedObjectGlobal {
   setParentingRules(string, string) broadcast ram;
-  requestInventory() airecv clsend;
+  requestInventory() clsend airecv;
   approvedTrade(uint32, uint32, InventoryItem [], InventoryItem [], uint32, uint32 [], uint8);
   rejectApprovedTrade(uint32, uint32);
   requestDestroy(uint32, uint16, uint32, uint32);
@@ -1307,7 +1307,7 @@ dclass DistributedPlayerPirate : DistributedPlayer, HumanDNA, DistributedBattleA
   setStatus(uint8) ownsend required ram broadcast airecv;
   updateClientTutorialStatus(uint8) required ownrecv;
   setUndead(uint8, string) required broadcast ram;
-  setInventoryId(uint32) required broadcast db;
+  setInventoryId(uint32=0) required broadcast db;
   setDinghyId(uint32) required broadcast ram;
   setBandId(uint32, uint32) required broadcast ram ownrecv;
   requestLookoutInvite(uint32, string, uint32, uint32, resultPair []);

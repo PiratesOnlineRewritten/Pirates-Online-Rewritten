@@ -1,4 +1,3 @@
-from direct.distributed.DistributedObject import DistributedObject
 from pirates.uberdog.DistributedInventory import DistributedInventory
 from direct.directnotify.DirectNotifyGlobal import directNotify
 

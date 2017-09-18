@@ -6,9 +6,9 @@ from pirates.distributed.PiratesInternalRepository import PiratesInternalReposit
 from otp.distributed.OtpDoGlobals import *
 from pirates.piratesbase import PiratesGlobals
 from pirates.distributed.PiratesDistrictAI import PiratesDistrictAI
-from pirates.distributed.DistributedPopulationTrackerAI import DistributedPopulationTrackerAI
 from pirates.world import WorldGlobals
 from pirates.piratesbase.UniqueIdManager import UniqueIdManager
+from pirates.distributed.DistributedPopulationTrackerAI import DistributedPopulationTrackerAI
 from pirates.ai.PiratesTimeManagerAI import PiratesTimeManagerAI
 from pirates.instance.DistributedTeleportMgrAI import DistributedTeleportMgrAI
 from pirates.piratesbase.DistributedTimeOfDayManagerAI import DistributedTimeOfDayManagerAI
@@ -40,13 +40,13 @@ class PiratesAIRepository(PiratesInternalRepository):
         self.createZones()
 
         self.distributedDistrict.b_setAvailable(1)
-        self.notify.info('District %s is now ready.' % self.distributedDistrict.getName())
+        self.notify.info('District is now ready.')
 
     def incrementPopulation(self):
-        self.populationTracker.b_setPopulation(self.populationTracker.getPopulation() + 1)
+        pass
 
     def decrementPopulation(self):
-        self.populationTracker.b_setPopulation(self.populationTracker.getPopulation() - 1)
+        pass
 
     def allocateZone(self, owner=None):
         zoneId = self.zoneAllocator.allocate()
@@ -71,11 +71,8 @@ class PiratesAIRepository(PiratesInternalRepository):
 
         self.populationTracker = DistributedPopulationTrackerAI(self)
         self.populationTracker.setShardId(self.districtId)
-        self.populationTracker.setPopLimits(config.GetInt('shard-pop-limit-low', 100), config.GetInt(
-            'shard-pop-limit-high', 300))
-
-        self.populationTracker.generateWithRequiredAndId(self.allocateChannel(), self.getGameDoId(),
-            OTP_ZONE_ID_DISTRICTS_STATS)
+        self.populationTracker.setPopLimits(config.GetInt('shard-pop-limit-low', 100), config.GetInt('shard-pop-limit-high', 300))
+        self.populationTracker.generateWithRequiredAndId(self.allocateChannel(), self.getGameDoId(), OTP_ZONE_ID_DISTRICTS_STATS)
 
         self.timeManager = PiratesTimeManagerAI(self)
         self.timeManager.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
@@ -93,6 +90,8 @@ class PiratesAIRepository(PiratesInternalRepository):
 
         self.spawner = DistributedEnemySpawnerAI(self)
         self.spawner.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
+
+        self.inventoryManager = self.generateGlobalObject(OTP_DO_ID_PIRATES_INVENTORY_MANAGER, 'DistributedInventoryManager')
 
     def createZones(self):
         """

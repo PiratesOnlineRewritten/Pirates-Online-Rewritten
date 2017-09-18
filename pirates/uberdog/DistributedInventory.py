@@ -13,12 +13,14 @@ class DistributedInventory(TradableInventory, DistributedObject):
 
     def announceGenerate(self):
         self.invInterest = self.addInterest(2, self.uniqueName('inventory'))
-        self.cr.getInventoryMgr(self.ownerId).sendRequestInventory()
+        self.cr.inventoryManager.d_sendRequestInventory()
+
         DistributedObject.announceGenerate(self)
 
     def disable(self):
         if self.invInterest:
             self.removeInterest(self.invInterest)
+
         DistributedObject.disable(self)
         TradableInventory.delete(self)
 
@@ -31,6 +33,7 @@ class DistributedInventory(TradableInventory, DistributedObject):
                 oldHp = self.stackLimits[stackType]
             else:
                 oldHp = limit
+
         self.stackLimits[stackType] = limit
         messenger.send('inventoryLimit-%s-%s' % (self.doId, stackType), [limit])
         messenger.send('inventoryChanged-%s' % self.doId)
@@ -39,6 +42,7 @@ class DistributedInventory(TradableInventory, DistributedObject):
             base.localAvatar.toonUp(limit - oldHp)
             avId = base.localAvatar.getDoId()
             self.sendUpdate('sendMaxHp', [limit, avId])
+
         if stackType == InventoryType.Mojo:
             base.localAvatar.setMaxMojo(limit)
             avId = base.localAvatar.getDoId()
@@ -52,13 +56,15 @@ class DistributedInventory(TradableInventory, DistributedObject):
             category[stackType] = quantity
         else:
             category.pop(stackType, None)
+
         messenger.send(InventoryGlobals.getCategoryQuantChangeMsg(self.doId, stackType), [quantity])
         messenger.send(InventoryGlobals.getAnyChangeMsg(self.doId))
+
         if stackType == InventoryType.Vitae_Level or stackType == InventoryType.Vitae_Cost or stackType == InventoryType.Vitae_Left:
             localAvatar.guiMgr.gameGui.updateVitae(self.getStackQuantity(InventoryType.Vitae_Level), self.getStackQuantity(InventoryType.Vitae_Cost), self.getStackQuantity(InventoryType.Vitae_Left))
+
         if self.ownerId == localAvatar.getDoId():
             localAvatar.gotSpecialReward(stackType)
-        return
 
     def requestInventoryComplete(self):
         self.stacksReady = True
@@ -66,8 +72,7 @@ class DistributedInventory(TradableInventory, DistributedObject):
 
     def accumulator(self, accumulatorType, quantity):
         self.accumulators[accumulatorType] = quantity
-        messenger.send('inventoryAccumulator-%s-%s' % (self.doId, accumulatorType), [
-         quantity])
+        messenger.send('inventoryAccumulator-%s-%s' % (self.doId, accumulatorType), [quantity])
         messenger.send('inventoryChanged-%s' % self.doId)
 
     def sendRequestDestroy(self, category, doId, context):

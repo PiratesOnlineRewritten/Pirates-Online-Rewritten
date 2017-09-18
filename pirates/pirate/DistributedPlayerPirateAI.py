@@ -13,5 +13,20 @@ class DistributedPlayerPirateAI(DistributedPlayerAI, HumanDNA, DistributedBattle
         DistributedBattleAvatarAI.__init__(self, air)
         DistributedQuestAvatarAI.__init__(self, air)
 
+        self.inventoryId = 0
+
+    def setInventoryId(self, inventoryId):
+        self.inventoryId = inventoryId
+
+    def d_setInventoryId(self, inventoryId):
+        self.sendUpdate('setInventoryId', [inventoryId])
+
+    def b_setInventoryId(self, inventoryId):
+        self.setInventoryId(inventoryId)
+        self.d_setInventoryId(inventoryId)
+
+    def getInventoryId(self):
+        return self.inventoryId
+
     def d_relayTeleportLoc(self, shardId, zoneId, teleportMgrDoId):
         self.sendUpdateToAvatarId(self.doId, 'relayTeleportLoc', [shardId, zoneId, teleportMgrDoId])
