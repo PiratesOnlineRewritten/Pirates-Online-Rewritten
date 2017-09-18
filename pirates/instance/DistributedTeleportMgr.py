@@ -543,8 +543,13 @@ class DistributedTeleportMgr(DistributedObject.DistributedObject):
         self.teleportAddInterestComplete(area)
 
     def teleportAddInterestComplete(self, area):
+
+        spawnPos = (0, 0, 90, 0, 0, 0)
+        if base.cr.activeWorld:
+            spawnPos = base.cr.activeWorld.getPlayerSpawnPt(area.doId)
+
         localAvatar.reparentTo(area)
-        localAvatar.setPosHpr(area, 0, 0, 90, 0, 0, 0)
+        localAvatar.setPosHpr(area, *spawnPos)
         localAvatar.spawnWiggle()
         localAvatar.enableGridInterest()
         localAvatar.b_setGameState('LandRoam')
