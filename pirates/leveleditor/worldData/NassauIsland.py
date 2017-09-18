@@ -16016,7 +16016,7 @@ objectStruct = {
                 '1183482682.31kmuller': {
                     'Type': 'Building Exterior',
                     'File': 'PortRoyalJailInterior1',
-                    'ExtUid': '1183482682.31kmuller0',
+                    'ExtUid': '1183482682.828659a2',
                     'Hpr': VBase3(37.953, 0.0, 0.0),
                     'Objects': {
                         '1201026944.0dxschafe38': {
@@ -20337,7 +20337,7 @@ objectStruct = {
         '1183482615.32kmuller': '["Objects"]["1150922126.828659a2"]["Objects"]["1183482615.32kmuller"]',
         '1183482631.24kmuller': '["Objects"]["1150922126.828659a2"]["Objects"]["1183482631.24kmuller"]',
         '1183482682.31kmuller': '["Objects"]["1150922126.828659a2"]["Objects"]["1183482682.31kmuller"]',
-        '1183482682.31kmuller0': '["Objects"]["1150922126.828659a2"]["Objects"]["1183482682.31kmuller"]',
+        '1183482682.828659a2': '["Objects"]["1150922126.828659a2"]["Objects"]["1183482682.31kmuller"]',
         '1183486116.19kmuller': '["Objects"]["1150922126.828659a2"]["Objects"]["1183486116.19kmuller"]',
         '1183486122.54kmuller': '["Objects"]["1150922126.828659a2"]["Objects"]["1183486122.54kmuller"]',
         '1183657056.91kmuller': '["Objects"]["1150922126.828659a2"]["Objects"]["1183657056.91kmuller"]',

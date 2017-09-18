@@ -6014,6 +6014,7 @@ LocationNames = {
     LocationIds.AVARICIAS_TAVERN: "Avaricia's Tavern",
     LocationIds.ANTIGUA_ISLAND: 'Antigua',
     LocationIds.NASSAU_ISLAND : 'Nassau',
+    LocationIds.NASSAU_JAIL: 'Nassau Jail',
     LocationIds.MADRE_DEL_FUEGO_ISLAND: 'Madre Del Fuego'
 }
 LocationNamesNotIsland = {
