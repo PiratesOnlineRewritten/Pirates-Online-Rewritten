@@ -2621,7 +2621,7 @@ class GuiManager(FSM.FSM):
             self.av.chatMgr.stop()
             self.av.stopChat()
             self.av.stopAutoRun()
-            self.av.motionFSM.moveLockIfOn()
+            #self.av.motionFSM.moveLockIfOn()
             self.setChatAllowed(False, close=True)
             self.setSeaChestAllowed(False)
             self.mainMenu.showMenu()
@@ -2632,7 +2632,7 @@ class GuiManager(FSM.FSM):
                 self.av.chatMgr.start()
                 self.av.startChat()
                 self.setSeaChestAllowed(True)
-                self.av.motionFSM.onIfMoveLock()
+                #self.av.motionFSM.onIfMoveLock()
             self.mainMenu.hideMenu()
             self.profilePage.createBuffer()
 
