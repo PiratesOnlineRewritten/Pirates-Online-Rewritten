@@ -343,6 +343,6 @@ want-dev #t
 
 # Minigames:
 want-fishing-game #t
-want-repaire-game #t
+want-repair-game #t
 want-potion-game #t
 want-cannondefense-game #t
