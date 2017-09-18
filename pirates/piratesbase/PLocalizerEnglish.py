@@ -5947,7 +5947,8 @@ LocationNames = {
     LocationIds.LA_BODEGUITA: 'La Bodeguita', 
     LocationIds.DAGGERFLINTS_TATTOOS: "Daggerflint's Tattoo Shop", 
     LocationIds.PUGPRATTS_TAILOR: "Pugpratt's Tailoring", 
-    LocationIds.CUBA_JAIL: 'Cuba Jail', '1189479168.0sdnaik0': 'Kingshead', 
+    LocationIds.CUBA_JAIL: 'Cuba Jail', 
+    '1189479168.0sdnaik0': 'Kingshead', 
     LocationIds.KINGSHEAD_ISLAND: 'Kingshead', 
     '1190336896.0dxschafe': 'Kingshead Depot', 
     '1190397568.0dxschafe0': 'Kingshead Armory', 
@@ -6015,6 +6016,8 @@ LocationNames = {
     LocationIds.ANTIGUA_ISLAND: 'Antigua',
     LocationIds.NASSAU_ISLAND : 'Nassau',
     LocationIds.NASSAU_JAIL: 'Nassau Jail',
+    LocationIds.NASSAU_MANSION: 'Nassau Mansion',
+    LocationIds.OLD_EITC_WAREHOUSE: 'Old EITC Warehouse',
     LocationIds.MADRE_DEL_FUEGO_ISLAND: 'Madre Del Fuego'
 }
 LocationNamesNotIsland = {

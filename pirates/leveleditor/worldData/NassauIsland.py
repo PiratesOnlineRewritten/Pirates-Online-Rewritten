@@ -1663,7 +1663,7 @@ objectStruct = {
                 '1155244820.58dzlu': {
                     'Type': 'Building Exterior',
                     'File': 'tutorial_interior_withPit',
-                    'ExtUid': '1159905354.84jubutler',
+                    'ExtUid': '1159905354.828659a2',
                     'Hpr': VBase3(21.178, 0.012, 0.396),
                     'Objects': {
                         '1201026944.0dxschafe33': {
@@ -19683,7 +19683,7 @@ objectStruct = {
         '1158366673.28dparis': '["Objects"]["1150922126.828659a2"]["Objects"]["1158366673.28dparis"]',
         '1158366723.53dparis': '["Objects"]["1150922126.828659a2"]["Objects"]["1158366723.53dparis"]',
         '1158366747.61dparis': '["Objects"]["1150922126.828659a2"]["Objects"]["1158366747.61dparis"]',
-        '1159905354.84jubutler': '["Objects"]["1150922126.828659a2"]["Objects"]["1155244820.58dzlu"]',
+        '1159905354.828659a2': '["Objects"]["1150922126.828659a2"]["Objects"]["1155244820.58dzlu"]',
         '1160703177.58JB': '["Objects"]["1150922126.828659a2"]["Objects"]["1160703177.58JB"]',
         '1161798288.34sdnaik': '["Objects"]["1150922126.828659a2"]["Objects"]["1161798288.34sdnaik"]',
         '1162575677.09Shochet': '["Objects"]["1150922126.828659a2"]["Objects"]["1162575677.09Shochet"]',
