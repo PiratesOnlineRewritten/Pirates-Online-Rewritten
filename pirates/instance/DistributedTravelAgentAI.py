@@ -9,11 +9,11 @@ class DistributedTravelAgentAI(DistributedObjectGlobalAI):
 
     def initiateTeleport(self, avatarId, isTutorial):
 
-        def handleGenerated(avatar):
+        def avatarGenerated(avatar):
             if not avatar:
-                return
+                return self.notify.warning('Failed to initiate teleport for non-existant avatar!')
 
             avatar.d_relayTeleportLoc(self.air.districtId, 0, self.air.teleportMgr.doId)
 
-        self.acceptOnce('generate-%d' % avatarId, handleGenerated)
+        self.acceptOnce('generate-%d' % avatarId, avatarGenerated)
         self.air.setAI(avatarId, self.air.ourChannel)
