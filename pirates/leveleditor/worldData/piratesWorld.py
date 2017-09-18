@@ -123,7 +123,7 @@ objectStruct = {
                             'Scale': VBase3(1.0, 1.0, 1.0),
                             'VisSize': '' } },
                     'Phase': 1,
-                    'Pos': Point3(-14568.492, -35760.0819, 0.0),
+                    'Pos': Point3(-18568.492, -30760.0819, 0.0),
                     'Scale': VBase3(1.0, 1.0, 1.0),
                     'Undockable': True,
                     'VisSize': '',
@@ -1649,6 +1649,28 @@ objectStruct = {
                         'Model': 'models/misc/smiley'
                     }
                 },
+                '1156207188.828659a2': {
+                    'Type': 'Island',
+                    'File': 'antiguaIsland',
+                    'Hpr': Point3(0.0 , 0.0, 0.0),
+                    'Objects': {
+                        '1157082007.828659a2': {
+                            'Type': 'Imported Object',
+                            'Hpr': Point3(0.0, 0.0, 0.0),
+                            'Pos': Point3(0.0, 0.0, 0.0),
+                            'Scale': VBase3(1.0, 1.0, 1.0),
+                            'Visual': {
+                                'Model': ['models/islands/pir_m_are_isl_antigua_idle']
+                            }
+                        }
+                    },
+                    'Undockable': True,
+                    'Pos': Point3(-18670.057, 25398.319, 0.0),
+                    'Scale': VBase3(1.0, 1.0, 1.0),
+                    'Visual': {
+                        'Model': 'models/islands/pir_m_are_isl_antigua'
+                    }
+                },
                 '1271348547.01akelts': {
                     'Type': 'Island',
                     'Name': "Raven's Cove",
@@ -2050,6 +2072,7 @@ objectStruct = {
         '1156207188.95dzlu': '["Objects"]["1141410776.53sdnaik"]["Objects"]["1156207188.95dzlu"]',
         '1264624291.62caoconno': '["Objects"]["1141410776.53sdnaik"]["Objects"]["1264624291.62caoconno"]',
         '1150922126.828659a2': '["Objects"]["1141410776.53sdnaik"]["Objects"]["1150922126.828659a2"]',
+        '1156207188.828659a2': '["Objects"]["1141410776.53sdnaik"]["Objects"]["1156207188.828659a2"]',
         '1156359855.24bbathen': '["Objects"]["1141410776.53sdnaik"]["Objects"]["1156359855.24bbathen"]',
         '1157060429.94sdnaik': '["Objects"]["1141410776.53sdnaik"]["Objects"]["1150922126.8dzlu"]["Objects"]["1157060429.94sdnaik"]',
         '1158214327.11sdnaik': '["Objects"]["1141410776.53sdnaik"]["Objects"]["1156207188.95dzlu"]["Objects"]["1158214327.11sdnaik"]',

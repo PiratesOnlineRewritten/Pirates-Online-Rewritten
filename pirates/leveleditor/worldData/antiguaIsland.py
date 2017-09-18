@@ -22,7 +22,7 @@ objectStruct = {
     'Objects': {
         '1156207188.828659a2': {
             'Type': 'Island',
-            'Name': 'antiguaIsland',
+            'Name': 'Antiqua',
             'File': '',
             'Environment': 'OpenSky',
             'Footstep Sound': 'Sand',
