@@ -181,10 +181,11 @@ class ChestTray(GuiTray.GuiTray):
     def togglePanel(self, message, args=None):
         if localAvatar.getInventory() == None:
             return
+
         if message in self.highlightButtons:
             self.highlightButton(message)
+
         messenger.send(message, [args])
-        return
 
     def toggle(self):
         if not self.isHidden():
