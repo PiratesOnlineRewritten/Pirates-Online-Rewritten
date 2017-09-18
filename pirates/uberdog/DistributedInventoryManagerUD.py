@@ -2,6 +2,7 @@ from direct.distributed.DistributedObjectGlobalUD import DistributedObjectGlobal
 from direct.directnotify import DirectNotifyGlobal
 from direct.fsm.FSM import FSM
 from otp.distributed.OtpDoGlobals import *
+from pirates.uberdog import InventoryInit
 
 class InventoryFSM(FSM):
 
@@ -51,8 +52,26 @@ class InventoryFSM(FSM):
             self.manager.air.dbInterface.updateObject(self.manager.air.dbId, self.avatarId, self.manager.air.dclassesByName['DistributedPlayerPirateUD'],
                 {'setInventoryId': (inventoryId,)}, callback=lambda fields: inventorySet(fields, inventoryId))
 
+        categoryLimits = []
+        for key, limit in InventoryInit.CategoryLimits.iteritems():
+            categoryLimits.append((key, limit))
+
+        stackLimits = []
+        for key, limit in InventoryInit.StackLimits.iteritems():
+            stackLimits.append((key, limit))
+
+        startStacks = []
+        for key, amount in InventoryInit.StackStartsWith.iteritems():
+            startStacks.append((key, amount))
+
         self.manager.air.dbInterface.createObject(self.manager.air.dbId, self.manager.air.dclassesByName['PirateInventoryUD'],
-            fields={'setOwnerId': (self.avatarId,)}, callback=inventoryCreated)
+            fields={
+                'setOwnerId': (self.avatarId,), 
+                'setInventoryVersion': (InventoryInit.UberDogRevision,),
+                'setCategoryLimits': (categoryLimits,),
+                'setStackLimits': (stackLimits,),
+                'setStacks': (startStacks,)
+            }, callback=inventoryCreated)
 
     def exitCreate(self):
         pass
