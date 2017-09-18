@@ -99,7 +99,7 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
     def __generateBuildingExterior(self, parent, parentUid, objKey, objectData):
         from pirates.world.DistributedJailInteriorAI import DistributedJailInteriorAI
         from pirates.world.DistributedGAInteriorAI import DistributedGAInteriorAI
-                
+
         interiorFile = objectData.get('File', None)
         exteriorUid = objectData.get('ExtUid', None)
 
