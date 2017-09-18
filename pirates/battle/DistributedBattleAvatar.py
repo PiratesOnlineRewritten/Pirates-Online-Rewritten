@@ -1794,6 +1794,7 @@ class DistributedBattleAvatar(DistributedReputationAvatar, WeaponBase, Teamable)
     def getTotalHp(self):
         if self.hp is None:
             return 0
+
         return self.hp
 
     def hpChange(self, quietly=0):
@@ -1811,7 +1812,6 @@ class DistributedBattleAvatar(DistributedReputationAvatar, WeaponBase, Teamable)
         self.hpChange(quietly=1)
         if justRanOutOfHp:
             self.died()
-        return
 
     def getTotalLuck(self):
         return self.luck + self.luckMod
@@ -2865,6 +2865,7 @@ class DistributedBattleAvatar(DistributedReputationAvatar, WeaponBase, Teamable)
         if base.localAvatar.guiMgr.targetStatusTray.doId == self.getDoId():
             if self.getTotalHp() <= 0:
                 localAvatar.guiMgr.targetStatusTray.updateHp(0, self.maxHp)
+
             localAvatar.guiMgr.targetStatusTray.fadeOut(delay=delay)
 
     def getLandRoamIdleAnimInfo(self):

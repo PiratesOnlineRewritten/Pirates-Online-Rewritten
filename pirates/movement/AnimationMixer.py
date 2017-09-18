@@ -14,7 +14,6 @@ class MixerType(type):
         if set(cls.partNameLists.keys()) != set(cls.sectionNames):
             cls.partNameLists = dict(zip(cls.sectionNames, [ [section] for section in cls.sectionNames ]))
 
-
 class AnimationChannel():
     notify = DirectNotifyGlobal.directNotify.newCategory('AnimationChannel')
 
@@ -33,7 +32,6 @@ class AnimationChannel():
         self.savedDownAnimWeight = 0.0
         self._animCount = 0
         self.animSpanId = 0
-        return
 
     def __str__(self):
         return '(AnimationChannel: id=%d loop=%d controlId=%04d active=%d)           downAnim(%1.2f)=%-15s    upAnim(%1.2f)=%-15s' % (self.getId(), self.isLoopChannel(), self.animSpanId, self.isActive(), self.getDownAnimWeight(), str(self.getDownAnimName()), self.getUpAnimWeight(), str(self.getUpAnimName()))

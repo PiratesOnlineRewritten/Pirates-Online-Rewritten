@@ -17,7 +17,6 @@ class UsesAnimationMixer():
         else:
             self.animationMixer = None
         self.reducedMixer = None
-        return
 
     def delete(self):
         if self.animationMixer:
@@ -26,7 +25,6 @@ class UsesAnimationMixer():
         if self.reducedMixer:
             self.reducedMixer.delete()
             self.reducedMixer = None
-        return
 
     @report(types=['args', 'deltaStamp'], dConfigParam=['animmixer', 'jump'])
     def play(self, *args, **kwargs):
@@ -101,14 +99,15 @@ class UsesAnimationMixer():
                 defaultBlendT = self.animationMixer.defaultBlendT
             else:
                 defaultBlendT = 0
-            blendInT = kwargs.pop('blendInT', defaultBlendT)
-            blendOutT = kwargs.pop('blendOutT', defaultBlendT)
-            blendInto = kwargs.pop('blendInto', None)
-            if mixingWanted:
-                partName = kwargs.get('partName', None)
-                return self.__mixer.actorInterval(ActorInterval(self, *args, **kwargs), partName, blendInT, blendOutT, blendInto)
-            return ActorInterval(self, *args, **kwargs)
-        return
+
+        blendInT = kwargs.pop('blendInT', defaultBlendT)
+        blendOutT = kwargs.pop('blendOutT', defaultBlendT)
+        blendInto = kwargs.pop('blendInto', None)
+        if mixingWanted:
+            partName = kwargs.get('partName', None)
+            return self.__mixer.actorInterval(ActorInterval(self, *args, **kwargs), partName, blendInT, blendOutT, blendInto)
+
+        return ActorInterval(self, *args, **kwargs)
 
     @report(types=['args', 'deltaStamp'], dConfigParam=['animmixer', 'jump'])
     def disableMixing(self):

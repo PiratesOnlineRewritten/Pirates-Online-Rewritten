@@ -615,14 +615,7 @@ dclass DistributedMovingObject : DistributedSmoothNode, DistributedTargetableObj
   setAggroMode(uint8) required broadcast ram;
 };
 
-dclass DistributedLocatableObject : DistributedObject {
-  requestRegionUpdate(string) clsend airecv;
-  enterAreaSphere(string, string) clsend airecv;
-  leaveAreaSphere(string, string) clsend airecv;
-  locationChange(string);
-};
-
-dclass DistributedInteractive : DistributedNode, DistributedLocatableObject {
+dclass DistributedInteractive : DistributedNode {
   requestInteraction(uint32, uint8, bool) clsend airecv;
   requestExit() clsend airecv;
   demandExit() clsend airecv;
@@ -938,7 +931,7 @@ dclass DistributedShopKeeper {
   responseJewelryList(uint32, JewelryInfo []) ownrecv;
 };
 
-dclass DistributedReputationAvatar : DistributedMovingObject, DistributedInteractive, DistributedAvatar, DistributedQuestGiver {
+dclass DistributedReputationAvatar : DistributedAvatar, DistributedInteractive, DistributedMovingObject, DistributedQuestGiver {
 };
 
 struct SkillEffects {
@@ -971,7 +964,7 @@ dclass WeaponBase {
   setProjectileSkillResult(SkillId, SkillId, uint8, DoId, DoIdList, SkillEffects, SkillEffects, SkillEffectsList, Pos, Normal, uint8[], DoId, uint32) broadcast;
 };
 
-dclass DistributedBattleAvatar : WeaponBase, DistributedReputationAvatar, Teamable {
+dclass DistributedBattleAvatar : DistributedReputationAvatar, WeaponBase, Teamable {
   setAvatarType(AvatarType) required broadcast ram;
   friendsNotify(int32, int8) ownrecv airecv;
   setGameState(string, int16) broadcast ram;
@@ -988,12 +981,12 @@ dclass DistributedBattleAvatar : WeaponBase, DistributedReputationAvatar, Teamab
   setShipId(uint32) ownrecv required ram airecv broadcast;
   ramKnockdown() broadcast;
   regenUpdate(int16) broadcast;
-  setMaxHp(int32) required broadcast ram;
-  setHp(int32, uint8) required broadcast ram ownrecv;
+  setMaxHp(int32=250) required broadcast ram;
+  setHp(int32=250, uint8=0) required broadcast ram ownrecv;
   setLuck(int16) required broadcast ram ownrecv;
   setMaxLuck(int16) required broadcast ram;
-  setMojo(int16) required broadcast ram ownrecv;
-  setMaxMojo(int16) required broadcast ram;
+  setMojo(int16=50) required broadcast ram ownrecv;
+  setMaxMojo(int16=50) required broadcast ram;
   setSwiftness(int16) required broadcast ram ownrecv;
   setMaxSwiftness(int16) required broadcast ram;
   setPower(int16) required broadcast ram ownrecv;
@@ -1008,7 +1001,7 @@ dclass DistributedBattleAvatar : WeaponBase, DistributedReputationAvatar, Teamab
   setSkillEffects(BuffList) required broadcast ram ownrecv;
   setEnsnaredTargetId(uint32) required broadcast ram;
   interrupted(uint8) airecv clsend;
-  setLevel(uint16) required broadcast ram ownrecv;
+  setLevel(uint16=0) required broadcast ram ownrecv;
   battleRandomSync();
   setVisZone(string) broadcast ram ownsend;
   setInInvasion(bool) required broadcast ram;
@@ -1267,7 +1260,7 @@ struct MAPClothes {
   uint8 colorId;
 };
 
-dclass DistributedPlayerPirate : DistributedPlayer, HumanDNA, DistributedBattleAvatar, DistributedQuestAvatar {
+dclass DistributedPlayerPirate : DistributedPlayer, DistributedBattleAvatar, HumanDNA, DistributedQuestAvatar {
   setParentingRules(string, string) broadcast ram;
   setAvatarType(AvatarType) required broadcast ram;
   setDNAString(blob) required broadcast ram db;
@@ -1307,15 +1300,15 @@ dclass DistributedPlayerPirate : DistributedPlayer, HumanDNA, DistributedBattleA
   setStatus(uint8) ownsend required ram broadcast airecv;
   updateClientTutorialStatus(uint8) required ownrecv;
   setUndead(uint8, string) required broadcast ram;
-  setInventoryId(uint32=0) required broadcast db;
-  setDinghyId(uint32) required broadcast ram;
-  setBandId(uint32, uint32) required broadcast ram ownrecv;
+  setInventoryId(uint32=0) required broadcast db ownrecv;
+  setDinghyId(uint32=0) required broadcast ram;
+  setBandId(uint32=0, uint32=0) required broadcast ram ownrecv;
   requestLookoutInvite(uint32, string, uint32, uint32, resultPair []);
   unlimitedInviteNotice(uint32);
-  setGuildId(uint32) required airecv broadcast ram;
-  setGuildName(string) required broadcast ram;
-  setMaxHp(int16) required broadcast db;
-  setHp(int16, uint8) required broadcast db ownrecv;
+  setGuildId(uint32=0) required airecv broadcast ram;
+  setGuildName(string="") required broadcast ram;
+  setMaxHp(int16=250) required broadcast db;
+  setHp(int16=250, uint8=0) required broadcast db ownrecv;
   setBandPvp(bool) clsend airecv;
   setBandParlor(bool) clsend airecv;
   setAFK(bool) clsend airecv;
@@ -1366,8 +1359,8 @@ dclass DistributedPlayerPirate : DistributedPlayer, HumanDNA, DistributedBattleA
   sendFailedLootTradeMessage(bool) ownrecv;
   setLuck(int16) required broadcast;
   setMaxLuck(int16) required broadcast db;
-  setMojo(int16) required broadcast ownrecv;
-  setMaxMojo(int16) required broadcast db;
+  setMojo(int16=50) required broadcast ownrecv;
+  setMaxMojo(int16=50) required broadcast db;
   setSwiftness(int16) required broadcast;
   setMaxSwiftness(int16) required broadcast db;
   setPower(int16) required broadcast;

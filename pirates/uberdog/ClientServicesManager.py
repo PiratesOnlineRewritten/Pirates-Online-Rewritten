@@ -40,7 +40,6 @@ class ClientServicesManager(DistributedObjectGlobal):
             data.append(PotentialAvatar(avNum, names, dna, avPosition, nameOpen))
 
         avatarList[1] = data + [OTPGlobals.AvatarSlotAvailable] * (OTPGlobals.AvatarNumSlots - len(data))
-
         self.cr.handleAvatarsList(avatarList)
 
     def sendCreateAvatar(self, avDNA, _, index):
