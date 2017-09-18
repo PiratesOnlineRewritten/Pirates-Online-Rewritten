@@ -12,6 +12,7 @@ from pirates.distributed.DistributedPopulationTrackerAI import DistributedPopula
 from pirates.ai.PiratesTimeManagerAI import PiratesTimeManagerAI
 from pirates.instance.DistributedTeleportMgrAI import DistributedTeleportMgrAI
 from pirates.piratesbase.DistributedTimeOfDayManagerAI import DistributedTimeOfDayManagerAI
+from pirates.piratesbase.DistributedGameStatManagerAI import DistributedGameStatManagerAI
 from pirates.distributed.TargetManagerAI import TargetManagerAI
 from pirates.battle.DistributedEnemySpawnerAI import DistributedEnemySpawnerAI
 from pirates.world.WorldCreatorAI import WorldCreatorAI
@@ -84,6 +85,9 @@ class PiratesAIRepository(PiratesInternalRepository):
 
         self.timeOfDayMgr = DistributedTimeOfDayManagerAI(self)
         self.timeOfDayMgr.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
+
+        self.gameStatManager = DistributedGameStatManagerAI(self)
+        self.gameStatManager.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
 
         self.targetMgr = TargetManagerAI(self)
         self.targetMgr.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
