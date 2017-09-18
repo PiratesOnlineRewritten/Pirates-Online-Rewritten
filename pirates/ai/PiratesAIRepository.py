@@ -6,6 +6,7 @@ from pirates.distributed.PiratesInternalRepository import PiratesInternalReposit
 from otp.distributed.OtpDoGlobals import *
 from pirates.piratesbase import PiratesGlobals
 from pirates.distributed.PiratesDistrictAI import PiratesDistrictAI
+from pirates.distributed.DistributedPopulationTrackerAI import DistributedPopulationTrackerAI
 from pirates.world import WorldGlobals
 from pirates.piratesbase.UniqueIdManager import UniqueIdManager
 from pirates.ai.PiratesTimeManagerAI import PiratesTimeManagerAI
@@ -39,13 +40,13 @@ class PiratesAIRepository(PiratesInternalRepository):
         self.createZones()
 
         self.distributedDistrict.b_setAvailable(1)
-        self.notify.info('District is now ready.')
+        self.notify.info('District %s is now ready.' % self.distributedDistrict.getName())
 
     def incrementPopulation(self):
-        pass
+        self.populationTracker.b_setPopulation(self.populationTracker.getPopulation() + 1)
 
     def decrementPopulation(self):
-        pass
+        self.populationTracker.b_setPopulation(self.populationTracker.getPopulation() - 1)
 
     def allocateZone(self, owner=None):
         zoneId = self.zoneAllocator.allocate()
@@ -67,6 +68,14 @@ class PiratesAIRepository(PiratesInternalRepository):
         """
         Create "global" objects, e.g. TimeManager et al.
         """
+
+        self.populationTracker = DistributedPopulationTrackerAI(self)
+        self.populationTracker.setShardId(self.districtId)
+        self.populationTracker.setPopLimits(config.GetInt('shard-pop-limit-low', 100), config.GetInt(
+            'shard-pop-limit-high', 300))
+
+        self.populationTracker.generateWithRequiredAndId(self.allocateChannel(), self.getGameDoId(),
+            OTP_ZONE_ID_DISTRICTS_STATS)
 
         self.timeManager = PiratesTimeManagerAI(self)
         self.timeManager.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
