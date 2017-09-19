@@ -7,8 +7,10 @@ from otp.distributed.OtpDoGlobals import *
 from pirates.piratesbase import PiratesGlobals
 from pirates.distributed.PiratesDistrictAI import PiratesDistrictAI
 from pirates.world import WorldGlobals
+from pirates.ai.NewsManagerAI import NewsManagerAI
 from pirates.piratesbase.UniqueIdManager import UniqueIdManager
 from pirates.distributed.DistributedPopulationTrackerAI import DistributedPopulationTrackerAI
+from pirates.ai.PiratesMagicWordManagerAI import PiratesMagicWordManagerAI
 from pirates.ai.PiratesTimeManagerAI import PiratesTimeManagerAI
 from pirates.instance.DistributedTeleportMgrAI import DistributedTeleportMgrAI
 from pirates.piratesbase.DistributedTimeOfDayManagerAI import DistributedTimeOfDayManagerAI
@@ -86,6 +88,9 @@ class PiratesAIRepository(PiratesInternalRepository):
         self.timeOfDayMgr = DistributedTimeOfDayManagerAI(self)
         self.timeOfDayMgr.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
 
+        self.newsManager = NewsManagerAI(self)
+        self.newsManager.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
+
         self.gameStatManager = DistributedGameStatManagerAI(self)
         self.gameStatManager.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
 
@@ -96,6 +101,9 @@ class PiratesAIRepository(PiratesInternalRepository):
         self.spawner.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
 
         self.inventoryManager = self.generateGlobalObject(OTP_DO_ID_PIRATES_INVENTORY_MANAGER, 'DistributedInventoryManager')
+
+        self.magicWords = PiratesMagicWordManagerAI(self)
+        self.magicWords.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
 
     def createZones(self):
         """
