@@ -11,6 +11,12 @@ class DistributedDinghyAI(DistributedInteractiveAI):
         self.locationId = 0
         self.siegeTeam = 0
 
+    def handleRequestInteraction(self, avatar, interactType, instant):
+        return self.ACCEPT
+
+    def handleRequestExit(self, avatar):
+        return self.ACCEPT
+
     def setInteractRadius(self, interactRadius):
         self.interactRadius = interactRadius
 
