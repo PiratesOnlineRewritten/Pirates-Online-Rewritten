@@ -267,7 +267,6 @@ class MotionAnimFSM(FSM):
         self.fsmLock.acquire()
         try:
             animInfo = ItemGlobals.getJumpAnimInfo(self.av.getCurrentWeapon())
-            print animInfo
             if self.state == 'Idle':
                 startFrame = animInfo[1]
                 endFrame = animInfo[3]

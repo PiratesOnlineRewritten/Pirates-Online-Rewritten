@@ -52,6 +52,7 @@ class DistributedInteractive(DistributedNode, InteractiveBase, DistributedLocata
 
     def setLocation(self, parentId, zoneId):
         DistributedNode.setLocation(self, parentId, zoneId)
+        self.reparentTo(self.getParentObj())
 
     def requestExit(self):
         self.sendUpdate('requestExit')
