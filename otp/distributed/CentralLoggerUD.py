@@ -4,8 +4,7 @@ import json
 
 class CentralLoggerUD(DistributedObjectGlobalUD):
     notify = DirectNotifyGlobal.directNotify.newCategory('CentralLoggerUD')
-    notify.setDebug(True)
-
+    
     def __init__(self, air):
         DistributedObjectGlobalUD.__init__(self, air)
 

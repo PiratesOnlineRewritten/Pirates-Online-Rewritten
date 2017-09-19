@@ -19,13 +19,13 @@ class TimeManagerAI(DistributedObjectAI):
         avId = self.air.getAvatarIdFromSender()
         self.air.writeServerEvent('client-exception', avId=avId, exception=exception)
 
-    def setSignature(self, todo0, todo1, todo2):
+    def setSignature(self, signature, hash, pyc):
         pass
 
-    def setFrameRate(self, todo0, todo1, todo2, todo3, todo4, todo5, todo6, todo7, todo8, todo9, todo10, todo11, todo12, todo13, todo14, todo15, todo16, todo17):
+    def setFrameRate(self, fps, deviation, numAvs, locationCode, timeInLocation, timeInGame, gameOptionsCode, vendorId, deviceId, processMemory, pageFileUsage, physicalMemory, pageFaultCount, osInfo, cpuSpeed, numCpuCores, numLogicalCpus, apiName):
         pass
 
-    def setCpuInfo(self, todo0, todo1):
+    def setCpuInfo(self, info, cachestatus):
         pass
 
     def checkForGarbageLeaks(self, todo0):
@@ -34,7 +34,7 @@ class TimeManagerAI(DistributedObjectAI):
     def setNumAIGarbageLeaks(self, todo0):
         pass
 
-    def setClientGarbageLeak(self, todo0, todo1):
+    def setClientGarbageLeak(self, num, description):
         pass
 
     def checkAvOnDistrict(self, todo0, todo1):
