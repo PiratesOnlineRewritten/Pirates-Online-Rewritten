@@ -93,7 +93,7 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         self.addObject(table)
         self.broadcastObjectPosition(table)
 
-        return table
+        return self.parentToCellOrigin(self.parent, table)
 
     def __generateBuildingExterior(self, parent, parentUid, objKey, objectData):
         from pirates.world.DistributedJailInteriorAI import DistributedJailInteriorAI
