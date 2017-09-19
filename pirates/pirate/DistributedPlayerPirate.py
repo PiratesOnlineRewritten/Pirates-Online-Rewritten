@@ -2482,10 +2482,10 @@ class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, Distribu
         self.cr.sendWishName(self.doId, self.style.name)
 
     def canTeleport(self):
-        return (self.teleportFlags & PiratesGlobals.TFNoTeleportOut).isZero()
+        return config.GetBool('ignore-teleport-requirements', (self.teleportFlags & PiratesGlobals.TFNoTeleportOut).isZero())
 
     def canTeleportTo(self):
-        return (self.teleportFlags & PiratesGlobals.TFNoTeleportTo).isZero()
+        return config.GetBool('ignore-teleport-requirements', (self.teleportFlags & PiratesGlobals.TFNoTeleportTo).isZero())
 
     def testTeleportFlag(self, flag):
         return not (self.teleportFlags & flag).isZero()
