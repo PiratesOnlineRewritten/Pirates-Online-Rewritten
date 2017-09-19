@@ -3,7 +3,6 @@ from direct.directnotify.DirectNotifyGlobal import directNotify
 from pirates.leveleditor import ObjectList
 from direct.distributed.GridParent import GridParent
 
-
 class AreaBuilderBaseAI(DirectObject):
     notify = directNotify.newCategory('AreaBuilderBaseAI')
 
@@ -15,14 +14,9 @@ class AreaBuilderBaseAI(DirectObject):
 
     def parentToCellOrigin(self, parent, instance):
         if not instance:
-            self.notify.warning('Cannot parent invalid instance type to %r!' % parent)
-            return
+            return self.notify.warning('Cannot parent invalid instance type to %r!' % parent)
 
-        cell = GridParent.getCellOrigin(parent, instance.zoneId)
-        pos = instance.getPos()
-
-        instance.reparentTo(cell)
-        instance.setPos(parent, pos)
+        instance.reparentTo(parent)
 
         instance.d_setPos(*instance.getPos())
         instance.d_setHpr(*instance.getHpr())
