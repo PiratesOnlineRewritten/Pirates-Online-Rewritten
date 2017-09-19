@@ -52,7 +52,7 @@ class FishingGameGUI():
         self.lureSelectionPanelShowing = False
         self.resultsScreen = FishingResults(self.gameObject)
         self.resultsScreen.hide()
-        bestRod = 1 #self.gameObject.getAvatarsBestRod()
+        bestRod = self.gameObject.getAvatarsBestRod()
         if bestRod == -1:
             base.notify.error('Somehow the avatar got into the fishing game without a rod in their inventory!')
         if bestRod == ItemGlobals.FISHING_ROD_3:
