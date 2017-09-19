@@ -94,7 +94,7 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         parent.generateChildWithRequired(table, PiratesGlobals.IslandLocalZone)
         self.addObject(table)
 
-        return table
+        return self.parentToCellOrigin(self.parent, table)
 
     def __generateBuildingExterior(self, parent, parentUid, objKey, objectData):
         from pirates.world.DistributedJailInteriorAI import DistributedJailInteriorAI
