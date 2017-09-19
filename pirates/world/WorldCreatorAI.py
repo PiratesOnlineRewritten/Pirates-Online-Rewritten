@@ -13,7 +13,6 @@ class WorldCreatorAI(WorldCreatorBase, DirectObject):
         self.world = None
 
         WorldCreatorBase.__init__(self, air)
-        self.wantPrintout = config.GetBool('want-world-printout', False)
 
     @classmethod
     def isObjectInCurrentGamePhase(cls, object):
@@ -55,9 +54,4 @@ class WorldCreatorAI(WorldCreatorBase, DirectObject):
         instance.generateWithRequired(PiratesGlobals.InstanceUberZone)
 
         self.air.uidMgr.addUid(instance.getUniqueId(), instance.doId)
-
-        if self.wantPrintout:
-            print '-' * 100
-            print 'Generating region: %s from file: %s' % (instance.getName(), fileName)
-
         return instance

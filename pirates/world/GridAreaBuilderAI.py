@@ -1,5 +1,7 @@
 from pirates.world.AreaBuilderBaseAI import AreaBuilderBaseAI
 from direct.directnotify.DirectNotifyGlobal import directNotify
+from pirates.piratesbase import PiratesGlobals
+from pirates.leveleditor import ObjectList
 from pirates.interact.DistributedSearchableContainerAI import DistributedSearchableContainerAI
 from pirates.minigame.DistributedFishingSpotAI import DistributedFishingSpotAI
 from pirates.minigame.DistributedPotionCraftingTableAI import DistributedPotionCraftingTableAI
@@ -8,8 +10,6 @@ from pirates.world.DistributedBuildingDoorAI import DistributedBuildingDoorAI
 from pirates.world.DistributedDinghyAI import DistributedDinghyAI
 from pirates.treasuremap.DistributedBuriedTreasureAI import DistributedBuriedTreasureAI
 from pirates.treasuremap.DistributedSurfaceTreasureAI import DistributedSurfaceTreasureAI
-from pirates.piratesbase import PiratesGlobals
-from pirates.leveleditor import ObjectList
 
 class GridAreaBuilderAI(AreaBuilderBaseAI):
     notify = directNotify.newCategory('GridAreaBuilderAI')
@@ -51,9 +51,7 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
 
     def __generateSearchableContainer(self, parent, parentUid, objKey, objectData):
         container = DistributedSearchableContainerAI(self.air)
-
         container.setUniqueId(objKey)
-
         container.setPos(objectData.get('Pos', (0, 0, 0)))
         container.setHpr(objectData.get('Hpr', (0, 0, 0)))
         container.setScale(objectData.get('Scale', (1, 1, 1)))
@@ -68,12 +66,12 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
 
         parent.generateChildWithRequired(container, PiratesGlobals.IslandLocalZone)
         self.addObject(container)
+        self.broadcastObjectPosition(container)
 
-        return self.parentToCellOrigin(self.parent, container)
+        return container
 
     def __generateFishingSpot(self, parent, parentUid, objKey, objectData):
         fishingSpot = DistributedFishingSpotAI(self.air)
-
         fishingSpot.setPos(objectData.get('Pos', (0, 0, 0)))
         fishingSpot.setHpr(objectData.get('Hpr', (0, 0, 0)))
         fishingSpot.setScale(objectData.get('Scale', (1, 1, 1)))
@@ -81,20 +79,21 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
 
         parent.generateChildWithRequired(fishingSpot, PiratesGlobals.IslandLocalZone)
         self.addObject(fishingSpot)
+        self.broadcastObjectPosition(fishingSpot)
 
-        return self.parentToCellOrigin(self.parent, fishingSpot)
+        return fishingSpot
 
     def __generatePotionTable(self, parent, parentUid, objKey, objectData):
         table = DistributedPotionCraftingTableAI(self.air)
-
         table.setPos(objectData.get('Pos', (0, 0, 0)))
         table.setHpr(objectData.get('Hpr', (0, 0, 0)))
         table.setScale(objectData.get('Scale', (1, 1, 1)))
 
         parent.generateChildWithRequired(table, PiratesGlobals.IslandLocalZone)
         self.addObject(table)
+        self.broadcastObjectPosition(table)
 
-        return self.parentToCellOrigin(self.parent, table)
+        return table
 
     def __generateBuildingExterior(self, parent, parentUid, objKey, objectData):
         from pirates.world.DistributedJailInteriorAI import DistributedJailInteriorAI
@@ -114,11 +113,12 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         # allocate a new zone for this interior
         interiorZone = self.air.allocateZone()
 
-        interiorClass = DistributedGAInteriorAI
         if 'Jail' in interiorFile:
             interiorClass = DistributedJailInteriorAI
-        interior = interiorClass(self.air)
+        else:
+            interiorClass = DistributedGAInteriorAI
 
+        interior = interiorClass(self.air)
         interior.setUniqueId(exteriorUid)
         interior.setModelPath(interiorModel)
         interior.setName(interior.getLocalizerName())
@@ -149,12 +149,7 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         if not foundDoor:
             self.notify.warning('%s (%s) has an interior, but no exterior door was found!' % (interior.getLocalizerName(), objKey))
 
-
-        # Load objects from interior file
         self.air.worldCreator.loadObjectsFromFile(interiorFile + '.py', interior)
-
-        if self.air.worldCreator.wantPrintout:
-            print '- Generated Interior %s (%s)' % (interior.getLocalizerName(), objKey)
 
         return interior
 
@@ -164,17 +159,14 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         dinghy.setHpr(objectData.get('Hpr', (0, 0, 0)))
         dinghy.setInteractRadius(float(objectData.get('Aggro Radius', 25)))
 
-
         parent.generateChildWithRequired(dinghy, PiratesGlobals.IslandLocalZone)
         self.addObject(dinghy)
+        self.broadcastObjectPosition(dinghy)
 
-        return self.parentToCellOrigin(self.parent, dinghy)
+        return dinghy
 
     def __generateObjectSpawnNode(self, parent, parentUid, objKey, objectData):
-        if objectData['Spawnables'] == 'Surface Treasure':
-            spawnClass = DistributedSurfaceTreasureAI
-        else:
-            spawnClass = DistributedBuriedTreasureAI
+        spawnClass = DistributedSurfaceTreasureAI if objectData['Spawnables'] == 'Surface Treasure' else DistributedBuriedTreasureAI
 
         spawnNode = spawnClass(self.air)
         spawnNode.setPos(objectData.get('Pos', (0, 0, 0)))
@@ -186,12 +178,12 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
 
         parent.generateChildWithRequired(spawnNode, PiratesGlobals.IslandLocalZone)
         self.addObject(spawnNode)
+        self.broadcastObjectPosition(spawnNode)
 
-        return self.parentToCellOrigin(self.parent, spawnNode)
+        return spawnNode
 
     def __generateRepairBench(self, parent, parentUid, objKey, objectData):
         bench = DistributedRepairBenchAI(self.air)
-
         bench.setPos(objectData.get('Pos', (0, 0, 0)))
         bench.setHpr(objectData.get('Hpr', (0, 0, 0)))
         bench.setScale(objectData.get('Scale', (1, 1, 1)))
@@ -199,9 +191,9 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
 
         parent.generateChildWithRequired(bench, PiratesGlobals.IslandLocalZone)
         self.addObject(bench)
+        self.broadcastObjectPosition(bench)
 
-        return self.parentToCellOrigin(self.parent, bench)
-
+        return bench
 
     def __generateIslandArea(self, parent, parentUid, objKey, objectData):
         from pirates.world.DistributedGameAreaAI import DistributedGameAreaAI
@@ -221,9 +213,7 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
 
         self.parent.generateChildWithRequired(islandArea, areaZone)
         self.addObject(islandArea)
-
-        # Load objects from area file
+        self.broadcastObjectPosition(islandArea)
         self.air.worldCreator.loadObjectsFromFile(areaFile + '.py', islandArea)
 
-        if self.air.worldCreator.wantPrintout:
-            print '- Generated Island Game Area %s (%s)' % (islandArea.getLocalizerName(), objKey)
+        return islandArea
