@@ -2585,8 +2585,10 @@ class GuiManager(FSM.FSM):
     def toggleMainMenu(self, args=None):
         if self.disableMainMenu:
             return
+
         if self.ignoreMainMenuHotKey:
             return
+
         if args and (args == 'escape' or args == 'Esc') and (self.ignoreEscapeHotKey or self.av.gameFSM.state in ('Battle',
                                                                                                                   'Cutscene',
                                                                                                                   'Cannon',
@@ -2597,42 +2599,47 @@ class GuiManager(FSM.FSM):
                                                                                                                   'MakeAPirate',
                                                                                                                   'Fishing')):
             return
-        if self.av.gameFSM.state in ('TeleportIn', 'TeleportOut', 'EnterTunnel', 'Digging',
-                                     'Searching', 'ShipRepair', 'BenchRepair', 'DoorKicking'):
+
+        if self.av.gameFSM.state in ('TeleportIn', 'TeleportOut', 'EnterTunnel', 'Digging', 'Searching', 'ShipRepair', 'BenchRepair', 'DoorKicking'):
             return
+
         if self.mainMenu and self.mainMenu.gameOptions and not self.mainMenu.gameOptions.isHidden():
             return
+
         if self.mainMenu and self.mainMenu.popupDialog:
             return
+
         self.hideSeaChest()
         if not self.mainMenu:
             if base.config.GetBool('want-custom-keys', 0):
                 width = 1.8
             else:
                 width = 1.6
+
             height = 1.6
             x = -width / 2
             y = -height / 2
             self.mainMenu = MainMenu('Main Menu', x, y, width, height)
             self.mainMenu.hide()
+
         if self.mainMenu.isHidden():
             self.socialPanel.hide()
             self.chatPanel.hide()
             self.av.chatMgr.stop()
             self.av.stopChat()
             self.av.stopAutoRun()
-            #self.av.motionFSM.moveLockIfOn()
+            self.av.motionFSM.moveLockIfOn()
             self.setChatAllowed(False, close=True)
             self.setSeaChestAllowed(False)
             self.mainMenu.showMenu()
         else:
-            if self.av.getGameState() not in ('Cutscene', 'Dialog', 'NPCInteract',
-                                              'DinghyInteract', 'MakeAPirate'):
+            if self.av.getGameState() not in ('Cutscene', 'Dialog', 'NPCInteract', 'DinghyInteract', 'MakeAPirate'):
                 self.chatPanel.show()
                 self.av.chatMgr.start()
                 self.av.startChat()
                 self.setSeaChestAllowed(True)
-                #self.av.motionFSM.onIfMoveLock()
+                self.av.motionFSM.onIfMoveLock()
+
             self.mainMenu.hideMenu()
             self.profilePage.createBuffer()
 
