@@ -4,6 +4,8 @@ from pirates.creature.DistributedAnimalAI import DistributedAnimalAI
 from pirates.npc.DistributedNPCTownfolkAI import DistributedNPCTownfolkAI
 from pirates.piratesbase import PiratesGlobals
 from pirates.pirate import AvatarTypes
+from pirates.leveleditor import NPCList
+from pirates.piratesbase import PLocalizer
 
 class DistributedEnemySpawnerAI(DistributedObjectAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedEnemySpawnerAI')
@@ -12,8 +14,8 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         DistributedObjectAI.__init__(self, air)
         self.wantEnemies = config.GetBool('want-enemies', False)
         self.wantDormantSpawns = config.GetBool('want-dormant-spawns', False)
-        self.wantTownfolk = config.GetBool('want-townfolk', False)
-        self.wantAnimals = config.GetBool('want-animals', False)
+        self.wantTownfolk = config.GetBool('want-townfolk', True)
+        self.wantAnimals = config.GetBool('want-animals', True)
         self.wantCreatures = config.GetBool('want-creatures', False)
         self.wantBosses = config.GetBool('want-bosses', False)
 
@@ -69,7 +71,10 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         
         townfolk.setAggroRadius(float(objectData.get('Aggro Radius', 0)))
 
-        townfolk.setName('Unknown')
+        name = PLocalizer.Unknown
+        if objKey in NPCList.NPC_LIST:
+            name = NPCList.NPC_LIST[objKey][NPCList.setName]
+        townfolk.setName(name)
 
         if 'Start State' in objectData:
             townfolk.setStartState(objectData['Start State'])
