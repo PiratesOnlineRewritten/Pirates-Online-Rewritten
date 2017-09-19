@@ -3,6 +3,8 @@ from otp.distributed.OtpDoGlobals import *
 from direct.distributed.PyDatagram import PyDatagram
 from direct.distributed.MsgTypes import *
 from panda3d.core import *
+import traceback
+import sys
 
 class PiratesInternalRepository(AstronInternalRepository):
     GameGlobalsId = OTP_DO_ID_PIRATES
@@ -35,3 +37,13 @@ class PiratesInternalRepository(AstronInternalRepository):
 
     def _isValidPlayerLocation(self, parentId, zoneId):
         return True
+
+    def systemMessage(self, message, channel=10):
+        msgDg = PyDatagram()
+        msgDg.addUint16(6)
+        msgDg.addString(message)
+
+        dg = PyDatagram()
+        dg.addServerHeader(channel, self.ourChannel, CLIENTAGENT_SEND_DATAGRAM)
+        dg.addString(msgDg.getMessage())
+        self.send(dg)
