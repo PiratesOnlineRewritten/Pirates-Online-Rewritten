@@ -15,6 +15,9 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
         self.onBoat = False
 
     def handleRequestInteraction(self, avatar, interactType, instant):
+
+        self.d_spotFilledByAvId(self.air.getAvatarIdFromSender())
+
         return self.ACCEPT
 
     def setIndex(self, index):
@@ -62,6 +65,9 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
         if not avatar:
             return
 
+        fish = FishingGlobals.allFishData[fishId]
+        minWeight, maxWeight = fish['weightRange']
+
         reward = fish['gold']
         if self.air.holidayMgr.isHolidayActive(HolidayGlobals.DOUBLEGOLDHOLIDAY) or self.air.holidayMgr.isHolidayActive(HolidayGlobals.DOUBLEGOLDHOLIDAYPAID):
             reward = reward * 2
@@ -86,7 +92,3 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
 
     def d_setGoldBonus(self, goldBonusAmount):
         self.sendUpdate('setGoldBonus', [goldBonusAmount])
-
-
-
-
