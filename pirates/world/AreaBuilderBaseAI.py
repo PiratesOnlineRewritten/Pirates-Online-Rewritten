@@ -33,7 +33,7 @@ class AreaBuilderBaseAI(DirectObject):
 
         island = DistributedIslandAI(self.air)
         island.setUniqueId(objKey)
-        island.setName(worldIsland.get('Name', 'island'))
+        island.setName(worldIsland.get('Name', ''))
         island.setModelPath(worldIsland['Visual']['Model'])
         island.setPos(worldIsland.get('Pos', (0, 0, 0)))
         island.setHpr(worldIsland.get('Hpr', (0, 0, 0)))
