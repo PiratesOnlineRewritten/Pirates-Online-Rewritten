@@ -1651,6 +1651,7 @@ objectStruct = {
                 },
                 '1156207188.828659a2': {
                     'Type': 'Island',
+                    'Name': 'Antigua',
                     'File': 'antiguaIsland',
                     'Hpr': Point3(0.0 , 0.0, 0.0),
                     'Objects': {
@@ -1665,7 +1666,7 @@ objectStruct = {
                         }
                     },
                     'Undockable': True,
-                    'Pos': Point3(-18670.057, 25398.319, 0.0),
+                    'Pos': Point3(-27670.057, 28398.319, 0.0),
                     'Scale': VBase3(1.0, 1.0, 1.0),
                     'Visual': {
                         'Model': 'models/islands/pir_m_are_isl_antigua'
