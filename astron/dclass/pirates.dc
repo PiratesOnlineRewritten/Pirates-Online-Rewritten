@@ -61,7 +61,9 @@ from pirates.interact import DistributedSearchableContainer/AI
 from pirates.minigame import DistributedLock/AI
 from pirates.minigame import DistributedLockDoor/AI
 from pirates.creature import DistributedCreature/AI
+from pirates.creature import DistributedSeaSerpent/AI
 from pirates.creature import DistributedAnimal/AI
+from pirates.creature import DistributedSeagull/AI
 from pirates.creature import DistributedRaven/AI
 from pirates.kraken import Kraken/AI
 from pirates.kraken import GrabberTentacle/AI
