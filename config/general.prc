@@ -349,3 +349,6 @@ want-cannondefense-game #t
 
 # AI:
 use-path-finding #t
+
+# SeaMonsters:
+want-seamonsters #t

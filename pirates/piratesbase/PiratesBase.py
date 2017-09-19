@@ -256,6 +256,7 @@ class PiratesBase(OTPBase):
         launcher.addPhasePostProcess(3, self.phase3Post, taskChain='phasePost')
         launcher.addPhasePostProcess(4, self.phase4Post, taskChain='phasePost')
         launcher.addPhasePostProcess(5, self.phase5Post, taskChain='phasePost')
+        launcher.addPhasePostProcess(6, self.phase6Post, taskChain='phasePost')
         self.whiteList = PWhiteList()
         tpMgr = TextPropertiesManager.getGlobalPtr()
         WLDisplay = TextProperties()
@@ -419,14 +420,6 @@ class PiratesBase(OTPBase):
         from pirates.battle import WeaponGlobals
         from pirates.battle import Pistol, Sword, Dagger, Doll, Wand, Grenade, Bayonet, Melee, DualCutlass, Foil, Gun, FishingRod, Torch, PowderKeg
         from pirates.creature import Alligator, Bat, Chicken, Crab, Dog, FlyTrap, Monkey, Pig, Rooster, Scorpion, Seagull, Stump, Wasp
-        if config.GetBool('want-kraken', 0):
-            from pirates.kraken import Holder
-            Holder.Holder.setupAssets()
-            self.loadingScreen.tick()
-        if self.config.GetBool('want-seamonsters', 0):
-            from pirates.creature import SeaSerpent
-            SeaSerpent.SeaSerpent.setupAssets()
-            self.loadingScreen.tick()
         PowderKeg.PowderKeg.setupAssets()
         self.loadingScreen.tick()
         Torch.Torch.setupAssets()
@@ -477,6 +470,16 @@ class PiratesBase(OTPBase):
         self.loadingScreen.tick()
         Wasp.Wasp.setupAssets()
         self.loadingScreen.tick()
+
+    def phase6Post(self):
+        if config.GetBool('want-kraken', 0):
+            from pirates.kraken import Holder
+            Holder.Holder.setupAssets()
+            self.loadingScreen.tick()
+        if self.config.GetBool('want-seamonsters', 0):
+            from pirates.creature import SeaSerpent
+            SeaSerpent.SeaSerpent.setupAssets()
+            self.loadingScreen.tick()
 
     def buildAssets(self):
         pass
