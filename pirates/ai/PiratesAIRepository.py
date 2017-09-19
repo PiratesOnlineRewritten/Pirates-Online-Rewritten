@@ -44,6 +44,7 @@ class PiratesAIRepository(PiratesInternalRepository):
 
         self.distributedDistrict.b_setAvailable(1)
         self.notify.info('District is now ready.')
+        messenger.send('district-ready')
 
     def incrementPopulation(self):
         pass
@@ -90,6 +91,8 @@ class PiratesAIRepository(PiratesInternalRepository):
 
         self.newsManager = NewsManagerAI(self)
         self.newsManager.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
+
+        self.holidayMgr = self.generateGlobalObject(OTP_DO_ID_PIRATES_HOLIDAY_MANAGER, 'HolidayManager')
 
         self.gameStatManager = DistributedGameStatManagerAI(self)
         self.gameStatManager.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)

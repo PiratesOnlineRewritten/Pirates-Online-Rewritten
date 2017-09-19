@@ -68,8 +68,8 @@ class NewsManager(DistributedObject.DistributedObject):
                 else:
                     message = message % location
             icon = ('admin', '')
-            if self.inTutorial(level=PiratesGlobals.TUT_GOT_COMPASS):
-                return
+            #if self.inTutorial(level=PiratesGlobals.TUT_GOT_COMPASS):
+            #    return
         if messageId >= 30 and messageId < 50:
             message = PLocalizer.FleetHolidayMsgs.get(messageId)
             icon = ('ship', '')

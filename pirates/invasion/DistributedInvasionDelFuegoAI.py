@@ -1,8 +1,10 @@
-from direct.distributed.DistributedObjectAI import DistributedObjectAI
 from direct.directnotify import DirectNotifyGlobal
+from pirates.invasion.DistributedInvasionObjectAI import DistributedInvasionObjectAI
 
-class DistributedInvasionDelFuegoAI(DistributedObjectAI):
+class DistributedInvasionDelFuegoAI(DistributedInvasionObjectAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedInvasionDelFuegoAI')
 
-    def __init__(self, air):
-        DistributedObjectAI.__init__(self, air)
+    MESSAGES = {30: 19, 20: 20, 10: 21, 5: 2, 1: 23}
+
+    def __init__(self, air, holidayId):
+        DistributedInvasionObjectAI.__init__(self, air, holidayId)

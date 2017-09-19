@@ -346,3 +346,6 @@ want-fishing-game #t
 want-repair-game #t
 want-potion-game #t
 want-cannondefense-game #t
+
+# AI:
+use-path-finding #t

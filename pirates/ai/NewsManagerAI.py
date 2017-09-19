@@ -14,16 +14,30 @@ class NewsManagerAI(DistributedObjectAI):
     def d_holidayNotify(self):
         self.sendUpdate('holidayNotify', [])
 
-    def setHolidayIdList(self, holidayIdList):
-        self.holidayIdList = holidayIdList
+    def addHoliday(self, holidayId, time):
+        found = any([holidayEntry[0]==holidayId for holidayEntry in self.holidayIdList])
 
-    def d_setHolidayIdList(self, holidayIdList):
-        self.sendUpdate('setHolidayIdList', [holidayIdList])
+        if found:
+            self.notify.warning('Attempted to start already running holiday: %d' % holidayId)
+            return
 
-    def b_setHolidayIdList(self, holidayIdList):
-        self.setHolidayIdList(holidayIdList)
-        self.d_setHolidayIdList(holidayIdList)
+        self.holidayIdList.append([holidayId, time])
+        self.notify.debug('Adding Holiday %d for a duration of %d' % (holidayId, time))
 
+        self.sendUpdate('setHolidayIdList', [self.holidayIdList])
+
+    def removeHoliday(self, holidayId):
+        found = any([holidayEntry[0]==holidayId for holidayEntry in self.holidayIdList])
+
+        if not found:
+            self.notify.warning('Attempted to end none running holiday: %d' % holidayId)
+            return
+
+        self.holidayIdList = [holidayEntry for holidayEntry in self.holidayIdList if holidayEntry[0]!=holidayId]
+        self.notify.debug('Removing Holiday %d' % holidayId)
+
+        self.sendUpdate('setHolidayIdList', [self.holidayIdList])
+    
     def d_displayMessage(self, messageId):
         self.sendUpdate('displayMessage', [messageId])
 

@@ -63,6 +63,10 @@ class DistributedTimeOfDayManagerAI(DistributedObjectAI, TimeOfDayManagerBase):
     def getSyncTOD(self):
         return [self.cycleType, self.cycleSpeed, self.startingNetTime, self.timeOffset]
 
+    def d_changeCycle(self, cycleType):
+        self.cycleType = cycleType
+        self.d_syncTOD(self.cycleType, self.cycleSpeed, self.startingNetTime, self.timeOffset)
+
     def setIsPaused(self, isPaused):
         self.isPaused = isPaused
 

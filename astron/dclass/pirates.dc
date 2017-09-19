@@ -2395,17 +2395,15 @@ dclass CodeRedemption : DistributedObject, CallbackObject {
   notifyClientCodeRedeemStatus(uint8, int32, uint32);
 };
 
-dclass HolidayManager : DistributedObject {
-  online();
-  setHoliday(uint32, int32, uint8, bool);
-  manualSetHoliday(uint32, uint8) broadcast airecv;
-  disableHoliday(uint32, bool) broadcast airecv;
-  dropSchedule(uint32, int32) broadcast airecv;
-  requestHolidayBroadcast() broadcast airecv;
-  requestOverrides(uint32, uint32);
-  waitForHolidayStart(uint32, uint16, int32, uint16 [], uint16 []) broadcast airecv;
-  startHoliday(uint32, uint16, int32, uint16 [], uint16 []) broadcast airecv;
-  createHolidays(uint32, uint32);
+dclass HolidayManager : DistributedObjectGlobal {
+  registerAI(uint32);
+  unregisterAI(uint32);
+  registrationConfirm() airecv;
+  requestRegister() broadcast airecv;
+  startHoliday(uint32, int8, uint32, bool) broadcast airecv;
+  endHoliday(uint32) broadcast airecv;
+  requestHolidayRemoval(uint32);
+  requestHolidayList();
 };
 
 dclass PiratesSettingsMgr : SettingsMgr {
