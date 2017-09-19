@@ -5850,7 +5850,9 @@ LocationUids = {
     'tormenta': LocationIds.ISLA_TORMENTA,
     'tortuga': LocationIds.TORTUGA_ISLAND,
     'antigua': LocationIds.ANTIGUA_ISLAND,
-    'nassau': LocationIds.NASSAU_ISLAND 
+    'nassau': LocationIds.NASSAU_ISLAND,
+    'coldwater': LocationIds.COLDWATER_ISLAND,
+    'coldwater isle' : LocationIds.COLDWATER_ISLAND,
 }
 LocationNames = {
     LocationIds.PORT_ROYAL_ISLAND: 'Port Royal',
@@ -6018,7 +6020,8 @@ LocationNames = {
     LocationIds.NASSAU_JAIL: 'Nassau Jail',
     LocationIds.NASSAU_MANSION: 'Nassau Mansion',
     LocationIds.OLD_EITC_WAREHOUSE: 'Old EITC Warehouse',
-    LocationIds.MADRE_DEL_FUEGO_ISLAND: 'Madre Del Fuego'
+    LocationIds.MADRE_DEL_FUEGO_ISLAND: 'Madre Del Fuego',
+    LocationIds.COLDWATER_ISLAND: 'Coldwater Isle'
 }
 LocationNamesNotIsland = {
     LocationIds.PORT_ROYAL_ISLAND: 'Port Royal Town', LocationIds.TORTUGA_ISLAND: 'Tortuga Town', LocationIds.DEL_FUEGO_ISLAND: 'Padres Del Fuego Town', LocationIds.ANVIL_ISLAND: 'Anvil Island Beach', LocationIds.CUBA_ISLAND: 'Cuba Beach'
