@@ -352,3 +352,6 @@ use-path-finding #t
 
 # SeaMonsters:
 want-seamonsters #t
+
+# EventLogger:
+eventlog-host 127.0.0.1:7197

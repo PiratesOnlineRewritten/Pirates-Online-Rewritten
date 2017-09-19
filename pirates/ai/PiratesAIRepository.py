@@ -73,6 +73,8 @@ class PiratesAIRepository(PiratesInternalRepository):
         Create "global" objects, e.g. TimeManager et al.
         """
 
+        self.centralLogger = self.generateGlobalObject(OTP_DO_ID_CENTRAL_LOGGER, 'CentralLogger')
+
         self.populationTracker = DistributedPopulationTrackerAI(self)
         self.populationTracker.setShardId(self.districtId)
         self.populationTracker.setPopLimits(config.GetInt('shard-pop-limit-low', 100), config.GetInt('shard-pop-limit-high', 300))
