@@ -39,19 +39,18 @@ class WorldCreatorAI(WorldCreatorBase, DirectObject):
         newObj = None
         objParent = None
 
-
         if objType == ObjectList.AREA_TYPE_WORLD_REGION:
-            self.world = self.__createWorldInstance(object, parent, parentUid, objKey, dynamic, fileName)
+            objParent = self.__createWorldInstance(object, parent, parentUid, objKey, dynamic, fileName)
         else:
             newObj = self.world.builder.createObject(objType, object, parent, parentUid, objKey, dynamic, parentIsObj, fileName, actualParentObj)
 
         return (newObj, objParent)
 
     def __createWorldInstance(self, objectData, parent, parentUid, objKey, dynamic, fileName):
-        instance = DistributedMainWorldAI(self.air)
-        instance.setUniqueId(objKey)
-        instance.setName(objectData.get('Name', 'region'))
-        instance.generateWithRequired(PiratesGlobals.InstanceUberZone)
+        self.world = DistributedMainWorldAI(self.air)
+        self.world.setUniqueId(objKey)
+        self.world.setName(objectData.get('Name', 'region'))
+        self.world.generateWithRequired(PiratesGlobals.InstanceUberZone)
 
-        self.air.uidMgr.addUid(instance.getUniqueId(), instance.doId)
-        return instance
+        self.air.uidMgr.addUid(self.world.getUniqueId(), self.world.doId)
+        return self.world
