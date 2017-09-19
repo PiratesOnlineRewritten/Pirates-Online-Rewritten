@@ -1127,16 +1127,15 @@ class LocalPirateGameFSM(PlayerPirateGameFSM):
         rodLvl = inv.getStackQuantity(InventoryType.FishingRod)
         if rodLvl == 3:
             bestRod = ItemGlobals.FISHING_ROD_3
-        else:
-            if rodLvl == 2:
-                bestRod = ItemGlobals.FISHING_ROD_2
-            elif rodLvl == 1:
-                bestRod = ItemGlobals.FISHING_ROD_1
-            localAvatar.d_requestCurrentWeapon(bestRod, 1)
-            localAvatar.l_setCurrentWeapon(bestRod, 1, -1)
-            localAvatar.guiMgr.combatTray.toggleWeapon(bestRod, -1)
-            if localAvatar.guiMgr.combatTray.slotDisplay:
-                localAvatar.guiMgr.combatTray.slotDisplay.hide()
+        elif rodLvl == 2:
+            bestRod = ItemGlobals.FISHING_ROD_2
+        elif rodLvl == 1:
+            bestRod = ItemGlobals.FISHING_ROD_1
+        localAvatar.d_requestCurrentWeapon(bestRod, 1)
+        localAvatar.l_setCurrentWeapon(bestRod, 1, -1)
+        localAvatar.guiMgr.combatTray.toggleWeapon(bestRod, -1)
+        if localAvatar.guiMgr.combatTray.slotDisplay:
+            localAvatar.guiMgr.combatTray.slotDisplay.hide()
         PlayerPirateGameFSM.enterFishing(self)
         localAvatar.guiMgr.setIgnoreAllButSkillHotKey(True)
         self.turnNameTagsOff()
