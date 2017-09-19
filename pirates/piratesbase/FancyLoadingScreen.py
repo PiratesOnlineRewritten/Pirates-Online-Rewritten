@@ -556,17 +556,20 @@ class FancyLoadingScreen(DirectObject.DirectObject):
         else:
             screenshot = screenShots_Locations.get(targetId)
 
-        if screenshot or areaType_Jungles.has_key(targetId):
-            screenshot = random.choice(screenShots_Jungles)
-        elif areaType_Swamps.has_key(targetId):
-            screenshot = random.choice(screenShots_Swamps)
-        elif areaType_Caves.has_key(targetId):
-            screenshot = random.choice(screenShots_Caves)
-        else:
-            island = getParentIsland(targetId)
-            screenshot = screenShots_Locations.get(island, [random.choice(screenShots)])[0]
-        if len(screenshot) > 1 and not isinstance(screenshot, str):
+        if not screenshot:
+            if areaType_Jungles.has_key(targetId):
+                screenshot = random.choice(screenShots_Jungles)
+            elif areaType_Swamps.has_key(targetId):
+                screenshot = random.choice(screenShots_Swamps)
+            elif areaType_Caves.has_key(targetId):
+                screenshot = random.choice(screenShots_Caves)
+            else:
+                island = getParentIsland(targetId)
+                screenshot = screenShots_Locations.get(island, [random.choice(screenShots)])[0]
+
+        if isinstance(screenshot, list):
             screenshot = random.choice(screenshot)
+    
         self.__setLoadingArt(screenshot)
         if pickapirate:
             targetName = PLocalizer.LoadingScreen_PickAPirate
