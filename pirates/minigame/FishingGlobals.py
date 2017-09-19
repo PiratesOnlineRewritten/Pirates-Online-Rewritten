@@ -6,8 +6,7 @@ from pirates.world.LocationConstants import LocationIds
 from pirates.piratesbase import PiratesGlobals
 from pirates.inventory import DropGlobals
 import random
-fishingRodScreenPosition = (
- -0.5, 0.0, 0.0)
+fishingRodScreenPosition = (-0.5, 0.0, 0.0)
 struggleDangerThreshold = 5.0
 maxStruggleTime = 15.0
 struggleTimeDangerThreshold = 5.0
@@ -34,17 +33,13 @@ ROD_JOURNEYMAN_COST = 1000
 ROD_MASTER_COST = 10000
 lurePositionRangesForLegendaryFishingGame = {'xRange': (45.0, 80.0),'zRange': (-40.0, -75.0)}
 staminaReduceValue = 0.02
-fishingStaminaBarColor = [
- (
-  1.0, 0.0, 0.0, 0.7), (1.0, 0.5, 0.0, 0.7), (1.0, 1.0, 0.0, 0.7), (0.0, 1.0, 0.0, 0.7), (0.0, 1.0, 0.0, 0.7)]
-legendaryFishingReelingSpeedMultiplier = (
- 9, 0, 5.8)
+fishingStaminaBarColor = [(1.0, 0.0, 0.0, 0.7), (1.0, 0.5, 0.0, 0.7), (1.0, 1.0, 0.0, 0.7), (0.0, 1.0, 0.0, 0.7), (0.0, 1.0, 0.0, 0.7)]
+legendaryFishingReelingSpeedMultiplier = (9, 0, 5.8)
 todBackdropColor = {PiratesGlobals.TOD_BASE: [Vec4(0.5, 0.5, 0.5, 1), Vec4(0.5, 0.5, 0.5, 1), Vec4(0.5, 0.5, 0.5, 1), Vec4(0.5, 0.5, 0.5, 1)],PiratesGlobals.TOD_DAWN: [Vec4(0.1, 0.18, 0.28, 1), Vec4(0.55, 0.58, 0.57, 1), Vec4(0.38, 0.35, 0.4, 1), Vec4(0.85, 0.65, 0.6, 1)],PiratesGlobals.TOD_DAY: [Vec4(0.16, 0.35, 0.5, 1), Vec4(0.8, 1, 0.9, 1), Vec4(0.52, 0.63, 0.7, 1), Vec4(1, 0.88, 0.82, 1)],PiratesGlobals.TOD_DUSK: [Vec4(0.1, 0.15, 0.3, 1), Vec4(0.33, 0.3, 0.32, 1), Vec4(0.3, 0.22, 0.28, 1), Vec4(0.5, 0.33, 0.4, 1)],PiratesGlobals.TOD_NIGHT: [Vec4(0.06, 0.14, 0.3, 1), Vec4(0.12, 0.3, 0.45, 1), Vec4(0.1, 0.18, 0.42, 1), Vec4(0.22, 0.3, 0.5, 1)],PiratesGlobals.TOD_STARS: [Vec4(0.04, 0.12, 0.3, 1), Vec4(0.1, 0.25, 0.4, 1), Vec4(0.1, 0.15, 0.35, 1), Vec4(0.3, 0.28, 0.44, 1)],PiratesGlobals.TOD_HALLOWEEN: [Vec4(0.05, 0.2, 0.35, 1), Vec4(0.15, 0.3, 0.35, 1), Vec4(0.1, 0.17, 0.3, 1), Vec4(0.25, 0.32, 0.45, 1)],PiratesGlobals.TOD_FULLMOON: [Vec4(0.05, 0.2, 0.35, 1), Vec4(0.15, 0.3, 0.35, 1), Vec4(0.1, 0.17, 0.3, 1), Vec4(0.25, 0.32, 0.45, 1)],PiratesGlobals.TOD_HALFMOON: [Vec4(0.05, 0.2, 0.35, 1), Vec4(0.15, 0.3, 0.35, 1), Vec4(0.1, 0.17, 0.3, 1), Vec4(0.25, 0.32, 0.45, 1)],PiratesGlobals.TOD_HALFMOON2: [Vec4(0.05, 0.2, 0.35, 1), Vec4(0.15, 0.3, 0.35, 1), Vec4(0.1, 0.17, 0.3, 1), Vec4(0.25, 0.32, 0.45, 1)],PiratesGlobals.TOD_JOLLYINVASION: [Vec4(0.05, 0.2, 0.35, 1), Vec4(0.15, 0.3, 0.35, 1), Vec4(0.1, 0.17, 0.3, 1), Vec4(0.25, 0.32, 0.45, 1)]}
 resetTutorialCount = 2
 fishSizeToHelpTextScale = {'small': 0.4,'medium': 0.7,'large': 1.0,'super': 1.0}
 fightWarningDurations = {'small': 0.3,'medium': 0.2,'large': 0.2,'super': 0.2}
-fishToLureHprOffset = (
- 20.0, -60.0, 55.0)
+fishToLureHprOffset = (20.0, -60.0, 55.0)
 biteWindowStartPercentage = 0.4
 biteWindowFinishPercentage = 0.66
 leftFishBarrier = 0
@@ -52,20 +47,16 @@ rightFishBarrier = 85.0
 leftLureBarrier = 12
 rightLureBarrier = 90.0
 maxCastDistance = 90.0
-fishingSpotPosOffset = (
- 5.46342, -1.46449, 0)
+fishingSpotPosOffset = (5.46342, -1.46449, 0)
 oceanEyeTransitionDuration = 0.5
 oceanEyeCameraPosition = (40.0, -70.0, -40.0)
-raritySpawnChances = (
- 0.65, 0.25, 0.1)
+raritySpawnChances = (0.65, 0.25, 0.1)
 rodSizeOverride = None
 lureSinkingAngles = {'Cast': -110.0,'Fishing': -40.0,'Reeling': -70.0,'QuickReel': -90.0}
 fishCountRangePerRodPerLevel = {ItemGlobals.FISHING_ROD_1: ((12, 16), (5, 7), (5, 7)),ItemGlobals.FISHING_ROD_2: ((8, 10), (10, 12), (5, 7)),ItemGlobals.FISHING_ROD_3: ((5, 8), (5, 7), (5, 7))}
 fishSpawnBelowWaterLevelHeight = -3.0
-fishingLevelBoundaries = (
- -33.0, -53.0, -70.0)
-fishingLevelBoundariesBoat = (
- -55.0, -73.0, -90.0)
+fishingLevelBoundaries = (-33.0, -53.0, -70.0)
+fishingLevelBoundariesBoat = (-55.0, -73.0, -90.0)
 waterLevelOffset = {'land': -4.0,'boat': -14.0}
 castDistanceMultiplier = {ItemGlobals.FISHING_ROD_1: 0.3,ItemGlobals.FISHING_ROD_2: 0.5,ItemGlobals.FISHING_ROD_3: 0.7}
 minimumCastDistance = 15.0
@@ -74,9 +65,7 @@ resetDuration = 0.5
 idleDuration = 300
 fishAttractionOffset = 1.5
 defaultFishingLineColor = Vec4(1.0, 1.0, 1.0, 0.7)
-fishingLineHealthToColor = [
- (
-  1.0, 0.0, 0.0, 0.7), (1.0, 0.5, 0.0, 0.7), (1.0, 1.0, 0.0, 0.7), (0.0, 1.0, 0.0, 0.7), (0.0, 1.0, 0.0, 0.7)]
+fishingLineHealthToColor = [(1.0, 0.0, 0.0, 0.7), (1.0, 0.5, 0.0, 0.7), (1.0, 1.0, 0.0, 0.7), (0.0, 1.0, 0.0, 0.7), (0.0, 1.0, 0.0, 0.7)]
 fishingLineThickness = 1.5
 defaultFishBlendTime = 0.4
 fishBlendTimeDict = {}
@@ -106,8 +95,7 @@ lureSinkDuration = 3.0
 oceanEyeDuration = 5.0
 pullDuration = 3.0
 lureHelpTextDuration = 2.0
-fishAnimations = [
- 'bite', 'fightIdle', 'reelIdle', 'swimIdle', 'turn', 'turnOpposite', 'swimIdleOpposite', 'biteOpposite']
+fishAnimations = ['bite', 'fightIdle', 'reelIdle', 'swimIdle', 'turn', 'turnOpposite', 'swimIdleOpposite', 'biteOpposite']
 baseFishVelocity = Vec3(0.5, 0.0, 0.0)
 baseFishAccel = Vec3(0.0, 0.0, 0.0)
 scareAwayVelocityMultiplier = 7.0

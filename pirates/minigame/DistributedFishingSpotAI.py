@@ -1,6 +1,8 @@
 from pirates.distributed.DistributedInteractiveAI import DistributedInteractiveAI
 from pirates.inventory.LootableAI import LootableAI
 from direct.directnotify import DirectNotifyGlobal
+from pirates.ai import HolidayGlobals
+import FishingGlobals
 
 class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedFishingSpotAI')
@@ -11,6 +13,9 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
         self.index = 0
         self.oceanOffset = 0
         self.onBoat = False
+
+    def handleRequestInteraction(self, avatar, interactType, instant):
+        return self.ACCEPT
 
     def setIndex(self, index):
         self.index = index
@@ -52,7 +57,20 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
         return self.onBoat
 
     def caughtFish(self, fishId, weight):
-        pass
+        avatar = self.air.doId2do.get(self.air.getAvatarIdFromSender())
+
+        if not avatar:
+            return
+
+        reward = fish['gold']
+        if self.air.holidayMgr.isHolidayActive(HolidayGlobals.DOUBLEGOLDHOLIDAY) or self.air.holidayMgr.isHolidayActive(HolidayGlobals.DOUBLEGOLDHOLIDAYPAID):
+            reward = reward * 2
+
+        experience = fish['experience']
+        if self.air.holidayMgr.isHolidayActive(HolidayGlobals.DOUBLEXPHOLIDAY):        
+            experience = experience * 2
+
+        #TODO issue gold and experience
 
     def lostLure(self, lureId):
         pass

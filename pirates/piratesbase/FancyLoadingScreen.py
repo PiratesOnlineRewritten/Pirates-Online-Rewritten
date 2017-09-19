@@ -525,7 +525,7 @@ class FancyLoadingScreen(DirectObject.DirectObject):
             base.appRunner.notifyRequest('onLoadingMessagesStop')
         return
 
-    def showTarget(self, targetId=None, ocean=False, jail=False, pickapirate=False, exit=False, potionCrafting=False, benchRepair=False, shipRepair=False, cannonDefense=False):
+    def showTarget(self, targetId=None, ocean=False, jail=False, pickapirate=False, exit=False, potionCrafting=False, benchRepair=False, shipRepair=False, cannonDefense=False, fishing=False):
         if base.config.GetBool('no-loading-screen', 0):
             return
         if pickapirate:

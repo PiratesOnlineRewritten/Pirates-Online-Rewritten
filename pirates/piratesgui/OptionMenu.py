@@ -16,9 +16,7 @@ class OptionMenu(DirectOptionMenu):
         popupMarkerImage = char_gui.find('**/chargui_forward')
         popupMarkerImageOver = char_gui.find('**/chargui_forward_over')
         char_gui.removeNode()
-        optiondefs = (
-         (
-          'image', titleImage, None), ('image_pos', (0, 0, -6), None), ('image_scale', (6, 3, 3), None), ('popupMarkerImage', (popupMarkerImage, popupMarkerImage, popupMarkerImageOver, popupMarkerImage), None), ('popupMarkerImageScale', 5, None), ('popupMarkerHpr', (0, 0, 90), None), ('text_fg', self.normal_fg_color, None), ('text_align', TextNode.ACenter, None), ('popupBgColor', (0.0745, 0.0627, 0.0501, 1.0), None), ('popupTextColor', (0.831, 0.745, 0.58, 1.0), None), ('popupHalfWidth', 3.8, None), ('highlightColor', (0.212, 0.192, 0.169, 1), None), ('frameSize', (0, 3.4, 0, 0.6), None), ('relief', None, None))
+        optiondefs = (('image', titleImage, None), ('image_pos', (0, 0, -6), None), ('image_scale', (6, 3, 3), None), ('popupMarkerImage', (popupMarkerImage, popupMarkerImage, popupMarkerImageOver, popupMarkerImage), None), ('popupMarkerImageScale', 5, None), ('popupMarkerHpr', (0, 0, 90), None), ('text_fg', self.normal_fg_color, None), ('text_align', TextNode.ACenter, None), ('popupBgColor', (0.0745, 0.0627, 0.0501, 1.0), None), ('popupTextColor', (0.831, 0.745, 0.58, 1.0), None), ('popupHalfWidth', 3.8, None), ('highlightColor', (0.212, 0.192, 0.169, 1), None), ('frameSize', (0, 3.4, 0, 0.6), None), ('relief', None, None))
         self.defineoptions(kw, optiondefs)
         DirectOptionMenu.__init__(self, parent)
         self.popupMarker.removeNode()

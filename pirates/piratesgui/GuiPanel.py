@@ -22,26 +22,26 @@ class GuiPanel(BorderFrame):
             textColor = PiratesGuiGlobals.TextFG1
             textShadow = PiratesGuiGlobals.TextShadow
             wordwrap = 13
-        else:
-            if titleSize == 1:
-                titleFont = PiratesGuiGlobals.TextScaleLarge
-                textColor = PiratesGuiGlobals.TextFG2
-                textShadow = None
-                wordwrap = 10
-            elif titleSize == 1.5:
-                titleFont = PiratesGuiGlobals.TextScaleExtraLarge
-                textColor = PiratesGuiGlobals.TextFG1
-                textShadow = None
-                wordwrap = 10
-            if title:
-                self.titleLabel = DirectLabel(parent=self, relief=None, pos=(0.05, 0, h - PiratesGuiGlobals.TextScaleSmall * 2.5), text=title, text_align=TextNode.ALeft, text_scale=titleFont, text_pos=(0.015,
+        elif titleSize == 1:
+            titleFont = PiratesGuiGlobals.TextScaleLarge
+            textColor = PiratesGuiGlobals.TextFG2
+            textShadow = None
+            wordwrap = 10
+        elif titleSize == 1.5:
+            titleFont = PiratesGuiGlobals.TextScaleExtraLarge
+            textColor = PiratesGuiGlobals.TextFG1
+            textShadow = None
+            wordwrap = 10
+        if title:
+            self.titleLabel = DirectLabel(parent=self, relief=None, pos=(0.05, 0, h - PiratesGuiGlobals.TextScaleSmall * 2.5), text=title, text_align=TextNode.ALeft, text_scale=titleFont, text_pos=(0.015,
                                                                                                                                                                                                           0.015), text_fg=textColor, text_shadow=textShadow, text_font=PiratesGlobals.getPirateOutlineFont(), textMayChange=1, text_wordwrap=wordwrap, sortOrder=21)
-            else:
-                self.titleLabel = None
-            if showClose:
-                lookoutUI = loader.loadModel('models/gui/lookout_gui')
-                self.closeButton = DirectButton(parent=self, relief=None, image=(lookoutUI.find('**/lookout_close_window'), lookoutUI.find('**/lookout_close_window_down'), lookoutUI.find('**/lookout_close_window_over'), lookoutUI.find('**/lookout_close_window_disabled')), pos=(w - 0.055, 0, h - 0.055), scale=0.125, command=self.closePanel, sortOrder=21)
-                lookoutUI.removeNode()
+        else:
+            self.titleLabel = None
+        if showClose:
+            lookoutUI = loader.loadModel('models/gui/lookout_gui')
+            self.closeButton = DirectButton(parent=self, relief=None, image=(lookoutUI.find('**/lookout_close_window'), lookoutUI.find('**/lookout_close_window_down'), lookoutUI.find('**/lookout_close_window_over'), lookoutUI.find('**/lookout_close_window_disabled')), pos=(w - 0.055, 0, h - 0.055), scale=0.125, command=self.closePanel, sortOrder=21)
+            lookoutUI.removeNode()
+        else:
             self.closeButton = None
         self.fadeLerp = None
         return

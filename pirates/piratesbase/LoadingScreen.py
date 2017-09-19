@@ -67,6 +67,7 @@ screenShot_Potions = 'models/gui/loadingScreen_41'
 screenShot_BenchRepair = 'models/gui/loadingScreen_42'
 screenShot_ShipRepair = 'models/gui/loadingScreen_43'
 screenShot_CannonDefense = 'models/gui/loadingScreen_44'
+screenShot_Fishing = 'models/gui/loadingScreen_45'
 
 def getOceanHint():
     oceans = [
@@ -381,7 +382,7 @@ class LoadingScreen(DirectObject.DirectObject):
             base.appRunner.notifyRequest('onLoadingMessagesStop')
         return
 
-    def showTarget(self, targetId=None, ocean=False, jail=False, pickapirate=False, exit=False, potionCrafting=False, benchRepair=False, shipRepair=False, cannonDefense=False):
+    def showTarget(self, targetId=None, ocean=False, jail=False, pickapirate=False, exit=False, potionCrafting=False, benchRepair=False, shipRepair=False, cannonDefense=False, fishing=False):
         if base.config.GetBool('no-loading-screen', 0):
             return
         if pickapirate:
@@ -400,6 +401,8 @@ class LoadingScreen(DirectObject.DirectObject):
             screenshot = screenShot_ShipRepair
         elif cannonDefense:
             screenshot = screenShot_CannonDefense
+        elif fishing:
+            screenshot = screenShot_Fishing
         elif base.localAvatar.style.getTutorial() < PiratesGlobals.TUT_GOT_CUTLASS:
             screenshot = screenShot_Weapon
         elif base.localAvatar.style.getTutorial() < PiratesGlobals.TUT_MET_JOLLY_ROGER:

@@ -31,73 +31,22 @@ class LegendaryFishingGameGUI():
         self.fishActor = None
         self.actorAnim = {}
         self.scaleSize = {InventoryType.Collection_Set11_Part1: 0.06,InventoryType.Collection_Set11_Part2: 0.055,InventoryType.Collection_Set11_Part3: 0.12,InventoryType.Collection_Set11_Part4: 0.087,InventoryType.Collection_Set11_Part5: 0.08}
-        self.meterFrame = DirectFrame(parent=self.leftBaseNode, frameSize=(-0.3, 0.3, -1.0, 0.0), frameColor=(1.0,
-                                                                                                              1.0,
-                                                                                                              1.0,
-                                                                                                              0.0), relief=None, state=DGG.DISABLED, pos=(1.0, 0.0, -0.45), hpr=(0,
-                                                                                                                                                                                 0,
-                                                                                                                                                                                 0), scale=(1.3,
-                                                                                                                                                                                            0.0,
-                                                                                                                                                                                            1.3), image=self.guiImage.find('**/pir_t_gui_fsh_meter'), image_scale=(0.2,
-                                                                                                                                                                                                                                                                   0.0,
-                                                                                                                                                                                                                                                                   0.8), image_pos=(0,
-                                                                                                                                                                                                                                                                                    0,
-                                                                                                                                                                                                                                                                                    0), text='', textMayChange=1, text_scale=PiratesGuiGlobals.TextScaleTitleLarge, text_pos=(-0.55, 0.1), text_shadow=PiratesGuiGlobals.TextShadow)
+        self.meterFrame = DirectFrame(parent=self.leftBaseNode, frameSize=(-0.3, 0.3, -1.0, 0.0), frameColor=(1.0, 1.0, 1.0, 0.0), relief=None, state=DGG.DISABLED, pos=(1.0, 0.0, -0.45), hpr=(0, 0, 0), scale=(1.3, 0.0, 1.3), image=self.guiImage.find('**/pir_t_gui_fsh_meter'), image_scale=(0.2, 0.0,0.8), image_pos=(0, 0, 0), text='', textMayChange=1, text_scale=PiratesGuiGlobals.TextScaleTitleLarge, text_pos=(-0.55, 0.1), text_shadow=PiratesGuiGlobals.TextShadow)
         self.UICompoments['meterFrame'] = self.meterFrame
-        self.fishingRod = DirectFrame(parent=self.meterFrame, frameSize=(-0.3, 0.3, -1.0, 0.0), relief=None, state=DGG.DISABLED, pos=FishingGlobals.fishingRodScreenPosition, image=self.guiImage.find('**/pir_t_gui_fsh_fullRod'), image_scale=(1.0,
-                                                                                                                                                                                                                                                 0.0,
-                                                                                                                                                                                                                                                 0.125), image_pos=(0.2,
-                                                                                                                                                                                                                                                                    0,
-                                                                                                                                                                                                                                                                    0))
+        self.fishingRod = DirectFrame(parent=self.meterFrame, frameSize=(-0.3, 0.3, -1.0, 0.0), relief=None, state=DGG.DISABLED, pos=FishingGlobals.fishingRodScreenPosition, image=self.guiImage.find('**/pir_t_gui_fsh_fullRod'), image_scale=(1.0, 0.0, 0.125), image_pos=(0.2, 0, 0))
         self.fishingRod.setR(FishingGlobals.fishingRodInitSlope)
         self.UICompoments['fishingRod'] = self.fishingRod
         base.loadingScreen.tick()
-        self.fishingHandleBaseFrame = DirectFrame(parent=self.uiBaseNode, frameSize=(-0.3, 0.3, -1.5, 1.5), frameColor=(1.0,
-                                                                                                                        1.0,
-                                                                                                                        1.0,
-                                                                                                                        0.0), relief=None, state=DGG.DISABLED, pos=(0.0,
-                                                                                                                                                                    0.0,
-                                                                                                                                                                    0.0), hpr=(0,
-                                                                                                                                                                               0,
-                                                                                                                                                                               0), scale=(0.72,
-                                                                                                                                                                                          0.0,
-                                                                                                                                                                                          0.72), image=self.guiImage.find('**/pir_t_gui_fsh_partialRod'), image_scale=(3.8,
-                                                                                                                                                                                                                                                                       0.0,
-                                                                                                                                                                                                                                                                       1.9), image_pos=(0,
-                                                                                                                                                                                                                                                                                        0,
-                                                                                                                                                                                                                                                                                        0), image_hpr=(0.0,
-                                                                                                                                                                                                                                                                                                       0.0,
-                                                                                                                                                                                                                                                                                                       0))
+        self.fishingHandleBaseFrame = DirectFrame(parent=self.uiBaseNode, frameSize=(-0.3, 0.3, -1.5, 1.5), frameColor=(1.0, 1.0, 1.0, 0.0), relief=None, state=DGG.DISABLED, pos=(0.0, 0.0, 0.0), hpr=(0, 0, 0), scale=(0.72, 0.0, 0.72), image=self.guiImage.find('**/pir_t_gui_fsh_partialRod'), image_scale=(3.8, 0.0, 1.9), image_pos=(0, 0, 0), image_hpr=(0.0, 0.0, 0))
         self.fishingHandleBaseFrame.hide()
         self.UICompoments['fishingHandleBaseFrame'] = self.fishingHandleBaseFrame
-        self.fishingHandle = DirectFrame(parent=self.fishingHandleBaseFrame, frameSize=(-0.08, 0.08, -0.2, 0.2), relief=None, state=DGG.DISABLED, pos=(-0.1, 0.0, -0.05), hpr=(0,
-                                                                                                                                                                               0,
-                                                                                                                                                                               0), image=self.guiImage.find('**/pir_t_gui_fsh_handleArm'), image_scale=(1.0,
-                                                                                                                                                                                                                                                        0.0,
-                                                                                                                                                                                                                                                        1.0), image_pos=(-0.042, 0, -0.115), image_hpr=(0.0,
-                                                                                                                                                                                                                                                                                                        0.0,
-                                                                                                                                                                                                                                                                                                        0))
+        self.fishingHandle = DirectFrame(parent=self.fishingHandleBaseFrame, frameSize=(-0.08, 0.08, -0.2, 0.2), relief=None, state=DGG.DISABLED, pos=(-0.1, 0.0, -0.05), hpr=(0, 0, 0), image=self.guiImage.find('**/pir_t_gui_fsh_handleArm'), image_scale=(1.0, 0.0, 1.0), image_pos=(-0.042, 0, -0.115), image_hpr=(0.0, 0.0, 0))
         self.UICompoments['fishingHandle'] = self.fishingHandle
-        self.arrowImage = DirectFrame(parent=self.fishingHandleBaseFrame, frameSize=(-0.4, 0.4, -0.4, 0.4), relief=None, state=DGG.DISABLED, pos=(0.0,
-                                                                                                                                                  0.0,
-                                                                                                                                                  0.0), hpr=(0,
-                                                                                                                                                             0,
-                                                                                                                                                             0), scale=(1.2,
-                                                                                                                                                                        0.0,
-                                                                                                                                                                        1.2), image=self.guiImage.find('**/pir_t_gui_fsh_arrow'), image_scale=(1.0,
-                                                                                                                                                                                                                                               0.0,
-                                                                                                                                                                                                                                               1.0), image_pos=(0.0,
-                                                                                                                                                                                                                                                                0,
-                                                                                                                                                                                                                                                                0.0), image_hpr=(0.0,
-                                                                                                                                                                                                                                                                                 0.0,
-                                                                                                                                                                                                                                                                                 0.0))
+        self.arrowImage = DirectFrame(parent=self.fishingHandleBaseFrame, frameSize=(-0.4, 0.4, -0.4, 0.4), relief=None, state=DGG.DISABLED, pos=(0.0, 0.0, 0.0), hpr=(0, 0, 0), scale=(1.2, 0.0, 1.2), image=self.guiImage.find('**/pir_t_gui_fsh_arrow'), image_scale=(1.0, 0.0, 1.0), image_pos=(0.0, 0, 0.0), image_hpr=(0.0, 0.0, 0.0))
         self.arrowImage.hide()
         self.UICompoments['arrowImage'] = self.arrowImage
-        btnGeom = (
-         self.guiImage.find('**/pir_t_gui_fsh_handle'), self.guiImage.find('**/pir_t_gui_fsh_handle'), self.guiImage.find('**/pir_t_gui_fsh_handleOn'))
-        self.fishingHandleButton = GuiButton(pos=(-0.3, 0, -0.55), hpr=(0, 0, 0), scale=0.45, image=btnGeom, image_pos=(0,
-                                                                                                                        0,
-                                                                                                                        0), image_scale=1.0, sortOrder=2)
+        btnGeom = (self.guiImage.find('**/pir_t_gui_fsh_handle'), self.guiImage.find('**/pir_t_gui_fsh_handle'), self.guiImage.find('**/pir_t_gui_fsh_handleOn'))
+        self.fishingHandleButton = GuiButton(pos=(-0.3, 0, -0.55), hpr=(0, 0, 0), scale=0.45, image=btnGeom, image_pos=(0, 0, 0), image_scale=1.0, sortOrder=2)
         self.fishingHandleButton.bind(DGG.B1PRESS, self.handleButtonClicked)
         self.fishingHandleButton.reparentTo(self.fishingHandle)
         self.UICompoments['fishingHandleButton'] = self.fishingHandleButton
@@ -131,13 +80,7 @@ class LegendaryFishingGameGUI():
         self.winImagePanel = GuiPanel.GuiPanel('', 2.6, 1.9, True)
         self.winImagePanel.setPos(-1.3, 0.0, -0.95)
         self.winImagePanel.reparentTo(self.uiBaseNode)
-        self.winImagePanel.background = OnscreenImage(parent=self.winImagePanel, scale=(2.4,
-                                                                                        0,
-                                                                                        1.8), image=self.guiImage.find('**/pir_t_gui_fsh_posterBackground'), hpr=(0,
-                                                                                                                                                                  0,
-                                                                                                                                                                  0), pos=(1.3,
-                                                                                                                                                                           0,
-                                                                                                                                                                           0.95))
+        self.winImagePanel.background = OnscreenImage(parent=self.winImagePanel, scale=(2.4, 0, 1.8), image=self.guiImage.find('**/pir_t_gui_fsh_posterBackground'), hpr=(0, 0, 0), pos=(1.3, 0, 0.95))
         self.winImagePanel.setBin('gui-popup', -4)
         self.winTitleTextNode = TextNode('winTitleTextNode')
         self.winTitleTextNode.setText('Congratulations!')
@@ -163,51 +106,15 @@ class LegendaryFishingGameGUI():
         self.luiCloseDialogSequence = Sequence()
         self.arrowImageRotationInterval = LerpHprInterval(self.arrowImage, 2.2, self.arrowImage.getHpr() + Point3(0.0, 0.0, 280.0), self.arrowImage.getHpr())
         self.luiArrowRotatingSequence = Sequence(Func(self.showGui, ['arrowImage']), Parallel(Func(self.arrowImageRotationInterval.start), Wait(2.2)), Func(self.hideGui, ['arrowImage']), Func(self.arrowImage.setHpr, self.arrowImage.getHpr() + Point3(0.0, 0.0, 5.0)), name=self.gameObject.distributedFishingSpot.uniqueName('luiArrowRotatingSequence'))
-        self.lineOneColorChange = LerpColorScaleInterval(self.lineOneTransitTextNodePath, FishingGlobals.legendaryTransitionTextDuration, (1.0,
-                                                                                                                                           1.0,
-                                                                                                                                           1.0,
-                                                                                                                                           0.0), (1.0,
-                                                                                                                                                  1.0,
-                                                                                                                                                  1.0,
-                                                                                                                                                  1.0), blendType='easeOut')
+        self.lineOneColorChange = LerpColorScaleInterval(self.lineOneTransitTextNodePath, FishingGlobals.legendaryTransitionTextDuration, (1.0, 1.0, 1.0, 0.0), (1.0, 1.0, 1.0, 1.0), blendType='easeOut')
         self.lineOnePosChange = LerpPosInterval(self.lineOneTransitTextNodePath, FishingGlobals.legendaryTransitionTextDuration, (0.0, 0.0, -0.2), (0.0, 0.0, -0.8), blendType='easeOut')
-        self.lineTwoCholorChange = LerpColorScaleInterval(self.lineTwoTransitTextNodePath, FishingGlobals.legendaryTransitionTextDuration, (1.0,
-                                                                                                                                            1.0,
-                                                                                                                                            1.0,
-                                                                                                                                            1.0), (1.0,
-                                                                                                                                                   1.0,
-                                                                                                                                                   1.0,
-                                                                                                                                                   1.0), blendType='easeOut')
+        self.lineTwoCholorChange = LerpColorScaleInterval(self.lineTwoTransitTextNodePath, FishingGlobals.legendaryTransitionTextDuration, (1.0, 1.0, 1.0, 1.0), (1.0, 1.0, 1.0, 1.0), blendType='easeOut')
         self.lineTwoPosChange = LerpPosInterval(self.lineTwoTransitTextNodePath, FishingGlobals.legendaryTransitionTextDuration, (0.0, 0.0, -0.32), (0.0, 0.0, -0.95), blendType='easeOut')
         self.transitionTextMovingSequence = Sequence(Func(self.lineOneTransitTextNodePath.show), Func(self.lineTwoTransitTextNodePath.show), Parallel(self.lineOnePosChange, self.lineTwoPosChange, self.lineOneColorChange, self.lineTwoCholorChange), Func(self.lineOneTransitTextNodePath.hide), Func(self.lineTwoTransitTextNodePath.hide), name=self.gameObject.distributedFishingSpot.uniqueName('transitionTextMovingSequence'))
-        self.meterFadeInInterval = Sequence(Func(self.meterFrame.show), LerpColorScaleInterval(self.meterFrame, FishingGlobals.legendaryTransitionTextDuration, colorScale=(1.0,
-                                                                                                                                                                            1.0,
-                                                                                                                                                                            1.0,
-                                                                                                                                                                            1.0), startColorScale=(1.0,
-                                                                                                                                                                                                   1.0,
-                                                                                                                                                                                                   1.0,
-                                                                                                                                                                                                   0.0), blendType='easeOut'), name='FadeInLegendaryMeter')
-        self.meterFadeOutInterval = Sequence(LerpColorScaleInterval(self.meterFrame, FishingGlobals.legendaryTransitionTextDuration, colorScale=(1.0,
-                                                                                                                                                 1.0,
-                                                                                                                                                 1.0,
-                                                                                                                                                 0.0), startColorScale=(1.0,
-                                                                                                                                                                        1.0,
-                                                                                                                                                                        1.0,
-                                                                                                                                                                        1.0), blendType='easeOut'), Func(self.meterFrame.hide), name='FadeOutLegendaryMeter')
-        self.rodFadeInInterval = Sequence(Func(self.fishingHandleBaseFrame.show), LerpColorScaleInterval(self.fishingHandleBaseFrame, FishingGlobals.legendaryTransitionTextDuration, colorScale=(1.0,
-                                                                                                                                                                                                  1.0,
-                                                                                                                                                                                                  1.0,
-                                                                                                                                                                                                  1.0), startColorScale=(1.0,
-                                                                                                                                                                                                                         1.0,
-                                                                                                                                                                                                                         1.0,
-                                                                                                                                                                                                                         0.0), blendType='easeOut'), name='FadeInLegendaryRodInterface')
-        self.rodFadeOutInterval = Sequence(LerpColorScaleInterval(self.fishingHandleBaseFrame, FishingGlobals.legendaryTransitionTextDuration, colorScale=(1.0,
-                                                                                                                                                           1.0,
-                                                                                                                                                           1.0,
-                                                                                                                                                           0.0), startColorScale=(1.0,
-                                                                                                                                                                                  1.0,
-                                                                                                                                                                                  1.0,
-                                                                                                                                                                                  1.0), blendType='easeOut'), Func(self.fishingHandleBaseFrame.hide), name='FadeOutLegendaryRodInterface')
+        self.meterFadeInInterval = Sequence(Func(self.meterFrame.show), LerpColorScaleInterval(self.meterFrame, FishingGlobals.legendaryTransitionTextDuration, colorScale=(1.0, 1.0, 1.0, 1.0), startColorScale=(1.0, 1.0, 1.0, 0.0), blendType='easeOut'), name='FadeInLegendaryMeter')
+        self.meterFadeOutInterval = Sequence(LerpColorScaleInterval(self.meterFrame, FishingGlobals.legendaryTransitionTextDuration, colorScale=(1.0, 1.0, 1.0, 0.0), startColorScale=(1.0, 1.0, 1.0, 1.0), blendType='easeOut'), Func(self.meterFrame.hide), name='FadeOutLegendaryMeter')
+        self.rodFadeInInterval = Sequence(Func(self.fishingHandleBaseFrame.show), LerpColorScaleInterval(self.fishingHandleBaseFrame, FishingGlobals.legendaryTransitionTextDuration, colorScale=(1.0, 1.0, 1.0, 1.0), startColorScale=(1.0, 1.0, 1.0, 0.0), blendType='easeOut'), name='FadeInLegendaryRodInterface')
+        self.rodFadeOutInterval = Sequence(LerpColorScaleInterval(self.fishingHandleBaseFrame, FishingGlobals.legendaryTransitionTextDuration, colorScale=(1.0, 1.0, 1.0, 0.0), startColorScale=(1.0, 1.0, 1.0, 1.0), blendType='easeOut'), Func(self.fishingHandleBaseFrame.hide), name='FadeOutLegendaryRodInterface')
         base.loadingScreen.tick()
         smallScale = self.fishingHandleButton['scale']
         bigScale = self.fishingHandleButton['scale'] * 1.2
