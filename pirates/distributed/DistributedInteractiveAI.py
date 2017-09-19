@@ -17,6 +17,13 @@ class DistributedInteractiveAI(DistributedNodeAI):
 
         if not avatar:
             self.notify.warning('Failed to request interact for non-existant avatar!')
+
+            self.air.writeServerEvent('suspicious-event', 
+                message='Received requestInteraction from non-existant avatar',
+                targetAvId=avatar.doId, 
+                doId=doId,
+                interactType=interactType,
+                instant=instant)            
             return
 
         handle = self.handleRequestInteraction(avatar, interactType, instant)
@@ -36,6 +43,13 @@ class DistributedInteractiveAI(DistributedNodeAI):
 
         if not avatar:
             self.notify.warning('Failed to request exit for non-existant avatar!')
+
+            self.air.writeServerEvent('suspicious-event', 
+                message='Received requestExit from non-existant avatar',
+                targetAvId=avatar.doId, 
+                doId=doId,
+                interactType=interactType,
+                instant=instant)   
             return
 
         handle = self.handleRequestExit(avatar)
