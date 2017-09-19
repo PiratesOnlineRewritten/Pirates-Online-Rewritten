@@ -218,6 +218,8 @@ class DistributedInstanceBase(NodePath, DistributedObject, StagedObject):
         StagedObject.handleOnStage(self)
         self.cr.setActiveWorld(self)
         self.unstash()
+        if self.worldGrid:
+            self.worldGrid.goOnStage()
         for island in self.islands.values():
             if island:
                 island.goOnStage()

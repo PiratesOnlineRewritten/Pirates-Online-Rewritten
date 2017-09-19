@@ -18,6 +18,9 @@ from panda3d.core import *
 if __debug__:
     loadPrcFile('config/general.prc')
 
+    if os.path.exists('config/personal.prc'):
+        loadPrcFile('config/personal.prc')
+
 gc.disable()
 
 try:

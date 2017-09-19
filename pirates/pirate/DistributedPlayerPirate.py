@@ -590,7 +590,6 @@ class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, Distribu
             self.headShakeIval = None
         self.stopDizzyEffect()
         taskMgr.remove('shake_head_while_injured_Task')
-        return
 
     def startDizzyEffect(self):
         if self.dizzyEffect:
@@ -1245,13 +1244,16 @@ class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, Distribu
     def getInventory(self):
         if not self:
             return None
+
         if not self.cr:
             return None
+
         inventory = self.cr.doId2do.get(self.inventoryId)
         if inventory:
             return inventory
         else:
             return None
+
         return None
 
     def getFriendsListId(self):

@@ -1,5 +1,6 @@
 from direct.distributed import DistributedObject/AI/UD
 from direct.distributed import DistributedObjectGlobal/AI/UD
+from direct.distributed import DistributedObjectGlobal/AI/UD
 from direct.distributed import DistributedNode/AI/UD
 from direct.distributed import DistributedSmoothNode/AI
 from direct.distributed import DistributedCartesianGrid/AI
@@ -56,9 +57,10 @@ struct BarrierData {
 };
 
 dclass DistributedObject {
-  setBarrierData(BarrierData []) broadcast ram;
-  setBarrierReady(uint16) airecv clsend;
-  execCommand(string, uint32, uint32, uint32);
+  setBarrierData(BarrierData data[]) broadcast ram;
+  setBarrierReady(uint16 barrierContext) airecv clsend;
+  execCommand(string command, DoId magicWordMgr,
+              DoId avatar, uint32 zoneId);
   broadcastMessage() broadcast;
 };
 
@@ -100,14 +102,14 @@ dclass DistributedDistrict : DistributedObject {
 };
 
 dclass DistributedNode : DistributedObject {
-  setParentStr(blob) broadcast ram ownsend airecv;
-  setParent(uint32) broadcast ram ownsend airecv;
-  setX(int16/10) broadcast ram ownsend airecv;
-  setY(int16/10) broadcast ram ownsend airecv;
-  setZ(int16/10) broadcast ram ownsend airecv;
-  setH(int16%360/10) broadcast ram ownsend airecv;
-  setP(int16%360/10) broadcast ram ownsend airecv;
-  setR(int16%360/10) broadcast ram ownsend airecv;
+  setParentStr(blob parentTokenStr) broadcast ram ownsend airecv;
+  setParent(uint32 parentToken) broadcast ram ownsend airecv;
+  setX(int16/10 x) broadcast ram ownsend airecv;
+  setY(int16/10 y) broadcast ram ownsend airecv;
+  setZ(int16/10 z) broadcast ram ownsend airecv;
+  setH(int16%360/10 h) broadcast ram ownsend airecv;
+  setP(int16%360/10 p) broadcast ram ownsend airecv;
+  setR(int16%360/10 r) broadcast ram ownsend airecv;
   setPos : setX, setY, setZ;
   setHpr : setH, setP, setR;
   setPosHpr : setX, setY, setZ, setH, setP, setR;
@@ -118,14 +120,14 @@ dclass DistributedNode : DistributedObject {
 };
 
 dclass DistributedSmoothNode : DistributedNode {
-  setComponentX(int16/10) broadcast ram ownsend airecv;
-  setComponentY(int16/10) broadcast ram ownsend airecv;
-  setComponentZ(int16/10) broadcast ram ownsend airecv;
-  setComponentH(int16%360/10) broadcast ram ownsend airecv;
-  setComponentP(int16%360/10) broadcast ram ownsend airecv;
-  setComponentR(int16%360/10) broadcast ram ownsend airecv;
-  setComponentE(uint64) broadcast ram ownsend airecv;
-  setComponentT(int16) broadcast ram ownsend airecv;
+  setComponentL(uint64 l) broadcast ram ownsend airecv;
+  setComponentX(int16/10 x) broadcast ram ownsend airecv;
+  setComponentY(int16/10 y) broadcast ram ownsend airecv;
+  setComponentZ(int16/10 z) broadcast ram ownsend airecv;
+  setComponentH(int16%360/10 h) broadcast ram ownsend airecv;
+  setComponentP(int16%360/10 p) broadcast ram ownsend airecv;
+  setComponentR(int16%360/10 r) broadcast ram ownsend airecv;
+  setComponentT(int16 timestamp) broadcast ram ownsend airecv;
   setSmStop : setComponentT;
   setSmH : setComponentH, setComponentT;
   setSmZ : setComponentZ, setComponentT;
@@ -136,10 +138,10 @@ dclass DistributedSmoothNode : DistributedNode {
   setSmXYH : setComponentX, setComponentY, setComponentH, setComponentT;
   setSmXYZH : setComponentX, setComponentY, setComponentZ, setComponentH, setComponentT;
   setSmPosHpr : setComponentX, setComponentY, setComponentZ, setComponentH, setComponentP, setComponentR, setComponentT;
-  setSmPosHprE : setComponentX, setComponentY, setComponentZ, setComponentH, setComponentP, setComponentR, setComponentE, setComponentT;
-  clearSmoothing(int8) broadcast ownsend;
-  suggestResync(uint32, int16, int16, int32, uint16, uint16/100) ownrecv clsend;
-  returnResync(uint32, int16, int32, uint16, uint16/100) ownrecv clsend;
+  setSmPosHprL : setComponentL, setComponentX, setComponentY, setComponentZ, setComponentH, setComponentP, setComponentR, setComponentT;
+  clearSmoothing(int8 bogus) broadcast ownsend;
+  suggestResync(uint32 avId, int16 timestampA, int16 timestampB, int32 serverTimeSec, uint16 serverTimeUSec, uint16/100 uncertainty) ownrecv clsend;
+  returnResync(uint32 avId, int16 timestampB, int32 serverTimeSec, uint16 serverTimeUSec, uint16/100 uncertainty) ownrecv clsend;
 };
 
 dclass DistributedCartesianGrid : DistributedNode {

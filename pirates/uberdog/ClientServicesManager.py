@@ -14,6 +14,8 @@ class ClientServicesManager(DistributedObjectGlobal):
 
     def acceptLogin(self):
         messenger.send(self.doneEvent, [{'mode': 'success'}])
+        base.funnel.start_session()
+        base.funnel.submit_events()
 
     def requestAvatars(self):
         self.sendUpdate('requestAvatars')
@@ -37,11 +39,7 @@ class ClientServicesManager(DistributedObjectGlobal):
 
             data.append(PotentialAvatar(avNum, names, dna, avPosition, nameOpen))
 
-        data.extend([OTPGlobals.AvatarSlotAvailable] * (OTPGlobals.AvatarNumSlots - len(data)))
-
-        # TODO: implement support for sub accounts.
-        avatarList[0] = data
-
+        avatarList[1] = data + [OTPGlobals.AvatarSlotAvailable] * (OTPGlobals.AvatarNumSlots - len(data))
         self.cr.handleAvatarsList(avatarList)
 
     def sendCreateAvatar(self, avDNA, _, index):

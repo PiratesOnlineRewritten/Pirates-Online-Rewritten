@@ -42,18 +42,17 @@ class MotionAnimFSM(FSM):
         self.currentSplash = None
         self.splashAnims = None
         self.splashAnimDelay = None
-        return
 
     def cleanup(self):
         if not self.isInTransition():
             FSM.cleanup(self)
+
         self.landIval = None
         self.landRunIval = None
         self.idleJumpIval = None
         if hasattr(self, 'av'):
             self.ignoreAll()
             del self.av
-        return
 
     def setAnimInfo(self, animInfo, reset=True):
         self.fsmLock.acquire()
@@ -129,8 +128,6 @@ class MotionAnimFSM(FSM):
         finally:
             self.fsmLock.release()
 
-        return
-
     def updateNPCAnimState(self, forwardSpeed, rotateSpeed=0, slideSpeed=0):
         self.fsmLock.acquire()
         try:
@@ -167,17 +164,20 @@ class MotionAnimFSM(FSM):
                             state = 'WalkForward'
                     else:
                         state = 'Idle'
-                    zeroSpeedLimit = 0.1
-                    if globalClock.getFrameTime() - self.zeroSpeedTimer < zeroSpeedLimit and self.motionFSMLag:
-                        if state != self.state and self.state != 'Idle':
-                            return
-                    if animScaleAdjust:
-                        self.adjustAnimScale(state, forwardSpeed, slideSpeed)
-                if self.state != state:
-                    if self.isInTransition():
-                        self.demand(state)
-                    else:
-                        self.request(state)
+
+            zeroSpeedLimit = 0.1
+            if globalClock.getFrameTime() - self.zeroSpeedTimer < zeroSpeedLimit and self.motionFSMLag:
+                if state != self.state and self.state != 'Idle':
+                    return
+
+            if animScaleAdjust:
+                self.adjustAnimScale(state, forwardSpeed, slideSpeed)
+
+            if self.state != state:
+                if self.isInTransition():
+                    self.demand(state)
+                else:
+                    self.request(state)
             self.lastMoveSpeed = forwardSpeed
             self.zeroSpeedTimer = globalClock.getFrameTime()
         finally:
@@ -186,6 +186,7 @@ class MotionAnimFSM(FSM):
     def updateAnimState(self, forwardSpeed, rotateSpeed, slideSpeed=0.0, trackedRotation=0.0):
         if self.av.getGameState() == 'Fishing':
             return
+
         self.fsmLock.acquire()
         try:
             if self.canBeAirborne and self.airborneState:
@@ -220,17 +221,17 @@ class MotionAnimFSM(FSM):
                     state = 'SpinRight'
                 else:
                     state = 'Idle'
-                if self.state != state:
-                    if self.av.doId < 300000000:
-                        pass
-                    if self.isInTransition():
-                        self.demand(state)
-                    else:
-                        self.request(state)
-                    if self.av.isLocal() and self.av.getGameState() == 'Emote':
-                        messenger.send('localAvatarExitEmote')
-                    if not self.av.isLocal() and self.av.getGameState() == 'Emote':
-                        self.av.playEmote(self.av.emoteId)
+
+            if self.state != state:
+                if self.isInTransition():
+                    self.demand(state)
+                else:
+                    self.request(state)
+
+                if self.av.isLocal() and self.av.getGameState() == 'Emote':
+                    messenger.send('localAvatarExitEmote')
+                if not self.av.isLocal() and self.av.getGameState() == 'Emote':
+                    self.av.playEmote(self.av.emoteId)
         finally:
             self.fsmLock.release()
 
@@ -241,7 +242,7 @@ class MotionAnimFSM(FSM):
     def handleAirborneEvent(self, event):
         if event == 'Jump':
             self.av.b_playMotionAnim(self.ANIMSTATE.Jump)
-        if event == 'Land':
+        elif event == 'Land':
             self.av.b_playMotionAnim(self.ANIMSTATE.Land)
 
     @report(types=['args', 'deltaStamp'], dConfigParam=['jump'])
@@ -271,7 +272,10 @@ class MotionAnimFSM(FSM):
                 endFrame = animInfo[3]
                 if self.idleJumpIval:
                     self.idleJumpIval.finish()
-                self.idleJumpIval = self.av.actorInterval(animInfo[0], startFrame=startFrame, endFrame=endFrame, playRate=1.5, blendInT=0.0, blendOutT=self.BLENDAMT * 0.5)
+
+                self.idleJumpIval = self.av.actorInterval(animInfo[0], startFrame=startFrame, endFrame=endFrame, playRate=1.5,
+                    blendInT=0.0, blendOutT=self.BLENDAMT * 0.5)
+
                 self.idleJumpIval.start()
             else:
                 startFrame = animInfo[2]
@@ -344,14 +348,18 @@ class MotionAnimFSM(FSM):
     def enterOff(self):
         if self.landIval:
             self.landIval.finish()
+
         if self.landRunIval:
             self.landRunIval.finish()
+
         if self.idleJumpIval:
             self.idleJumpIval.finish()
+
         if self.av.isLocal():
             self.ignore('jumpStart')
             self.ignore('jumpLand')
             self.ignore('jumpLandHard')
+
         if self.av.isLocal():
             self.av.setMovementIndex(-1)
 
@@ -616,17 +624,15 @@ class MotionFSM(FSM):
         self.motionAnimFSM = MotionAnimFSM(self.av)
         if hasattr(self.av, 'getAnimInfo'):
             self.setAnimInfo(self.av.getAnimInfo('LandRoam'))
+
         self.lifterDelayFrames = 0
         self.__locked = 0
         self.movementKeys = {}
-        keys = ('arrow_up', 'arrow_down', 'arrow_left', 'arrow_right', 'w', 's', 'a',
-                'd', 'q', 'e')
+        keys = ('arrow_up', 'arrow_down', 'arrow_left', 'arrow_right', 'w', 's', 'a', 'd', 'q', 'e')
         for key in keys:
             self.movementKeys[key] = 0
             self.accept(key, self.setMovementTrack, extraArgs=[key, 1])
             self.accept(key + '-up', self.setMovementTrack, extraArgs=[key, 0])
-
-        return
 
     def setMovementTrack(self, track, value):
         if self.movementKeys:
@@ -648,6 +654,7 @@ class MotionFSM(FSM):
     def off(self, lock=False):
         if self.__locked:
             return
+
         self.request('Off')
         if lock:
             self.lock()
@@ -655,8 +662,10 @@ class MotionFSM(FSM):
     def on(self, unlock=False):
         if unlock:
             self.unlock()
+
         if self.__locked:
             return
+
         self.request('On')
 
     def moveLockIfOn(self):
@@ -670,6 +679,7 @@ class MotionFSM(FSM):
     def moveLock(self):
         if self.__locked:
             return
+
         self.request('MoveLock')
 
     def lock(self):
@@ -716,8 +726,9 @@ class MotionFSM(FSM):
     def enterOn(self):
         if self.av.canMove:
             self.av.startSmooth()
+
         if self.av.isLocal():
-            #self.av.startPosHprBroadcast()
+            self.av.startPosHprBroadcast()
             self.av.collisionsOn()
             self.motionAnimFSM.startTrackAnimToSpeed()
             self.av.enableAvatarControls()
@@ -733,7 +744,8 @@ class MotionFSM(FSM):
             self.av.stopLookAroundTask()
             if self.av.loadAnimatedHead == False:
                 self.av.headNode.setHpr(self.av.headFudgeHpr)
-            #self.av.stopPosHprBroadcast()
+
+            self.av.stopPosHprBroadcast()
             self.av.collisionsOff()
             self.motionAnimFSM.stopTrackAnimToSpeed()
             self.av.disableAvatarControls()
@@ -745,6 +757,7 @@ class MotionFSM(FSM):
         idleAnim = self.animInfo[PiratesGlobals.STAND_INDEX][0]
         if idleAnim:
             self.av.loop(idleAnim, blendT=self.BLENDAMT)
+
         self.av.startSmooth()
         if self.av.isLocal():
             self.av.startPosHprBroadcast()
@@ -757,6 +770,7 @@ class MotionFSM(FSM):
             self.av.stopLookAroundTask()
             if self.av.loadAnimatedHead == False:
                 self.av.headNode.setHpr(self.av.headFudgeHpr)
+
             self.av.stopPosHprBroadcast()
             self.stopCheckUnderWater()
             self.av.collisionsOff()
@@ -766,6 +780,7 @@ class MotionFSM(FSM):
     def startCheckUnderWater(self):
         if self.cannotFloat:
             return
+
         self.stopCheckUnderWater()
         if self.getCurrentOrNextState() is not 'Off':
             task = taskMgr.add(self.__checkUnderWater, 'localAvatarCheckUnderWater', priority=34)
@@ -774,31 +789,36 @@ class MotionFSM(FSM):
     def stopCheckUnderWater(self):
         if self.cannotFloat:
             return
+
         taskMgr.remove('localAvatarCheckUnderWater')
         self.__submerged = None
         self.__overwater = None
         self.__inwater = None
         self.av.disableWaterEffect()
-        return
 
     def __checkUnderWater(self, task):
         if not (hasattr(self.av.controlManager.currentControls, 'lifter') and base.cr.isOceanEnabled()):
             return task.cont
+
         if self.lifterDelayFrames:
             self.lifterDelayFrames -= 1
             return task.cont
+
         waterZ = base.cr.getWaterHeight(self.av)
         avZ = self.av.getZ(render)
         if avZ <= waterZ and not self.__inwater:
             self.__inwater = True
             self.av.enableWaterEffect()
+
         if avZ > waterZ and self.__inwater:
             self.__inwater = False
             self.av.disableWaterEffect()
+
         if self.__inwater:
             offset = waterZ - avZ + 0.15
             speeds = self.av.controlManager.getSpeeds()
             self.av.adjustWaterEffect(offset, *speeds)
+
         curControls = self.av.controlManager.currentControls
         if curControls.lifter.hasContact():
             avAirborneHeight = curControls.lifter.getAirborneHeight()
@@ -816,11 +836,13 @@ class MotionFSM(FSM):
                 if avZ + self.avHeight - avAirborneHeight <= waterZ and not self.__overwater:
                     self.__overwater = True
                     self.av.b_setGroundState(self.motionAnimFSM.GROUNDSTATE.OverWater)
+
                 if avZ + self.avHeight <= waterZ:
                     self.__submerged = True
                     messenger.send('localAvatarEnterWater')
                     self.av.controlManager.currentControls.isAirborne = 0
                     curControls.abortJump()
+
                 if avZ == waterZ and avAirborneHeight > self.avHeight:
                     self.__submerged = True
                     self.__overwater = True
@@ -828,6 +850,7 @@ class MotionFSM(FSM):
             self.__submerged = True
             self.__overwater = True
             messenger.send('localAvatarEnterWater')
+
         task.oldParent = self.av.getParent()
         return task.cont
 

@@ -41,33 +41,31 @@ class GridLODDef():
             low = self.lodNode.attachNewNode('Low')
             superLow = self.lodNode.attachNewNode('superLow')
             self.highLodNode = high
+        elif gridDetail == 'med':
+            lod.addSwitch(750, 0)
+            lod.addSwitch(1500, 750)
+            lod.addSwitch(3000, 1500)
+            high = None
+            med = self.lodNode.attachNewNode('Med')
+            low = self.lodNode.attachNewNode('Low')
+            superLow = self.lodNode.attachNewNode('superLow')
+            self.highLodNode = med
+        elif gridDetail == 'low':
+            lod.addSwitch(1500, 0)
+            lod.addSwitch(3000, 1500)
+            high = None
+            med = None
+            low = self.lodNode.attachNewNode('Low')
+            superLow = self.lodNode.attachNewNode('Low')
+            self.highLodNode = low
         else:
-            if gridDetail == 'med':
-                lod.addSwitch(750, 0)
-                lod.addSwitch(1500, 750)
-                lod.addSwitch(3000, 1500)
-                high = None
-                med = self.lodNode.attachNewNode('Med')
-                low = self.lodNode.attachNewNode('Low')
-                superLow = self.lodNode.attachNewNode('superLow')
-                self.highLodNode = med
-            elif gridDetail == 'low':
-                lod.addSwitch(1500, 0)
-                lod.addSwitch(3000, 1500)
-                high = None
-                med = None
-                low = self.lodNode.attachNewNode('Low')
-                superLow = self.lodNode.attachNewNode('Low')
-                self.highLodNode = low
-            else:
-                raise StandardError, 'Invalid grid-detail: %s' % gridDetail
-            low.setLightOff(base.cr.timeOfDayManager.sunLight)
-            low.setLightOff(base.cr.timeOfDayManager.shadowLight)
-            self.children = [
-             high, med, low]
-            if zoneId == PiratesGlobals.FakeZoneId:
-                pos = area.master.getPos()
-            pos = area.master.getZoneCellOriginCenter(zoneId)
+            raise StandardError, 'Invalid grid-detail: %s' % gridDetail
+        low.setLightOff(base.cr.timeOfDayManager.sunLight)
+        low.setLightOff(base.cr.timeOfDayManager.shadowLight)
+        self.children = [high, med, low]
+        if zoneId == PiratesGlobals.FakeZoneId:
+            pos = area.master.getPos()
+        pos = area.master.getZoneCellOriginCenter(zoneId)
         self.gridNode.setPos(pos[0], pos[1], pos[2])
         self.gridNode.reparentTo(area.staticGridRoot)
         return

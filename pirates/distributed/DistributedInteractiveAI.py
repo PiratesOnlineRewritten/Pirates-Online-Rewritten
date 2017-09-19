@@ -1,8 +1,7 @@
 from direct.distributed.DistributedNodeAI import DistributedNodeAI
 from direct.directnotify import DirectNotifyGlobal
-from pirates.distributed.DistributedLocatableObjectAI import DistributedLocatableAI
 
-class DistributedInteractiveAI(DistributedNodeAI, DistributedLocatableAI):
+class DistributedInteractiveAI(DistributedNodeAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedInteractiveAI')
 
     ACCEPT = 1
@@ -14,21 +13,8 @@ class DistributedInteractiveAI(DistributedNodeAI, DistributedLocatableAI):
         self.userId = 0
         self.uniqueId = ''
 
-    def __getSender(self):
-        avatarId = self.air.getAvatarIdFromSender()
-
-        if avatarId not in self.air.doId2do:
-            return None
-
-        avatar = self.air.doId2do[avatarId]
-
-        if not avatar:
-            return None
-
-        return avatar
-
     def requestInteraction(self, doId, interactType, instant):
-        avatar = self.__getSender()
+        avatar = self.air.doId2do.get(self.air.getAvatarIdFromSender())
 
         if not avatar or self.userId:
             self.d_rejectInteraction(avatar)
@@ -47,7 +33,7 @@ class DistributedInteractiveAI(DistributedNodeAI, DistributedLocatableAI):
         return self.DENY
 
     def requestExit(self):
-        avatar = self.__getSender()
+        avatar = self.air.doId2do.get(self.air.getAvatarIdFromSender())
 
         if not avatar or not self.userId:
             self.d_rejectExit(avatar)
@@ -62,8 +48,7 @@ class DistributedInteractiveAI(DistributedNodeAI, DistributedLocatableAI):
         self.b_setUserId(0)
 
     def demandExit(self):
-
-        avatar = self.__getSender()
+        avatar = self.air.doId2do.get(self.air.getAvatarIdFromSender())
 
         if not avatar or not self.userID:
             return

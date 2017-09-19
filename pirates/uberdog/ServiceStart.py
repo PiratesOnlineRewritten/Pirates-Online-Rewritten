@@ -1,5 +1,6 @@
 from panda3d.core import *
 from direct.showbase import PythonUtil
+import traceback
 import __builtin__
 
 import argparse
@@ -15,6 +16,10 @@ args = parser.parse_args()
 
 for prc in args.config:
     loadPrcFile(prc)
+
+import os
+if os.path.exists('config/personal.prc'):
+    loadPrcFile('config/personal.prc')
 
 localconfig = ''
 if args.base_channel: localconfig += 'air-base-channel %s\n' % args.base_channel
@@ -49,6 +54,6 @@ try:
 except SystemExit:
     raise
 except Exception:
-    info = PythonUtil.describeException()
+    info = traceback.format_exc()
     simbase.air.writeServerEvent('uberdog-exception', avId=simbase.air.getAvatarIdFromSender(), accId=simbase.air.getAccountIdFromSender(), info=info)
     raise

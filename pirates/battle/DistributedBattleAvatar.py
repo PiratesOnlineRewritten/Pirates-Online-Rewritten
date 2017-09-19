@@ -609,7 +609,7 @@ class DistributedBattleAvatar(DistributedReputationAvatar, WeaponBase, Teamable)
             aimTubeNodePath = self.attachNewNode(aimTubeNode)
             aimTubeNodePath.setTag('objType', str(PiratesGlobals.COLL_AV))
             aimTubeNodePath.setTag('avId', str(self.doId))
-            self.cr.targetMgr.addTarget(aimTubeNodePath.id(), self)
+            self.cr.targetMgr.addTarget(aimTubeNodePath.get_key(), self)
             self.aimTubeNodePaths.append(aimTubeNodePath)
 
     def disableBattleCollisions(self):
@@ -632,7 +632,7 @@ class DistributedBattleAvatar(DistributedReputationAvatar, WeaponBase, Teamable)
         if self.isBattleable():
             for np in self.aimTubeNodePaths:
                 if hasattr(self.cr, 'targetMgr') and self.cr.targetMgr:
-                    self.cr.targetMgr.removeTarget(np.id())
+                    self.cr.targetMgr.removeTarget(np.get_key())
                 np.removeNode()
 
             self.aimTubeNodePaths = []
@@ -1794,6 +1794,7 @@ class DistributedBattleAvatar(DistributedReputationAvatar, WeaponBase, Teamable)
     def getTotalHp(self):
         if self.hp is None:
             return 0
+
         return self.hp
 
     def hpChange(self, quietly=0):
@@ -1811,7 +1812,6 @@ class DistributedBattleAvatar(DistributedReputationAvatar, WeaponBase, Teamable)
         self.hpChange(quietly=1)
         if justRanOutOfHp:
             self.died()
-        return
 
     def getTotalLuck(self):
         return self.luck + self.luckMod
@@ -2865,6 +2865,7 @@ class DistributedBattleAvatar(DistributedReputationAvatar, WeaponBase, Teamable)
         if base.localAvatar.guiMgr.targetStatusTray.doId == self.getDoId():
             if self.getTotalHp() <= 0:
                 localAvatar.guiMgr.targetStatusTray.updateHp(0, self.maxHp)
+
             localAvatar.guiMgr.targetStatusTray.fadeOut(delay=delay)
 
     def getLandRoamIdleAnimInfo(self):
@@ -3028,7 +3029,7 @@ class DistributedBattleAvatar(DistributedReputationAvatar, WeaponBase, Teamable)
         self.inInvasion = value
 
     def isInInvasion(self):
-        return self.inInvasion
+        return True #self.inInvasion
 
     def getEfficiency(self):
         return self.efficiency

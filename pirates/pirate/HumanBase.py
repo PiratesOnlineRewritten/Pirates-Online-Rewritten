@@ -10,7 +10,7 @@ class HumanBase():
         if not dnaString:
             self.setDefaultDNA()
         else:
-            self.style = copy.deepcopy(dnaString)
+            self.setDefaultDNA() #TODO
 
     def setDefaultDNA(self):
         newDNA = HumanDNA.HumanDNA()

@@ -1,3 +1,4 @@
+from panda3d.core import NodePath
 from direct.interval.IntervalGlobal import *
 from direct.directnotify import DirectNotifyGlobal
 from direct.distributed.ClockDelta import *

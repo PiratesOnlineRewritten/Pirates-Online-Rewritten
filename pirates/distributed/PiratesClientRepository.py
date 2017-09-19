@@ -124,6 +124,7 @@ class PiratesClientRepository(OTPClientRepository):
         self.settingsMgr = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_PIRATES_SETTINGS_MANAGER, 'PiratesSettingsMgr')
         self.statusDatabase = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_STATUS_DATABASE, 'StatusDatabase')
         self.csm = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_CLIENT_SERVICES_MANAGER, 'ClientServicesManager')
+        self.inventoryManager = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_PIRATES_INVENTORY_MANAGER, 'DistributedInventoryManager')
         self.wantSeapatch = base.config.GetBool('want-seapatch', 1)
         self.wantSpecialEffects = base.config.GetBool('want-special-effects', 1)
         self.wantMakeAPirate = base.config.GetBool('wantMakeAPirate', 0)
@@ -450,6 +451,7 @@ class PiratesClientRepository(OTPClientRepository):
         self.localAvatarDoId = avatarId
         self.doId2do[avatarId] = localAvatar
         localAvatar.setLocation(parentId=None, zoneId=None)
+        localAvatar.generateInit()
         localAvatar.generate()
         localAvatar.updateAllRequiredFields(localAvatar.dclass, di)
         self.loadingScreen.endStep('LocalAvatar')
@@ -481,8 +483,7 @@ class PiratesClientRepository(OTPClientRepository):
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def playingGameLocReceived(self, shardId, zoneId):
-        self.gameFSM.request('waitOnEnterResponses', [
-         shardId, zoneId, zoneId, -1])
+        self.gameFSM.request('waitOnEnterResponses', [shardId, zoneId, zoneId, -1])
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def exitPlayingGame(self):
@@ -535,8 +536,7 @@ class PiratesClientRepository(OTPClientRepository):
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def __requestTutorial(self, hoodId, zoneId, avId):
-        self.acceptOnce('startTutorial', self.__handleStartTutorial, [
-         avId])
+        self.acceptOnce('startTutorial', self.__handleStartTutorial, [avId])
         messenger.send('requestTutorial')
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
@@ -853,13 +853,7 @@ class PiratesClientRepository(OTPClientRepository):
         return
 
     def getInventoryMgr(self, doId):
-        return self.inventoryManager[doId % self.inventoryMgrCount]
-
-    def createInventoryManagers(self, num):
-        self.inventoryMgrCount = num
-        self.inventoryManager = []
-        for i in xrange(num):
-            self.inventoryManager.append(self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_PIRATES_INVENTORY_MANAGER_BASE + i, 'DistributedInventoryManager'))
+        return self.inventoryManager
 
     @report(types=['args', 'deltaStamp'], dConfigParam='dteleport')
     def setDistrict(self, district):

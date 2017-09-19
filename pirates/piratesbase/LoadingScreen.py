@@ -18,20 +18,13 @@ from pandac.PandaModules import Ramfile
 from pandac.PandaModules import Ostream
 from pandac.PandaModules import HTTPDate
 from pandac.PandaModules import DocumentSpec
-tutorialShots = [
- 'models/gui/loadingScreen_12', 'models/gui/loadingScreen_16', 'models/gui/loadingScreen_33', 'models/gui/loadingScreen_34', 'models/gui/loadingScreen_35', 'models/gui/loadingScreen_36', 'models/gui/loadingScreen_37']
-tutorialShots_MoveAim = [
- 'models/gui/loadingScreen_33', 'models/gui/loadingScreen_36']
-screenShots = [
- 'models/gui/loadingScreen_01', 'models/gui/loadingScreen_02', 'models/gui/loadingScreen_05', 'models/gui/loadingScreen_06', 'models/gui/loadingScreen_07', 'models/gui/loadingScreen_08', 'models/gui/loadingScreen_09', 'models/gui/loadingScreen_10', 'models/gui/loadingScreen_11', 'models/gui/loadingScreen_12', 'models/gui/loadingScreen_13', 'models/gui/loadingScreen_14', 'models/gui/loadingScreen_15', 'models/gui/loadingScreen_16', 'models/gui/loadingScreen_17', 'models/gui/loadingScreen_18', 'models/gui/loadingScreen_19', 'models/gui/loadingScreen_20', 'models/gui/loadingScreen_21', 'models/gui/loadingScreen_22', 'models/gui/loadingScreen_24', 'models/gui/loadingScreen_25', 'models/gui/loadingScreen_26', 'models/gui/loadingScreen_27', 'models/gui/loadingScreen_28', 'models/gui/loadingScreen_29', 'models/gui/loadingScreen_30', 'models/gui/loadingScreen_31', 'models/gui/loadingScreen_32', 'models/gui/loadingScreen_34']
-screenShots_Jungles = [
- 'models/gui/loadingScreen_13']
-screenShots_Swamps = [
- 'models/gui/loadingScreen_18']
-screenShots_Caves = [
- 'models/gui/loadingScreen_32', 'models/gui/loadingScreen_30', 'models/gui/loadingScreen_31', 'models/gui/loadingScreen_26', 'models/gui/loadingScreen_27', 'models/gui/loadingScreen_29', 'models/gui/loadingScreen_28', 'models/gui/loadingScreen_22']
-screenShots_WinterHoliday = [
- 'models/gui/loadingScreen_38', 'models/gui/loadingScreen_39', 'models/gui/loadingScreen_40']
+tutorialShots = ['models/gui/loadingScreen_12', 'models/gui/loadingScreen_16', 'models/gui/loadingScreen_33', 'models/gui/loadingScreen_34', 'models/gui/loadingScreen_35', 'models/gui/loadingScreen_36', 'models/gui/loadingScreen_37']
+tutorialShots_MoveAim = ['models/gui/loadingScreen_33', 'models/gui/loadingScreen_36']
+screenShots = ['models/gui/loadingScreen_01', 'models/gui/loadingScreen_02', 'models/gui/loadingScreen_05', 'models/gui/loadingScreen_06', 'models/gui/loadingScreen_07', 'models/gui/loadingScreen_08', 'models/gui/loadingScreen_09', 'models/gui/loadingScreen_10', 'models/gui/loadingScreen_11', 'models/gui/loadingScreen_12', 'models/gui/loadingScreen_13', 'models/gui/loadingScreen_14', 'models/gui/loadingScreen_15', 'models/gui/loadingScreen_16', 'models/gui/loadingScreen_17', 'models/gui/loadingScreen_18', 'models/gui/loadingScreen_19', 'models/gui/loadingScreen_20', 'models/gui/loadingScreen_21', 'models/gui/loadingScreen_22', 'models/gui/loadingScreen_24', 'models/gui/loadingScreen_25', 'models/gui/loadingScreen_26', 'models/gui/loadingScreen_27', 'models/gui/loadingScreen_28', 'models/gui/loadingScreen_29', 'models/gui/loadingScreen_30', 'models/gui/loadingScreen_31', 'models/gui/loadingScreen_32', 'models/gui/loadingScreen_34']
+screenShots_Jungles = ['models/gui/loadingScreen_13']
+screenShots_Swamps = ['models/gui/loadingScreen_18']
+screenShots_Caves = ['models/gui/loadingScreen_32', 'models/gui/loadingScreen_30', 'models/gui/loadingScreen_31', 'models/gui/loadingScreen_26', 'models/gui/loadingScreen_27', 'models/gui/loadingScreen_29', 'models/gui/loadingScreen_28', 'models/gui/loadingScreen_22']
+screenShots_WinterHoliday = ['models/gui/loadingScreen_38', 'models/gui/loadingScreen_39', 'models/gui/loadingScreen_40']
 areaType_Jungles = {'1161798288.34sdnaik': 0,'1164141722.61sdnaik': 1,'1169592956.59sdnaik': 2,'1165004570.58sdnaik': 3,'1165009873.53sdnaik': 4,'1165009856.72sdnaik': 5,'1167857698.16sdnaik': 6,'1172209955.25sdnaik': 7}
 areaType_Swamps = {'1169179552.88sdnaik': 0,'1161732578.06sdnaik': 1}
 areaType_Caves = {'1164952144.06sdnaik': 0,'1165001772.05sdnaik': 1,'1158121765.09sdnaik': 2,'1167862588.52sdnaik': 3,'1168057131.73sdnaik': 4,'1164929110.98sdnaik': 5,'1172208344.92sdnaik': 6,'1245949184.0akelts': 7,'1235605888.0akelts': 8,'1228348366.44akelts': 9,'1245948731.45akelts': 10,'1245948708.12akelts': 11,'1245946851.97akelts': 12,'1245946794.3akelts': 13}
@@ -41,7 +34,34 @@ screenShot_Weapon = 'models/gui/loadingScreen_35'
 screenShot_Cutlass = 'models/gui/loadingScreen_37'
 screenShot_EnterGame = 'models/gui/loadingScreen_enter'
 screenShot_ExitGame = 'models/gui/loadingScreen_exit'
-screenShots_Locations = {LocationIds.ANVIL_ISLAND: ['models/gui/loadingScreen_01'],LocationIds.ISLA_CANGREJOS: ['models/gui/loadingScreen_02', 'models/gui/loadingScreen_10'],LocationIds.CUBA_ISLAND: ['models/gui/loadingScreen_05'],LocationIds.CUTTHROAT_ISLAND: ['models/gui/loadingScreen_06'],LocationIds.DEL_FUEGO_ISLAND: ['models/gui/loadingScreen_07'],LocationIds.DRIFTWOOD_ISLAND: ['models/gui/loadingScreen_09'],LocationIds.ISLA_PERDIDA: ['models/gui/loadingScreen_11'],LocationIds.KINGSHEAD_ISLAND: ['models/gui/loadingScreen_14'],LocationIds.OUTCAST_ISLE: ['models/gui/loadingScreen_19'],LocationIds.PORT_ROYAL_ISLAND: ['models/gui/loadingScreen_16'],LocationIds.RUMRUNNER_ISLE: ['models/gui/loadingScreen_17'],LocationIds.ISLA_TORMENTA: ['models/gui/loadingScreen_15'],LocationIds.TORTUGA_ISLAND: ['models/gui/loadingScreen_20'],LocationIds.ANVIL_CAVE_BARBOSA: ['models/gui/loadingScreen_22'],LocationIds.ISLA_AVARICIA: ['models/gui/loadingScreen_24'],LocationIds.ISLA_DE_PORC: ['models/gui/loadingScreen_25'],LocationIds.PORT_ROYAL_CAVE_A: ['models/gui/loadingScreen_32'],LocationIds.PORT_ROYAL_CAVE_B: ['models/gui/loadingScreen_30'],LocationIds.TORTUGA_CAVE: ['models/gui/loadingScreen_31'],LocationIds.DEL_FUEGO_CAVE_C: ['models/gui/loadingScreen_29'],LocationIds.DEL_FUEGO_CAVE_D: ['models/gui/loadingScreen_26'],LocationIds.DEL_FUEGO_CAVE_E: ['models/gui/loadingScreen_27'],LocationIds.TORMENTA_CAVE_B: ['models/gui/loadingScreen_28']}
+screenShots_Locations = {
+    LocationIds.ANVIL_ISLAND: ['models/gui/loadingScreen_01'],
+    LocationIds.ISLA_CANGREJOS: ['models/gui/loadingScreen_02', 'models/gui/loadingScreen_10'],
+    LocationIds.CUBA_ISLAND: ['models/gui/loadingScreen_05'],
+    LocationIds.CUTTHROAT_ISLAND: ['models/gui/loadingScreen_06'],
+    LocationIds.DEL_FUEGO_ISLAND: ['models/gui/loadingScreen_07'],
+    LocationIds.DRIFTWOOD_ISLAND: ['models/gui/loadingScreen_09'],
+    LocationIds.ISLA_PERDIDA: ['models/gui/loadingScreen_11'],
+    LocationIds.KINGSHEAD_ISLAND: ['models/gui/loadingScreen_14'],
+    LocationIds.OUTCAST_ISLE: ['models/gui/loadingScreen_19'],
+    LocationIds.PORT_ROYAL_ISLAND: ['models/gui/loadingScreen_16'],
+    LocationIds.RUMRUNNER_ISLE: ['models/gui/loadingScreen_17'],
+    LocationIds.ISLA_TORMENTA: ['models/gui/loadingScreen_15'],
+    LocationIds.TORTUGA_ISLAND: ['models/gui/loadingScreen_20'],
+    LocationIds.ANVIL_CAVE_BARBOSA: ['models/gui/loadingScreen_22'],
+    LocationIds.ISLA_AVARICIA: ['models/gui/loadingScreen_24'],
+    LocationIds.ISLA_DE_PORC: ['models/gui/loadingScreen_25'],
+    LocationIds.PORT_ROYAL_CAVE_A: ['models/gui/loadingScreen_32'],
+    LocationIds.PORT_ROYAL_CAVE_B: ['models/gui/loadingScreen_30'],
+    LocationIds.TORTUGA_CAVE: ['models/gui/loadingScreen_31'],
+    LocationIds.DEL_FUEGO_CAVE_C: ['models/gui/loadingScreen_29'],
+    LocationIds.DEL_FUEGO_CAVE_D: ['models/gui/loadingScreen_26'],
+    LocationIds.DEL_FUEGO_CAVE_E: ['models/gui/loadingScreen_27'],
+    LocationIds.TORMENTA_CAVE_B: ['models/gui/loadingScreen_28'],
+    LocationIds.NASSAU_ISLAND: ['models/gui/loadingScreen_47'],
+    LocationIds.ANTIGUA_ISLAND: ['models/gui/loadingScreen_48'],
+    LocationIds.MADRE_DEL_FUEGO_ISLAND: ['models/gui/loacingScreen_49']
+}
 screenShots_WinterHolidayLocations = {LocationIds.DEL_FUEGO_ISLAND: ['models/gui/loadingScreen_38'],LocationIds.PORT_ROYAL_ISLAND: ['models/gui/loadingScreen_39'],LocationIds.TORTUGA_ISLAND: ['models/gui/loadingScreen_40']}
 screenShot_Potions = 'models/gui/loadingScreen_41'
 screenShot_BenchRepair = 'models/gui/loadingScreen_42'
@@ -229,13 +249,7 @@ class LoadingScreen(DirectObject.DirectObject):
             shell.reparentTo(timer, 2)
             title_bg.reparentTo(root)
             title_frame.reparentTo(root)
-            self.snapshotFrameBasic = DirectFrame(parent=aspect2dp, relief=DGG.FLAT, frameColor=(0.0,
-                                                                                                 0.0,
-                                                                                                 0.0,
-                                                                                                 1.0), frameSize=(-4.95,
-                                                                                                                  -2.5,
-                                                                                                                  -1.1,
-                                                                                                                  -2.6))
+            self.snapshotFrameBasic = DirectFrame(parent=aspect2dp, relief=DGG.FLAT, frameColor=(0.0, 0.0, 0.0, 1.0), frameSize=(-4.95, -2.5, -1.1, -2.6))
             self.snapshotFrameBasic.reparentTo(root)
             frame_little.reparentTo(root)
             self.title_art.append(title_bg)
@@ -253,13 +267,7 @@ class LoadingScreen(DirectObject.DirectObject):
             frame_little = self.model.find('**/frame_little')
             self.snapshot.reparentTo(root, 0)
             frame_little.reparentTo(root, 1)
-        self.snapshotFrame = DirectFrame(parent=aspect2dp, relief=DGG.FLAT, frameColor=(0.0,
-                                                                                        0.0,
-                                                                                        0.0,
-                                                                                        1.0), frameSize=(-2.0,
-                                                                                                         2.0,
-                                                                                                         2.0,
-                                                                                                         -2.0))
+        self.snapshotFrame = DirectFrame(parent=aspect2dp, relief=DGG.FLAT, frameColor=(0.0, 0.0, 0.0, 1.0), frameSize=(-2.0, 2.0, 2.0, -2.0))
         self.snapshotFrame.setBin('fixed', 0)
         self.model.reparentTo(aspect2dp, DGG.NO_FADE_SORT_INDEX)
         self.locationLabel.reparentTo(aspect2dp, DGG.NO_FADE_SORT_INDEX)
@@ -378,63 +386,59 @@ class LoadingScreen(DirectObject.DirectObject):
             return
         if pickapirate:
             screenshot = screenShot_EnterGame
+        elif exit:
+            screenshot = screenShot_ExitGame
+        elif ocean:
+            screenshot = screenShot_Dinghy
+        elif jail:
+            screenshot = screenShot_Jail
+        elif potionCrafting:
+            screenshot = screenShot_Potions
+        elif benchRepair:
+            screenshot = screenShot_BenchRepair
+        elif shipRepair:
+            screenshot = screenShot_ShipRepair
+        elif cannonDefense:
+            screenshot = screenShot_CannonDefense
+        elif base.localAvatar.style.getTutorial() < PiratesGlobals.TUT_GOT_CUTLASS:
+            screenshot = screenShot_Weapon
+        elif base.localAvatar.style.getTutorial() < PiratesGlobals.TUT_MET_JOLLY_ROGER:
+            screenshot = screenShot_Cutlass
+        elif base.cr.newsManager:
+            if base.cr.newsManager.getHoliday(21):
+                screenshot = screenShots_WinterHolidayLocations.get(targetId)
+                if not screenshot:
+                    screenshot = screenShots_Locations.get(targetId)
         else:
-            if exit:
-                screenshot = screenShot_ExitGame
-            else:
-                if ocean:
-                    screenshot = screenShot_Dinghy
-                elif jail:
-                    screenshot = screenShot_Jail
-                elif potionCrafting:
-                    screenshot = screenShot_Potions
-                elif benchRepair:
-                    screenshot = screenShot_BenchRepair
-                else:
-                    if shipRepair:
-                        screenshot = screenShot_ShipRepair
-                    elif cannonDefense:
-                        screenshot = screenShot_CannonDefense
-                    elif base.localAvatar.style.getTutorial() < PiratesGlobals.TUT_GOT_CUTLASS:
-                        screenshot = screenShot_Weapon
-                    elif base.localAvatar.style.getTutorial() < PiratesGlobals.TUT_MET_JOLLY_ROGER:
-                        screenshot = screenShot_Cutlass
-                    elif base.cr.newsManager:
-                        if base.cr.newsManager.getHoliday(21):
-                            screenshot = screenShots_WinterHolidayLocations.get(targetId)
-                            if not screenshot:
-                                screenshot = screenShots_Locations.get(targetId)
-                        else:
-                            screenshot = screenShots_Locations.get(targetId)
-                        if screenshot or areaType_Jungles.has_key(targetId):
-                            screenshot = random.choice(screenShots_Jungles)
-                        elif areaType_Swamps.has_key(targetId):
-                            screenshot = random.choice(screenShots_Swamps)
-                        elif areaType_Caves.has_key(targetId):
-                            screenshot = random.choice(screenShots_Caves)
-                        else:
-                            island = getParentIsland(targetId)
-                            screenshot = screenShots_Locations.get(island, [random.choice(screenShots)])[0]
-                    elif len(screenshot) > 1:
-                        screenshot = random.choice(screenshot)
-                    else:
-                        screenshot = screenshot[0]
-                    self.__setLoadingArt(screenshot)
-                    if pickapirate:
-                        targetName = PLocalizer.LoadingScreen_PickAPirate
-                    if exit:
-                        targetName = None
-                    if ocean:
-                        targetName = PLocalizer.LoadingScreen_Ocean
-                    if jail:
-                        targetName = PLocalizer.LoadingScreen_Jail
-                    targetName = PLocalizer.LocationNames.get(targetId)
-                base.setLocationCode('Loading: %s' % targetName)
-                if targetName is None:
-                    return
-            if len(targetName):
-                self.__setLocationText(targetName)
-        return
+            screenshot = screenShots_Locations.get(targetId)
+
+        if screenshot or areaType_Jungles.has_key(targetId):
+            screenshot = random.choice(screenShots_Jungles)
+        elif areaType_Swamps.has_key(targetId):
+            screenshot = random.choice(screenShots_Swamps)
+        elif areaType_Caves.has_key(targetId):
+            screenshot = random.choice(screenShots_Caves)
+        else:
+            island = getParentIsland(targetId)
+            screenshot = screenShots_Locations.get(island, [random.choice(screenShots)])[0]
+        if len(screenshot) > 1 and not isinstance(screenshot, str):
+            screenshot = random.choice(screenshot)
+        self.__setLoadingArt(screenshot)
+        if pickapirate:
+            targetName = PLocalizer.LoadingScreen_PickAPirate
+        elif exit:
+            targetName = None
+        elif ocean:
+            targetName = PLocalizer.LoadingScreen_Ocean
+        elif jail:
+            targetName = PLocalizer.LoadingScreen_Jail
+        else:
+            targetName = PLocalizer.LocationNames.get(targetId)
+        base.setLocationCode('Loading: %s' % targetName)
+        if targetName is None:
+            return
+        if len(targetName):
+            self.__setLocationText(targetName)
 
     def __setLoadingArt(self, screenshot):
         if self.snapshot:

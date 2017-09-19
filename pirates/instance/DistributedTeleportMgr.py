@@ -543,23 +543,32 @@ class DistributedTeleportMgr(DistributedObject.DistributedObject):
         self.teleportAddInterestComplete(area)
 
     def teleportAddInterestComplete(self, area):
+        spawnPos = (0, 0, 90, 0, 0, 0)
+        if base.cr.activeWorld:
+            spawnPos = base.cr.activeWorld.getPlayerSpawnPt(area.doId)
+
         localAvatar.reparentTo(area)
-        localAvatar.setPosHpr(area, 0, 0, 0, 0, 0, 0)
+        localAvatar.setPosHpr(area, *spawnPos)
         localAvatar.spawnWiggle()
         localAvatar.enableGridInterest()
         localAvatar.b_setGameState('LandRoam')
 
-        #try:
-        #    localAvatar.sendCurrentPosition()
-        #except ValueError:
-        #    localAvatar.reverseLs()
-        #    self.notify.error('avatar placed at bad position %s in area %s (%s) at spawnPt %s' % (str(localAvatar.getPos()), area, area.uniqueId, str(self.spawnPt)))
+        try:
+            localAvatar.sendCurrentPosition()
+        except ValueError:
+            localAvatar.reverseLs()
+            self.notify.error('avatar placed at bad position %s in area %s (%s) at spawnPt %s' % (str(localAvatar.getPos()), area, area.uniqueId, str(self.spawnPt)))
 
         self.sendUpdate('teleportComplete', [])
 
     def teleportCleanup(self):
-        self.cr.loadingScreen.hide()
-        base.transitions.fadeIn()
+
+        def cleanup():
+            self.cr.loadingScreen.hide()
+            base.transitions.fadeIn()
+
+        self.cr.queueAllInterestsCompleteEvent()
+        self.cr.setAllInterestsCompleteCallback(cleanup)
 
     def notifyFriendVisit(self, avId):
         av = base.cr.identifyAvatar(avId)

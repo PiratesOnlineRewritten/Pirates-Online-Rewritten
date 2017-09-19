@@ -673,7 +673,6 @@ class DeleteAvatarFSM(GetAvatarsFSM):
             self.demand('Kill', 'Database failed to mark the avatar as deleted!')
             return
 
-        self.csm.air.friendsManager.clearList(self.avId)
         self.csm.air.writeServerEvent('avatarDeleted', self.avId, self.target)
         self.demand('QueryAvatars')
 
@@ -927,6 +926,9 @@ class LoadAvatarFSM(AvatarOperationFSM):
         datagram.addChannel(self.target<<32 | self.avId)
         self.csm.air.send(datagram)
 
+        # setup the avatar's inventory.
+        self.csm.air.inventoryManager.initiateInventory(self.avId)
+
         # Eliminate race conditions.
         taskMgr.doMethodLater(0.2, self.enterSetAvatarTask,
                               'avatarTask-%s' % self.avId, extraArgs=[channel],
@@ -943,9 +945,6 @@ class UnloadAvatarFSM(OperationFSM):
 
     def enterUnloadAvatar(self):
         channel = self.csm.GetAccountConnectionChannel(self.target)
-
-        # Tell TTIFriendsManager somebody is logging off:
-        self.csm.air.friendsManager.toonOffline(self.avId)
 
         # Clear off POSTREMOVE:
         datagram = PyDatagram()

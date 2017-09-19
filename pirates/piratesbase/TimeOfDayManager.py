@@ -1023,7 +1023,8 @@ class TimeOfDayManager(FSM.FSM, TimeOfDayManagerBase.TimeOfDayManagerBase):
                 return entry[1]
 
     def getSubTimeList(self, cycleType, env):
-        print 'getSubTimeList'
+        if self.notify.getDebug():
+            print 'getSubTimeList'
         cycleSpeed = self.cycleSpeed
         if cycleSpeed <= 0:
             cycleSpeed = 1
@@ -1042,7 +1043,8 @@ class TimeOfDayManager(FSM.FSM, TimeOfDayManagerBase.TimeOfDayManagerBase):
         subCycleTimeStart = None
         subCycleTimeTransEnd = None
         sub = self.envSubstitutionDict.get(env)
-        print ' sub was %s for %s' % (sub, env)
+        if self.notify.getDebug():
+            print ' sub was %s for %s' % (sub, env)
         gameTimeToSeconds = currentGameTime * REALSECONDS_PER_GAMEHOUR
         cycleStartFrameTime = currentFrameTime - gameTimeToSeconds
         cycleEndFrameTime = currentFrameTime + \
@@ -1055,9 +1057,11 @@ class TimeOfDayManager(FSM.FSM, TimeOfDayManagerBase.TimeOfDayManagerBase):
         if sub:
             netTime = sub[3]
             timeStamp = globalClockDelta.networkToLocalTime(netTime, bits=32)
-            print 'Sub TimeStamp %s current Time %s' % (timeStamp, currentFrameTime)
+            if self.notify.getDebug():
+                print 'Sub TimeStamp %s current Time %s' % (timeStamp, currentFrameTime)
             if timeStamp > fieldStartFrameTime and timeStamp < fieldEndFrameTime:
-                print ' sub found in current cycle'
+                if self.notify.getDebug():
+                    print ' sub found in current cycle'
                 start = timeStamp - cycleStartFrameTime
                 subCycleTimeStart = float(start) / REALSECONDS_PER_GAMEHOUR
                 subCycleTimeTransEnd = subCycleTimeStart + sub[3]

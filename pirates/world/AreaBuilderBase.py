@@ -162,31 +162,30 @@ class AreaBuilderBase(DirectObject.DirectObject):
                 ival.loop()
                 ivals.append(ival)
                 propAv.swordIvals = ivals
+            elif anim == 'Track 2':
+                ivals = []
+                ival = Sequence(ActorInterval(propAv, 'sword_slash'), ActorInterval(propAv, 'sword_thrust', duration=1), ActorInterval(propAv, 'sword_idle'), ActorInterval(propAv, 'boxing_kick'), ActorInterval(propAv, 'sword_idle'))
+                ival.loop()
+                ivals.append(ival)
+                propAv.swordIvals = ivals
             else:
-                if anim == 'Track 2':
-                    ivals = []
-                    ival = Sequence(ActorInterval(propAv, 'sword_slash'), ActorInterval(propAv, 'sword_thrust', duration=1), ActorInterval(propAv, 'sword_idle'), ActorInterval(propAv, 'boxing_kick'), ActorInterval(propAv, 'sword_idle'))
-                    ival.loop()
-                    ivals.append(ival)
-                    propAv.swordIvals = ivals
-                else:
-                    allAnims = CustomAnims.INTERACT_ANIMS.get(anim)
-                    if allAnims:
-                        allIdles = allAnims.get('idles')
-                        allProps = allAnims.get('props')
-                        currChoice = random.choice(allIdles)
-                        anim = currChoice
-                        createDefSword = False
-                        if allProps:
-                            propInfo = random.choice(allProps)
-                            if type(propInfo) == types.ListType:
-                                propInfo = propInfo[0]
-                            prop = loader.loadModel(propInfo)
-                            prop.reparentTo(propAv.rightHandNode)
-                    propAv.loop(anim)
-                if createDefSword:
-                    s = Sword.Sword(10103)
-                    s.attachTo(propAv)
+                allAnims = CustomAnims.INTERACT_ANIMS.get(anim)
+                if allAnims:
+                    allIdles = allAnims.get('idles')
+                    allProps = allAnims.get('props')
+                    currChoice = random.choice(allIdles)
+                    anim = currChoice
+                    createDefSword = False
+                    if allProps:
+                        propInfo = random.choice(allProps)
+                        if type(propInfo) == types.ListType:
+                            propInfo = propInfo[0]
+                        prop = loader.loadModel(propInfo)
+                        prop.reparentTo(propAv.rightHandNode)
+                propAv.loop(anim)
+            if createDefSword:
+                s = Sword.Sword(10103)
+                s.attachTo(propAv)
             return Task.done
 
         propAv = None
@@ -195,58 +194,57 @@ class AreaBuilderBase(DirectObject.DirectObject):
             propAv = Skeleton.Skeleton()
             propAv.setAvatarType()
             propAv.setName('Extra')
+        elif objType == 'Animated Avatar - Navy':
+            propAv = NavySailor.NavySailor()
+            dna = HumanDNA()
+            self.makeNPCNavy(dna)
+            propAv.setDNAString(dna)
+            propAv.generateHuman(propAv.style.gender, base.cr.human)
+            propAv.setName('Extra')
+        elif objType == 'Animated Avatar - Townfolk':
+            propAv = Townfolk.Townfolk()
+            dna = HumanDNA()
+            dna.makeNPCPirate()
+            dna.gender = object['Visual']['Gender']
+            dna.body.shape = object['Visual']['Shape']
+            dna.head.hair.hair = object['Visual']['Hair']
+            dna.head.hair.beard = object['Visual']['Beard']
+            dna.head.hair.mustache = object['Visual']['Mustache']
+            dna.head.hair.color = object['Visual']['HairColor']
+            dna.body.color = object['Visual']['Skin']
+            dna.clothes.coat = object['Visual']['Coat']
+            dna.clothes.coatColor = object['Visual']['CoatColor']
+            dna.clothes.shirt = object['Visual']['Shirt']
+            dna.clothes.shirtColor = object['Visual']['ShirtColor']
+            dna.clothes.pant = object['Visual']['Pants']
+            dna.clothes.pantColor = object['Visual']['PantsColor']
+            dna.clothes.sock = object['Visual']['Sock']
+            dna.clothes.shoe = object['Visual']['Shoe']
+            dna.clothes.belt = object['Visual']['Belt']
+            dna.clothes.beltColor = object['Visual']['BeltColor']
+            dna.head.hat = object['Visual']['Hat']
+            propAv.setDNAString(dna)
+            propAv.generateHuman(propAv.style.gender, base.cr.human)
+            propAv.setName('Extra')
         else:
-            if objType == 'Animated Avatar - Navy':
-                propAv = NavySailor.NavySailor()
-                dna = HumanDNA()
-                self.makeNPCNavy(dna)
-                propAv.setDNAString(dna)
-                propAv.generateHuman(propAv.style.gender, base.cr.human)
-                propAv.setName('Extra')
-            elif objType == 'Animated Avatar - Townfolk':
-                propAv = Townfolk.Townfolk()
-                dna = HumanDNA()
-                dna.makeNPCPirate()
-                dna.gender = object['Visual']['Gender']
-                dna.body.shape = object['Visual']['Shape']
-                dna.head.hair.hair = object['Visual']['Hair']
-                dna.head.hair.beard = object['Visual']['Beard']
-                dna.head.hair.mustache = object['Visual']['Mustache']
-                dna.head.hair.color = object['Visual']['HairColor']
-                dna.body.color = object['Visual']['Skin']
-                dna.clothes.coat = object['Visual']['Coat']
-                dna.clothes.coatColor = object['Visual']['CoatColor']
-                dna.clothes.shirt = object['Visual']['Shirt']
-                dna.clothes.shirtColor = object['Visual']['ShirtColor']
-                dna.clothes.pant = object['Visual']['Pants']
-                dna.clothes.pantColor = object['Visual']['PantsColor']
-                dna.clothes.sock = object['Visual']['Sock']
-                dna.clothes.shoe = object['Visual']['Shoe']
-                dna.clothes.belt = object['Visual']['Belt']
-                dna.clothes.beltColor = object['Visual']['BeltColor']
-                dna.head.hat = object['Visual']['Hat']
-                propAv.setDNAString(dna)
-                propAv.generateHuman(propAv.style.gender, base.cr.human)
-                propAv.setName('Extra')
-            else:
-                propAv = Townfolk.Townfolk()
-                subCat = object.get('SubCategory')
-                if subCat:
-                    propAv.loadCast(subCat)
-                    propAv.loop('idle')
-                    __builtins__['propAv'] = propAv
-                createDefaultProp = False
-                if object.has_key('Effect Type') and object['Effect Type'] != None and ObjectEffects.OBJECT_EFFECTS.has_key(object['Effect Type']):
-                    ObjectEffects.OBJECT_EFFECTS[object['Effect Type']](propAv)
-            if propAv:
-                propAv.swordIvals = []
-                propAv.moveIvals = []
-                propAv.reparentTo(root)
-                playPropAvAnim(None, propAv, object, createDefaultProp)
-                if object.has_key('Visual') and object['Visual'].has_key('Color'):
-                    propAv.setColorScale(*object['Visual']['Color'])
-                if object['Animation Track'] == 'walk' or object['Animation Track'] == 'run':
-                    self.createPropAvatarMovement(uid, propAv, object['Animation Track'])
+            propAv = Townfolk.Townfolk()
+            subCat = object.get('SubCategory')
+            if subCat:
+                propAv.loadCast(subCat)
+                propAv.loop('idle')
+                __builtins__['propAv'] = propAv
+            createDefaultProp = False
+            if object.has_key('Effect Type') and object['Effect Type'] != None and ObjectEffects.OBJECT_EFFECTS.has_key(object['Effect Type']):
+                ObjectEffects.OBJECT_EFFECTS[object['Effect Type']](propAv)
+        if propAv:
+            propAv.swordIvals = []
+            propAv.moveIvals = []
+            propAv.reparentTo(root)
+            playPropAvAnim(None, propAv, object, createDefaultProp)
+            if object.has_key('Visual') and object['Visual'].has_key('Color'):
+                propAv.setColorScale(*object['Visual']['Color'])
+            if object['Animation Track'] == 'walk' or object['Animation Track'] == 'run':
+                self.createPropAvatarMovement(uid, propAv, object['Animation Track'])
         self.propAvs.append(propAv)
         return propAv
 

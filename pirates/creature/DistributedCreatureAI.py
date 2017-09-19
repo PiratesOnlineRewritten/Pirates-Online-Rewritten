@@ -1,8 +1,11 @@
-from direct.distributed.DistributedObjectAI import DistributedObjectAI
 from direct.directnotify import DirectNotifyGlobal
+from pirates.battle.DistributedBattleNPCAI import *
+from pirates.pirate import AvatarTypes
 
-class DistributedCreatureAI(DistributedObjectAI):
+class DistributedCreatureAI(DistributedBattleNPCAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedCreatureAI')
+    avatarType = AvatarTypes.Creature
 
     def __init__(self, air):
-        DistributedObjectAI.__init__(self, air)
+        DistributedBattleNPCAI.__init__(self, air)
+

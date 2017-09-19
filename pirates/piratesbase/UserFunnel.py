@@ -1,744 +1,319 @@
-import os
+import requests
+import json
+import hmac
+import base64
+import hashlib
 import sys
-import socket
-import random
 import time
-from urllib import quote_plus
-from pandac.PandaModules import HTTPClient
-from pandac.PandaModules import HTTPCookie
-from pandac.PandaModules import URLSpec
-from pandac.PandaModules import Ramfile
-from pandac.PandaModules import Ostream
-from pandac.PandaModules import HTTPDate
-from pandac.PandaModules import DocumentSpec
-from direct.task.Task import Task
+from datetime import datetime
+import calendar
+import uuid
+import gzip
+import platform
+from StringIO import StringIO
+from panda3d.core import PandaSystem
 from direct.directnotify.DirectNotifyGlobal import directNotify
-notify = directNotify.newCategory('UserFunnel')
+from direct.task import Task
 
-class UserFunnel():
+class UserFunnel:
+    notify = directNotify.newCategory('UserFunnel')
 
     def __init__(self):
-        self.hitboxAcct = 'DM560804E8WD'
-        self.omniAccount = 'wdgdolpironl,wdgdsec'
-        self.language = 'en-us'
-        self.cgRoot = 'Pirates_Online'
-        self.cgBeta = 'Beta'
-        self.cgRelease = 'Release'
-        self.cgLocation = 'US'
-        self.ogBeta = 'pir_onl_beta'
-        self.ogRelease = 'pir_onl'
-        self.ogLocation = 'us'
-        self.campaignID = ''
-        self.cfCookieFile = 'cf.txt'
-        self.cfCookieFileOmniture = 'cf2.txt'
-        self.dynamicVRFunnel = 'http://download.pirates.com/'
-        self.hostDict = {0: 'Internal Disney PHP Collector Site',1: 'ehg-dig.hitbox.com/HG?',2: 'ehg-dig.hitbox.com/HG?',3: 'w88.go.com/b/ss/'}
-        self.CurrentHost = ''
-        self.URLtoSend = ''
-        self.gameName = 'Pirates'
-        self.browserName = 'Panda3D%20(' + self.gameName + ';%20' + sys.platform + ')'
-        self.HTTPUserHeader = [
-         ('User-agent', 'Panda3D')]
-        self.osMajorver = ''
-        self.osMinorver = ''
-        self.osRevver = ''
-        self.osBuild = ''
-        self.osType = ''
-        self.osComments = ''
-        self.msWinTypeDict = {0: 'Win32s on Windows 3.1',1: 'Windows 95/98/ME',2: 'Windows NT/2000/XP',3: 'Windows CE'}
-        self.milestoneDict = {0: 'New User',1: 'Create Account',2: 'View EULA',3: 'Accept EULA',4: 'Download Start',5: 'Download End',6: 'Installer Run',7: 'Launcher Start',8: 'Launcher Login',9: 'Client Opens',10: 'Create Pirate Loads',11: 'Create Pirate Exit',12: 'Cutscene One Start',13: 'Cutscene One Ends',14: 'Cutscene Two Start',15: 'Cutscene Thee Start',16: 'Cutscene Three Ends',17: 'Access Cannon',18: 'Cutscene Four Starts',19: 'Cutscene Four Ends',20: 'Dock - Start Game'}
-        self.macTypeDict = {2: 'Jaguar',1: 'Puma',3: 'Panther',4: 'Tiger',5: 'Lepard'}
-        self.milestone = ''
-        self.pandaHTTPClientVarWSS = []
-        self.pandaHTTPClientVarCTG = []
-        self.pandaHTTPClientVarDM = []
-        self.pandaHTTPClientVarSVI = []
-        self.checkForCFfile()
-        self.httpSession = HTTPClient()
-        self.whatOSver()
+        self.platform = self.__get_platform()
+        self.os_version = self.__get_os_version()
+        self.manufacturer = self.__getManufacturer()
+        self.sdk_version = 'rest api v2'
+        self.build_version = config.GetString('server-version', 'pirates-dev')
+        self.engine_version = 'Panda3D %s' % PandaSystem.getVersionString()
+        self.game_key = config.GetString('analytics-game-key', '')
+        self.secret_key = config.GetString('analytics-secret-key', '')
+        self.use_gzip = config.GetBool('analytics-gzip', True)
+        self.client_ts_offset = 0
+        self.session_id = None
+        self.url_init = 'http://api.gameanalytics.com/v2/' + self.game_key + '/init'
+        self.url_events = 'http://api.gameanalytics.com/v2/' + self.game_key + '/events'
+        if config.GetBool('want-analytics-sandbox', False):
+            self.notify.warning('Running in Sandbox')
+            self.url_init = 'http://sandbox-api.gameanalytics.com/v2/' + self.game_key + '/init'
+            self.url_events = 'http://sandbox-api.gameanalytics.com/v2/' + self.game_key + '/events'
+        self.event_queue = []
+        self.session_start_time = None
+        self.ready = False
+        if config.GetBool('want-analytics', False):
+            self.__initialize()
 
-    def checkForCFfile(self):
-        if firstRun() == True:
-            pass
-        elif os.path.isfile(self.cfCookieFile) == False:
-            firstRun('write', True)
+    def __get_platform(self):
+        return 'windows' #TODO
 
-    def whatOSver(self):
-        if sys.platform == 'win32':
-            self.osMajorver = str(sys.getwindowsversion()[0])
-            self.osMinorver = str(sys.getwindowsversion()[1])
-            self.osBuild = str(sys.getwindowsversion()[2])
-            self.osType = str(sys.getwindowsversion()[3])
-            self.osComments = str(sys.getwindowsversion()[4])
-        elif sys.platform == 'darwin':
-            self.osMajorver = '10'
-            osxcmd = '/usr/sbin/system_profiler SPSoftwareDataType |/usr/bin/grep "System Version"'
-            infopipe = os.popen(osxcmd, 'r')
-            parseLine = infopipe.read()
-            infopipe.close()
-            del infopipe
-            versionStringStart = parseLine.find('10.')
-            try:
-                self.osMinorver = parseLine[versionStringStart + 3]
-                self.osRevver = parseLine[versionStringStart + 5:versionStringStart + 7].strip(' ')
-                self.osBuild = parseLine[int(parseLine.find('(')) + 1:parseLine.find(')')]
-            except:
-                self.osMinorver = '0'
-                self.osRevver = '0'
-                self.osBuild = '0000'
+    def __get_os_version(self):
+        return 'windows 10' #TODO
 
-            del versionStringStart
-            del parseLine
-            del osxcmd
-        elif sys.platform == 'linux2':
-            self.osMinorver = '0'
-            self.osRevver = '0'
-            self.osBuild = '0000'
+    def __getManufacturer(self):
+        return 'microsoft' #TODO
 
-    def setmilestone(self, ms):
-        if firstRun() == False:
-            self.milestone = ms
+    def __request_init(self):
+        init_payload = {
+            'platform': self.platform,
+            'os_version': self.os_version,
+            'sdk_version': self.sdk_version
+        }
+
+        init_payload_json = json.dumps(init_payload)
+
+        headers = {
+            'Authorization': self.__hmac_hash_with_secret(init_payload_json, self.secret_key),
+            'Content-Type': 'application/json'
+        }
+
+        response_dict = None
+        status_code = None
+
+        try:
+            init_response = requests.post(self.url_init, data=init_payload_json, headers=headers)
+        except:
+            self.notify.warning('Failed to initialize UserFunnel')
+            return (None, 0)
+
+        status_code = init_response.status_code
+
+        try:
+            response_dict = init_response.json()
+        except:
+            response_dict = None
+
+        if not isinstance(status_code, (long, int)) and self.GetBool('want-dev', __dev__):
+            print "---- Submit Init ERROR ----"
+            print "URL: " + str(url_init)
+            print "Payload JSON: " + str(init_payload_json)
+            print "Headers: " + str(headers)          
+
+        response_string = ('' if status_code is None else 'Returned: ' + str(status_code) + ' response code.')
+
+        if status_code == 401:
+            self.notify.warning('Failed to submit events; UNAUTHORIZED')
+            self.notify.debug('Response: %s' % init_response.text)
+            self.notify.debug('Verify your authorization code and game key')
+            return (None, None)
+
+        if status_code != 200:
+            self.notify.warning('Failed to initialize; %s' % status_code)
+            if self.GetBool('want-dev', __dev__):
+                print response_string
+                if isinstance(response_dict, dict):
+                    print response_dict
+                elif isinstance(init_response.text, basestring):
+                    print 'Response contents: %s' % init_response.text
+            return (None, None)
+
+        if 'server_ts' not in response_dict or not isinstance(response_dict['server_ts'], (int, long)):
+            self.notify.warning('Init failed; Did not return proper ts')
+            return (None, None)
+
+        self.ready = True
+        if 'enabled' in response_dict and response_dict['enabled'] is False:
+            self.ready = False
+
+        return (response_dict, status_code)
+
+    def __generate_new_session_id(self):
+        self.session_id = str(uuid.uuid1())
+        self.notify.debug('Session Id: %s' % self.session_id)
+
+    def __update_client_ts_offset(self, server_ts):
+        now_ts = datetime.utcnow()
+        client_ts = calendar.timegm(now_ts.timetuple())
+        offset = client_ts - server_ts
+
+        # if too small difference then ignore
+        if offset < 10:
+            self.client_ts_offset = 0
         else:
-            self.milestone = '%s_INITIAL' % ms
+            self.client_ts_offset = offset  
+        self.notify.debug('Client TS offset calculated to: %s' % str(offset))      
 
-    def setgamename(self, gamename):
-        self.gameName = gamename
+    def __initialize(self):
+        init_response, init_response_code = self.__request_init()
 
-    def printosComments(self):
-        return self.osComments
-
-    def setHost(self, hostID):
-        self.CurrentHost = hostID
-
-    def getFunnelURL(self):
-        if patcherVer() == ['OFFLINE']:
+        if init_response is None:
             return
-        if patcherVer() == []:
-            patcherHTTP = HTTPClient()
-            if checkParamFile() == None:
-                patcherDoc = patcherHTTP.getDocument(URLSpec('http://download.piratesonline.com/english/currentVersion/content/patcher.ver'))
-                vconGroup('w', self.cgRelease)
-                oconGroup('w', self.ogRelease)
-            else:
-                patcherDoc = patcherHTTP.getDocument(URLSpec(checkParamFile()))
-                vconGroup('w', self.cgBeta)
-                oconGroup('w', self.ogBeta)
-            rf = Ramfile()
-            patcherDoc.downloadToRam(rf)
-            self.patcherURL = rf.getData()
-            if self.patcherURL.find('FUNNEL_LOG') == -1:
-                patcherVer('w', 'OFFLINE')
-                return
-            self.patcherURL = self.patcherURL.split('\n')
-            del rf
-            del patcherDoc
-            del patcherHTTP
-            while self.patcherURL:
-                self.confLine = self.patcherURL.pop()
-                if self.confLine.find('FUNNEL_LOG=') != -1 and self.confLine.find('#FUNNEL_LOG=') == -1:
-                    self.dynamicVRFunnel = self.confLine[11:].strip('\n')
-                    patcherVer('w', self.confLine[11:].strip('\n'))
 
+        self.__update_client_ts_offset(init_response['server_ts'])
+        self.notify.debug('Successfully initialized')
+
+        if self.ready is False:
+            self.notify.warning('UserFunnel is disabled.')
+            return
+
+        self.__generate_new_session_id()
+
+        self.__submitEvents()
+        self.submit_task = taskMgr.doMethodLater(5, self.__submitEvents, 'submit-events')
+
+    def __hmac_hash_with_secret(self, message, key):
+        return base64.b64encode(hmac.new(key, message, digestmod=hashlib.sha256).digest())
+
+    def __annotate_event_with_default_values(self, event_dict):
+        now_ts = datetime.utcnow()
+
+        client_ts = calendar.timegm(now_ts.timetuple()) - self.client_ts_offset
+
+        default_annotations = {
+            'v': 2,
+            'user_id': 'dev',
+            'custom_01': 'dev_server',
+            'client_ts': client_ts,
+            'sdk_version': self.sdk_version,
+            'os_version': self.os_version,
+            'manufacturer': self.manufacturer,
+            'device': 'Desktop',
+            'platform': self.platform,
+            'session_id': self.session_id,
+            'build': self.build_version,
+            'session_num': 1
+        }
+        event_dict.update(default_annotations)
+
+    def get_session_start_event(self):
+        event_dict = {
+            'category': 'user'
+        }
+        return event_dict
+
+    def start_session(self):
+        if not self.ready:
+            return
+        
+        self.add_to_event_queue(self.get_session_start_event())
+        self.session_start_time = time.time()
+        self.notify.debug('Starting session')
+
+    def get_session_end_event(self, length=0):
+        event_dict = {
+            'category': 'session_end',
+            'length': length
+        }
+        return event_dict
+
+    def end_session(self):
+        if not self.ready:
+            return
+
+        if self.session_start_time is None:
+            return
+
+        length = time.time() - self.session_start_time
+        self.add_to_event_queue(self.get_session_end_event(length))
+        self.notify.debug('Ending session; Length: %d' % length)
+
+    def add_to_event_queue(self, event_dict):
+        if not isinstance(event_dict, dict):
+            return
+
+        self.__annotate_event_with_default_values(event_dict)
+        self.event_queue.append(event_dict)
+
+    def __get_gzip_string(self, string_for_gzip):
+        zip_text_file = StringIO()
+        zipper = gzip.GzipFile(mode='wb', fileobj=zip_text_file)
+        zipper.write(string_for_gzip)
+        zipper.close()
+
+        enc_text = zip_text_file.getvalue()
+        return enc_text
+
+    def submit_events(self):
+        if not self.ready:
+            self.notify.debug('Funnel is not ready!')
+            return
+
+        if len(self.event_queue) == 0:
+            return
+
+        try:
+            event_list_json = json.dumps(self.event_queue)
+        except:
+            self.notify.warning('Event queue failed JSON encoding.')
+            return
+
+        self.event_queue = []
+
+        if event_list_json is None:
+            return
+
+        if self.use_gzip:
+            event_list_json = self.__get_gzip_string(event_list_json)
+
+        headers = {
+            'Authorization': self.__hmac_hash_with_secret(event_list_json, self.secret_key),
+            'Content-Type': 'application/json'
+        }
+
+        if self.use_gzip:
+            headers['Content-Encoding'] = 'gzip'
+
+        try:
+            events_response = requests.post(self.url_events, data=event_list_json, headers=headers)
+        except Exception as e:
+            self.notify.warning('Failed to submit events')
+            if config.GetBool('want-dev', __dev__):
+                self.notify.warning(e.reason)
+            return (None, None)
+
+        status_code = events_response.status_code
+        try:
+            response_dict = events_response.json()
+        except:
+            response_dict = None
+
+        self.notify.debug('Submit events response: %s' % str(response_dict))
+
+        if not isinstance(response_dict, dict):
+            self.notify.warning('Submit events succeeded, but JSON decode failed.')
+            self.notify.debug(events_response.text)
+            return (None, None)
+
+        if status_code == 401:
+            self.notify.warning('Failed to submit events; UNAUTHORIZED')
+            self.notify.debug('Response: %s' % init_response.text)
+            self.notify.debug('Verify your authorization code and game key')
+            return (None, None)
+
+        if status_code != 200:
+            self.notify.warning('Failed to submit events; %s' % status_code)
+            if self.GetBool('want-dev', __dev__):
+                print response_string
+                if isinstance(response_dict, dict):
+                    print response_dict
+                elif isinstance(init_response.text, basestring):
+                    print 'Response contents: %s' % init_response.text
+            return (None, None)
+
+        if status_code == 200:
+            self.notify.debug('Events submitted')
         else:
-            self.dynamicVRFunnel = patcherVer()[0]
-        return
+            self.notify.warning('Failed to submit events')
 
-    def isVarSet(self, varInQuestion):
-        try:
-            tempvar = type(varInQuestion)
-            return 1
-        except NameError:
-            return 0
+        return (response_dict, status_code)
 
-    def buildURL(self):
-        if sys.platform == 'win32':
-            hitboxOSType = 'c3'
-        else:
-            if sys.platform == 'darwin':
-                hitboxOSType = 'c4'
-            elif sys.platform == 'linux2':
-                hitboxOSType = 'c4'
-            if self.CurrentHost == 1:
-                self.URLtoSend = 'http://' + self.hostDict[self.CurrentHost] + 'hb=' + str(self.hitboxAcct) + '&n=' + str(self.milestone) + '&ln=' + self.language + '&gp=STARTGAME_DOCK&fnl=PIRATES_FUNNEL&vcon=/' + self.cgRoot + '/' + self.cgLocation + '/' + str(vconGroup()) + '&c1=' + str(sys.platform) + '&' + str(hitboxOSType) + '=' + str(self.osMajorver) + '_' + str(self.osMinorver) + '_' + str(self.osRevver) + '_' + str(self.osBuild)
-            if self.CurrentHost == 2:
-                self.URLtoSend = 'http://' + self.hostDict[self.CurrentHost] + 'hb=' + str(self.hitboxAcct) + '&n=' + str(self.milestone) + '&ln=' + self.language + '&vcon=/' + self.cgRoot + '/' + self.cgLocation + '/' + str(vconGroup()) + '&c1=' + str(sys.platform) + '&' + str(hitboxOSType) + '=' + str(self.osMajorver) + '_' + str(self.osMinorver) + '_' + str(self.osRevver) + '_' + str(self.osBuild)
-            if self.CurrentHost == 3:
-                self.URLtoSend = 'http://' + self.hostDict[self.CurrentHost] + self.omniAccount + '/1/H.15.1/' + self.cacheBuster() + '?[AQB]&ns=dol&pageName=dgame%3Apir_onl%3Ammog%3A' + str(self.milestone).lower() + '&c1=' + str(oconGroup()) + '&c14=dgame&h1=mmog&c11=pir&c4=in_game&c25=' + self.ogLocation + '&v25=' + self.ogLocation + '[AQE]'
-            if self.CurrentHost == 0:
-                localMAC = str(getMAC())
-                self.URLtoSend = str(self.dynamicVRFunnel) + '?funnel=' + str(self.milestone) + '&platform=' + str(sys.platform) + '&sysver=' + str(self.osMajorver) + '_' + str(self.osMinorver) + '_' + str(self.osRevver) + '_' + str(self.osBuild) + '&mac=' + localMAC + '&username=' + str(loggingSubID()) + '&id=' + str(loggingAvID())
+    def __submitEvents(self, task=None):
+        self.submit_events()
 
-    def readInPandaCookie(self):
-        thefile = open(self.cfCookieFile, 'r')
-        thedata = thefile.read().split('\n')
-        thefile.close()
-        del thefile
-        if thedata[0].find('Netscape HTTP Cookie File') != -1:
-            return
-        thedata.pop()
-        try:
-            while thedata:
-                temp = thedata.pop()
-                temp = temp.split('\t')
-                domain = temp[0]
-                loc = temp[1]
-                variable = temp[2]
-                value = temp[3]
-                if variable == 'CTG':
-                    self.pandaHTTPClientVarCTG = [
-                     domain, loc, variable, value]
-                    self.setTheHTTPCookie(self.pandaHTTPClientVarCTG)
-                if variable == self.hitboxAcct + 'V6':
-                    self.pandaHTTPClientVarDM = [
-                     domain, loc, variable, value]
-                    self.setTheHTTPCookie(self.pandaHTTPClientVarDM)
-                if variable == 'WSS_GW':
-                    self.pandaHTTPClientVarWSS = [
-                     domain, loc, variable, value]
-                    self.setTheHTTPCookie(self.pandaHTTPClientVarWSS)
+        return Task.again
 
-        except IndexError:
-            print 'UserFunnel(Warning): Cookie Data file bad'
+    def get_design_event(self, event_id, value):
+        event_dict = {
+            'category': 'design',
+            'event_id': event_id,
+        }
+        if isinstance(value, (int, long, float)):
+            event_dict['value'] = value
 
-        del thedata
-
-    def readInPandaCookieOmniture(self):
-        thefile = open(self.cfCookieFileOmniture, 'r')
-        thedata = thefile.read().split('\n')
-        thefile.close()
-        del thefile
-        if thedata[0].find('Netscape HTTP Cookie File') != -1:
-            return
-        thedata.pop()
-        try:
-            while thedata:
-                temp = thedata.pop()
-                temp = temp.split('\t')
-                domain = temp[0]
-                loc = temp[1]
-                variable = temp[2]
-                value = temp[3]
-                if variable == 's_vi':
-                    self.pandaHTTPClientVarSVI = [
-                     domain, loc, variable, value]
-                    self.setTheHTTPCookie(self.pandaHTTPClientVarSVI)
-
-        except IndexError:
-            print 'UserFunnel(Warning): Omniture Cookie Data file bad'
-
-        del thedata
-
-    def updateInstanceCookieValues(self):
-        a = self.httpSession.getCookie(HTTPCookie('WSS_GW', '/', '.hitbox.com'))
-        if a.getName():
-            self.pandaHTTPClientVarWSS = [
-             '.hitbox.com', '/', 'WSS_GW', a.getValue()]
-        b = self.httpSession.getCookie(HTTPCookie('CTG', '/', '.hitbox.com'))
-        if b.getName():
-            self.pandaHTTPClientVarCTG = [
-             '.hitbox.com', '/', 'CTG', b.getValue()]
-        c = self.httpSession.getCookie(HTTPCookie(self.hitboxAcct + 'V6', '/', '.ehg-dig.hitbox.com'))
-        if c.getName():
-            self.pandaHTTPClientVarDM = [
-             '.ehg-dig.hitbox.com', '/', self.hitboxAcct + 'V6', c.getValue()]
-        del a
-        del b
-        del c
-
-    def updateInstanceCookieValuesOmniture(self):
-        a = self.httpSession.getCookie(HTTPCookie('s_vi', '/', '.go.com'))
-        if a.getName():
-            self.pandaHTTPClientVarSVI = [
-             '.go.com', '/', 's_vi', a.getValue()]
-        del a
-
-    def setTheHTTPCookie(self, cookieParams):
-        c = HTTPCookie(cookieParams[2], cookieParams[1], cookieParams[0])
-        c.setValue(cookieParams[3])
-        self.httpSession.setCookie(c)
-
-    def writeOutPandaCookie(self):
-        try:
-            thefile = open(self.cfCookieFile, 'w')
-            if len(self.pandaHTTPClientVarWSS) == 4:
-                thefile.write(self.pandaHTTPClientVarWSS[0] + '\t' + self.pandaHTTPClientVarWSS[1] + '\t' + self.pandaHTTPClientVarWSS[2] + '\t' + self.pandaHTTPClientVarWSS[3] + '\n')
-            if len(self.pandaHTTPClientVarCTG) == 4:
-                thefile.write(self.pandaHTTPClientVarCTG[0] + '\t' + self.pandaHTTPClientVarCTG[1] + '\t' + self.pandaHTTPClientVarCTG[2] + '\t' + self.pandaHTTPClientVarCTG[3] + '\n')
-            if len(self.pandaHTTPClientVarDM) == 4:
-                thefile.write(self.pandaHTTPClientVarDM[0] + '\t' + self.pandaHTTPClientVarDM[1] + '\t' + self.pandaHTTPClientVarDM[2] + '\t' + self.pandaHTTPClientVarDM[3] + '\n')
-            thefile.close()
-        except IOError:
-            return
-
-    def writeOutPandaCookieOmniture(self):
-        try:
-            thefile = open(self.cfCookieFileOmniture, 'w')
-            if len(self.pandaHTTPClientVarSVI) == 4:
-                thefile.write(self.pandaHTTPClientVarSVI[0] + '\t' + self.pandaHTTPClientVarSVI[1] + '\t' + self.pandaHTTPClientVarSVI[2] + '\t' + self.pandaHTTPClientVarSVI[3] + '\n')
-            thefile.close()
-        except IOError:
-            return
-
-    def prerun(self):
-        self.getFunnelURL()
-        self.buildURL()
-        if os.path.isfile(self.cfCookieFile) == True:
-            if self.CurrentHost == 1 or self.CurrentHost == 2:
-                self.readInPandaCookie()
-        if os.path.isfile(self.cfCookieFileOmniture) == True and self.CurrentHost == 3:
-            self.readInPandaCookieOmniture()
-
-    def run(self):
-        if self.CurrentHost == 0 and patcherVer() == ['OFFLINE']:
-            return
-        self.nonBlock = self.httpSession.makeChannel(False)
-        self.nonBlock.beginGetDocument(DocumentSpec(self.URLtoSend))
-        instanceMarker = str(random.randint(1, 1000))
-        instanceMarker = 'FunnelLoggingRequest-%s' % instanceMarker
-        self.startCheckingAsyncRequest(instanceMarker)
-
-    def startCheckingAsyncRequest(self, name):
-        taskMgr.remove(name)
-        taskMgr.doMethodLater(0.5, self.pollFunnelTask, name)
-
-    def stopCheckingFunnelTask(self, name):
-        taskMgr.remove('pollFunnelTask')
-
-    def pollFunnelTask(self, task):
-        result = self.nonBlock.run()
-        if result == 0:
-            self.stopCheckingFunnelTask(task)
-            if self.CurrentHost == 1 or self.CurrentHost == 2:
-                self.updateInstanceCookieValues()
-                self.writeOutPandaCookie()
-            if self.CurrentHost == 3:
-                self.updateInstanceCookieValuesOmniture()
-                self.writeOutPandaCookieOmniture()
-        else:
-            return Task.again
-
-    def cacheBuster(self):
-        return str(time.time())
+        return event_dict        
 
 
 def logSubmit(setHostID, setMileStone):
-    if __dev__:
-        return
-    if setHostID == 1 or setHostID == 2:
-        setHostID = 3
-    trackItem = UserFunnel()
-    trackItem.setmilestone(quote_plus(setMileStone))
-    trackItem.setHost(setHostID)
-    trackItem.prerun()
-    trackItem.run()
-
-
-def getVRSFunnelURL():
-    a = UserFunnel()
-    a.getFunnelURL()
-
-
-class HitBoxCookie():
-
-    def __init__(self):
-        self.ieCookieDir = os.getenv('USERPROFILE') + '\\Cookies'
-        self.pythonCookieFile = 'cf.txt'
-        self.hitboxCookieFile = None
-        self.ehgdigCookieFile = None
-        self.ctg = None
-        self.wss_gw = None
-        self.dm560804E8WD = None
-        self.pythonCookieHeader = '    # Netscape HTTP Cookie File\n    # http://www.netscape.com/newsref/std/cookie_spec.html\n    # This is a generated file!  Do not edit.\n\n'
-        return
-
-    def returnIECookieDir(self):
-        return self.ieCookieDir
-
-    def findIECookieFiles(self):
-        try:
-            sdir = os.listdir(self.ieCookieDir)
-        except WindowsError:
-            print 'Dir does not exist, do nothing'
-            return
-
-        while sdir:
-            temp = sdir.pop()
-            if temp.find('@hitbox[') != -1:
-                self.hitboxCookieFile = temp
-            if temp.find('@ehg-dig.hitbox[') != -1:
-                self.ehgdigCookieFile = temp
-
-        if self.hitboxCookieFile != None and self.ehgdigCookieFile != None:
-            return 1
-        if self.hitboxCookieFile == None and self.ehgdigCookieFile == None:
-            return 0
-        else:
-            return -1
-        return
-
-    def openHitboxFile(self, filename, type='python'):
-        if type == 'ie':
-            fullfile = self.ieCookieDir + '\\' + filename
-        else:
-            fullfile = filename
-        cf = open(fullfile, 'r')
-        data = cf.read()
-        cf.close()
-        return data
-
-    def splitIECookie(self, filestream):
-        return filestream.split('*\n')
-
-    def sortIECookie(self, filestreamListElement):
-        return [
-         filestreamListElement.split('\n')[2], filestreamListElement.split('\n')[0], filestreamListElement.split('\n')[1]]
-
-    def sortPythonCookie(self, filestreamListElement):
-        return [
-         filestreamListElement.split('\t')[0], filestreamListElement.split('\t')[5], filestreamListElement.split('\t')[6]]
-
-    def writeIEHitBoxCookies(self):
-        if self.ctg == None or self.wss_gw == None or self.dm560804E8WD == None:
-            return
-        if sys.platform != 'win32':
-            return
-        self.findIECookieFiles()
-        iecData = self.openHitboxFile(self.ehgdigCookieFile, 'ie')
-        iecData = iecData.split('*\n')
-        x = 0
-        while x < len(iecData):
-            if iecData[x].find('DM560804E8WD') != -1:
-                iecData.pop(x)
-                print 'Removed it from the list'
-                break
-            x += 1
-
-        iecWrite = open(self.ieCookieDir + '\\' + self.ehgdigCookieFile, 'w')
-        while iecData:
-            iecBuffer = iecData.pop() + '*\n'
-            iecBuffer = iecBuffer.strip('/')
-            if iecBuffer[0] == '.':
-                iecBuffer = iecBuffer[1:]
-            iecWrite.write(iecBuffer)
-
-        tempDMBUFFER = self.dm560804E8WD[0]
-        if tempDMBUFFER[0].find('.') == 0:
-            tempDMBUFFER = tempDMBUFFER[1:]
-        iecWrite.write(self.dm560804E8WD[1] + '\n' + self.dm560804E8WD[2] + '\n' + tempDMBUFFER + '/\n*\n')
-        iecWrite.close()
-        del iecData
-        del iecWrite
-        del iecBuffer
-        iecWrite = open(self.ieCookieDir + '\\' + self.hitboxCookieFile, 'w')
-        iecBuffer = self.ctg[0]
-        if iecBuffer[0] == '.':
-            iecBuffer = iecBuffer[1:]
-        if iecBuffer.find('/') == -1:
-            iecBuffer = iecBuffer + '/'
-        iecWrite.write(self.ctg[1] + '\n' + self.ctg[2] + '\n' + iecBuffer + '\n*\n')
-        iecWrite.write(self.wss_gw[1] + '\n' + self.wss_gw[2] + '\n' + iecBuffer + '\n*\n')
-        iecWrite.close()
-        return
-
-    def OLDwritePythonHitBoxCookies(self, filename='cf.txt'):
-        if self.ctg == None or self.wss_gw == None or self.dm560804E8WD == None:
-            return
-        outputfile = open(filename, 'w')
-        outputfile.write(self.pythonCookieHeader)
-        outputfile.write('.' + self.dm560804E8WD[0].strip('/') + '\tTRUE\t/\tFALSE\t9999999999\t' + self.dm560804E8WD[1] + '\t' + self.dm560804E8WD[2] + '\n')
-        outputfile.write('.' + self.ctg[0].strip('/') + '\tTRUE\t/\tFALSE\t9999999999\t' + self.ctg[1] + '\t' + self.ctg[2] + '\n')
-        outputfile.write('.' + self.wss_gw[0].strip('/') + '\tTRUE\t/\tFALSE\t9999999999\t' + self.wss_gw[1] + '\t' + self.wss_gw[2] + '\n')
-        outputfile.close()
-        return
-
-    def writePythonHitBoxCookies(self, filename='cf.txt'):
-        if self.ctg == None or self.wss_gw == None or self.dm560804E8WD == None:
-            return
-        outputfile = open(filename, 'w')
-        outputfile.write('.' + self.dm560804E8WD[0].strip('/') + '\t/\t' + self.dm560804E8WD[1] + '\t' + self.dm560804E8WD[2] + '\n')
-        outputfile.write('.' + self.ctg[0].strip('/') + '\t/\t' + self.ctg[1] + '\t' + self.ctg[2] + '\n')
-        outputfile.write('.' + self.wss_gw[0].strip('/') + '\t/\t' + self.wss_gw[1] + '\t' + self.wss_gw[2] + '\n')
-        outputfile.close()
-        return
-
-    def loadPythonHitBoxCookies(self):
-        if os.path.isfile(self.pythonCookieFile) != 1:
-            return
-        pythonStandard = self.openHitboxFile(self.pythonCookieFile, 'python')
-        pythonStandard = pythonStandard.split('\n\n').pop(1)
-        pythonStandard = pythonStandard.split('\n')
-        for x in pythonStandard:
-            if x.find('\tDM560804E8WD') != -1:
-                self.dm560804E8WD = self.sortPythonCookie(x)
-            if x.find('\tCTG\t') != -1:
-                self.ctg = self.sortPythonCookie(x)
-            if x.find('\tWSS_GW\t') != -1:
-                self.wss_gw = self.sortPythonCookie(x)
-
-    def loadIEHitBoxCookies(self):
-        if self.findIECookieFiles() != 1:
-            return
-        if sys.platform != 'win32':
-            return
-        hitboxStandard = self.openHitboxFile(self.hitboxCookieFile, 'ie')
-        hitboxDIG = self.openHitboxFile(self.ehgdigCookieFile, 'ie')
-        hitboxStandard = self.splitIECookie(hitboxStandard)
-        hitboxDIG = self.splitIECookie(hitboxDIG)
-        ctg = None
-        wss = None
-        for x in hitboxStandard:
-            if x.find('CTG\n') != -1:
-                ctg = x
-            if x.find('WSS_GW\n') != -1:
-                wss = x
-
-        if ctg == None or wss == None:
-            return
-        DM = None
-        for x in hitboxDIG:
-            if x.find('DM560804E8WD') != -1:
-                DM = x
-
-        if DM == None:
-            return
-        self.ctg = self.sortIECookie(ctg)
-        self.wss_gw = self.sortIECookie(wss)
-        self.dm560804E8WD = self.sortIECookie(DM)
-        return
-
-
-def convertHitBoxIEtoPython():
-    if sys.platform != 'win32':
-        print 'Cookie Converter: Warning: System is not MS-Windows. I have not been setup to work with other systems yet. Sorry ' + sys.platform + ' user. The game client will create a cookie.'
-        return
-    if __dev__:
-        return
-    a = HitBoxCookie()
-    a.loadIEHitBoxCookies()
-    a.writePythonHitBoxCookies()
-    del a
-
-
-def convertHitBoxPythontoIE():
-    if sys.platform != 'win32':
-        print 'System is not MS-Windows. I have not been setup to work with other systems yet. Sorry ' + sys.platform + ' user.'
-        return
-    if os.path.isfile('cf.txt') == True:
-        return
-    a = HitBoxCookie()
-    a.loadPythonHitBoxCookies()
-    a.writeIEHitBoxCookies()
-    del a
-
-
-def getreg(regVar):
-    if sys.platform != 'win32':
-        print "System is not MS-Windows. I haven't been setup yet to work with systems other than MS-Win using MS-Internet Explorer Cookies"
-        return ''
-    siteName = 'pirates.online.disney'
-    cookiedir = os.getenv('USERPROFILE') + '\\Cookies'
-    sdir = os.listdir(cookiedir)
-    wholeCookie = None
-    while sdir:
-        temp = sdir.pop()
-        if temp.find(siteName) != -1:
-            wholeCookie = temp
-            break
-
-    if wholeCookie == None:
-        print 'Cookie not found for site name: ' + siteName
-        return ''
-    CompleteCookiePath = cookiedir + '\\' + wholeCookie
-    cf = open(CompleteCookiePath, 'r')
-    data = cf.read()
-    cf.close()
-    del cf
-    data = data.replace('%3D', '=')
-    data = data.replace('%26', '&')
-    regNameStart = data.find(regVar)
-    if regNameStart == -1:
-        return ''
-    regVarStart = data.find('=', regNameStart + 1)
-    regVarEnd = data.find('&', regNameStart + 1)
-    return data[regVarStart + 1:regVarEnd]
-
-
-def getMAC(staticMAC=[
-        None]):
-    if staticMAC[0] is None:
-        if sys.platform == 'win32':
-            correctSection = 0
-
-            try:
-                ipconfdata = os.popen(
-                    '/WINDOWS/SYSTEM32/ipconfig /all').readlines()
-            except Exception:
-                staticMAC[0] = 'NO_MAC'
-                return staticMAC[0]
-
-            for line in ipconfdata:
-                if line.find('Local Area Connection') >= 0:
-                    correctSection = 1
-
-                if line.find('Physical Address') >= 0 and correctSection == 1:
-                    pa = line.split(':')[-1].strip()
-                    correctSection = 0
-                    staticMAC[0] = pa
-                    return pa
-                    continue
-
-        elif sys.platform == 'darwin':
-            macconfdata = os.popen(
-                '/usr/sbin/system_profiler SPNetworkDataType |/usr/bin/grep MAC').readlines()
-            if macconfdata and macconfdata[0].find('MAC Address') != -1:
-                pa = macconfdata[0][macconfdata[0].find(
-                    ':') + 2:macconfdata[0].find(':') + 22].strip('\n')
-                staticMAC[0] = pa.replace(':', '-')
-                return staticMAC[0]
-            else:
-                return '-1'
-        elif sys.platform == 'linux2':
-            macconfdata = os.popen(
-                '/sbin/ifconfig -a | grep HWaddr').readlines()
-            if macconfdata and macconfdata[0].find('HWaddr') != -1:
-                pa = macconfdata[0][macconfdata[0].find(
-                    'HWaddr ') + 7:macconfdata[0].find('HWaddr ') + 24]
-                pa.replace(':', '-')
-                return pa
-            else:
-                return 'NO_MAC'
-        else:
-            print 'System is not running OSX or MS-Windows.'
-            return '-2'
-    else:
-        return staticMAC[0]
-
-
-def firstRun(operation='read', newPlayer=None, newPlayerBool=[False]):
-    if operation != 'read':
-        if len(newPlayerBool) != 0:
-            newPlayerBool.pop()
-        newPlayerBool.append(newPlayer)
-    return newPlayerBool[0]
-
-
-def patcherVer(operation='read', url=None, patchfile=[]):
-    if operation != 'read':
-        if len(patchfile) != 0:
-            patchfile.pop()
-        patchfile.append(url)
-    return patchfile
-
-
-def loggingAvID(operation='read', newId=None, localAvId=[None]):
-    if operation == 'write':
-        localAvId[0] = newId
-    else:
-        return localAvId[0]
-
-
-def loggingSubID(operation='read', newId=None, localSubId=[None]):
-    if operation == 'write':
-        localSubId[0] = newId
-    else:
-        return localSubId[0]
-
-
-def vconGroup(operation='read', group=None, staticStore=[]):
-    if operation != 'read':
-        if len(staticStore) != 0:
-            staticStore.pop()
-        staticStore.append(group)
-    try:
-        return staticStore[0]
-    except IndexError:
+    if __dev__ and not config.GetBool('dev-analyics', False):
         return None
 
-    return None
-
-
-def oconGroup(operation='read', group=None, staticStore=[]):
-    if operation != 'read':
-        if len(staticStore) != 0:
-            staticStore.pop()
-        staticStore.append(group)
-    try:
-        return staticStore[0]
-    except IndexError:
-        return None
-
-    return None
-
-
-def printUnreachableLen():
-    import gc
-    gc.set_debug(gc.DEBUG_SAVEALL)
-    gc.collect()
-    unreachableL = []
-    for it in gc.garbage:
-        unreachableL.append(it)
-
-    return len(str(unreachableL))
-
-
-def printUnreachableNum():
-    import gc
-    gc.set_debug(gc.DEBUG_SAVEALL)
-    gc.collect()
-    return len(gc.garbage)
-
-
-def reportMemoryLeaks():
-    if printUnreachableNum() == 0:
-        return
-    import bz2
-    import gc
-    gc.set_debug(gc.DEBUG_SAVEALL)
-    gc.collect()
-    uncompressedReport = ''
-    for s in gc.garbage:
-        try:
-            uncompressedReport += str(s) + '&'
-        except TypeError:
-            pass
-
-    reportdata = bz2.compress(uncompressedReport, 9)
-    headers = {'Content-type': 'application/x-bzip2','Accept': 'text/plain'}
-    try:
-        baseURL = patcherVer()[0].split('/lo')[0]
-    except IndexError:
-        print 'Base URL not available for leak submit'
-        return
-
-    basePort = 80
-    if baseURL.count(':') == 2:
-        basePort = baseURL[-4:]
-        baseURL = baseURL[:-5]
-    baseURL = baseURL[7:]
-    if basePort != 80:
-        finalURL = 'http://' + baseURL + ':' + str(basePort) + '/logging/memory_leak.php?leakcount=' + str(printUnreachableNum())
-    else:
-        finalURL = 'http://' + baseURL + '/logging/memory_leak.php?leakcount=' + str(printUnreachableNum())
-    reporthttp = HTTPClient()
-    reporthttp.postForm(URLSpec(finalURL), reportdata)
-
-
-def checkParamFile():
-    if os.path.exists('parameters.txt') == 1:
-        paramfile = open('parameters.txt', 'r')
-        contents = paramfile.read()
-        paramfile.close()
-        del paramfile
-        contents = contents.split('\n')
-        newURL = ''
-        while contents:
-            checkLine = contents.pop()
-            if checkLine.find('PATCHER_BASE_URL=') != -1 and checkLine[0] == 'P':
-                newURL = checkLine.split('=')[1]
-                newURL = newURL.replace(' ', '')
-                break
-
-        if newURL == '':
-            return
-        else:
-            return newURL + 'patcher.ver'
+    print ':Userfunnel: use of logSubmit is deprecated; Please switch to add_event.'
+    #base.funnel.add_to_event_queue(base.funnel.get_design_event(setHostID, setMileStone))

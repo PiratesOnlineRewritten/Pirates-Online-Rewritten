@@ -18,7 +18,6 @@ class DistributedOceanGrid(DistributedCartesianGrid, OceanGridBase, MappableGrid
         self.islandGrids = {}
         self.minimap = None
         self.water = None
-        return
 
     def generate(self):
         DistributedCartesianGrid.generate(self)
@@ -28,14 +27,11 @@ class DistributedOceanGrid(DistributedCartesianGrid, OceanGridBase, MappableGrid
     def announceGenerate(self):
         DistributedCartesianGrid.announceGenerate(self)
         self.setupMinimap()
-        self.stash()
-        self.water.disable()
-
+        #self.stash()
+        #self.water.disable()
+        
     def setLocation(self, parentId, zoneId):
         DistributedCartesianGrid.setLocation(self, parentId, zoneId)
-        world = self.cr.getDo(self.parentId)
-        if parentId not in (0, self.cr.getGameDoId()):
-            pass
 
     def disable(self):
         DistributedCartesianGrid.disable(self)
@@ -112,7 +108,6 @@ class DistributedOceanGrid(DistributedCartesianGrid, OceanGridBase, MappableGrid
 
     @report(types=['args'], dConfigParam=['dteleport'])
     def handleOnStage(self):
-        DistributedCartesianGrid.handleOnStage(self)
         self.unstash()
         self.water.enable()
 
@@ -120,7 +115,6 @@ class DistributedOceanGrid(DistributedCartesianGrid, OceanGridBase, MappableGrid
     def handleOffStage(self):
         self.stash()
         self.water.disable()
-        DistributedCartesianGrid.handleOffStage(self)
 
     def getTeleportDestPosH(self, index=0):
         return (0, 0, 0, 0)
@@ -132,8 +126,7 @@ class DistributedOceanGrid(DistributedCartesianGrid, OceanGridBase, MappableGrid
         return ()
 
     def getGridParameters(self):
-        return (
-         self.cellWidth, self.viewingRadius)
+        return (self.cellWidth, self.viewingRadius)
 
     def getZoomLevels(self):
         return ((3000, 5000, 7000, 10000), 1)
@@ -165,4 +158,3 @@ class DistributedOceanGrid(DistributedCartesianGrid, OceanGridBase, MappableGrid
         if self.minimap:
             self.minimap.destroy()
             self.minimap = None
-        return

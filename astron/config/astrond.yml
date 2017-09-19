@@ -27,6 +27,10 @@ uberdogs:
       id: 4679
       anonymous: false
 
+    - class: DistributedInventoryManager
+      id: 4677
+      anonymous: false
+
 roles:
     - type: clientagent
       bind: 127.0.0.1:7198

@@ -316,7 +316,7 @@ class DistributedIsland(DistributedGameArea, DistributedCartesianGrid, ZoneLOD, 
             self.updateAvReturnLocation(child)
             messenger.send('docked')
             self.accept('ship_vis_change', self.shipVisibilityChanged)
-            if not base.cr.config.GetBool('remove-island-barriers', 0):
+            if base.cr.config.GetBool('remove-island-barriers', False):
                 self.setupPlayerBarrier()
             base.hideShipNametags = True
             messenger.send('hide-ship-nametags')
@@ -467,13 +467,13 @@ class DistributedIsland(DistributedGameArea, DistributedCartesianGrid, ZoneLOD, 
             if not meshes.isEmpty():
                 mesh = meshes[0]
                 joints = self.islandShoreWave.findAllMatches('**/uvj_WakeWhiteTide1')
-                if joints.getNumPaths():
+                if joints.getNumPaths() and mesh.findTextureStage('default'):
                     mesh.setTexProjector(mesh.findTextureStage('default'), joints[0], parent)
             meshes = self.islandShoreWave.findAllMatches('**/mesh_tide2')
             if not meshes.isEmpty():
                 mesh = meshes[0]
                 joints = self.islandShoreWave.findAllMatches('**/uvj_WakeWhiteTide2')
-                if joints.getNumPaths():
+                if joints.getNumPaths() and mesh.findTextureStage('default'):
                     mesh.setTexProjector(mesh.findTextureStage('default'), joints[0], parent)
             lavaCombo = self.islandShoreWave.findAllMatches('**/lava_combo_*')
             if lavaCombo.getNumPaths():
@@ -953,7 +953,7 @@ class DistributedIsland(DistributedGameArea, DistributedCartesianGrid, ZoneLOD, 
 
     def startCustomEffects(self, interior=False, island=False):
         DistributedGameArea.startCustomEffects(self, interior=False, loadIslandMusic=island)
-        if self.uniqueId == LocationIds.DEL_FUEGO_ISLAND:
+        if self.uniqueId == LocationIds.DEL_FUEGO_ISLAND or self.uniqueId == LocationIds.MADRE_DEL_FUEGO_ISLAND:
             self.startVolcanoEffects()
         if self.uniqueId == LocationIds.TORTUGA_ISLAND:
             if not self.feastFireEffect and self.getFeastFireEnabled():
@@ -962,7 +962,7 @@ class DistributedIsland(DistributedGameArea, DistributedCartesianGrid, ZoneLOD, 
         self.builder.resumeSFX()
 
     def updateCustomEffects(self, level):
-        if self.uniqueId == LocationIds.DEL_FUEGO_ISLAND:
+        if self.uniqueId == LocationIds.DEL_FUEGO_ISLAND or self.uniqueId == LocationIds.MADRE_DEL_FUEGO_ISLAND:
             self.startVolcanoEffects()
         if self.uniqueId == LocationIds.TORTUGA_ISLAND:
             if not self.feastFireEffect and self.getFeastFireEnabled():
@@ -1014,7 +1014,10 @@ class DistributedIsland(DistributedGameArea, DistributedCartesianGrid, ZoneLOD, 
         if not self.volcanoEffect:
             self.volcanoEffect = VolcanoEffect()
             self.volcanoEffect.reparentTo(self)
-            self.volcanoEffect.setPos(Vec3(-286, 180, 865))
+            if self.uniqueId == LocationIds.DEL_FUEGO_ISLAND:
+                self.volcanoEffect.setPos(Vec3(-286, 180, 865))
+            elif self.uniqueId == LocationIds.MADRE_DEL_FUEGO_ISLAND:
+                self.volcanoEffect.setPos(Vec3(-40, 75, 600))
             self.volcanoEffect.enable()
 
     def makeLavaErupt(self):

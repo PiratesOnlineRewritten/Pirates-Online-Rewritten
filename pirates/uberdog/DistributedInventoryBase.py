@@ -30,7 +30,6 @@ class DistributedInventoryBase():
         self.sentReadyMessage = False
         self.useTemporaryInventory = False
         self.temporaryInventory = {}
-        return
 
     def __str__(self):
         out = [
@@ -217,8 +216,7 @@ class DistributedInventoryBase():
 
         for doId, category in old.items():
             if self.doIds.get(doId) is None:
-                messenger.send('inventoryRemoveDoId-%s-%s' % (self.doId, category), [
-                 doId])
+                messenger.send('inventoryRemoveDoId-%s-%s' % (self.doId, category), [doId])
                 if category == InventoryCategory.SHIPS:
                     self.removeShip(doId)
                     messenger.send('shipRemoved')

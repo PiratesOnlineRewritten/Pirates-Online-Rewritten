@@ -1,8 +1,36 @@
 from direct.distributed.DistributedObjectAI import DistributedObjectAI
 from direct.directnotify import DirectNotifyGlobal
+from pirates.world.DistributedDoorAI import DistributedDoorAI
 
-class DistributedBuildingDoorAI(DistributedObjectAI):
+class DistributedBuildingDoorAI(DistributedDoorAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedBuildingDoorAI')
 
     def __init__(self, air):
-        DistributedObjectAI.__init__(self, air)
+        DistributedDoorAI.__init__(self, air)
+        self.interiorDoId = 0
+        self.interiorUid = ''
+        self.interiorWorldParentId = 0
+        self.interiorWorldZoneId = 0
+        self.setBuildingDoorId = 0
+
+    def setInteriorId(self, interiorDoId, interiorUid, interiorWorldParentId, interiorWorldZoneId):
+        self.interiorDoId = interiorDoId
+        self.interiorUid = interiorUid
+        self.interiorWorldParentId = interiorWorldParentId
+        self.interiorWorldZoneId = interiorWorldZoneId
+
+    def d_setInteriorId(self, interiorDoId, interiorUid, interiorWorldParentId, interiorWorldZoneId):
+        self.sendUpdate('setInteriorId', [interiorDoId, interiorUid, interiorWorldParentId, interiorWorldZoneId])
+
+    def b_setInteriorId(self, interiorDoId, interiorUid, interiorWorldParentId, interiorWorldZoneId):
+        self.setInteriorId(interiorDoId, interiorUid, interiorWorldParentId, interiorWorldZoneId)
+        self.d_setInteriorId(interiorDoId, interiorUid, interiorWorldParentId, interiorWorldZoneId)
+
+    def getInteriorId(self):
+        return [self.interiorDoId, self.interiorUid, self.interiorWorldParentId, self.interiorWorldZoneId]
+
+    def requestPrivateInteriorInstance(self):
+        pass
+
+    def d_setPrivateInteriorInstance(self, worldId, worldZoneId, interiorId, autoFadeIn=True):
+        self.sendUpdate('setPrivateInteriorInstance', [worldId, worldZoneId, interiorId, autoFadeIn])

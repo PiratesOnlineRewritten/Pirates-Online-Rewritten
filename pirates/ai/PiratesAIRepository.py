@@ -8,10 +8,13 @@ from pirates.piratesbase import PiratesGlobals
 from pirates.distributed.PiratesDistrictAI import PiratesDistrictAI
 from pirates.world import WorldGlobals
 from pirates.piratesbase.UniqueIdManager import UniqueIdManager
+from pirates.distributed.DistributedPopulationTrackerAI import DistributedPopulationTrackerAI
 from pirates.ai.PiratesTimeManagerAI import PiratesTimeManagerAI
 from pirates.instance.DistributedTeleportMgrAI import DistributedTeleportMgrAI
 from pirates.piratesbase.DistributedTimeOfDayManagerAI import DistributedTimeOfDayManagerAI
+from pirates.piratesbase.DistributedGameStatManagerAI import DistributedGameStatManagerAI
 from pirates.distributed.TargetManagerAI import TargetManagerAI
+from pirates.battle.DistributedEnemySpawnerAI import DistributedEnemySpawnerAI
 from pirates.world.WorldCreatorAI import WorldCreatorAI
 
 class PiratesAIRepository(PiratesInternalRepository):
@@ -67,6 +70,11 @@ class PiratesAIRepository(PiratesInternalRepository):
         Create "global" objects, e.g. TimeManager et al.
         """
 
+        self.populationTracker = DistributedPopulationTrackerAI(self)
+        self.populationTracker.setShardId(self.districtId)
+        self.populationTracker.setPopLimits(config.GetInt('shard-pop-limit-low', 100), config.GetInt('shard-pop-limit-high', 300))
+        self.populationTracker.generateWithRequiredAndId(self.allocateChannel(), self.getGameDoId(), OTP_ZONE_ID_DISTRICTS_STATS)
+
         self.timeManager = PiratesTimeManagerAI(self)
         self.timeManager.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
 
@@ -78,8 +86,16 @@ class PiratesAIRepository(PiratesInternalRepository):
         self.timeOfDayMgr = DistributedTimeOfDayManagerAI(self)
         self.timeOfDayMgr.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
 
+        self.gameStatManager = DistributedGameStatManagerAI(self)
+        self.gameStatManager.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
+
         self.targetMgr = TargetManagerAI(self)
         self.targetMgr.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
+
+        self.spawner = DistributedEnemySpawnerAI(self)
+        self.spawner.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
+
+        self.inventoryManager = self.generateGlobalObject(OTP_DO_ID_PIRATES_INVENTORY_MANAGER, 'DistributedInventoryManager')
 
     def createZones(self):
         """

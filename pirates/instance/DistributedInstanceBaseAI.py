@@ -69,6 +69,9 @@ class DistributedInstanceBaseAI(DistributedObjectAI):
     
     def avatarDied(self):
         pass
+
+    def setCanBePrivate(self, instance):
+        pass
     
     def generateChildWithRequired(self, do, zoneId, optionalFields=[]):
         do.generateWithRequiredAndId(self.air.allocateChannel(), self.doId, zoneId, optionalFields)

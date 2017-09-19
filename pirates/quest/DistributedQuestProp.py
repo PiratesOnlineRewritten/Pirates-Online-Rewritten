@@ -553,7 +553,7 @@ class DistributedQuestProp(DistributedBattleable.DistributedBattleable, Lootable
         aimTubeNodePath = self.attachNewNode(aimTubeNode)
         aimTubeNodePath.setTag('objType', str(PiratesGlobals.COLL_AV))
         aimTubeNodePath.setTag('avId', str(self.doId))
-        self.cr.targetMgr.addTarget(aimTubeNodePath.id(), self)
+        self.cr.targetMgr.addTarget(aimTubeNodePath.get_key(), self)
         self.aimTubeNodePaths.append(aimTubeNodePath)
         self.battleTubeNodePaths.append(battleTubeNodePath)
 
@@ -566,7 +566,7 @@ class DistributedQuestProp(DistributedBattleable.DistributedBattleable, Lootable
         self.battleTubeNodePaths = []
         for np in self.aimTubeNodePaths:
             if hasattr(self.cr, 'targetMgr'):
-                self.cr.targetMgr.removeTarget(np.id())
+                self.cr.targetMgr.removeTarget(np.get_key())
             np.removeNode()
 
         self.aimTubeNodePaths = []

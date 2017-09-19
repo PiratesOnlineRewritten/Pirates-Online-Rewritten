@@ -371,22 +371,24 @@ class StatusTray(GuiTray.GuiTray):
         if srcDoId != self.doId:
             if srcDoId:
                 return
+
             if localAvatar.guiMgr.gameGui.voodooModMeter:
                 if not self.doId:
                     localAvatar.guiMgr.gameGui.voodooModMeter['value'] = voodoo
+
             if not self.hideValues:
                 if not self.doId:
                     inv = localAvatar.getInventory()
                     vtLevel = None
                     if inv:
-                        vtLevel = inv.getStackQuantity(InventoryType.Vitae_Level)
+                        vtLevel = str(inv.getStackQuantity(InventoryType.Vitae_Level))
+
                     self.voodooMeter['text'] = vtLevel or '%s/%s' % (voodoo, maxVoodoo)
                 else:
                     modVoodoo = int(maxVoodoo * 0.75)
                     self.voodooMeter['text'] = '%s\x01Bred\x01/%s\x02' % (voodoo, modVoodoo)
             else:
                 self.voodooMeter['text'] = '%s/%s' % (voodoo, maxVoodoo)
-        return
 
     def updateLuck(self, luck, maxLuck):
         pass
