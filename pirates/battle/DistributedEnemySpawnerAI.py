@@ -139,6 +139,6 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         parent.generateChildWithRequired(animal, PiratesGlobals.IslandLocalZone)
 
         locationName = parent.getLocalizerName()
-        print('Generating %s (%s) under zone %d in %s at %s with doId %d' % (species, objKey, animal.zoneId, locationName, animal.getPos(), animal.doId))
+        self.notify.debug('Generating %s (%s) under zone %d in %s at %s with doId %d' % (species, objKey, animal.zoneId, locationName, animal.getPos(), animal.doId))
 
         return animal
