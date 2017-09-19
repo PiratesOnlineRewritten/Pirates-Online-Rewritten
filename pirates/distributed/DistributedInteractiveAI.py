@@ -22,7 +22,7 @@ class DistributedInteractiveAI(DistributedNodeAI):
         handle = self.handleRequestInteraction(avatar, interactType, instant)
 
         if not handle:
-            self.d_rejectInteraction(avatar)
+            self.d_rejectInteraction(avatar.doId)
             return
 
         self.d_setUserId(avatar.doId)
@@ -41,7 +41,7 @@ class DistributedInteractiveAI(DistributedNodeAI):
         handle = self.handleRequestExit(avatar)
 
         if not handle:
-            self.d_rejectExit(avatar)
+            self.d_rejectExit(avatar.doId)
             return
 
         self.d_setUserId(0)
