@@ -10,18 +10,6 @@ class AreaBuilderBaseAI(DirectObject):
         self.air = air
         self.parent = parent
         self.objectList = {}
-        self.wantObjectPrintout = config.GetBool('want-object-printout', False)
-
-    def parentToCellOrigin(self, parent, instance):
-        if not instance:
-            return self.notify.warning('Cannot parent invalid instance type to %r!' % parent)
-
-        instance.reparentTo(parent)
-
-        instance.d_setPos(*instance.getPos())
-        instance.d_setHpr(*instance.getHpr())
-
-        return instance
 
     def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic, parentIsObj=False, fileName=None, actualParentObj=None):
         newObj = None
@@ -35,12 +23,6 @@ class AreaBuilderBaseAI(DirectObject):
                 return newObj
 
             newObj = parent.builder.createObject(objType, objectData, parent, parentUid, objKey, dynamic)
-
-        if newObj is not None and objType != 'Building Exterior' and objType != ObjectList.AREA_TYPE_ISLAND and self.wantObjectPrintout:
-            indent = '- '
-            if 'Island' not in fileName:
-                indent = '-- '
-            print('%sGenerated %s (%s) in zone %s with doId %d' % (indent, newObj.__class__.__name__, objKey, newObj.zoneId, newObj.doId))
 
         return newObj
 
@@ -65,10 +47,6 @@ class AreaBuilderBaseAI(DirectObject):
 
         self.parent.generateChildWithRequired(island, island.startingZone)
         self.addObject(island)
-
-        if self.air.worldCreator.wantPrintout:
-            print '-' * 100
-            print 'Generated Island %s (%s) in zone %d with doId %d' % (island.getLocalizerName(), objKey, island.zoneId, island.doId)
 
         return island
 
@@ -99,9 +77,17 @@ class AreaBuilderBaseAI(DirectObject):
     def deleteObject(self, doId):
         object = self.objectList.get(doId)
 
-        if not doId:
+        if not object:
             self.notify.warning('Cannot delete an invalid object!')
             return
 
         object.requestDelete()
         self.removeObject(object)
+
+    def broadcastObjectPosition(self, object):
+        if not object:
+            self.notify.warning('Failed to broadcast position for non-existant object!')
+            return
+
+        object.d_setPos(*object.getPos())
+        object.d_setHpr(*object.getHpr())
