@@ -42,7 +42,6 @@ class DistributedInvasionObjectAI(DistributedObjectAI, FSM):
             return Task.again
 
         messageId = self.MESSAGES[interval]
-        print messageId
         self.air.newsManager.d_displayMessage(messageId)
 
         if self.countdown <= 0:
