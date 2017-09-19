@@ -24,11 +24,7 @@ class RepairGamePickerGUI(DirectFrame):
         return
 
     def onGameButtonSelected(self, button, index):
-        if not self.repairGame.gameFSM or self.repairGame.gameFSM.state in ('Off',
-                                                                            'Init',
-                                                                            'CycleComplete',
-                                                                            'Final',
-                                                                            'Outro'):
+        if not self.repairGame.gameFSM or self.repairGame.gameFSM.state in ('Off', 'Init', 'CycleComplete', 'Final', 'Outro'):
             return
         for key, b in self.buttons.items():
             b.downStateNode.reparentTo(b.stateNodePath[1])
@@ -59,8 +55,7 @@ class RepairGamePickerGUI(DirectFrame):
             if key.lower() not in gameNamesToIndices:
                 keysToRemove.append(key)
             else:
-                button['extraArgs'] = [
-                 button, gameNamesToIndices[key.lower()]]
+                button['extraArgs'] = [button, gameNamesToIndices[key.lower()]]
                 button['command'] = self.onGameButtonSelected
 
         for key in keysToRemove:
