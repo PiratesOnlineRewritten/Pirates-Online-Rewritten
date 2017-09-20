@@ -350,6 +350,18 @@ RandomizedSchedules = {
         'numPerDay': 3,
         'timeWindows': [RandomTimeWindows.E, RandomTimeWindows.F, RandomTimeWindows.G, RandomTimeWindows.H],
         'duration': (1, 0)
+    },
+    'QueenAnnesRevenge': {
+        'configs': [('want-random-queen-annes', 1)],
+        'holidayIds': [QUEENANNES],
+        'idOverrideDates': {},
+        'conflictingIds': [CURSEDNIGHT],
+        'conflictingClasses': [],
+        'conflictingRSIds': [],
+        'daysPerMonth': (5, 8),
+        'numPerDay': 1,
+        'timeWindows': [RandomTimeWindows.E, RandomTimeWindows.F, RandomTimeWindows.G, RandomTimeWindows.H],
+        'duration': (5, 8)
     }
 }
 MSG_START_ALL = 0

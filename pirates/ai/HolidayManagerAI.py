@@ -5,6 +5,7 @@ from direct.task import Task
 from pirates.piratesbase import PiratesGlobals
 from pirates.holiday import FleetHolidayGlobals
 from pirates.holiday.FleetManagerAI import FleetManagerAI
+from pirates.holiday.QueenAnneManagerAI import QueenAnneManagerAI
 from pirates.ai import HolidayGlobals
 from pirates.ai.HolidayDates import HolidayDates
 from pirates.invasion import InvasionGlobals
@@ -26,6 +27,7 @@ class HolidayManagerAI(DistributedObjectAI):
         self.activeHolidays = {}
         self.invasionManager = None
         self.fleetManager = None
+        self.queenAnneManager = None
 
         self.scheduleCounter = {}
         self.monthlyCounter = {}
@@ -86,6 +88,9 @@ class HolidayManagerAI(DistributedObjectAI):
         if self.isFleetHoliday(holidayId):
             canStart = self.startFleetHoliday(holidayId)
 
+        if holidayId == HolidayGlobals.QUEENANNES:
+            canStart = self.startQueenAnne()
+
         if canStart:
             self.activeHolidays[holidayId] = (time, manual)
             self.air.newsManager.addHoliday(holidayId, time)
@@ -108,6 +113,9 @@ class HolidayManagerAI(DistributedObjectAI):
 
         if self.isFleetHoliday(holidayId):
             self.endFleetHoliday(holidayId)
+
+        if holidayId == HolidayGlobals.QUEENANNES:
+            self.endQueenAnne()
 
         messenger.send('holidayDeactivated', [holidayId])
         messenger.send('holidayListChanged')
@@ -178,6 +186,8 @@ class HolidayManagerAI(DistributedObjectAI):
 
         self.notify.info('Starting Fleet Holiday (%d)' % holidayId)
 
+        return True
+
     def endFleetHoliday(self, holidayId):
         if not self.fleetManager:
             return
@@ -186,3 +196,23 @@ class HolidayManagerAI(DistributedObjectAI):
         self.fleetManager = None
 
         self.notify.info('Ending Fleet holiday')
+
+    def startQueenAnne(self):
+        if self.queenAnneManager:
+            return
+
+        self.queenAnneManager = QueenAnneManagerAI(self.air)
+        self.queenAnneManager.start()
+
+        self.notify.info('Starting Queen Anne Holiday')
+
+        return True
+
+    def endQueenAnne(self):
+        if not self.queenAnneManager:
+            return
+
+        self.queenAnneManager.delete()
+        self.queenAnneManager = None
+
+        self.notify.info('Ending Queen Anne Holiday')
