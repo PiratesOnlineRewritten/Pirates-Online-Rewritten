@@ -81,8 +81,6 @@ class OTPClientRepository(ClientRepositoryBase):
         if fakeBlue:
             self.blue = fakeBlue
         self.playToken = None
-        print 'LAUNCHER!' * 20
-        print self.launcher.__class__.__name__ * 20
         if self.launcher:
             self.playToken = self.launcher.getPlayToken()
         fakePlayToken = config.GetString('fake-playtoken', '')
