@@ -507,8 +507,19 @@ class InventoryType():
     PadresDelFuegoTeleportToken = 13503
     CubaTeleportToken = 13504
     RavensCoveTeleportToken = 13505
+    NassauTeleportToken = 13506
+    AntiguaTeleportToken = 13507
     end_TeleportToken = RavensCoveTeleportToken + 1
-    __islandToTeleportTokenMap = {LocationIds.TORTUGA_ISLAND: TortugaTeleportToken,LocationIds.PORT_ROYAL_ISLAND: PortRoyalTeleportToken,LocationIds.KINGSHEAD_ISLAND: KingsheadTeleportToken,LocationIds.DEL_FUEGO_ISLAND: PadresDelFuegoTeleportToken,LocationIds.CUBA_ISLAND: CubaTeleportToken,LocationIds.RAVENS_COVE_ISLAND: RavensCoveTeleportToken}
+    __islandToTeleportTokenMap = {
+        LocationIds.TORTUGA_ISLAND: TortugaTeleportToken,
+        LocationIds.PORT_ROYAL_ISLAND: PortRoyalTeleportToken,
+        LocationIds.KINGSHEAD_ISLAND: KingsheadTeleportToken,
+        LocationIds.DEL_FUEGO_ISLAND: PadresDelFuegoTeleportToken,
+        LocationIds.CUBA_ISLAND: CubaTeleportToken,
+        LocationIds.RAVENS_COVE_ISLAND: RavensCoveTeleportToken,
+        LocationIds.NASSAU_ISLAND: NassauTeleportToken,
+        LocationIds.ANTIGUA_ISLAND: AntiguaTeleportToken
+    }
 
     @classmethod
     def getIslandTeleportToken(cls, islandUid):
