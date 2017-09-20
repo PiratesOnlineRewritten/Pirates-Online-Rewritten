@@ -14573,6 +14573,16 @@ objectStruct = {
                         'Model': 'models/buildings/shanty_gypsywagon_exterior'
                     }
                 },
+                '1175549568.828659a2':{
+                    'Type': 'PotionTable',
+                    'Hpr': VBase3(105.797, 0.0, 0.0),
+                    'Pos': Point3(110.07, -1460.549, 20.307),
+                    'Potion Zone': '0',
+                    'Scale': VBase3(1.0, 1.0, 1.0),
+                    'Visual': {
+                        'Model': 'models/minigames/pir_m_gam_pot_table'
+                    }
+                },
                 '1175553664.0dxschafe': {
                     'Type': 'Townsperson',
                     'Category': 'Gypsy',
@@ -20137,6 +20147,7 @@ objectStruct = {
         '1175546352.51kmuller': '["Objects"]["1150922126.828659a2"]["Objects"]["1175546352.51kmuller"]',
         '1175546589.04kmuller': '["Objects"]["1150922126.828659a2"]["Objects"]["1175546589.04kmuller"]',
         '1175549568.0dxschafe': '["Objects"]["1150922126.828659a2"]["Objects"]["1175549568.0dxschafe"]',
+        '1175549568.828659a2': '["Objects"]["1150922126.828659a2"]["Objects"]["1175549568.828659a2"]',
         '1175553664.0dxschafe': '["Objects"]["1150922126.828659a2"]["Objects"]["1175553664.0dxschafe"]',
         '1175554816.0dxschafe': '["Objects"]["1150922126.828659a2"]["Objects"]["1175554816.0dxschafe"]',
         '1175621632.0dxschafe0': '["Objects"]["1150922126.828659a2"]["Objects"]["1175621632.0dxschafe0"]',
