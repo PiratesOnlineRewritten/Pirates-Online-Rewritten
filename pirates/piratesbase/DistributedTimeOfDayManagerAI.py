@@ -1,6 +1,7 @@
 from direct.distributed.DistributedObjectAI import DistributedObjectAI
 from direct.directnotify import DirectNotifyGlobal
 from direct.task import Task
+from pirates.ai import HolidayGlobals
 from pirates.piratesbase.TimeOfDayManagerBase import TimeOfDayManagerBase
 from pirates.piratesbase import TODDefs
 from pirates.piratesbase import TODGlobals
@@ -15,7 +16,8 @@ class DistributedTimeOfDayManagerAI(DistributedObjectAI, TimeOfDayManagerBase):
         DistributedObjectAI.__init__(self, air)
         TimeOfDayManagerBase.__init__(self)
 
-        self.cycleType = config.GetInt('tod-starting-cycle', TODDefs.TOD_REGULAR_CYCLE)
+        self.baseCycle = config.GetInt('tod-starting-cycle', TODDefs.TOD_REGULAR_CYCLE)
+        self.cycleType = self.baseCycle
         self.cycleSpeed = config.GetInt('tod-cycle-speed', 1)
         self.startingNetTime = globalClockDelta.getRealNetworkTime(bits=32)
         self.timeOffset = 0
@@ -39,11 +41,42 @@ class DistributedTimeOfDayManagerAI(DistributedObjectAI, TimeOfDayManagerBase):
         if self.wantRain:
             self.__processWeather()
 
+        self.accept('holidayListChanged', self.holidayListChanged)
+
     def delete(self):
         DistributedObjectAI.delete(self)
         taskMgr.remove(self.cycleTask)
         if hasattr(self, 'weatherTask'):
             taskMgr.remove(self.weatherTask)
+
+        self.ignore('holidayListChanged')
+
+    def holidayListChanged(self):
+
+        if self.air.holidayMgr.getActiveInvasion():
+            self.d_changeCycle(TODDefs.TOD_JOLLYINVASION_CYCLE)
+            self.d_setMoonJolly(True)
+            return
+        elif self.air.holidayMgr.isHolidayActive(HolidayGlobals.JOLLYROGERCURSE) or self.air.holidayMgr.isHolidayActive(HolidayGlobals.JOLLYCURSEAUTO) and not self.getMoonJolly():
+            self.d_setMoonJolly(True)
+        elif self.getMoonJolly():
+            self.d_setMoonJolly(False)
+
+        found = False
+        for holidayId in self.air.holidayMgr.activeHolidays:
+
+            if holidayId == HolidayGlobals.HALLOWEEN:
+                self.d_changeCycle(TODDefs.TOD_HALLOWEEN_CYCLE)
+                found = True
+            elif holidayId == HolidayGlobals.JOLLYROGERCURSE or holidayId == HolidayGlobals.JOLLYCURSEAUTO:
+                self.d_changeCycle(TODDefs.TOD_JOLLYCURSE_CYCLE)
+                found = True
+            elif holidayId == HolidayGlobals.VALENTINESDAY:
+                self.d_changeCycle(TODDefs.TOD_VALENTINE_CYCLE)
+                found = True
+
+        if not found:
+            self.d_changeCycle(self.baseCycle)
 
     def __runCycle(self, task):
         if self.isPaused:

@@ -19,11 +19,9 @@ class DistributedInvasionObjectAI(DistributedObjectAI, FSM):
 
     def announceGenerate(self):
         DistributedObjectAI.announceGenerate(self)
-        self.setInvasionSky()
         self.request('Countdown')
 
     def delete(self):
-        self.resetSky()
         DistributedObjectAI.delete(self)
         if hasattr(self, 'countdownTask'):
             taskMgr.remove(self.countdownTask)
@@ -69,14 +67,6 @@ class DistributedInvasionObjectAI(DistributedObjectAI, FSM):
     def enterPhase1(self):
         self.currentPhase = 1
         self.d_setNextPhase(self.currentPhase)
-
-    def setInvasionSky(self):
-        self.air.timeOfDayMgr.d_changeCycle(TODDefs.TOD_JOLLYINVASION_CYCLE)
-        self.air.timeOfDayMgr.d_setMoonJolly(True)
-
-    def resetSky(self):
-        self.air.timeOfDayMgr.d_changeCycle(TODDefs.TOD_REGULAR_CYCLE)
-        self.air.timeOfDayMgr.d_setMoonJolly(False)    
 
     def d_hideShip(self):
         self.sendUpdate('hideShip', [])

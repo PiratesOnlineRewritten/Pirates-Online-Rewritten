@@ -92,6 +92,7 @@ class HolidayManagerAI(DistributedObjectAI):
 
             self.notify.info('Starting holiday %s (%d)' % ((HolidayGlobals.getHolidayName(holidayId) or holidayId), holidayId))
             messenger.send('holidayActivated', [holidayId])
+            messenger.send('holidayListChanged')
 
     def endHoliday(self, holidayId):
         if not self.isHolidayActive(holidayId):
@@ -109,6 +110,7 @@ class HolidayManagerAI(DistributedObjectAI):
             self.endFleetHoliday(holidayId)
 
         messenger.send('holidayDeactivated', [holidayId])
+        messenger.send('holidayListChanged')
 
     def isInvasionHoliday(self, holidayId):
         return holidayId in InvasionGlobals.INVASION_NUMBERS
