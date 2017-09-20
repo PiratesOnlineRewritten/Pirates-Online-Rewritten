@@ -90,11 +90,15 @@ class HolidayManagerUD(DistributedObjectGlobalUD):
 
     def requestHolidayList(self):
         channel = self.air.getMsgSender()
+        if not channel:
+            return
+
         for holiday in self.activeHolidays:
             time, manual = self.activeHolidays[holiday]
             self.sendUpdateToChannel(channel, 'startHoliday', [holiday, 0, time, manual])
 
         if channel in self.districts:
+            self.notify.debug('Sending Holiday list to %s' % channel)
             districtData = self.districts[channel]
             for holiday in districtData['localHolidays']:
                 time, manual = districtData['localHolidays'][holiday]
@@ -121,8 +125,6 @@ class HolidayManagerUD(DistributedObjectGlobalUD):
                 if currentTime >= start and currentTime <= end:
                     remaining = end - currentTime
                     self.startHoliday(holidayId, time=remaining)
-                elif self.isHolidayActive(holidayId):
-                    self.endHoliday(holidayId)
 
         return Task.again
 
@@ -160,6 +162,7 @@ class HolidayManagerUD(DistributedObjectGlobalUD):
             if districtData['scheduledRunning'] == holidayId:
                 districtData['scheduledRunning'] = None
 
+            self.districts[channel]['localHolidays'].pop(holidayId)
             self.notify.info('Ending Holiday %s (%d) on %s' % ((HolidayGlobals.getHolidayName(holidayId) or holidayId), holidayId, channel))
             self.sendUpdateToChannel(channel, 'endHoliday', [holidayId])
 
