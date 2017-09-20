@@ -285,3 +285,15 @@ class HolidayManagerUD(DistributedObjectGlobalUD):
                 districtData['scheduledRunning'] = holidayId
 
         return Task.again
+
+    def requestChooserHoliday(self):
+        sender = self.air.getMsgSender()
+
+        holidays = []
+        for holidayId in self.activeHolidays:
+            holidays.append(holidayId)
+
+        self.d_requestChooserHolidayResponse(sender, holidays)
+
+    def d_requestChooserHolidayResponse(self, channel, holidayId):
+        self.sendUpdateToChannel(channel, 'requestChooserHolidayResponse', [holidayId])

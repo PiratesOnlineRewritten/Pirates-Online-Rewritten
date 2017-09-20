@@ -107,6 +107,7 @@ class PiratesClientRepository(OTPClientRepository):
         self.createAvatarClass = DistributedPlayerPirate.DistributedPlayerPirate
         self.tradeManager = None
         self.pvpManager = None
+        self.holidayMgr = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_PIRATES_HOLIDAY_MANAGER, 'HolidayManager')
         self.avatarManager = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_PIRATES_AVATAR_MANAGER, 'DistributedAvatarManager')
         self.chatManager = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_CHAT_MANAGER, 'DistributedChatManager')
         self.crewMatchManager = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_PIRATES_CREW_MATCH_MANAGER, 'DistributedCrewMatchManager')
@@ -274,9 +275,12 @@ class PiratesClientRepository(OTPClientRepository):
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterChooseAvatar(self, avList):
+        self.holidayMgr.requestChooserHoliday(self.onHolidayResponse)
         base.loadingScreen.beginStep('AvChooser', 14, 10)
         self.sendSetAvatarIdMsg(0)
         self.handler = self.handleMessageType
+
+    def onHolidayResponse(self, holidayIds):
         if __dev__:
             config_slot = base.config.GetInt('login-pirate-slot', -1)
             if config_slot >= 0 and len(avList) > 0:
@@ -293,7 +297,7 @@ class PiratesClientRepository(OTPClientRepository):
                         return
 
         self.avChoiceDoneEvent = 'avatarChooserDone'
-        self.avChoice = AvatarChooser(self.loginFSM, self.avChoiceDoneEvent)
+        self.avChoice = AvatarChooser(self.loginFSM, self.avChoiceDoneEvent, holidayIds)
         base.loadingScreen.tick()
         self.avChoice.load()
         base.loadingScreen.tick()
@@ -302,6 +306,7 @@ class PiratesClientRepository(OTPClientRepository):
         self.accept(self.avChoiceDoneEvent, self.__handleAvatarChooserDone)
         base.loadingScreen.endStep('AvChooser')
         base.cr.loadingScreen.hide()
+
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def __handleAvatarChooserDone(self, doneStatus):

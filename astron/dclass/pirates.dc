@@ -2407,6 +2407,8 @@ dclass HolidayManager : DistributedObjectGlobal {
   endHoliday(uint32) broadcast airecv;
   requestHolidayRemoval(uint32);
   requestHolidayList();
+  requestChooserHoliday() clsend;
+  requestChooserHolidayResponse(uint32[]);
 };
 
 dclass PiratesSettingsMgr : SettingsMgr {
