@@ -15,26 +15,24 @@ class CodeRedemption(DistributedObjectGlobal):
         if code:
             userName = ''
             accountId = 0
-            self.sendUpdate('sendCodeForRedemption', [
-             code, userName, accountId])
+            self.sendUpdate('sendCodeForRedemption', [code, userName, accountId])
 
     def notifyClientCodeRedeemStatus(self, status, type, uid):
         if status == CodeRedemptionGlobals.ERROR_ID_GOOD:
             base.talkAssistant.receiveGameMessage(PLocalizer.CodeRedemptionGood)
         elif status == CodeRedemptionGlobals.ERROR_ID_OVERFLOW:
             base.talkAssistant.receiveGameMessage(PLocalizer.CodeRedemptionFull)
+        elif status == CodeRedemptionGlobals.ERROR_ID_TIMEOUT:
+            base.talkAssistant.receiveGameMessage(PLocalizer.CodeRedemptionTimeout)
         else:
-            if status == CodeRedemptionGlobals.ERROR_ID_TIMEOUT:
-                base.talkAssistant.receiveGameMessage(PLocalizer.CodeRedemptionTimeout)
-            else:
-                base.talkAssistant.receiveGameMessage(PLocalizer.CodeRedemptionBad)
-            if type == -1:
-                pass
-            elif type == CodeRedemptionGlobals.CLOTHING:
-                localAvatar.guiMgr.messageStack.showLoot([], cloth=uid)
-            else:
-                if type == CodeRedemptionGlobals.JEWELRY:
-                    localAvatar.guiMgr.messageStack.showLoot([], jewel=uid)
-                if type == CodeRedemptionGlobals.TATTOO:
-                    localAvatar.guiMgr.messageStack.showLoot([], tattoo=uid)
+            base.talkAssistant.receiveGameMessage(PLocalizer.CodeRedemptionBad)
+
+        if type == -1:
+            pass
+        elif type == CodeRedemptionGlobals.CLOTHING:
+            localAvatar.guiMgr.messageStack.showLoot([], cloth=uid)
+        elif type == CodeRedemptionGlobals.JEWELRY:
+            localAvatar.guiMgr.messageStack.showLoot([], jewel=uid)
+        elif type == CodeRedemptionGlobals.TATTOO:
+            localAvatar.guiMgr.messageStack.showLoot([], tattoo=uid)
         messenger.send('codeRedeemed', [status])

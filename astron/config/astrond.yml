@@ -35,6 +35,10 @@ uberdogs:
       id: 4705
       anonymous: false
 
+    - class: CodeRedemption
+      id: 4703
+      anonymous: false
+
 roles:
     - type: clientagent
       bind: 127.0.0.1:7198
