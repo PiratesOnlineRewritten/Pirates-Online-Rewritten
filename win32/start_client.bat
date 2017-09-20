@@ -1,6 +1,8 @@
 @echo off
 title Pirates Online Rewritten - Client
 
+set GAME_INGAME_MANAGE_ACCT=http://www.piratesrewritten.com/account
+
 set POR_GAMESERVER=127.0.0.1
 set /P POR_TOKEN=Token (Default: dev): || ^
 set POR_TOKEN=dev

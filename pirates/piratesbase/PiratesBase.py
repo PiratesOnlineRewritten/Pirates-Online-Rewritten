@@ -559,6 +559,9 @@ class PiratesBase(OTPBase):
                 return self.hideEmbeddedFrame()
 
     def popupBrowser(self, url, demandFocus=False):
+        if not url:
+            self.notify.warning('Failed to open browser; url can not be NoneType')
+            return
         import sys
         if sys.platform == 'darwin':
             import os
@@ -571,15 +574,8 @@ class PiratesBase(OTPBase):
                 import webbrowser
                 webbrowser.open(url, new=2, autoraise=True)
             except WindowsError, e:
-                if base.appRunner:
-                    demandFocus = False
-                    if demandFocus:
-                        base.appRunner.dom.location = url
-                    else:
-                        base.appRunner.evalScript('window.open("%s")' % (url,), needsResponse=False)
-                else:
-                    import os
-                    os.system('explorer "%s"' % url)
+                import os
+                os.system('explorer "%s"' % url)
 
     def refreshAds(self):
         self.notify.debug('Refresh Ads')
