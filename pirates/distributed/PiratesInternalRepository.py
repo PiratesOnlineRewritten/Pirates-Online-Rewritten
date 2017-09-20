@@ -43,7 +43,36 @@ class PiratesInternalRepository(AstronInternalRepository):
         msgDg.addUint16(6)
         msgDg.addString(message)
 
+        self.writeServerEvent('systemMessage', 
+            sourceChannel=self.ourChannel, 
+            message=message, 
+            targetChannel=channel)
+
         dg = PyDatagram()
         dg.addServerHeader(channel, self.ourChannel, CLIENTAGENT_SEND_DATAGRAM)
         dg.addString(msgDg.getMessage())
         self.send(dg)
+
+    def readerPollOnce(self):
+        try:
+            return AstronInternalRepository.readerPollOnce(self)
+        except SystemExit, KeyboardInterrupt:
+            raise
+        except Exception as e:
+            if self.getAvatarIdFromSender() > 100000000:
+                dg = PyDatagram()
+                dg.addServerHeader(self.getMsgSender(), self.ourChannel, CLIENTAGENT_EJECT)
+                dg.addUint16(1)
+                dg.addString('An unexpected problem has occurred.')
+                self.send(dg)
+
+            self.writeServerEvent('internal-exception', 
+                avId=self.getAvatarIdFromSender(),
+                accountId=self.getAccountIdFromSender(),
+                exception=traceback.format_exc())
+
+            self.notify.warning('internal-exception: %s (%s)' % (repr(e), self.getAvatarIdFromSender()))
+            print traceback.format_exc()
+            sys.exc_clear()
+
+        return 1
