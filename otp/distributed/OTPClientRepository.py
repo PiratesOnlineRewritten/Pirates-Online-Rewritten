@@ -81,6 +81,8 @@ class OTPClientRepository(ClientRepositoryBase):
         if fakeBlue:
             self.blue = fakeBlue
         self.playToken = None
+        print 'LAUNCHER!' * 20
+        print self.launcher.__class__.__name__ * 20
         if self.launcher:
             self.playToken = self.launcher.getPlayToken()
         fakePlayToken = config.GetString('fake-playtoken', '')
@@ -673,21 +675,20 @@ class OTPClientRepository(ClientRepositoryBase):
         self.stopReaderPollTask()
         if self.bootedIndex != None and OTPLocalizer.CRBootedReasons.has_key(self.bootedIndex):
             message = OTPLocalizer.CRBootedReasons[self.bootedIndex] % {'name': '???', 'dc_reason': self.bootedText}
+        elif self.bootedText != None:
+            message = OTPLocalizer.CRBootedReasonUnknownCode % self.bootedIndex
         else:
-            if self.bootedText != None:
-                message = OTPLocalizer.CRBootedReasonUnknownCode % self.bootedIndex
-            else:
-                message = OTPLocalizer.CRLostConnection
+            message = OTPLocalizer.CRLostConnection
 
         reconnect = 1
         if self.bootedIndex in (152, 127):
-            reconnect = 0
+          reconnect = 0
 
         self.launcher.setDisconnectDetails(self.bootedIndex, message)
         style = OTPDialog.Acknowledge
         if reconnect and self.loginInterface.supportsRelogin():
-            message += OTPLocalizer.CRTryConnectAgain
-            style = OTPDialog.TwoChoice
+          message += OTPLocalizer.CRTryConnectAgain
+          style = OTPDialog.TwoChoice
 
         dialogClass = OTPGlobals.getGlobalDialogClass()
         self.lostConnectionBox = dialogClass(doneEvent='lostConnectionAck', message=message, text_wordwrap=18, style=style)

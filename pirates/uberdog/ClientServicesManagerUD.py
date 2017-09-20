@@ -1010,13 +1010,13 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
         else:
             self.notify.error('Invalid accountdb-type: ' + accountDBType)
 
-    def killConnection(self, connId, reason):
+    def killConnection(self, connId, reason, code=122):
         datagram = PyDatagram()
         datagram.addServerHeader(
             connId,
             self.air.ourChannel,
             CLIENTAGENT_EJECT)
-        datagram.addUint16(122)
+        datagram.addUint16(code)
         datagram.addString(reason)
         self.air.send(datagram)
 
@@ -1029,8 +1029,8 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
 
         self.killConnection(connId, 'An operation is already underway: ' + fsm.name)
 
-    def killAccount(self, accountId, reason):
-        self.killConnection(self.GetAccountConnectionChannel(accountId), reason)
+    def killAccount(self, accountId, reason, code=122):
+        self.killConnection(self.GetAccountConnectionChannel(accountId), reason, code)
 
     def killAccountFSM(self, accountId):
         fsm = self.account2fsm.get(accountId)
@@ -1060,7 +1060,7 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
         sender = self.air.getMsgSender()
 
         if sender >> 32:
-            self.killConnection(sender, 'Client is already logged in.')
+            self.killConnection(sender, 'Client is already logged in.', 100)
             return
 
         if sender in self.connection2fsm:
