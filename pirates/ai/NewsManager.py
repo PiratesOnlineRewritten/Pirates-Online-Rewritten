@@ -68,8 +68,8 @@ class NewsManager(DistributedObject.DistributedObject):
                 else:
                     message = message % location
             icon = ('admin', '')
-            #if self.inTutorial(level=PiratesGlobals.TUT_GOT_COMPASS):
-            #    return
+            if self.inTutorial(level=PiratesGlobals.TUT_GOT_COMPASS):
+                return
         if messageId >= 30 and messageId < 50:
             message = PLocalizer.FleetHolidayMsgs.get(messageId)
             icon = ('ship', '')
@@ -99,9 +99,9 @@ class NewsManager(DistributedObject.DistributedObject):
         if not hasattr(base, 'localAvatar'):
             return
         paidStatus = Freebooter.getPaidStatus(localAvatar.getDoId(), checkHoliday=False)
-        #if base.localAvatar.getTutorialState() < PiratesGlobals.TUT_MET_JOLLY_ROGER or self.inNewsWorld() == None:
-        #    taskMgr.doMethodLater(15, self.showHolidayMessage, 'showHolidayMessage-holidayId:' + str(holidayId), extraArgs=[holidayId, msgType])
-        #    return
+        if base.localAvatar.getTutorialState() < PiratesGlobals.TUT_MET_JOLLY_ROGER or self.inNewsWorld() == None:
+            taskMgr.doMethodLater(15, self.showHolidayMessage, 'showHolidayMessage-holidayId:' + str(holidayId), extraArgs=[holidayId, msgType])
+            return
         if msgType == 1:
             hours, minutes = self.getTimeRemaining(holidayId)
             message = HolidayGlobals.getHolidayStartMsg(holidayId, paidStatus)

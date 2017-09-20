@@ -340,6 +340,7 @@ analytics-secret-key 9de82d4da112aa45ac0ee63f570c45d4e340812f
 # Developer:
 want-dev #t
 #dev-branch-flavor development
+force-tutorial-complete #t
 
 # Minigames:
 want-fishing-game #t

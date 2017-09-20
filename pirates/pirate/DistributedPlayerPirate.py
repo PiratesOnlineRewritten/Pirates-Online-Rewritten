@@ -3252,6 +3252,8 @@ class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, Distribu
         return None
 
     def getTutorialState(self):
+        if config.GetBool('force-tutorial-complete', False):
+            return PiratesGlobals.TUT_MET_JOLLY_ROGER
         return self.tutorialState
 
     def updateClientTutorialStatus(self, val):
