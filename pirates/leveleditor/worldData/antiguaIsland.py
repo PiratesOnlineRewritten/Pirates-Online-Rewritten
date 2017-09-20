@@ -7218,17 +7218,6 @@ objectStruct = {
                         'Model': 'models/misc/coll_sphere_barrier'
                     }
                 },
-                #'1184631484.49joswilso': {
-                #    'Type': 'Dinghy',
-                #    'Aggro Radius': '13.8554',
-                #    'Hpr': VBase3(44.916, 0.0, 0.0),
-                #    'Location': 'Water',
-                #    'Pos': Point3(115.382, -403.425, 0.379),
-                #    'Scale': VBase3(1.0, 1.0, 1.0),
-                #    'Visual': {
-                #        'Model': 'models/shipparts/dingy-geometry_High'
-                #    }
-                #},
                 '1184889216.0dxschafe': {
                     'Type': 'Dinghy',
                     'Aggro Radius': '15.0602',
@@ -7916,135 +7905,6 @@ objectStruct = {
                         'Model': 'models/misc/coll_cube_barrier'
                     }
                 },
-                '1225133488.48caoconno': {
-                    'Type': 'Holiday Object',
-                    'Aggro Radius': '12.0000',
-                    'Holiday': 'FoundersFeast',
-                    'Hpr': VBase3(-121.157, 0.0, 0.0),
-                    'Interact Mode': 'All',
-                    'Pos': Point3(-129.499, -259.596, 3.584),
-                    'Scale': VBase3(1.0, 1.0, 1.0),
-                    'SubType': 'Roast Pig',
-                    'VisSize': '',
-                    'Visual': {
-                        'Model': 'models/props/pir_m_prp_foo_barbecuefire'
-                    }
-                },
-                '1225133532.62caoconno': {
-                    'Type': 'Holiday Object',
-                    'Aggro Radius': '25.0000',
-                    'Holiday': 'FoundersFeast',
-                    'Hpr': Point3(0.0, 0.0, 0.0),
-                    'Interact Mode': 'GM',
-                    'Pos': Point3(-64.868, -238.525, 2.527),
-                    'Scale': VBase3(1.0, 1.0, 1.0),
-                    'SubType': 'Bonfire',
-                    'VisSize': '',
-                    'Visual': {
-                        'Model': 'models/props/pir_m_prp_foo_bonfire'
-                    }
-                },
-                '1225133641.47caoconno': {
-                    'Type': 'Light_Fixtures',
-                    'Holiday': '',
-                    'Hpr': Point3(0.0, 0.0, 0.0),
-                    'Pos': Point3(-122.611, -262.258, 3.064),
-                    'Scale': VBase3(1.0, 1.0, 1.0),
-                    'VisSize': 'None',
-                    'Visual': {
-                        'Model': 'models/props/torch_no_glow'
-                    }
-                },
-                '1225133699.95caoconno': {
-                    'Type': 'Light_Fixtures',
-                    'Holiday': '',
-                    'Hpr': VBase3(163.016, 0.0, 0.0),
-                    'Pos': Point3(-76.486, -179.274, 8.217),
-                    'Scale': VBase3(1.0, 1.0, 1.0),
-                    'VisSize': '',
-                    'Visual': {
-                        'Model': 'models/props/torch_no_glow'
-                    }
-                },
-                '1225133949.06caoconno': {
-                    'Type': 'Bonfire_BBQ',
-                    'DisableCollision': False,
-                    'Holiday': 'FoundersFeast',
-                    'Hpr': VBase3(-121.114, 0.0, 0.0),
-                    'Pos': Point3(-129.568, -259.548, 3.597),
-                    'Scale': VBase3(1.0, 1.0, 1.0),
-                    'VisSize': '',
-                    'Visual': {
-                        'Model': 'models/props/pir_m_prp_foo_barbecuepig'
-                    }
-                },
-                '1225143157.81caoconno': {
-                    'Type': 'Townsperson',
-                    'Category': 'Commoner',
-                    'AnimSet': 'flute',
-                    'CustomModel': 'None',
-                    'HelpID': 'NONE',
-                    'Holiday': 'FoundersFeast',
-                    'Hpr': VBase3(-15.475, 0.0, 0.0),
-                    'Patrol Radius': '12.0000',
-                    'Pos': Point3(-78.338, -268.752, 1.442),
-                    'PoseAnim': '',
-                    'PoseFrame': '',
-                    'Private Status': 'All',
-                    'Respawns': True,
-                    'Scale': VBase3(1.0, 1.0, 1.0),
-                    'ShopID': 'PORT_ROYAL_DEFAULTS',
-                    'Start State': 'Walk',
-                    'StartFrame': '0',
-                    'Team': 'Player',
-                    'TrailFX': 'None',
-                    'VisSize': ''
-                },
-                '1225145808.56caoconno': {
-                    'Type': 'Light_Fixtures',
-                    'Holiday': '',
-                    'Hpr': VBase3(-68.089, 0.0, 0.0),
-                    'Pos': Point3(35.886, -254.958, 1.821),
-                    'Scale': VBase3(1.0, 1.0, 1.0),
-                    'VisSize': '',
-                    'Visual': {
-                        'Model': 'models/props/torch_no_glow'
-                    }
-                },
-                '1225145831.11caoconno': {
-                    'Type': 'Light_Fixtures',
-                    'GridPos': Point3(36.318, -222.43, 2.177),
-                    'Holiday': '',
-                    'Hpr': VBase3(-179.847, 0.0, 0.0),
-                    'Pos': Point3(32.176, -223.193, 1.985),
-                    'Scale': VBase3(1.0, 1.0, 1.0),
-                    'VisSize': '',
-                    'Visual': {
-                        'Model': 'models/props/torch_no_glow'
-                    }
-                },
-                '1225145929.75caoconno': {
-                    'Type': 'Townsperson',
-                    'Category': 'Commoner',
-                    'AnimSet': 'lute',
-                    'CustomModel': 'None',
-                    'HelpID': 'NONE',
-                    'Holiday': 'FoundersFeast',
-                    'Hpr': VBase3(30.88, 0.0, 0.0),
-                    'Patrol Radius': '12.0000',
-                    'Pos': Point3(-73.472, -267.276, 1.441),
-                    'PoseAnim': '',
-                    'PoseFrame': '',
-                    'Private Status': 'All',
-                    'Respawns': True,
-                    'Scale': VBase3(1.0, 1.0, 1.0),
-                    'ShopID': 'PORT_ROYAL_DEFAULTS',
-                    'Start State': 'Walk',
-                    'StartFrame': '0',
-                    'Team': 'Player',
-                    'TrailFX': 'None',
-                    'VisSize': ''
-                },
                 '1264622611.14Shawn': {
                     'Type': 'FishingSpot',
                     'Hpr': VBase3(0.0, 0.0, -0.001),
@@ -8089,8 +7949,42 @@ objectStruct = {
                         'Model': 'models/minigames/pir_m_gam_fsh_fishingSpot_03'
                     }
                 },
+                '1265929593.57Jared': {
+                    'Type': 'RepairBench',
+                    'Hpr': VBase3(90, 0.0, 0.0),
+                    'Pos': Point3(175.152, -252.15, 2.50163),
+                    'Scale': VBase3(1.0, 1.0, 1.0),
+                    'VisSize': '',
+                    'Visual': {
+                        'Model': 'models/minigames/pir_m_gam_srp_repairBenchNovice'
+                    },
+                    'difficulty': '0'
+                },
+                '1265929776.93Jared': {
+                    'Type': 'RepairBench',
+                    'Hpr': VBase3(130.0, 0.0, 0.0),
+                    'Pos': Point3(163.3, -255.491, 2.44858),
+                    'Scale': VBase3(1.0, 1.0, 1.0),
+                    'VisSize': '',
+                    'Visual': {
+                        'Model': 'models/minigames/pir_m_gam_srp_repairBenchAdvanced'
+                    },
+                    'difficulty': '5'
+                },
+                '1265929858.04Jared': {
+                    'Type': 'RepairBench',
+                    'GridPos': Point3(130.4, -380.3, 2.356),
+                    'Hpr': VBase3(150.0, 0.0, 0.0),
+                    'Pos': Point3(162.336, -267.176, 2.14113),
+                    'Scale': VBase3(1.0, 1.0, 1.0),
+                    'VisSize': '',
+                    'Visual': {
+                        'Model': 'models/minigames/pir_m_gam_srp_repairBenchMaster'
+                    },
+                    'difficulty': '9'
+                },
             },
-            'Undockable': False,
+            'Undockable': True,
             'VisSize': '',
             'VisZone': '36',
             'Visibility': 'Section',
@@ -8840,7 +8734,6 @@ objectStruct = {
         '1184021176.59kmuller': '["Objects"]["1156207188.828659a2"]["Objects"]["1184021176.59kmuller"]',
         '1184021269.96kmuller': '["Objects"]["1156207188.828659a2"]["Objects"]["1184021269.96kmuller"]',
         '1184021392.12kmuller': '["Objects"]["1156207188.828659a2"]["Objects"]["1184021392.12kmuller"]',
-        #'1184631484.49joswilso': '["Objects"]["1156207188.828659a2"]["Objects"]["1184631484.49joswilso"]',
         '1184889216.0dxschafe': '["Objects"]["1156207188.828659a2"]["Objects"]["1184889216.0dxschafe"]',
         '1184889216.0dxschafe0': '["Objects"]["1156207188.828659a2"]["Objects"]["1184889216.0dxschafe0"]',
         '1184889216.0dxschafe1': '["Objects"]["1156207188.828659a2"]["Objects"]["1184889216.0dxschafe1"]',
@@ -8946,15 +8839,6 @@ objectStruct = {
         '1201024640.0dxschafe8': '["Objects"]["1156207188.828659a2"]["Objects"]["1156207578.91dzlu"]["Objects"]["1201024640.0dxschafe8"]',
         '1201024640.0dxschafe9': '["Objects"]["1156207188.828659a2"]["Objects"]["1156279255.42dzlu"]["Objects"]["1201024640.0dxschafe9"]',
         '1205780624.19kmuller': '["Objects"]["1156207188.828659a2"]["Objects"]["1205780624.19kmuller"]',
-        '1225133488.48caoconno': '["Objects"]["1156207188.828659a2"]["Objects"]["1225133488.48caoconno"]',
-        '1225133532.62caoconno': '["Objects"]["1156207188.828659a2"]["Objects"]["1225133532.62caoconno"]',
-        '1225133641.47caoconno': '["Objects"]["1156207188.828659a2"]["Objects"]["1225133641.47caoconno"]',
-        '1225133699.95caoconno': '["Objects"]["1156207188.828659a2"]["Objects"]["1225133699.95caoconno"]',
-        '1225133949.06caoconno': '["Objects"]["1156207188.828659a2"]["Objects"]["1225133949.06caoconno"]',
-        '1225143157.81caoconno': '["Objects"]["1156207188.828659a2"]["Objects"]["1225143157.81caoconno"]',
-        '1225145808.56caoconno': '["Objects"]["1156207188.828659a2"]["Objects"]["1225145808.56caoconno"]',
-        '1225145831.11caoconno': '["Objects"]["1156207188.828659a2"]["Objects"]["1225145831.11caoconno"]',
-        '1225145929.75caoconno': '["Objects"]["1156207188.828659a2"]["Objects"]["1225145929.75caoconno"]',
         '1264622611.14Shawn': '["Objects"]["1156207188.95dzlu"]["Objects"]["1264622611.14Shawn"]',
         '1264622637.47Shawn': '["Objects"]["1156207188.95dzlu"]["Objects"]["1264622637.47Shawn"]',
         '1264622714.81Shawn': '["Objects"]["1156207188.95dzlu"]["Objects"]["1264622714.81Shawn"]',
@@ -8963,6 +8847,9 @@ objectStruct = {
         '1265929776.93Jared': '["Objects"]["1156207188.95dzlu"]["Objects"]["1265929776.93Jared"]',
         '1265929858.04Jared': '["Objects"]["1156207188.95dzlu"]["Objects"]["1265929858.04Jared"]',
         '1267513406.2Shawn': '["Objects"]["1156207188.95dzlu"]["Objects"]["1267513406.2Shawn"]',
+        '1265929593.57Jared': '["Objects"]["1156207188.95dzlu"]["Objects"]["1265929593.57Jared"]',
+        '1265929776.93Jared': '["Objects"]["1156207188.95dzlu"]["Objects"]["1265929776.93Jared"]',
+        '1265929858.04Jared': '["Objects"]["1156207188.95dzlu"]["Objects"]["1265929858.04Jared"]'
     }
 }
 extraInfo = {
