@@ -400,7 +400,7 @@ class StatusTray(GuiTray.GuiTray):
                     if inv:
                         vtLevel = inv.getStackQuantity(InventoryType.Vitae_Level)
 
-                    self.voodooMeter['text'] = '%s/%s' % (vtLevel  or (voodoo, maxVoodoo))
+                    self.voodooMeter['text'] = str(vtLevel or ('%s/%s' % (voodoo, maxVoodoo)))
                 else:
                     modVoodoo = int(maxVoodoo * 0.75)
                     self.voodooMeter['text'] = '%s\x01Bred\x01/%s\x02' % (voodoo, modVoodoo)
