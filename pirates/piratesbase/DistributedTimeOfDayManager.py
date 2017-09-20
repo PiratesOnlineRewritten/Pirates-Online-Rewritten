@@ -93,3 +93,9 @@ class DistributedTimeOfDayManager(DistributedObject, TimeOfDayManager):
 
     def setMoonJolly(self, isJolly):
         self.switchJollyMoon(isJolly)
+
+    def setRain(self, rain):
+        self.switchRain(rain)
+
+    def setClouds(self, clouds):
+        self.setCloudsType(clouds)

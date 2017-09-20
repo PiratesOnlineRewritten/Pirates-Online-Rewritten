@@ -3,6 +3,7 @@ from direct.directnotify import DirectNotifyGlobal
 from direct.task import Task
 from pirates.piratesbase.TimeOfDayManagerBase import TimeOfDayManagerBase
 from pirates.piratesbase import TODDefs
+from pirates.piratesbase import TODGlobals
 from pirates.piratesbase import PiratesGlobals
 from direct.distributed.ClockDelta import globalClockDelta
 import random
@@ -25,15 +26,24 @@ class DistributedTimeOfDayManagerAI(DistributedObjectAI, TimeOfDayManagerBase):
         self.targetPhase = 0
         self.targetTime = 0
         self.isJolly = int(config.GetBool('start-moon-jolly', False))
+        self.isRaining = False
+        self.clouds = TODGlobals.LIGHTCLOUDS
+        self.weatherTimeMin = config.GetInt('weather-time-min', 5) * 60
+        self.weatherTimeMax = config.GetInt('weather-time-max', 10) * 60
+        self.wantRain = config.GetBool('want-rain', True)
 
     def announceGenerate(self):
         DistributedObjectAI.announceGenerate(self)
 
         self.cycleTask = taskMgr.doMethodLater(1, self.__runCycle, self.uniqueName('runCycle'))
+        if self.wantRain:
+            self.__processWeather()
 
     def delete(self):
         DistributedObjectAI.delete(self)
         taskMgr.remove(self.cycleTask)
+        if hasattr(self, 'weatherTask'):
+            taskMgr.remove(self.weatherTask)
 
     def __runCycle(self, task):
         if self.isPaused:
@@ -148,3 +158,40 @@ class DistributedTimeOfDayManagerAI(DistributedObjectAI, TimeOfDayManagerBase):
         timeIntoCycle = (timeElapsed + self.timeOffset) % cycleDuration
         hoursIntoCycle = timeIntoCycle / REALSECONDS_PER_GAMEHOUR
         return hoursIntoCycle
+
+    def __processWeather(self, task=None):
+        if self.getRain():
+            self.setRaining(False)
+        else:
+            if random.random() < 20:
+                self.notify.debug('Starting to rain...')
+                self.setRaining(True)
+
+        self.weatherTask = taskMgr.doMethodLater(random.randint(self.weatherTimeMin, self.weatherTimeMax), self.__processWeather, 'weatherTask')
+
+        return Task.done
+
+
+    def setRaining(self, rain):
+        self.isRaining = rain
+        if self.isRaining:
+            self.b_setClouds(TODGlobals.HEAVYCLOUDS)
+        else:
+            self.b_setClouds(TODGlobals.LIGHTCLOUDS)
+        self.sendUpdate('setRain', [rain])
+
+    def getRain(self):
+        return self.isRaining
+
+    def setClouds(self, clouds):
+        self.clouds = clouds
+
+    def d_setClouds(self, clouds):
+        self.sendUpdate('setClouds', [clouds])
+
+    def b_setClouds(self, clouds):
+        self.setClouds(clouds)
+        self.d_setClouds(clouds)
+
+    def getClouds(self):
+        return self.clouds
