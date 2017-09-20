@@ -1,5 +1,6 @@
 from otp.launcher.DummyLauncherBase import DummyLauncherBase
 from pirates.launcher.PiratesQuickLauncher import PiratesQuickLauncher
+import os
 
 class PiratesDummyLauncher(DummyLauncherBase, PiratesQuickLauncher):
 
@@ -9,3 +10,6 @@ class PiratesDummyLauncher(DummyLauncherBase, PiratesQuickLauncher):
         self.setPhaseComplete(2, 100)
         self.firstPhase = 3
         self.startFakeDownload()
+
+    def getPlayToken(self):
+        return os.environ.get('POR_TOKEN', None)

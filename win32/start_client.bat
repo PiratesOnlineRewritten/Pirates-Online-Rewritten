@@ -1,8 +1,16 @@
 @echo off
 title Pirates Online Rewritten - Client
 
-set /P POR_USERNAME=Username: 
-set POR_GAMESERVER="127.0.0.1"
+set POR_GAMESERVER=127.0.0.1
+set /P POR_TOKEN=Token (Default: dev): || ^
+set POR_TOKEN=dev
+echo.
+
+echo ====================================
+echo Starting Pirates Online Rewritten...
+echo Token: %POR_TOKEN%
+echo Gameserver: %POR_GAMESERVER%
+echo ====================================
 
 cd ../
 
