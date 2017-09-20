@@ -7,8 +7,6 @@ from pirates.ship import ShipGlobals
 
 class FleetManagerAI(FSM):
     notify = DirectNotifyGlobal.directNotify.newCategory('FleetManagerAI')
-    notify.setDebug(True)
-
     EITC_MSG = {
         10: FleetHolidayGlobals.Msgs.TF_EitcWarn10min,
         5: FleetHolidayGlobals.Msgs.TF_EitcWarn5min
