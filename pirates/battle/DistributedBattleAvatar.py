@@ -335,6 +335,12 @@ class DistributedBattleAvatar(DistributedReputationAvatar, WeaponBase, Teamable)
                 self.requestHideTarget()
             self.activateInvisibleEffect()
 
+    def setLocation(self, parentId, zoneId):
+        DistributedReputationAvatar.setLocation(self, parentId, zoneId)
+
+        if self.parentId:
+            self.wrtReparentTo(self.getParentObj())
+
     def disable(self):
         DistributedBattleAvatar.Count -= 1
         if self.trackStats:

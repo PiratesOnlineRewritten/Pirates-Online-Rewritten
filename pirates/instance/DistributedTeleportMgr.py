@@ -550,14 +550,15 @@ class DistributedTeleportMgr(DistributedObject.DistributedObject):
         localAvatar.reparentTo(area)
         localAvatar.setPosHpr(area, *spawnPos)
         localAvatar.spawnWiggle()
-        localAvatar.enableGridInterest()
+        #localAvatar.enableGridInterest()
         localAvatar.b_setGameState('LandRoam')
 
         try:
             localAvatar.sendCurrentPosition()
         except ValueError:
             localAvatar.reverseLs()
-            self.notify.error('avatar placed at bad position %s in area %s (%s) at spawnPt %s' % (str(localAvatar.getPos()), area, area.uniqueId, str(self.spawnPt)))
+            self.notify.error('avatar placed at bad position %s in area %s (%s) at spawnPt %s' % (str(localAvatar.getPos()), area,
+                area.uniqueId, str(self.spawnPt)))
 
         self.sendUpdate('teleportComplete', [])
 
