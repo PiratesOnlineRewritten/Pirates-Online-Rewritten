@@ -27,7 +27,6 @@ class DistributedSearchableContainer(DistributedInteractive):
         self.sphereScale = 10
         self.container = None
         self.startSearchTime = 0.0
-        return
 
     def setSearchTime(self, t):
         self.searchTime = t
@@ -57,16 +56,19 @@ class DistributedSearchableContainer(DistributedInteractive):
         self.getParentObj().builder.addSectionObj(self.container, self.visZone)
 
     def disable(self):
-        DistributedInteractive.disable(self)
-        self.getParentObj().builder.removeSectionObj(self.container, self.visZone)
+        if self.getParentObj():
+            self.getParentObj().builder.removeSectionObj(self.container, self.visZone)
+
         if self.container:
             self.container.removeNode()
             self.container = None
-        return
+
+        DistributedInteractive.disable(self)
 
     def loadContainer(self):
         if self.container:
             return
+
         modelPath = PiratesGlobals.SearchableModels.get(self.type, 'models/props/crate_04')
         container = self.getContainerModel(modelPath)
         containerColor = self.getContainerColor()
@@ -110,6 +112,7 @@ class DistributedSearchableContainer(DistributedInteractive):
         localAvatar.guiMgr.showQuestProgress(questProgress)
         if localAvatar.getGameState() == 'Searching':
             localAvatar.b_setGameState(localAvatar.gameFSM.defaultState)
+
         self.refreshState()
 
     def requestExit(self):
@@ -123,5 +126,4 @@ class DistributedSearchableContainer(DistributedInteractive):
         self.containerColorA = a
 
     def getContainerColor(self):
-        return (
-         self.containerColorR, self.containerColorG, self.containerColorB, self.containerColorA)
+        return (self.containerColorR, self.containerColorG, self.containerColorB, self.containerColorA)
