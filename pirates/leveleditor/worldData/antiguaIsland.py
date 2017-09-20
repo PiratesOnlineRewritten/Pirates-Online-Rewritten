@@ -7218,17 +7218,17 @@ objectStruct = {
                         'Model': 'models/misc/coll_sphere_barrier'
                     }
                 },
-                '1184631484.49joswilso': {
-                    'Type': 'Dinghy',
-                    'Aggro Radius': '13.8554',
-                    'Hpr': VBase3(44.916, 0.0, 0.0),
-                    'Location': 'Water',
-                    'Pos': Point3(115.382, -403.425, 0.379),
-                    'Scale': VBase3(1.0, 1.0, 1.0),
-                    'Visual': {
-                        'Model': 'models/shipparts/dingy-geometry_High'
-                    }
-                },
+                #'1184631484.49joswilso': {
+                #    'Type': 'Dinghy',
+                #    'Aggro Radius': '13.8554',
+                #    'Hpr': VBase3(44.916, 0.0, 0.0),
+                #    'Location': 'Water',
+                #    'Pos': Point3(115.382, -403.425, 0.379),
+                #    'Scale': VBase3(1.0, 1.0, 1.0),
+                #    'Visual': {
+                #        'Model': 'models/shipparts/dingy-geometry_High'
+                #    }
+                #},
                 '1184889216.0dxschafe': {
                     'Type': 'Dinghy',
                     'Aggro Radius': '15.0602',
@@ -7946,7 +7946,7 @@ objectStruct = {
                 },
                 '1225133641.47caoconno': {
                     'Type': 'Light_Fixtures',
-                    'Holiday': 'FoundersFeast',
+                    'Holiday': '',
                     'Hpr': Point3(0.0, 0.0, 0.0),
                     'Pos': Point3(-122.611, -262.258, 3.064),
                     'Scale': VBase3(1.0, 1.0, 1.0),
@@ -7957,31 +7957,9 @@ objectStruct = {
                 },
                 '1225133699.95caoconno': {
                     'Type': 'Light_Fixtures',
-                    'Holiday': 'FoundersFeast',
+                    'Holiday': '',
                     'Hpr': VBase3(163.016, 0.0, 0.0),
                     'Pos': Point3(-76.486, -179.274, 8.217),
-                    'Scale': VBase3(1.0, 1.0, 1.0),
-                    'VisSize': '',
-                    'Visual': {
-                        'Model': 'models/props/torch_no_glow'
-                    }
-                },
-                '1225133715.48caoconno': {
-                    'Type': 'Light_Fixtures',
-                    'Holiday': 'FoundersFeast',
-                    'Hpr': VBase3(-179.109, 0.0, 0.0),
-                    'Pos': Point3(-99.123, -180.518, 7.99),
-                    'Scale': VBase3(1.0, 1.0, 1.0),
-                    'VisSize': '',
-                    'Visual': {
-                        'Model': 'models/props/torch_no_glow'
-                    }
-                },
-                '1225133738.39caoconno': {
-                    'Type': 'Light_Fixtures',
-                    'Holiday': 'FoundersFeast',
-                    'Hpr': VBase3(-49.911, 0.0, 0.0),
-                    'Pos': Point3(-137.05, -253.989, 5.018),
                     'Scale': VBase3(1.0, 1.0, 1.0),
                     'VisSize': '',
                     'Visual': {
@@ -8024,7 +8002,7 @@ objectStruct = {
                 },
                 '1225145808.56caoconno': {
                     'Type': 'Light_Fixtures',
-                    'Holiday': 'FoundersFeast',
+                    'Holiday': '',
                     'Hpr': VBase3(-68.089, 0.0, 0.0),
                     'Pos': Point3(35.886, -254.958, 1.821),
                     'Scale': VBase3(1.0, 1.0, 1.0),
@@ -8036,7 +8014,7 @@ objectStruct = {
                 '1225145831.11caoconno': {
                     'Type': 'Light_Fixtures',
                     'GridPos': Point3(36.318, -222.43, 2.177),
-                    'Holiday': 'FoundersFeast',
+                    'Holiday': '',
                     'Hpr': VBase3(-179.847, 0.0, 0.0),
                     'Pos': Point3(32.176, -223.193, 1.985),
                     'Scale': VBase3(1.0, 1.0, 1.0),
@@ -8066,7 +8044,51 @@ objectStruct = {
                     'Team': 'Player',
                     'TrailFX': 'None',
                     'VisSize': ''
-                }
+                },
+                '1264622611.14Shawn': {
+                    'Type': 'FishingSpot',
+                    'Hpr': VBase3(0.0, 0.0, -0.001),
+                    'Ocean Offset': '3',
+                    'Pos': Point3(128.575, -470.246, 4.2052),
+                    'Scale': VBase3(1.0, 1.0, 1.0),
+                    'VisSize': '',
+                    'Visual': {
+                        'Model': 'models/minigames/pir_m_gam_fsh_fishingSpot_02'
+                    }
+                },
+                '1264622637.47Shawn': {
+                    'Type': 'FishingSpot',
+                    'Hpr': VBase3(0.0, 0.0, -0.001),
+                    'Ocean Offset': '3',
+                    'Pos': Point3(119.684, -448.793, 4.29371),
+                    'Scale': VBase3(1.0, 1.0, 1.0),
+                    'VisSize': '',
+                    'Visual': {
+                        'Model': 'models/minigames/pir_m_gam_fsh_fishingSpot_04'
+                    }
+                },
+                '1264622714.81Shawn': {
+                    'Type': 'FishingSpot',
+                    'Hpr': VBase3(0.0, 0.0, -0.001),
+                    'Ocean Offset': '3',
+                    'Pos': Point3(109.972, -425.194, 4.39876),
+                    'Scale': VBase3(1.0, 1.0, 1.0),
+                    'VisSize': '',
+                    'Visual': {
+                        'Model': 'models/minigames/pir_m_gam_fsh_fishingSpot'
+                    }
+                },
+                '1264622752.66Shawn': {
+                    'Type': 'FishingSpot',
+                    'Hpr': VBase3(0.0, 0.0, -0.001),
+                    'Ocean Offset': '3',
+                    'Pos': Point3(102.936, -408.967, 4.44116),
+                    'Scale': VBase3(1.0, 1.0, 1.0),
+                    'VisSize': '',
+                    'Visual': {
+                        'Model': 'models/minigames/pir_m_gam_fsh_fishingSpot_03'
+                    }
+                },
             },
             'Undockable': False,
             'VisSize': '',
@@ -8079,33 +8101,68 @@ objectStruct = {
     },
     'TodSettings': {
         'AmbientColors': {
-            0: Vec4(0.207843, 0.243137, 0.447059, 1),
-            2: Vec4(0.666667, 0.721569, 0.792157, 1),
-            4: Vec4(0.721569, 0.611765, 0.619608, 1),
-            6: Vec4(0.207843, 0.243137, 0.447059, 1),
-            8: Vec4(0.388235, 0.423529, 0.568627, 1)
+            'Dawn': Vec4(0.25, 0.25, 0.25, 1),
+            'Day': Vec4(0.25, 0.25, 0.25, 1),
+            'Dusk': Vec4(0.25, 0.25, 0.25, 1),
+            'FullMoon': Vec4(0.25, 0.25, 0.25, 1),
+            'HalfMoon': Vec4(0.25, 0.25, 0.25, 1),
+            'HalfMoon2': Vec4(0.25, 0.25, 0.25, 1),
+            'Halloween': Vec4(0.25, 0.25, 0.25, 1),
+            'Invasion': Vec4(0.25, 0.25, 0.25, 1),
+            'Night': Vec4(0.25, 0.25, 0.25, 1),
+            'Stars': Vec4(0.25, 0.25, 0.25, 1)
         },
+        'BacklightColors': {},
         'DirectionalColors': {
-            0: Vec4(0.956863, 0.909804, 0.894118, 1),
-            2: Vec4(1, 1, 1, 1),
-            4: Vec4(0.439216, 0.176471, 0, 1),
-            6: Vec4(0.513726, 0.482353, 0.639216, 1),
-            8: Vec4(0.447059, 0.439216, 0.537255, 1)
+            'Dawn': Vec4(0, 0, 0, 1),
+            'Day': Vec4(0, 0, 0, 1),
+            'Dusk': Vec4(0, 0, 0, 1),
+            'FullMoon': Vec4(0, 0, 0, 1),
+            'HalfMoon': Vec4(0, 0, 0, 1),
+            'HalfMoon2': Vec4(0, 0, 0, 1),
+            'Halloween': Vec4(0, 0, 0, 1),
+            'Invasion': Vec4(0, 0, 0, 1),
+            'Night': Vec4(0, 0, 0, 1),
+            'Stars': Vec4(0, 0, 0, 1)
         },
         'FogColors': {
-            0: Vec4(0.172549, 0.180392, 0.290196, 1),
-            2: Vec4(0.894118, 0.894118, 1, 1),
-            4: Vec4(0.231373, 0.203922, 0.184314, 1),
-            6: Vec4(0.172549, 0.180392, 0.290196, 1),
-            8: Vec4(0.129412, 0.137255, 0.203922, 1)
+            'Dawn': Vec4(0.25, 0.25, 0.25, 0),
+            'Day': Vec4(0.25, 0.25, 0.25, 0),
+            'Dusk': Vec4(0.25, 0.25, 0.25, 0),
+            'FullMoon': Vec4(0.25, 0.25, 0.25, 0),
+            'HalfMoon': Vec4(0.25, 0.25, 0.25, 0),
+            'HalfMoon2': Vec4(0.25, 0.25, 0.25, 0),
+            'Halloween': Vec4(0.25, 0.25, 0.25, 0),
+            'Invasion': Vec4(0.25, 0.25, 0.25, 0),
+            'Night': Vec4(0.25, 0.25, 0.25, 0),
+            'Stars': Vec4(0.25, 0.25, 0.25, 0)
         },
         'FogRanges': {
-            0: 0.000699999975040555,
-            2: 0.00019999999494757503,
-            4: 0.00039999998989515007,
-            6: 0.000699999975040555,
-            8: 0.0
-        }
+            'Dawn': 0.0001,
+            'Day': 0.0001,
+            'FullMoon': 0.0001,
+            'HalfMoon': 0.0001,
+            'HalfMoon2': 0.0001,
+            'Halloween': 0.0001,
+            'Invasion': 0.0001,
+            'Stars': 0.0001
+        },
+        'FogTypes': {},
+        'LightSwitches': {},
+        'LinearFogRanges': {
+            'Dawn': (500.0, 750.0),
+            'Day': (500.0, 750.0),
+            'Dusk': (500.0, 750.0),
+            'FullMoon': (500.0, 750.0),
+            'HalfMoon': (500.0, 750.0),
+            'HalfMoon2': (500.0, 750.0),
+            'Halloween': (500.0, 750.0),
+            'Invasion': (500.0, 750.0),
+            'Night': (500.0, 750.0),
+            'Stars': (500.0, 750.0)
+        },
+        'SkyTypes': {},
+        'SunDirections': {}
     },
     'Vis Table': {},
     'Node Links': [
@@ -8783,7 +8840,7 @@ objectStruct = {
         '1184021176.59kmuller': '["Objects"]["1156207188.828659a2"]["Objects"]["1184021176.59kmuller"]',
         '1184021269.96kmuller': '["Objects"]["1156207188.828659a2"]["Objects"]["1184021269.96kmuller"]',
         '1184021392.12kmuller': '["Objects"]["1156207188.828659a2"]["Objects"]["1184021392.12kmuller"]',
-        '1184631484.49joswilso': '["Objects"]["1156207188.828659a2"]["Objects"]["1184631484.49joswilso"]',
+        #'1184631484.49joswilso': '["Objects"]["1156207188.828659a2"]["Objects"]["1184631484.49joswilso"]',
         '1184889216.0dxschafe': '["Objects"]["1156207188.828659a2"]["Objects"]["1184889216.0dxschafe"]',
         '1184889216.0dxschafe0': '["Objects"]["1156207188.828659a2"]["Objects"]["1184889216.0dxschafe0"]',
         '1184889216.0dxschafe1': '["Objects"]["1156207188.828659a2"]["Objects"]["1184889216.0dxschafe1"]',
@@ -8893,13 +8950,19 @@ objectStruct = {
         '1225133532.62caoconno': '["Objects"]["1156207188.828659a2"]["Objects"]["1225133532.62caoconno"]',
         '1225133641.47caoconno': '["Objects"]["1156207188.828659a2"]["Objects"]["1225133641.47caoconno"]',
         '1225133699.95caoconno': '["Objects"]["1156207188.828659a2"]["Objects"]["1225133699.95caoconno"]',
-        '1225133715.48caoconno': '["Objects"]["1156207188.828659a2"]["Objects"]["1225133715.48caoconno"]',
-        '1225133738.39caoconno': '["Objects"]["1156207188.828659a2"]["Objects"]["1225133738.39caoconno"]',
         '1225133949.06caoconno': '["Objects"]["1156207188.828659a2"]["Objects"]["1225133949.06caoconno"]',
         '1225143157.81caoconno': '["Objects"]["1156207188.828659a2"]["Objects"]["1225143157.81caoconno"]',
         '1225145808.56caoconno': '["Objects"]["1156207188.828659a2"]["Objects"]["1225145808.56caoconno"]',
         '1225145831.11caoconno': '["Objects"]["1156207188.828659a2"]["Objects"]["1225145831.11caoconno"]',
-        '1225145929.75caoconno': '["Objects"]["1156207188.828659a2"]["Objects"]["1225145929.75caoconno"]'
+        '1225145929.75caoconno': '["Objects"]["1156207188.828659a2"]["Objects"]["1225145929.75caoconno"]',
+        '1264622611.14Shawn': '["Objects"]["1156207188.95dzlu"]["Objects"]["1264622611.14Shawn"]',
+        '1264622637.47Shawn': '["Objects"]["1156207188.95dzlu"]["Objects"]["1264622637.47Shawn"]',
+        '1264622714.81Shawn': '["Objects"]["1156207188.95dzlu"]["Objects"]["1264622714.81Shawn"]',
+        '1264622752.66Shawn': '["Objects"]["1156207188.95dzlu"]["Objects"]["1264622752.66Shawn"]',
+        '1265929593.57Jared': '["Objects"]["1156207188.95dzlu"]["Objects"]["1265929593.57Jared"]',
+        '1265929776.93Jared': '["Objects"]["1156207188.95dzlu"]["Objects"]["1265929776.93Jared"]',
+        '1265929858.04Jared': '["Objects"]["1156207188.95dzlu"]["Objects"]["1265929858.04Jared"]',
+        '1267513406.2Shawn': '["Objects"]["1156207188.95dzlu"]["Objects"]["1267513406.2Shawn"]',
     }
 }
 extraInfo = {
