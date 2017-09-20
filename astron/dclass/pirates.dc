@@ -1004,7 +1004,7 @@ dclass DistributedBattleAvatar : DistributedReputationAvatar, WeaponBase, Teamab
   setSkillEffects(BuffList) required broadcast ram ownrecv;
   setEnsnaredTargetId(uint32) required broadcast ram;
   interrupted(uint8) airecv clsend;
-  setLevel(uint16=0) required broadcast ram ownrecv;
+  setLevel(uint16=0) required broadcast ram ownrecv db;
   battleRandomSync();
   setVisZone(string) broadcast ram ownsend;
   setInInvasion(bool) required broadcast ram;
@@ -1362,7 +1362,7 @@ dclass DistributedPlayerPirate : DistributedPlayer, DistributedBattleAvatar, Hum
   sendFailedLootTradeMessage(bool) ownrecv;
   setLuck(int16) required broadcast;
   setMaxLuck(int16) required broadcast db;
-  setMojo(int16=50) required broadcast ownrecv;
+  setMojo(int16=50) required broadcast ownrecv db;
   setMaxMojo(int16=50) required broadcast db;
   setSwiftness(int16) required broadcast;
   setMaxSwiftness(int16) required broadcast db;

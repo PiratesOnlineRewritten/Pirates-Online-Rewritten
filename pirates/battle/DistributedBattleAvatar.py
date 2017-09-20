@@ -563,6 +563,7 @@ class DistributedBattleAvatar(DistributedReputationAvatar, WeaponBase, Teamable)
             name = '%s  %s\x01smallCaps\x01%s%s\x02\x02' % (self.name, color, PLocalizer.Lv, self.level)
         else:
             name = self.name
+
         if self.getNameText():
             self.getNameText()['text'] = name
 
@@ -595,6 +596,7 @@ class DistributedBattleAvatar(DistributedReputationAvatar, WeaponBase, Teamable)
     def initializeBattleCollisions(self):
         if self.battleTubeNodePaths or self.battleCollisionsDisabled:
             return
+
         self.battleTubeEvent = self.uniqueName('battleAvatarTube')
         self.battleTube = CollisionTube(0, 0, 0, 0, 0, self.battleTubeHeight, self.battleTubeRadius)
         self.battleTube.setTangible(1)
@@ -1479,6 +1481,7 @@ class DistributedBattleAvatar(DistributedReputationAvatar, WeaponBase, Teamable)
         skillInfo = WeaponGlobals.getSkillAnimInfo(skillId)
         if not skillInfo:
             return
+
         anim = skillInfo[WeaponGlobals.PLAYABLE_INDEX]
         if self.curAttackAnim:
             if self.curAttackAnim.isPlaying() and WeaponGlobals.getIsInstantSkill(skillId, ammoSkillId):
@@ -1486,9 +1489,11 @@ class DistributedBattleAvatar(DistributedReputationAvatar, WeaponBase, Teamable)
             else:
                 self.curAttackAnim.pause()
                 self.curAttackAnim = None
+
         if self.secondWeapon:
             self.secondWeapon.removeNode()
             self.secondWeapon = None
+
         timestamp = globalClockDelta.getFrameNetworkTime()
         self.currentAttack = [skillId, ammoSkillId, timestamp]
         self.refreshStatusTray()
@@ -1505,11 +1510,14 @@ class DistributedBattleAvatar(DistributedReputationAvatar, WeaponBase, Teamable)
             self.curAttackAnim = getattr(self.cr.combatAnims, anim)(self, skillId, ammoSkillId, charge, target, skillResult, areaList)
         else:
             self.curAttackAnim = getattr(self.cr.combatAnims, anim)(self, skillId, ammoSkillId, charge, target, skillResult)
+
         if localAvatar.duringDialog:
             self.curAttackAnim = None
+
         self.preprocessAttackAnim()
         if self.curAttackAnim != None:
             self.curAttackAnim.start()
+
         if not self.isLocal():
             if WeaponGlobals.getSkillTrack(skillId) == WeaponGlobals.DEFENSE_SKILL_INDEX:
                 newZ = self.getZ(localAvatar)
@@ -1518,7 +1526,6 @@ class DistributedBattleAvatar(DistributedReputationAvatar, WeaponBase, Teamable)
                     self.showEffectString(PLocalizer.AttackReflected)
                 else:
                     self.showEffectString(PLocalizer.AttackBlocked)
-        return
 
     def preprocessAttackAnim(self):
         pass

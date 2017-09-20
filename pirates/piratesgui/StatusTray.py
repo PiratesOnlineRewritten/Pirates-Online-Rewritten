@@ -146,11 +146,11 @@ class StatusTray(GuiTray.GuiTray):
             self.skillFrame['image_pos'] = (0, 0, 0.02)
             self.activeName['text_align'] = TextNode.ALeft
             self.activeName.setPos(0.09, 0, 0.01)
-        return
 
     def show(self):
         if not self.doId:
             return
+
         if base.cr.doId2do[self.doId].state != 'Spawn' and base.cr.doId2do[self.doId].state != 'Death' and base.cr.doId2do[self.doId].state != 'Waiting':
             GuiTray.GuiTray.show(self)
 
@@ -160,6 +160,7 @@ class StatusTray(GuiTray.GuiTray):
         if self.card:
             self.card.removeNode()
             self.card = None
+
         self.hpMeterDownIval.pause()
         self.hpMeterUpGreenIval.pause()
         self.hpMeterUpRedIval.pause()
@@ -175,7 +176,6 @@ class StatusTray(GuiTray.GuiTray):
 
         del self.icons
         GuiTray.GuiTray.destroy(self)
-        return
 
     def updateName(self, name, level, doId):
         self.name = name
@@ -185,6 +185,7 @@ class StatusTray(GuiTray.GuiTray):
         target = base.cr.doId2do.get(doId)
         if not target:
             return
+
         color = base.cr.battleMgr.getExperienceColor(base.localAvatar, target)
         avType = target.getAvatarType()
         if avType.isA(AvatarTypes.JollyRoger):
@@ -196,6 +197,7 @@ class StatusTray(GuiTray.GuiTray):
             text = '%s  \x01smallCaps\x01%s%s%s\x02\x02' % (name, color, PLocalizer.Lv, self.level)
         else:
             text = '%s' % self.name
+
         self.nameLabel['text'] = text
         self.updateIcon(doId)
 
@@ -203,8 +205,10 @@ class StatusTray(GuiTray.GuiTray):
         target = base.cr.doId2do.get(doId)
         if not target:
             return
+
         if self.currentIcon:
             self.currentIcon.hide()
+
         pvpTeam = target.getPVPTeam()
         siegeTeam = target.getSiegeTeam()
         if pvpTeam:
@@ -218,8 +222,8 @@ class StatusTray(GuiTray.GuiTray):
             if icon:
                 icon.reparentTo(self.enemyFrame)
                 icon.show()
+
         self.currentIcon = icon
-        return
 
     def updateSticky(self, bool):
         self.sticky = bool
@@ -232,10 +236,13 @@ class StatusTray(GuiTray.GuiTray):
         hp = max(0, hp)
         if localAvatar.gameFSM.getCurrentOrNextState() == 'Death':
             hp = 0
+
         if not maxHp:
             return
+
         if srcDoId != self.doId and srcDoId:
             return
+
         if self.doId != self.prevDoId and self.doId:
             self.prevDoId = self.doId
             hp = base.cr.doId2do[self.doId].getHp()
@@ -263,6 +270,7 @@ class StatusTray(GuiTray.GuiTray):
                 elif self.hpMeterUpYellowIval.isPlaying():
                     self.hpMeterUpYellowIval.finish()
             return
+
         hpFraction = float(hp) / float(maxHp)
         if hpFraction >= 0.5:
             barColor = (0.1, 0.7, 0.1, 1)
@@ -271,107 +279,116 @@ class StatusTray(GuiTray.GuiTray):
                 barColor = (1.0, 1.0, 0.1, 1)
             else:
                 barColor = (1.0, 0.0, 0.0, 1)
-            self.hpMeter['barColor'] = barColor
-            self.hpMeter['range'] = maxHp
-            self.hpMeter['value'] = hp
-            if localAvatar.guiMgr.gameGui.hpModMeter:
-                if not self.doId:
-                    localAvatar.guiMgr.gameGui.hpModMeter['value'] = hp
-                    localAvatar.guiMgr.gameGui.hpModMeter['barColor'] = barColor
-            if not self.hideValues:
-                if not self.doId:
-                    inv = localAvatar.getInventory()
-                    vtLevel = None
-                    if inv:
-                        vtLevel = inv.getStackQuantity(InventoryType.Vitae_Level)
-                    if not vtLevel:
-                        self.hpMeter['text'] = '%s/%s' % (hp, maxHp)
-                    else:
-                        modHp = int(maxHp * 0.75)
-                        self.hpMeter['text'] = '%s\x01Bred\x01/%s\x02' % (hp, modHp)
-                else:
+
+        self.hpMeter['barColor'] = barColor
+        self.hpMeter['range'] = maxHp
+        self.hpMeter['value'] = hp
+        if localAvatar.guiMgr.gameGui.hpModMeter:
+            if not self.doId:
+                localAvatar.guiMgr.gameGui.hpModMeter['value'] = hp
+                localAvatar.guiMgr.gameGui.hpModMeter['barColor'] = barColor
+
+        if not self.hideValues:
+            if not self.doId:
+                inv = localAvatar.getInventory()
+                vtLevel = None
+                if inv:
+                    vtLevel = inv.getStackQuantity(InventoryType.Vitae_Level)
+                if not vtLevel:
                     self.hpMeter['text'] = '%s/%s' % (hp, maxHp)
-            if self.hpMeterDownIval.isPlaying():
-                currentTime = self.hpMeterDownIval.getT()
+                else:
+                    modHp = int(maxHp * 0.75)
+                    self.hpMeter['text'] = '%s\x01Bred\x01/%s\x02' % (hp, modHp)
             else:
-                currentTime = None
-            if currentTime is not None:
-                if currentTime < 0.5:
-                    self.prevValue = self.prevValue + self.prevChange
-                    if self.prevValue > maxHp:
-                        self.prevValue = maxHp
-            if self.prevValue > hp:
-                self.hpMeterChange.setColor(1.0, 0.0, 0.0, 1.0)
-                change = float(self.prevValue - hp)
-                valueScale = float(hp) / float(maxHp)
-                changeScale = float(change) / float(maxHp)
-                frameSize = tuple(self.hpMeter['frameSize'])
-                frameRight = float(changeScale * 0.52)
-                frameBottom = float(frameSize[2] + 0.005)
-                frameTop = float(frameSize[3] - 0.005)
-                frameLeft = float(valueScale * 0.52)
-                frameX = float(0.205 + frameLeft) - 0.001
-                self.hpMeterChange.setPos(frameX + float(self.meterChangeOffset[0]), 0.0, float(self.meterChangeOffset[2]))
-                self.hpMeterChange['frameSize'] = (0.0, frameRight, frameBottom, frameTop)
-                if self.hpMeterUpGreenIval.isPlaying():
-                    self.hpMeterUpGreenIval.finish()
-                if self.hpMeterUpRedIval.isPlaying():
-                    self.hpMeterUpRedIval.finish()
-                if self.hpMeterUpYellowIval.isPlaying():
-                    self.hpMeterUpYellowIval.finish()
-                self.prevChange = change
-                self.prevRange = maxHp
-                self.prevValue = hp
-                if currentTime is None:
-                    self.hpMeterDownIval.start()
-                    return
-                if currentTime >= 0.5:
-                    self.hpMeterDownIval.start()
-                else:
-                    self.hpMeterDownIval.start(startT=currentTime)
-            elif self.prevValue < hp:
-                self.hpMeterChange.setColor(0.0, 0.0, 0.0, 1.0)
-                change = float(hp - self.prevValue)
-                valueScale = float(hp) / float(maxHp)
-                changeScale = float(change) / float(maxHp)
-                frameSize = tuple(self.hpMeter['frameSize'])
-                frameRight = float(changeScale * 0.52)
-                frameBottom = float(frameSize[2] + 0.005)
-                frameTop = float(frameSize[3] - 0.005)
-                frameLeft = float(valueScale * 0.52)
-                frameX = float(0.205 + frameLeft) - frameRight
-                self.hpMeterChange.setPos(frameX + float(self.meterChangeOffset[0]), 0.0, float(self.meterChangeOffset[2]))
-                if frameLeft > 0.52:
-                    diff = frameLeft - 0.52
-                    frameRight = float(frameRight - diff)
-                self.prevChange = change
-                if self.hpMeterDownIval.isPlaying():
-                    self.hpMeterDownIval.finish()
-                if self.hpMeterUpGreenIval.isPlaying():
-                    self.hpMeterUpGreenIval.finish()
-                if self.hpMeterUpRedIval.isPlaying():
-                    self.hpMeterUpRedIval.finish()
-                if self.hpMeterUpYellowIval.isPlaying():
-                    self.hpMeterUpYellowIval.finish()
-                self.prevRange = maxHp
-                self.prevValue = hp
-                self.hpMeterChange['frameSize'] = (
-                 0.0, frameRight, frameBottom, frameTop)
-                if hpFraction >= 0.5:
-                    self.hpMeterUpGreenIval.start()
-                elif hpFraction >= 0.25:
-                    self.hpMeterUpYellowIval.start()
-                else:
-                    self.hpMeterUpRedIval.start()
-        return
+                self.hpMeter['text'] = '%s/%s' % (hp, maxHp)
+
+        if self.hpMeterDownIval.isPlaying():
+            currentTime = self.hpMeterDownIval.getT()
+        else:
+            currentTime = None
+
+        if currentTime is not None:
+            if currentTime < 0.5:
+                self.prevValue = self.prevValue + self.prevChange
+                if self.prevValue > maxHp:
+                    self.prevValue = maxHp
+
+        if self.prevValue > hp:
+            self.hpMeterChange.setColor(1.0, 0.0, 0.0, 1.0)
+            change = float(self.prevValue - hp)
+            valueScale = float(hp) / float(maxHp)
+            changeScale = float(change) / float(maxHp)
+            frameSize = tuple(self.hpMeter['frameSize'])
+            frameRight = float(changeScale * 0.52)
+            frameBottom = float(frameSize[2] + 0.005)
+            frameTop = float(frameSize[3] - 0.005)
+            frameLeft = float(valueScale * 0.52)
+            frameX = float(0.205 + frameLeft) - 0.001
+            self.hpMeterChange.setPos(frameX + float(self.meterChangeOffset[0]), 0.0, float(self.meterChangeOffset[2]))
+            self.hpMeterChange['frameSize'] = (0.0, frameRight, frameBottom, frameTop)
+            if self.hpMeterUpGreenIval.isPlaying():
+                self.hpMeterUpGreenIval.finish()
+
+            if self.hpMeterUpRedIval.isPlaying():
+                self.hpMeterUpRedIval.finish()
+
+            if self.hpMeterUpYellowIval.isPlaying():
+                self.hpMeterUpYellowIval.finish()
+
+            self.prevChange = change
+            self.prevRange = maxHp
+            self.prevValue = hp
+            if currentTime is None:
+                self.hpMeterDownIval.start()
+                return
+            if currentTime >= 0.5:
+                self.hpMeterDownIval.start()
+            else:
+                self.hpMeterDownIval.start(startT=currentTime)
+        elif self.prevValue < hp:
+            self.hpMeterChange.setColor(0.0, 0.0, 0.0, 1.0)
+            change = float(hp - self.prevValue)
+            valueScale = float(hp) / float(maxHp)
+            changeScale = float(change) / float(maxHp)
+            frameSize = tuple(self.hpMeter['frameSize'])
+            frameRight = float(changeScale * 0.52)
+            frameBottom = float(frameSize[2] + 0.005)
+            frameTop = float(frameSize[3] - 0.005)
+            frameLeft = float(valueScale * 0.52)
+            frameX = float(0.205 + frameLeft) - frameRight
+            self.hpMeterChange.setPos(frameX + float(self.meterChangeOffset[0]), 0.0, float(self.meterChangeOffset[2]))
+            if frameLeft > 0.52:
+                diff = frameLeft - 0.52
+                frameRight = float(frameRight - diff)
+
+            self.prevChange = change
+            if self.hpMeterDownIval.isPlaying():
+                self.hpMeterDownIval.finish()
+
+            if self.hpMeterUpGreenIval.isPlaying():
+                self.hpMeterUpGreenIval.finish()
+
+            if self.hpMeterUpRedIval.isPlaying():
+                self.hpMeterUpRedIval.finish()
+
+            if self.hpMeterUpYellowIval.isPlaying():
+                self.hpMeterUpYellowIval.finish()
+
+            self.prevRange = maxHp
+            self.prevValue = hp
+            self.hpMeterChange['frameSize'] = (0.0, frameRight, frameBottom, frameTop)
+            if hpFraction >= 0.5:
+                self.hpMeterUpGreenIval.start()
+            elif hpFraction >= 0.25:
+                self.hpMeterUpYellowIval.start()
+            else:
+                self.hpMeterUpRedIval.start()
 
     def updateVoodoo(self, voodoo, maxVoodoo, srcDoId=None):
         self.voodooMeter['range'] = maxVoodoo
         self.voodooMeter['value'] = voodoo
-        if srcDoId != self.doId:
-            if srcDoId:
-                return
 
+        if srcDoId != self.doId:
             if localAvatar.guiMgr.gameGui.voodooModMeter:
                 if not self.doId:
                     localAvatar.guiMgr.gameGui.voodooModMeter['value'] = voodoo
@@ -381,9 +398,9 @@ class StatusTray(GuiTray.GuiTray):
                     inv = localAvatar.getInventory()
                     vtLevel = None
                     if inv:
-                        vtLevel = str(inv.getStackQuantity(InventoryType.Vitae_Level))
+                        vtLevel = inv.getStackQuantity(InventoryType.Vitae_Level)
 
-                    self.voodooMeter['text'] = vtLevel or '%s/%s' % (voodoo, maxVoodoo)
+                    self.voodooMeter['text'] = '%s/%s' % (vtLevel  or (voodoo, maxVoodoo))
                 else:
                     modVoodoo = int(maxVoodoo * 0.75)
                     self.voodooMeter['text'] = '%s\x01Bred\x01/%s\x02' % (voodoo, modVoodoo)
@@ -436,7 +453,6 @@ class StatusTray(GuiTray.GuiTray):
         if self.durationTask:
             taskMgr.remove(self.taskName('updateStatusPanelTask'))
             self.durationTask = None
-        return
 
     def updateDurationTask(self, task):
         if len(self.skillEffects) > 0:
@@ -446,7 +462,6 @@ class StatusTray(GuiTray.GuiTray):
         else:
             self.durationTask = None
             return Task.done
-        return
 
     def updateSkill(self, skillInfo, srcDoId=None):
         if srcDoId != self.doId:
@@ -459,6 +474,7 @@ class StatusTray(GuiTray.GuiTray):
             visSkillId = ammoSkillId
         else:
             visSkillId = skillId
+
         self.activeName['text'] = PLocalizer.InventoryTypeNames[visSkillId]
         asset = RadialMenu.getSkillIconName(visSkillId, 0)
         if self.card:
@@ -466,6 +482,7 @@ class StatusTray(GuiTray.GuiTray):
             self.skillFrame['image'] = tex
             self.skillFrame['image_scale'] = 0.075
             self.skillFrame.setPos(-0.105, 0, -0.255)
+
         ts = globalClockDelta.localElapsedTime(timestamp)
         delay = self.SHOW_SKILL_DURATION - ts
         if delay > 0:
