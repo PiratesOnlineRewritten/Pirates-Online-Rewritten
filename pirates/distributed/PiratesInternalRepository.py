@@ -59,17 +59,19 @@ class PiratesInternalRepository(AstronInternalRepository):
         except SystemExit, KeyboardInterrupt:
             raise
         except Exception as e:
-            if self.getAvatarIdFromSender() > 100000000:
-                dg = PyDatagram()
-                dg.addServerHeader(self.getMsgSender(), self.ourChannel, CLIENTAGENT_EJECT)
-                dg.addUint16(1)
-                dg.addString('An unexpected problem has occurred.')
-                self.send(dg)
 
-            self.writeServerEvent('internal-exception', 
-                avId=self.getAvatarIdFromSender(),
-                accountId=self.getAccountIdFromSender(),
-                exception=traceback.format_exc())
+            if not config.GetBool('boot-on-error', False):
+                if self.getAvatarIdFromSender() > 100000000:
+                    dg = PyDatagram()
+                    dg.addServerHeader(self.getMsgSender(), self.ourChannel, CLIENTAGENT_EJECT)
+                    dg.addUint16(1)
+                    dg.addString('An unexpected problem has occurred.')
+                    self.send(dg)
+
+                self.writeServerEvent('internal-exception', 
+                    avId=self.getAvatarIdFromSender(),
+                    accountId=self.getAccountIdFromSender(),
+                    exception=traceback.format_exc())
 
             self.notify.warning('internal-exception: %s (%s)' % (repr(e), self.getAvatarIdFromSender()))
             print traceback.format_exc()
