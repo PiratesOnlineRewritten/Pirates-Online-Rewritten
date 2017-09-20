@@ -99,10 +99,6 @@ class AvatarChooser(DirectObject, StateData):
         self.deniedConfirmDialog = None
         self.chooserHolidays = chooserHolidays
 
-        if self.chooserHolidays:
-            print 'GOT CHOOSER HOLIDAYS!'
-            print self.chooserHolidays
-
     def enter(self):
         base.options.display.restrictToEmbedded(True)
         taskMgr.setupTaskChain('phasePost', threadPriority=TPHigh)
