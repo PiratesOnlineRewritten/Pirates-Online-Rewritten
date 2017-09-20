@@ -23,10 +23,7 @@ class QueenAnneManagerAI(FSM):
         self.lifespan = config.GetInt('queen-anne-life-span', 10) * 60
 
     def delete(self):
-        if hasattr(self, 'announceTask'):
-            taskMgr.remove(self.announceTask)
-
-        self.request('Disappeared')
+        self.demand('Disappeared')
 
     def start(self):
         self.request('Announce')
@@ -57,8 +54,9 @@ class QueenAnneManagerAI(FSM):
 
         self.disppearTask = taskMgr.doMethodLater(self.lifespan, self.disappear, '%s-disappear-task' % self.__class__.__name__)
 
-    def disappear(self):
+    def disappear(self, task):
         self.request('Disappeared')
+        return task.done
 
     def exitRun(self):
         taskMgr.remove(self.disppearTask)
