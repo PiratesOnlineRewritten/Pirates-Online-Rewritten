@@ -53,7 +53,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
 
         townfolk.setPos(objectData.get('Pos'))
         townfolk.setHpr(objectData.get('Hpr'))
-        townfolk.setSpawnPos(*objectData.get('Pos'))
+        townfolk.setSpawnPosHpr(townfolk.getPos(), townfolk.getHpr())
         townfolk.setScale(objectData.get('Scale'))
         townfolk.setUniqueId(objKey)
 
@@ -68,7 +68,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
             townfolk.setGhostColor(int(objectData.get('GhostColor', 0)))
 
         townfolk.setLevel(int(objectData.get('Level', 0)))
-        
+
         townfolk.setAggroRadius(float(objectData.get('Aggro Radius', 0)))
 
         name = PLocalizer.Unknown
@@ -97,7 +97,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         helpId = objectData.get('HelpID', 'NONE')
         if helpId and helpId.isdigit():
             townfolk.setHelpId(int(helpId))
-           
+
         parent.generateChildWithRequired(townfolk, PiratesGlobals.IslandLocalZone)
 
         locationName = parent.getLocalizerName()
@@ -110,7 +110,6 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         pass
 
     def __generateAnimal(self, objType, objectData, parent, parentUid, objKey, dynamic):
-
         species = objectData.get('Species', None)
         if not species:
             self.notify.warning('Failed to generate Animal %s; Species was not defined' % objKey)
@@ -130,7 +129,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
 
         animal.setPos(objectData.get('Pos'))
         animal.setHpr(objectData.get('Hpr'))
-        animal.setSpawnPos(*objectData.get('Pos'))
+        animal.setSpawnPosHpr(animal.getPos(), animal.getHpr())
         animal.setScale(objectData.get('Scale'))
         animal.setUniqueId(objKey)
 

@@ -369,8 +369,8 @@ class DistributedBattleNPC(DistributedBattleAvatar):
     def requestGameState(self, *args):
         self.gameFSM.request(*args)
 
-    def setSpawnPos(self, x, y, z):
-        pass
+    def setSpawnPosHpr(self, x, y, z, h, p, r):
+        self.setPosHpr(self.getParentObj(), x, y, z, h, p, r)
 
     def lookAtTarget(self, task=None):
         if self.currentTarget:
