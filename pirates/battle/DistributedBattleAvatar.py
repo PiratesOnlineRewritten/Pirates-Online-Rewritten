@@ -541,8 +541,7 @@ class DistributedBattleAvatar(DistributedReputationAvatar, WeaponBase, Teamable)
                 if not self.avatarType.isA(AvatarTypes.Townfolk):
                     self.accept('weaponChange', self.setMonsterNameTag)
                     self.setMonsterNameTag()
-                else:
-                    nameText['text'] = self.name
+                else:                    nameText['text'] = self.name
                 color2 = EnemyGlobals.getNametagColor(self.avatarType)
                 if self.isBoss() and not self.bossIcon and not self.avatarType.isA(AvatarTypes.Townfolk):
                     color2 = (0.95, 0.1, 0.1, 1)
@@ -3042,7 +3041,7 @@ class DistributedBattleAvatar(DistributedReputationAvatar, WeaponBase, Teamable)
         self.inInvasion = value
 
     def isInInvasion(self):
-        return True #self.inInvasion
+        return self.inInvasion
 
     def getEfficiency(self):
         return self.efficiency
