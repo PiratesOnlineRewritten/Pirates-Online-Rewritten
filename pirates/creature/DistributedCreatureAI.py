@@ -4,7 +4,6 @@ from pirates.pirate import AvatarTypes
 
 class DistributedCreatureAI(DistributedBattleNPCAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedCreatureAI')
-    avatarType = AvatarTypes.Creature
 
     def __init__(self, air):
         DistributedBattleNPCAI.__init__(self, air)
