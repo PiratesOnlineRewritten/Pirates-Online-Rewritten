@@ -76,7 +76,6 @@ class Avatar(Actor, ShadowCaster):
         self.__chatLocal = 0
         self.__currentDialogue = None
         self.whitelistChatFlags = 0
-        return
 
     def delete(self):
         try:
@@ -369,11 +368,12 @@ class Avatar(Actor, ShadowCaster):
     def getNameVisible(self):
         return self.__nameVisible
 
-    def setNameVisible(self, bool):
-        self.__nameVisible = bool
-        if bool:
+    def setNameVisible(self, nameVisible):
+        self.__nameVisible = nameVisible
+
+        if nameVisible:
             self.showName()
-        if not bool:
+        else:
             self.hideName()
 
     def hideName(self):
@@ -540,7 +540,6 @@ class Avatar(Actor, ShadowCaster):
         if self.nametagNodePath:
             self.nametagNodePath.removeNode()
             self.nametagNodePath = None
-        return
 
     def initializeBodyCollisions(self, collIdStr):
         self.collTube = CollisionTube(0, 0, 0.5, 0, 0, self.height - self.getRadius(), self.getRadius())

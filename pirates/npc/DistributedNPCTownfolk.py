@@ -101,6 +101,7 @@ class DistributedNPCTownfolk(DistributedBattleNPC.DistributedBattleNPC, Distribu
         yieldThread('auto trigger')
         if not self.canMove:
             self.motionFSM.off()
+
         self.updateNametagQuestIcon()
         self.accept('localAvatarQuestComplete', self.updateNametagQuestIcon)
         self.accept('localAvatarQuestUpdate', self.updateNametagQuestIcon)
@@ -111,6 +112,7 @@ class DistributedNPCTownfolk(DistributedBattleNPC.DistributedBattleNPC, Distribu
             if DistributedNPCTownfolk.HelpTextIconTexture is None:
                 gui = loader.loadModel('models/gui/toplevel_gui')
                 DistributedNPCTownfolk.HelpTextIconTexture = gui.find('**/generic_question*')
+
             self.nametagIcon = DistributedNPCTownfolk.HelpTextIconTexture.copyTo(self.nametag3d)
             self.nametagIcon.setScale(20)
             self.nametagIcon.setPos(0, 0, 3.5)
@@ -126,11 +128,11 @@ class DistributedNPCTownfolk(DistributedBattleNPC.DistributedBattleNPC, Distribu
             self.nametagIconGlow.setDepthWrite(0)
             self.nametagIconGlow.node().setAttrib(ColorBlendAttrib.make(ColorBlendAttrib.MAdd, ColorBlendAttrib.OIncomingAlpha, ColorBlendAttrib.OOne))
             self.nametagIconGlow.setColor(0.85, 0.85, 0.85, 0.85)
-        return
 
-    def autoTriggerCheck(self, Task=None):
+    def autoTriggerCheck(self, task=None):
         localAvatar.checkForAutoTrigger(self.doId)
-        if Task:
+
+        if task:
             return Task.done
 
     def generate(self):
@@ -403,7 +405,6 @@ class DistributedNPCTownfolk(DistributedBattleNPC.DistributedBattleNPC, Distribu
             self.endInteractMovie(interactType)
             if self.noticeReactionList:
                 self.noticeLocalAvatar()
-        return
 
     def playDialog(self, dialogStr='', timeout=5):
         activeHolidays = base.cr.newsManager.getHolidayIdList()
