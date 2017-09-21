@@ -188,7 +188,6 @@ class DistributedBattleNPC(DistributedBattleAvatar):
                 return
             allIdles = allAnims.get('idles')
             if type(allIdles) is dict:
-                print allIdles
                 allAnims = allIdles.get(ItemGlobals.getSkillCategory(self.currentWeaponId))
                 allIdles = allAnims.get('idles')
             allProps = allAnims.get('props')
