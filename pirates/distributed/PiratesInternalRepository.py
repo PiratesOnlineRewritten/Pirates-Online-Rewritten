@@ -60,7 +60,7 @@ class PiratesInternalRepository(AstronInternalRepository):
             raise
         except Exception as e:
 
-            if not config.GetBool('boot-on-error', False):
+            if config.GetBool('boot-on-error', False):
                 if self.getAvatarIdFromSender() > 100000000:
                     dg = PyDatagram()
                     dg.addServerHeader(self.getMsgSender(), self.ourChannel, CLIENTAGENT_EJECT)
