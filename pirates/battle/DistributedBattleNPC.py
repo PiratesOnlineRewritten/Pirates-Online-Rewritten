@@ -1125,9 +1125,7 @@ class DistributedBattleNPC(DistributedBattleAvatar):
         self.noticeAnim1 = notice1
         self.noticeAnim2 = notice2
         self.greetingAnim = greet
-        print 'ANIM SET: %s NOTICE 1 : %s NOTICE 2: %s GREATING: %s' % (animSet, notice1, notice2, greet)
         if self.isGenerated() or True:
-            print 'SETTING ANIMATIONS'
             self.setupActorAnims()
 
     def requestAnimSet(self, animSet):

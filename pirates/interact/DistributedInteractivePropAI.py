@@ -1,8 +1,11 @@
-from direct.distributed.DistributedObjectAI import DistributedObjectAI
+from pirates.distributed.DistributedInteractiveAI import DistributedInteractiveAI
+from pirates.distributed.DistributedTargetableObjectAI import DistributedTargetableObjectAI
 from direct.directnotify import DirectNotifyGlobal
 
-class DistributedInteractivePropAI(DistributedObjectAI):
+class DistributedInteractivePropAI(DistributedInteractiveAI, DistributedTargetableObjectAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedInteractivePropAI')
 
     def __init__(self, air):
-        DistributedObjectAI.__init__(self, air)
+        DistributedInteractiveAI.__init__(self, cr)
+        DistributedTargetableObjectAI.__init__(self, cr)
+        WeaponBase.__init__(self)

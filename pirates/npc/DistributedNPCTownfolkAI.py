@@ -1,6 +1,7 @@
 from direct.directnotify import DirectNotifyGlobal
 from pirates.battle.DistributedBattleNPCAI import DistributedBattleNPCAI
 from pirates.economy.DistributedShopKeeperAI import DistributedShopKeeperAI
+from pirates.piratesbase import PiratesGlobals
 class DistributedNPCTownfolkAI(DistributedBattleNPCAI, DistributedShopKeeperAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedNPCTownfolkAI')
 
@@ -10,6 +11,12 @@ class DistributedNPCTownfolkAI(DistributedBattleNPCAI, DistributedShopKeeperAI):
         self.dnaId = ''
         self.shopId = 0
         self.helpId = 0
+
+    def handleRequestInteraction(self, avatar, interactType, instant):
+        if interactType == PiratesGlobals.INTERACT_TYPE_FRIENDLY:
+            self.sendUpdateToAvatarId(avatar.doId, 'triggerInteractShow', [self.doId])
+
+        return self.DENY
 
     def setDNAId(self, dnaId):
         self.dnaId = dnaId
@@ -23,19 +30,6 @@ class DistributedNPCTownfolkAI(DistributedBattleNPCAI, DistributedShopKeeperAI):
 
     def getDNAId(self):
         return self.dnaId
-
-    def setMovie(self, movie):
-        self.movie = movie
-
-    def d_setMovie(self, movie):
-        self.sendUpdate('setMovie', [movie])
-
-    def b_setMovie(self, movie):
-        self.setMovie(movie)
-        self.d_setMovie(movie)
-
-    def d_triggerInteractShow(self, interactObj):
-        self.sendUpdate('triggerInteractShow', [interactObj])
 
     def d_offerOptions(self, dialogFlag):
         self.sendUpdate('offerOptions', [dialogFlag])

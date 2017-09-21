@@ -61,7 +61,6 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         noticeAnim1 = objectData.get('Notice Animation 1', '')
         noticeAnim2 = objectData.get('Notice Animation 2', '')
         greetingAnim = objectData.get('Greeting Animation', '')
-        print 'ANIM SET: %s NOTICE 1 : %s NOTICE 2: %s GREATING: %s' % (animSet, noticeAnim1, noticeAnim2, greetingAnim)
         townfolk.setActorAnims(animSet, noticeAnim1, noticeAnim2, greetingAnim)
 
         townfolk.setIsGhost(int(objectData.get('GhostFX', 0)))

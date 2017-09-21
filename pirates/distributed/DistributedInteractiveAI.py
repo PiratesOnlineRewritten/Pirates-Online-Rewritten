@@ -36,6 +36,7 @@ class DistributedInteractiveAI(DistributedNodeAI):
         self.sendUpdateToAvatarId(avatar.doId, 'acceptInteraction', [])
 
     def handleRequestInteraction(self, avatar, interactType, instant):
+        self.notify.warning('handleRequestInteraction not overriden by %s; Defaulting to DENY' % self.__class__.__name__)
         return self.DENY
 
     def requestExit(self):
