@@ -19,7 +19,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
     def __init__(self, air):
         DistributedObjectAI.__init__(self, air)
         self.wantEnemies = config.GetBool('want-enemies', True)
-        self.wantDormantSpawns = config.GetBool('want-dormant-spawns', False)
+        self.wantDormantSpawns = config.GetBool('want-dormant-spawns', True)
         self.wantTownfolk = config.GetBool('want-townfolk', True)
         self.wantAnimals = config.GetBool('want-animals', True)
         self.wantBosses = config.GetBool('want-bosses', False)
