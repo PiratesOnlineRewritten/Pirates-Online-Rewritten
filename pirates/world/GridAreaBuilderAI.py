@@ -89,6 +89,8 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         table.setHpr(objectData.get('Hpr', (0, 0, 0)))
         table.setScale(objectData.get('Scale', (1, 1, 1)))
 
+        table.setPotionZone(int(objectData.get('Potion Zone', 0)))
+
         parent.generateChildWithRequired(table, PiratesGlobals.IslandLocalZone)
         self.addObject(table)
         self.broadcastObjectPosition(table)

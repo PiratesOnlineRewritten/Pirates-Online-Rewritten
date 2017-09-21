@@ -56,6 +56,7 @@ class DistributedInventoryAI(DistributedObjectAI):
             return
 
         self.accumulators.append([accumulatorType, quantity])
+        self.sendUpdate('setAccumulators', [self.accumulators])
 
     def d_setAccumulator(self, accumulatorType, quantity):
         self.sendUpdateToAvatarId(self.ownerId, 'accumulator', [accumulatorType, quantity])
@@ -104,6 +105,7 @@ class DistributedInventoryAI(DistributedObjectAI):
             return
 
         self.stacks.append([stackType, quantity])
+        self.sendUpdate('setStacks', [self.stacks])
 
     def d_setStack(self, stackType, quantity):
         self.sendUpdateToAvatarId(self.ownerId, 'stack', [stackType, quantity])
