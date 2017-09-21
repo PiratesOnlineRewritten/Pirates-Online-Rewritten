@@ -29,7 +29,7 @@ class DistributedTimeOfDayManagerAI(DistributedObjectAI, TimeOfDayManagerBase):
         self.targetTime = 0
         self.isJolly = int(config.GetBool('start-moon-jolly', False))
         self.isRaining = False
-        self.clouds = TODGlobals.LIGHTCLOUDS
+        self.clouds = TODGlobals.MEDIUMCLOUDS
         self.weatherTimeMin = config.GetInt('weather-time-min', 5) * 60
         self.weatherTimeMax = config.GetInt('weather-time-max', 10) * 60
         self.wantRain = config.GetBool('want-rain', True)
@@ -42,6 +42,23 @@ class DistributedTimeOfDayManagerAI(DistributedObjectAI, TimeOfDayManagerBase):
             self.__processWeather()
 
         self.accept('holidayListChanged', self.holidayListChanged)
+
+        self.startTodToggles()
+        if config.GetBool('want-day-night-print', False):
+            self.addTT()
+
+        self.addTimeOfDayToggle('do-day-night', 8.0, 20.0, self.processDayStart, (), self.processNightStart, ())
+
+    def delete(self):
+        DistributedObjectAI.delete(self)
+        self.togglesOn = 0
+        taskMgr.remove('timeOfDayToggles')
+
+    def processDayStart(self):
+        messenger.send('day-start')
+
+    def processNightStart(self):
+        messenger.send('night-start')
 
     def delete(self):
         DistributedObjectAI.delete(self)
