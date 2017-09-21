@@ -2578,13 +2578,11 @@ dclass DistributedWreckedDelFuegoTown : DistributedPostInvasionObject {
 
 dclass DistributedPotionGame : DistributedObject {
   setColorSet(uint8(0-5)) required;
-  start(uint8(0-5));
   completeRecipe(uint8, bool) clsend airecv;
   claimXPBonus(uint8(0-17)) clsend airecv;
   completeSurvival(uint32, uint32) clsend airecv;
   setHintsActive(bool) clsend airecv;
   setXpBonus(uint32) broadcast;
-  stop();
   reset() clsend airecv;
   checkExit();
   finish() clsend airecv;

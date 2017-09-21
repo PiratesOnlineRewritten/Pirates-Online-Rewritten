@@ -3,6 +3,7 @@ from pirates.inventory.LootableAI import LootableAI
 from direct.directnotify import DirectNotifyGlobal
 from pirates.ai import HolidayGlobals
 import FishingGlobals
+from pirates.uberdog.UberDogGlobals import InventoryType
 
 class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedFishingSpotAI')
@@ -15,7 +16,6 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
         self.onBoat = False
 
     def handleRequestInteraction(self, avatar, interactType, instant):
-
         self.d_spotFilledByAvId(self.air.getAvatarIdFromSender())
 
         return self.ACCEPT
@@ -69,9 +69,9 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
         minWeight, maxWeight = fish['weightRange']
 
         if not minWeight <= weight <= maxWeight:
-            self.air.writeServerEvent('suspicious-event', 
+            self.air.writeServerEvent('suspicious-event',
                 message='Received caughtFish update for invalid weight.',
-                targetAvId=avatar.doId, 
+                targetAvId=avatar.doId,
                 fishId=fishId,
                 weight=weight)
             return
@@ -81,10 +81,17 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
             reward = reward * 2
 
         experience = fish['experience']
-        if self.air.holidayMgr.isHolidayActive(HolidayGlobals.DOUBLEXPHOLIDAY):        
+        if self.air.holidayMgr.isHolidayActive(HolidayGlobals.DOUBLEXPHOLIDAY):
             experience = experience * 2
 
-        #TODO issue gold and experience
+        inventory = self.air.inventoryManager.getInventory(avatar.doId)
+
+        if not inventory:
+            self.notify.warning('Failed to get inventory for avatar %d!' % avatar.doId)
+            return
+
+        inventory.b_setStack(InventoryType.ItemTypeMoney, inventory.getStack(InventoryType.ItemTypeMoney)[1] + reward)
+        inventory.b_setAccumulator(InventoryType.OverallRep, inventory.getAccumulator(InventoryType.OverallRep)[1] + experience)
 
     def lostLure(self, lureId):
         pass

@@ -46,8 +46,8 @@ class DistributedPotionGame(DistributedObject):
         if self.fadeTask:
             taskMgr.remove(self.fadeTask)
             self.fadeTask = None
+
         DistributedObject.disable(self)
-        return
 
     def determineColorSet(self):
         potionTable = self.getParentObj()

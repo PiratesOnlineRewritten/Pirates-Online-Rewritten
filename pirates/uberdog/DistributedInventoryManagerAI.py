@@ -25,6 +25,14 @@ class DistributedInventoryManagerAI(DistributedObjectGlobalAI):
 
         del self.inventories[inventory.doId]
 
+    def getInventory(self, avatarId):
+        for inventory in self.inventories:
+
+            if inventory.getOwnerId() == avatarId:
+                return inventory
+
+        return None
+
     def requestInventory(self):
         avatar = self.air.doId2do.get(self.air.getAvatarIdFromSender())
 
@@ -49,10 +57,8 @@ class DistributedInventoryManagerAI(DistributedObjectGlobalAI):
         if not inventory:
             return self.notify.warning('Failed to retrieve inventory for avatar %d!' % avatar.doId)
 
-        avatar.b_setInventoryId(inventory.doId)
-
-        inventory.d_stackLimit(InventoryType.Hp, avatar.getMaxHp())
-        inventory.d_stackLimit(InventoryType.Mojo, avatar.getMaxMojo())
-        inventory.d_stack(InventoryType.Vitae_Level, avatar.getLevel())
+        inventory.b_setStackLimit(InventoryType.Hp, avatar.getMaxHp())
+        inventory.b_setStackLimit(InventoryType.Mojo, avatar.getMaxMojo())
+        inventory.b_setAccumulator(*inventory.getAccumulator(InventoryType.OverallRep))
 
         inventory.d_requestInventoryComplete()
