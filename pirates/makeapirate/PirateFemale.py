@@ -1063,188 +1063,200 @@ class PirateFemale(DirectObject.DirectObject):
             style2Pant = 'belt'
             style3Shirt = 'vest2'
             style1Shirt = 'belt'
+        elif vestIdx[0] == 2:
+            style2Pant = 'lowVest'
+            style3Shirt = 'vest2'
+            style1Shirt = 'belt'
+        elif vestIdx[0] == 1:
+            style2Pant = 'belt'
+            style3Shirt = 'vest1'
+            style1Shirt = 'belt'
         else:
-            if vestIdx[0] == 2:
-                style2Pant = 'lowVest'
-                style3Shirt = 'vest2'
-                style1Shirt = 'belt'
+            style3Shirt = 'neither'
+            if shirtIdx[0] > 3:
+                style2Pant = 'belt'
+
+        if coatIdx[0] > 0:
+            style2Shirt = 'coat'
+        else:
+            style2Shirt = 'noCoat'
+
+        if shoeIdx[0] == 4:
+                style1Pant = 'tallBoot'
+        else:
+            style1Pant = 'shortBoot'
+
+        if coatIdx[0] == 1:
+            style3Pant = 'longCoat'
+        elif coatIdx[0] == 2:
+            style3Pant = 'shortCoat'
+        elif coatIdx[0] == 3:
+            style3Pant = 'noCoat'
+        elif coatIdx[0] == 4:
+            style3Pant = 'longCoat'
+        else:
+            style3Pant = 'noCoat'
+
+        if pantIdx[0] == 2:
+            style3Vest = 'skirt'
+        else:
+            style3Vest = 'pants'
+
+        layerPant = self.clothingsPant[pantIdx[0]]
+        layerShoe = self.clothingsShoe[shoeIdx[0]]
+        layerShirt = self.clothingsShirt[shirtIdx[0]]
+        layerVest = self.clothingsVest[vestIdx[0]]
+        layerBelt = self.clothingsBelt[beltIdx[0]]
+        layerCoat = self.clothingsCoat[coatIdx[0]]
+        currentVest = self.vestSets[vestIdx[0]][style1][style2Shirt][style3Vest]
+        if style1Shirt == 'belt':
+            currentShirt = self.shirtSets[shirtIdx[0]][style1Shirt][style2Shirt][style3Shirt]
+        else:
+            currentShirt = self.shirtSets[shirtIdx[0]][style1Shirt][style2Shirt]
+
+        currentCoat = self.coatSets[coatIdx[0]]
+        if coatIdx[0] > 0:
+            currentBelt = self.beltSets[beltIdx[0]]['coat3']
+        else:
+            currentBelt = self.beltSets[beltIdx[0]]['full']
+
+        currentPant = self.pantSets[pantIdx[0]][style1Pant][style2Pant][style3Pant]
+        currentShoe = self.shoeSets[shoeIdx[0]][style3Vest]
+        layerPant = self.clothingsPant[pantIdx[0]]
+        parts = NodePathCollection()
+        self.currentClothingModels['PANT'].stash()
+        currentPant.unstash()
+        self.currentClothingModels['PANT'] = currentPant
+        texInfo = clothes_textures['PANT'][pantIdx[0]][pantIdx[1]]
+        if self.texDict[texInfo[0]]:
+            pantColor = dna.lookupClothesBotColor()[0]
+            currentPant.setTexture(self.texDict[texInfo[0]])
+            currentPant.setColorScale(pantColor)
+
+        self.currentClothingModels['SHOE'].stash()
+        currentShoe.unstash()
+        self.currentClothingModels['SHOE'] = currentShoe
+        texInfo = clothes_textures['SHOE'][shoeIdx[0]][shoeIdx[1]]
+        if self.texDict[texInfo[0]]:
+            shoeColor = dna.lookupClothesBotColor()[2]
+            currentShoe.setTexture(self.texDict[texInfo[0]])
+
+        self.currentClothingModels['SHIRT'].stash()
+        self.currentClothingModels['SHIRT'] = currentShirt
+        if vestIdx[0] <= 2 and coatIdx[0] not in (3, 4):
+            currentShirt.unstash()
+            texInfo = clothes_textures['SHIRT'][shirtIdx[0]][shirtIdx[1]]
+            if self.texDict[texInfo[0]]:
+                currentShirt.setTexture(self.texDict[texInfo[0]])
+                shirtColor = dna.lookupClothesTopColor()[0]
+                currentShirt.setColorScale(shirtColor)
+            self.currentClothingModels['SHIRT'] = currentShirt
+            for i in layerShirt[1:]:
+                bodySet[self.bodyPiecesToGroup[-i]].add(-i)
+
+        self.currentClothingModels['VEST'].stash()
+        if coatIdx[0] not in (3, 4):
+            currentVest.unstash()
+            self.currentClothingModels['VEST'] = currentVest
+            texInfo = clothes_textures['VEST'][vestIdx[0]][vestIdx[1]]
+            if self.texDict[texInfo[0]]:
+                vestColor = dna.lookupClothesTopColor()[1]
+                currentVest.setTexture(self.texDict[texInfo[0]])
+                currentVest.setColorScale(vestColor)
+
+            for i in layerVest[1:]:
+                bodySet[self.bodyPiecesToGroup[-i]].add(-i)
+
+        self.handleHeadHiding()
+        self.currentClothingModels['BELT'][0].stash()
+        self.currentClothingModels['BELT'][1].stash()
+        if coatIdx[0] not in (3, 4):
+            texInfo = clothes_textures['BELT'][beltIdx[0]][beltIdx[1]]
+            currentBelt[0].unstash()
+            currentBelt[1].unstash()
+            texNames = texInfo[0].split('+')
+            self.currentClothingModels['BELT'] = currentBelt
+            if len(texNames) > 1:
+                tex1 = self.texDict[texNames[0]]
+                tex2 = self.texDict[texNames[1]]
+                if tex1:
+                    currentBelt[0].setTexture(tex1)
+                if tex2:
+                    currentBelt[1].setTexture(tex2)
             else:
-                if vestIdx[0] == 1:
-                    style2Pant = 'belt'
-                    style3Shirt = 'vest1'
-                    style1Shirt = 'belt'
-                else:
-                    style3Shirt = 'neither'
-                    if shirtIdx[0] > 3:
-                        style2Pant = 'belt'
-                if coatIdx[0] > 0:
-                    style2Shirt = 'coat'
-                else:
-                    style2Shirt = 'noCoat'
-                if shoeIdx[0] == 4:
-                    style1Pant = 'tallBoot'
-                else:
-                    style1Pant = 'shortBoot'
-                if coatIdx[0] == 1:
-                    style3Pant = 'longCoat'
-                else:
-                    if coatIdx[0] == 2:
-                        style3Pant = 'shortCoat'
-                    else:
-                        if coatIdx[0] == 3:
-                            style3Pant = 'noCoat'
-                        else:
-                            if coatIdx[0] == 4:
-                                style3Pant = 'longCoat'
-                            else:
-                                style3Pant = 'noCoat'
-                            if pantIdx[0] == 2:
-                                style3Vest = 'skirt'
-                            else:
-                                style3Vest = 'pants'
-                            layerPant = self.clothingsPant[pantIdx[0]]
-                            layerShoe = self.clothingsShoe[shoeIdx[0]]
-                            layerShirt = self.clothingsShirt[shirtIdx[0]]
-                            layerVest = self.clothingsVest[vestIdx[0]]
-                            layerBelt = self.clothingsBelt[beltIdx[0]]
-                            layerCoat = self.clothingsCoat[coatIdx[0]]
-                            currentVest = self.vestSets[vestIdx[0]][style1][style2Shirt][style3Vest]
-                            if style1Shirt == 'belt':
-                                currentShirt = self.shirtSets[shirtIdx[0]][style1Shirt][style2Shirt][style3Shirt]
-                            else:
-                                currentShirt = self.shirtSets[shirtIdx[0]][style1Shirt][style2Shirt]
-                            currentCoat = self.coatSets[coatIdx[0]]
-                            if coatIdx[0] > 0:
-                                currentBelt = self.beltSets[beltIdx[0]]['coat3']
-                            else:
-                                currentBelt = self.beltSets[beltIdx[0]]['full']
-                            currentPant = self.pantSets[pantIdx[0]][style1Pant][style2Pant][style3Pant]
-                            currentShoe = self.shoeSets[shoeIdx[0]][style3Vest]
-                            layerPant = self.clothingsPant[pantIdx[0]]
-                            parts = NodePathCollection()
-                            self.currentClothingModels['PANT'].stash()
-                            currentPant.unstash()
-                            self.currentClothingModels['PANT'] = currentPant
-                            texInfo = clothes_textures['PANT'][pantIdx[0]][pantIdx[1]]
-                            if self.texDict[texInfo[0]]:
-                                pantColor = dna.lookupClothesBotColor()[0]
-                                currentPant.setTexture(self.texDict[texInfo[0]])
-                                currentPant.setColorScale(pantColor)
-                            self.currentClothingModels['SHOE'].stash()
-                            currentShoe.unstash()
-                            self.currentClothingModels['SHOE'] = currentShoe
-                            texInfo = clothes_textures['SHOE'][shoeIdx[0]][shoeIdx[1]]
-                            if self.texDict[texInfo[0]]:
-                                shoeColor = dna.lookupClothesBotColor()[2]
-                                currentShoe.setTexture(self.texDict[texInfo[0]])
-                            self.currentClothingModels['SHIRT'].stash()
-                            self.currentClothingModels['SHIRT'] = currentShirt
-                            if vestIdx[0] <= 2 and coatIdx[0] not in (3, 4):
-                                currentShirt.unstash()
-                                texInfo = clothes_textures['SHIRT'][shirtIdx[0]][shirtIdx[1]]
-                                if self.texDict[texInfo[0]]:
-                                    currentShirt.setTexture(self.texDict[texInfo[0]])
-                                    shirtColor = dna.lookupClothesTopColor()[0]
-                                    currentShirt.setColorScale(shirtColor)
-                                self.currentClothingModels['SHIRT'] = currentShirt
-                                for i in layerShirt[1:]:
-                                    bodySet[self.bodyPiecesToGroup[-i]].add(-i)
+                tex1 = self.texDict[texNames[0]]
+                if tex1:
+                    currentBelt[0].setTexture(tex1)
+                    currentBelt[1].setTexture(tex1)
 
-                            self.currentClothingModels['VEST'].stash()
-                            if coatIdx[0] not in (3, 4):
-                                currentVest.unstash()
-                                self.currentClothingModels['VEST'] = currentVest
-                                texInfo = clothes_textures['VEST'][vestIdx[0]][vestIdx[1]]
-                                if self.texDict[texInfo[0]]:
-                                    vestColor = dna.lookupClothesTopColor()[1]
-                                    currentVest.setTexture(self.texDict[texInfo[0]])
-                                    currentVest.setColorScale(vestColor)
-                                for i in layerVest[1:]:
-                                    bodySet[self.bodyPiecesToGroup[-i]].add(-i)
+            beltColor = dna.lookupClothesBotColor()[1]
+            for i in [0, 1]:
+                currentBelt[i].setColorScale(beltColor)
 
-                            self.handleHeadHiding()
-                            self.currentClothingModels['BELT'][0].stash()
-                            self.currentClothingModels['BELT'][1].stash()
-                            if coatIdx[0] not in (3, 4):
-                                texInfo = clothes_textures['BELT'][beltIdx[0]][beltIdx[1]]
-                                currentBelt[0].unstash()
-                                currentBelt[1].unstash()
-                                texNames = texInfo[0].split('+')
-                                self.currentClothingModels['BELT'] = currentBelt
-                                if len(texNames) > 1:
-                                    tex1 = self.texDict[texNames[0]]
-                                    tex2 = self.texDict[texNames[1]]
-                                    if tex1:
-                                        currentBelt[0].setTexture(tex1)
-                                    if tex2:
-                                        currentBelt[1].setTexture(tex2)
-                                else:
-                                    tex1 = self.texDict[texNames[0]]
-                                    if tex1:
-                                        currentBelt[0].setTexture(tex1)
-                                        currentBelt[1].setTexture(tex1)
-                                beltColor = dna.lookupClothesBotColor()[1]
-                                for i in [0, 1]:
-                                    currentBelt[i].setColorScale(beltColor)
+            for i in layerBelt[1:]:
+                bodySet[self.bodyPiecesToGroup[-i]].add(-i)
 
-                                for i in layerBelt[1:]:
-                                    bodySet[self.bodyPiecesToGroup[-i]].add(-i)
+        self.currentClothingModels['COAT'].stash()
+        currentCoat.unstash()
+        self.currentClothingModels['COAT'] = currentCoat
+        texInfo = clothes_textures['COAT'][coatIdx[0]][coatIdx[1]]
+        if self.texDict[texInfo[0]]:
+            coatColor = dna.lookupClothesTopColor()[2]
+            currentCoat.setTexture(self.texDict[texInfo[0]])
+            currentCoat.setColorScale(coatColor)
 
-                            self.currentClothingModels['COAT'].stash()
-                            currentCoat.unstash()
-                            self.currentClothingModels['COAT'] = currentCoat
-                            texInfo = clothes_textures['COAT'][coatIdx[0]][coatIdx[1]]
-                            if self.texDict[texInfo[0]]:
-                                coatColor = dna.lookupClothesTopColor()[2]
-                                currentCoat.setTexture(self.texDict[texInfo[0]])
-                                currentCoat.setColorScale(coatColor)
-                            for partSet in [layerCoat, layerPant, layerShoe]:
-                                for i in partSet[1:]:
-                                    bodySet[self.bodyPiecesToGroup[-i]].add(-i)
+        for partSet in [layerCoat, layerPant, layerShoe]:
+            for i in partSet[1:]:
+                bodySet[self.bodyPiecesToGroup[-i]].add(-i)
 
-                            bodyList = [ list(x) for x in bodySet ]
-                            for pieces in bodyList:
-                                pieces.sort()
+        bodyList = [ list(x) for x in bodySet ]
+        for pieces in bodyList:
+            pieces.sort()
 
-                        bodyTuple = [ tuple(x) for x in bodyList ]
-                        for i in xrange(3):
-                            if bodyTuple[i] not in self.bodySets[i]:
-                                flattenedSet = NodePathCollection()
-                                for lod in self.pirate.getLODNames():
-                                    flattenMe = NodePath('flattenMe')
-                                    for j in self.groupsToBodyPieces[i]:
-                                        if j not in bodySet[i]:
-                                            self.layerBodyLODs[j][lod].copyTo(flattenMe)
+        bodyTuple = [ tuple(x) for x in bodyList ]
+        for i in xrange(3):
+            if bodyTuple[i] not in self.bodySets[i]:
+                flattenedSet = NodePathCollection()
+                for lod in self.pirate.getLODNames():
+                    flattenMe = NodePath('flattenMe')
+                    for j in self.groupsToBodyPieces[i]:
+                        if j not in bodySet[i]:
+                            self.layerBodyLODs[j][lod].copyTo(flattenMe)
 
-                                    flattenMe.flattenStrong()
-                                    lodParts = flattenMe.findAllMatches('**/+GeomNode')
-                                    self.stripTexture(lodParts)
-                                    lodParts.reparentTo(self.pirate.getLOD(lod).getChild(0))
-                                    flattenedSet.addPathsFrom(lodParts)
+                    flattenMe.flattenStrong()
+                    lodParts = flattenMe.findAllMatches('**/+GeomNode')
+                    self.stripTexture(lodParts)
+                    lodParts.reparentTo(self.pirate.getLOD(lod).getChild(0))
+                    flattenedSet.addPathsFrom(lodParts)
 
-                                self.bodySets[i][bodyTuple[i]] = flattenedSet
+                self.bodySets[i][bodyTuple[i]] = flattenedSet
 
-                    if self.pirate.zombie:
-                        bodyTexIdx = ZOMB_BODY_TEXTURE
-                    bodyTexIdx = 0
-                tex = self.texDict[body_textures[self.pirate.style.getBodyShape()][bodyTexIdx]]
-                self.currentBody.setTexture(tex)
-                currentBody = NodePathCollection()
-                currentChest = self.bodySets[0][bodyTuple[0]]
-                currentLeftArm = self.bodySets[1][bodyTuple[1]]
-                currentRightArm = self.bodySets[2][bodyTuple[2]]
-                currentBody.addPathsFrom(currentChest)
-                currentBody.addPathsFrom(currentLeftArm)
-                currentBody.addPathsFrom(currentRightArm)
-                if tex:
-                    currentBody.setTexture(tex)
-            if self.pirate.zombie:
-                skinColor = VBase4(1, 1, 1, 1)
-            if hasattr(self.pirate, 'crazyColorSkin') and self.pirate.crazyColorSkin == True:
-                i = self.pirate.getCrazyColorSkinIndex()
-                skinColor = HumanDNA.crazySkinColors[i]
-            else:
-                skinColor = self.pirate.style.getSkinColor()
+        if self.pirate.zombie:
+            bodyTexIdx = ZOMB_BODY_TEXTURE
+        else:
+            bodyTexIdx = 0
+
+        tex = self.texDict[body_textures[self.pirate.style.getBodyShape()][bodyTexIdx]]
+        self.currentBody.setTexture(tex)
+        currentBody = NodePathCollection()
+        currentChest = self.bodySets[0][bodyTuple[0]]
+        currentLeftArm = self.bodySets[1][bodyTuple[1]]
+        currentRightArm = self.bodySets[2][bodyTuple[2]]
+        currentBody.addPathsFrom(currentChest)
+        currentBody.addPathsFrom(currentLeftArm)
+        currentBody.addPathsFrom(currentRightArm)
+        if tex:
+            currentBody.setTexture(tex)
+
+        if self.pirate.zombie:
+            skinColor = VBase4(1, 1, 1, 1)
+
+        if hasattr(self.pirate, 'crazyColorSkin') and self.pirate.crazyColorSkin == True:
+            i = self.pirate.getCrazyColorSkinIndex()
+            skinColor = HumanDNA.crazySkinColors[i]
+        else:
+            skinColor = self.pirate.style.getSkinColor()
+
         self.faces[0].setColorScale(skinColor)
         currentBody.setColorScale(skinColor)
         self.currentBody.stash()
@@ -1256,6 +1268,7 @@ class PirateFemale(DirectObject.DirectObject):
     def handleClothesHidingOld(self):
         self.clothing.stash()
         self.body.unstash()
+
         dna = self.pirate.style
         if self.pirate.zombie:
             dna = self.dnaZomb

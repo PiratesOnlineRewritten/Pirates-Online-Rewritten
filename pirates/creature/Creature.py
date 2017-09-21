@@ -243,29 +243,25 @@ class Creature(UsesAnimationMixer, Avatar.Avatar, UsesEffectNode):
         if loader.loadModel(filePrefix + 'med') != None:
             avatarDetail = base.config.GetString('avatar-detail', 'high')
             if avatarDetail == 'high':
-                dist = [
-                 0, 20, 80, 280]
+                dist = [0, 20, 80, 280]
+            elif avatarDetail == 'med':
+                dist = [0, 10, 40, 280]
+            elif avatarDetail == 'low':
+                dist = [0, 6, 20, 280]
             else:
-                if avatarDetail == 'med':
-                    dist = [
-                     0, 10, 40, 280]
-                elif avatarDetail == 'low':
-                    dist = [
-                     0, 6, 20, 280]
-                else:
-                    raise StandardError, 'Invalid avatar-detail: %s' % avatarDetail
-                cls.actor.setLODNode()
-                cls.actor.addLOD('hi', dist[1], dist[0])
-                cls.actor.addLOD('med', dist[2], dist[1])
-                cls.actor.addLOD('low', dist[3], dist[2])
-                creatureDetail = base.config.GetBool('want-high-creature-detail', 0)
-                if creatureDetail:
-                    cls.actor.loadModel(filePrefix + 'hi', 'modelRoot', 'hi')
-                    cls.actor.loadModel(filePrefix + 'med', 'modelRoot', 'med')
-                    cls.actor.loadModel(filePrefix + 'low', 'modelRoot', 'low')
-                cls.actor.loadModel(filePrefix + 'med', 'modelRoot', 'hi')
-                cls.actor.loadModel(filePrefix + 'low', 'modelRoot', 'med')
-                cls.actor.loadModel(filePrefix + 'super', 'modelRoot', 'low')
+                raise StandardError, 'Invalid avatar-detail: %s' % avatarDetail
+            cls.actor.setLODNode()
+            cls.actor.addLOD('hi', dist[1], dist[0])
+            cls.actor.addLOD('med', dist[2], dist[1])
+            cls.actor.addLOD('low', dist[3], dist[2])
+            creatureDetail = base.config.GetBool('want-high-creature-detail', 0)
+            if creatureDetail:
+                cls.actor.loadModel(filePrefix + 'hi', 'modelRoot', 'hi')
+                cls.actor.loadModel(filePrefix + 'med', 'modelRoot', 'med')
+                cls.actor.loadModel(filePrefix + 'low', 'modelRoot', 'low')
+            cls.actor.loadModel(filePrefix + 'med', 'modelRoot', 'hi')
+            cls.actor.loadModel(filePrefix + 'low', 'modelRoot', 'med')
+            cls.actor.loadModel(filePrefix + 'super', 'modelRoot', 'low')
             cls.actor.loadAnims(cls.animDict, 'modelRoot', 'all')
         else:
             cls.actor.loadModel(cls.ModelInfo[0])

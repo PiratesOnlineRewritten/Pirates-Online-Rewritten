@@ -184,6 +184,7 @@ class DistributedBattleNPC(DistributedBattleAvatar):
             self.animSetSetup = True
             allAnims = CustomAnims.INTERACT_ANIMS.get(self.animSet)
             if allAnims == None:
+                print 'NOT FOUND!'
                 return
             allIdles = allAnims.get('idles')
             if type(allIdles) is dict:
@@ -211,7 +212,6 @@ class DistributedBattleNPC(DistributedBattleAvatar):
             if self.canMove == False:
                 self.canCheckFloors = False
             yieldThread('hold anim prop')
-        return
 
     def announceGenerate(self):
         self.checkQuestObjMod()
@@ -1125,7 +1125,9 @@ class DistributedBattleNPC(DistributedBattleAvatar):
         self.noticeAnim1 = notice1
         self.noticeAnim2 = notice2
         self.greetingAnim = greet
-        if self.isGenerated():
+        print 'ANIM SET: %s NOTICE 1 : %s NOTICE 2: %s GREATING: %s' % (animSet, notice1, notice2, greet)
+        if self.isGenerated() or True:
+            print 'SETTING ANIMATIONS'
             self.setupActorAnims()
 
     def requestAnimSet(self, animSet):

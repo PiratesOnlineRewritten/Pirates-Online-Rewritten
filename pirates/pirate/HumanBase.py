@@ -9,6 +9,8 @@ class HumanBase():
     def setDNAString(self, dnaString=None):
         if not dnaString:
             self.setDefaultDNA()
+        elif not isinstance(dnaString, str):
+            self.style = copy.deepcopy(dnaString)
         else:
             self.setDefaultDNA() #TODO
 

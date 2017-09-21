@@ -61,6 +61,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         noticeAnim1 = objectData.get('Notice Animation 1', '')
         noticeAnim2 = objectData.get('Notice Animation 2', '')
         greetingAnim = objectData.get('Greeting Animation', '')
+        print 'ANIM SET: %s NOTICE 1 : %s NOTICE 2: %s GREATING: %s' % (animSet, noticeAnim1, noticeAnim2, greetingAnim)
         townfolk.setActorAnims(animSet, noticeAnim1, noticeAnim2, greetingAnim)
 
         townfolk.setIsGhost(int(objectData.get('GhostFX', 0)))
@@ -79,8 +80,8 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         if 'Start State' in objectData:
             townfolk.setStartState(objectData['Start State'])
 
-        townfolk.setDNAId(objectData.get('DNA', ''))
-        if objectData.get('CustomModel', '') != '':
+        townfolk.setDNAId(objKey)
+        if objectData.get('CustomModel', 'None') != 'None':
             townfolk.setDNAId(objectData.get('CustomModel', ''))
 
         category = objectData.get('Category', '')
