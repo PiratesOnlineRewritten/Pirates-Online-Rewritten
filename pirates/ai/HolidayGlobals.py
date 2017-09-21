@@ -159,7 +159,7 @@ holidaySchedules = {
   DOUBLEXPHOLIDAY: HolidayDates(HolidayDates.TYPE_CUSTOM, [
     (2009, Month.DECEMBER, 19, 12, 0, 0), (2009, Month.DECEMBER, 19, 15, 0, 0)]),
   DOUBLEXPHOLIDAYPAID: HolidayDates(HolidayDates.TYPE_CUSTOM, [
-    (2009, Month.DECEMBER, 20, 12, 0, 0), (2009, Month.DECEMBER, 20, 15, 0, 0)]),
+    (2009, Month.SEPTEMBER, 20, 12, 0, 0), (2009, Month.DECEMBER, 20, 15, 0, 0)]),
   DOUBLELOOTHOLIDAY: HolidayDates(HolidayDates.TYPE_CUSTOM, [
     (2008, Month.SEPTEMBER, 13, 12, 0, 0), (2008, Month.SEPTEMBER, 13, 15, 0, 0)]),
   FREEHATWEEK: HolidayDates(HolidayDates.TYPE_CUSTOM, [
@@ -168,12 +168,10 @@ holidaySchedules = {
     (Month.MARCH, 2, 0, 0, 0), (Month.MARCH, 29, 0, 0, 0)]),
   APRILFOOLS: HolidayDates(HolidayDates.TYPE_YEARLY, [
     (Month.APRIL, 1, 0, 0, 0), (Month.APRIL, 2, 12, 0, 0)]),
-  MOTHERSDAY: HolidayDates(HolidayDates.TYPE_CUSTOM, [
-    (2009, Month.MAY, 6, 0, 0, 0), (2009, Month.MAY, 11, 0, 0, 0)]),
-  QUEENANNES: HolidayDates(HolidayDates.TYPE_CUSTOM, [
-    (2011, Month.MAY, 16, 0, 0, 0), (2011, Month.JUNE, 16, 0, 0, 0)]),
-  FATHERSDAY: HolidayDates(HolidayDates.TYPE_CUSTOM, [
-    (2009, Month.JUNE, 17, 0, 0, 0), (2009, Month.JUNE, 22, 0, 0, 0)]),
+  MOTHERSDAY: HolidayDates(HolidayDates.TYPE_YEARLY, [
+    (Month.MAY, 6, 0, 0, 0), (Month.MAY, 11, 0, 0, 0)]),
+  FATHERSDAY: HolidayDates(HolidayDates.TYPE_YEARLY, [
+    (Month.JUNE, 17, 0, 0, 0), (Month.JUNE, 22, 0, 0, 0)]),
   FOURTHOFJULY: HolidayDates(HolidayDates.TYPE_YEARLY, [
     (Month.JULY, 3, 18, 0, 0), (Month.JULY, 7, 0, 0, 0)]),
   GETCONNNECTED: HolidayDates(HolidayDates.TYPE_YEARLY, [
@@ -361,7 +359,7 @@ RandomizedSchedules = {
         'daysPerMonth': (5, 8),
         'numPerDay': 1,
         'timeWindows': [RandomTimeWindows.E, RandomTimeWindows.F, RandomTimeWindows.G, RandomTimeWindows.H],
-        'duration': (5, 8)
+        'duration': (1, 0)
     }
 }
 MSG_START_ALL = 0
