@@ -28,6 +28,8 @@ class NametagGroup(object):
         self.nametag2d = Nametag2d()
         self.nametag3d = Nametag3d()
 
+        self.chatPages = []
+
         self.nametags = []
         self.nametags.extend([self.nametag2d, self.nametag3d])
 
@@ -62,6 +64,12 @@ class NametagGroup(object):
 
     def unmanage(self, manager):
         pass
+
+    def getNumChatPages(self):
+        return len(self.chatPages)
+
+    def setChat(self, message, flags):
+        pass #TODO
 
     def setAvatar(self, avatar):
         self.avatar = avatar
