@@ -402,3 +402,27 @@ LIGHTCLOUDS = 1
 MEDIUMCLOUDS = 2
 HEAVYCLOUDS = 3
 CLOUD_TRANSITIONS = {NOCLOUDS, LIGHTCLOUDS, MEDIUMCLOUDS, HEAVYCLOUDS}
+
+WEATHER_CLEAR = 0
+WEATHER_NORMAL = 1
+WEATHER_OVERCAST = 2
+WEATHER_RAIN = 3
+
+WEATHER_TYPES = {
+    WEATHER_CLEAR: {
+        'clouds': NOCLOUDS,
+        'rain': False
+    },
+    WEATHER_NORMAL: {
+        'clouds': LIGHTCLOUDS,
+        'rain': False
+    },
+    WEATHER_OVERCAST: {
+        'clouds': MEDIUMCLOUDS,
+        'rain': False
+    },
+    WEATHER_RAIN: {
+        'clouds': HEAVYCLOUDS,
+        'rain': True
+    }
+}

@@ -293,8 +293,7 @@ dclass DistributedTimeOfDayManager : DistributedObject {
   setEnvSubs(envSubEntry []) required broadcast ram;
   setMoonPhaseChange(int8, int16/100, int16/100, int32) required broadcast ram;
   setMoonJolly(int8) required broadcast ram;
-  setRain(int8) required broadcast ram;
-  setClouds(int16) required broadcast ram;
+  setWeather(int16, int32) required broadcast ram;
 };
 
 dclass DistributedGameStatManager : DistributedObject {

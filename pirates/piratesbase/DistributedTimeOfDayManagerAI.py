@@ -28,17 +28,17 @@ class DistributedTimeOfDayManagerAI(DistributedObjectAI, TimeOfDayManagerBase):
         self.targetPhase = 0
         self.targetTime = 0
         self.isJolly = int(config.GetBool('start-moon-jolly', False))
-        self.isRaining = False
-        self.clouds = TODGlobals.MEDIUMCLOUDS
         self.weatherTimeMin = config.GetInt('weather-time-min', 5) * 60
         self.weatherTimeMax = config.GetInt('weather-time-max', 10) * 60
-        self.wantRain = config.GetBool('want-rain', True)
+        self.wantAdvancedWeather = config.GetBool('advanced-weather', True)
+        self.weatherId = TODGlobals.WEATHER_NORMAL
 
     def announceGenerate(self):
         DistributedObjectAI.announceGenerate(self)
 
         self.cycleTask = taskMgr.doMethodLater(1, self.__runCycle, self.uniqueName('runCycle'))
-        if self.wantRain:
+
+        if self.wantAdvancedWeather:
             self.__processWeather()
 
         self.accept('holidayListChanged', self.holidayListChanged)
@@ -210,38 +210,29 @@ class DistributedTimeOfDayManagerAI(DistributedObjectAI, TimeOfDayManagerBase):
         return hoursIntoCycle
 
     def __processWeather(self, task=None):
-        if self.getRain():
-            self.setRaining(False)
-        else:
-            if random.random() < 20:
-                self.notify.debug('Starting to rain...')
-                self.setRaining(True)
 
-        self.weatherTask = taskMgr.doMethodLater(random.randint(self.weatherTimeMin, self.weatherTimeMax), self.__processWeather, 'weatherTask')
+        weatherId = self.weatherId
+        while weatherId == self.weatherId:
+            weatherId = random.choice(TODGlobals.WEATHER_TYPES.keys())
+        speed = random.randint(10, 15)
+
+        self.notify.debug('Setting Weather to %d with a transition time of %d' % (weatherId, speed))
+        self.b_setWeather(weatherId, speed) 
+
+        self.weatherTask = taskMgr.doMethodLater(random.randint(self.weatherTimeMin, self.weatherTimeMax) + speed, self.__processWeather, 'weatherTask')
 
         return Task.done
 
+    def setWeather(self, weatherId, transitionTime=5.0):
+        self.weatherId = weatherId
+        messenger.send('weatherChanged', [weatherId, transitionTime])
 
-    def setRaining(self, rain):
-        self.isRaining = rain
-        if self.isRaining:
-            self.b_setClouds(TODGlobals.HEAVYCLOUDS)
-        else:
-            self.b_setClouds(TODGlobals.LIGHTCLOUDS)
-        self.sendUpdate('setRain', [rain])
+    def d_setWeather(self, weatherId, transitionTime=5.0):
+        self.sendUpdate('setWeather', [weatherId, transitionTime])
 
-    def getRain(self):
-        return self.isRaining
+    def b_setWeather(self, weatherId, transitionTime=5.0):
+        self.setWeather(weatherId, transitionTime)
+        self.d_setWeather(weatherId, transitionTime)
 
-    def setClouds(self, clouds):
-        self.clouds = clouds
-
-    def d_setClouds(self, clouds):
-        self.sendUpdate('setClouds', [clouds])
-
-    def b_setClouds(self, clouds):
-        self.setClouds(clouds)
-        self.d_setClouds(clouds)
-
-    def getClouds(self):
-        return self.clouds
+    def getWeather(self):
+        return [self.weatherId, 1]

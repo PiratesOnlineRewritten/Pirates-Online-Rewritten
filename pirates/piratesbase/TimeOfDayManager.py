@@ -64,8 +64,8 @@ class TimeOfDayManager(FSM.FSM, TimeOfDayManagerBase.TimeOfDayManagerBase):
         self.targetMoonPhase = None
         self.moonJolly = 0
         self.moonJollyIval = None
-        self.softTOD = base.config.GetBool('want-soft-tod-changes', 1)
-        self.wantRain = config.GetBool('want-rain', True)
+        self.softTOD = base.config.GetBool('want-soft-tod-changes', True)
+        self.wantAdvancedWeather = base.config.GetBool('advanced-weather', True)
         self.rainDrops = None
         self.rainMist = None
         self.rainSplashes = None
@@ -802,11 +802,7 @@ class TimeOfDayManager(FSM.FSM, TimeOfDayManagerBase.TimeOfDayManagerBase):
         self.moonJolly = jolly
 
     def switchRain(self, rain):
-        if not self.wantRain:
-            return
-
         if not self.rain and rain:
-            self.setCloudsType(TODGlobals.HEAVYCLOUDS)
             self.rainDrops = RainDrops(base.camera)
             self.rainDrops.reparentTo(render)
             self.rainDrops.startLoop()
@@ -823,7 +819,6 @@ class TimeOfDayManager(FSM.FSM, TimeOfDayManagerBase.TimeOfDayManagerBase):
             self.rainSplashes2.reparentTo(render)
             self.rainSplashes2.startLoop()
         elif self.rain and not rain:
-            self.setCloudsType(TODGlobals.LIGHTCLOUDS)
             self.rainDrops.stopLoop()
             self.rainMist.stopLoop()
             self.rainSplashes.stopLoop()
@@ -939,10 +934,28 @@ class TimeOfDayManager(FSM.FSM, TimeOfDayManagerBase.TimeOfDayManagerBase):
         if self.avatarShadowCaster:
             self.avatarShadowCaster.setLightSrc(self.dlight)
 
-    def setCloudsType(self, cloudType):
+    def setWeatherId(self, weatherId, transitionTime=5.0):
+        if not self.wantAdvancedWeather:
+            return
+
+        if weatherId not in TODGlobals.WEATHER_TYPES:
+            self.notify.warning('Received invalid weather id: %d' % weatherId)
+            return
+
+        self.notify.debug('Setting weather to %d!' % weatherId)
+        weatherData = TODGlobals.WEATHER_TYPES[weatherId]
+        self.setCloudsType(weatherData['clouds'], transitionTime)
+
+        rainSequence = Sequence(
+            Wait(transitionTime),
+            Func(self.switchRain, weatherData['rain']))
+        rainSequence.start()
+
+    def setCloudsType(self, cloudType, duration=5.0):
         if cloudType not in TODGlobals.CLOUD_TRANSITIONS:
             return 
-        self.skyGroup.transitionClouds(cloudType).start()
+        self.skyGroup.transitionClouds(cloudType, duration).start()
+        self.skyGroup.setSky(self.skyGroup.lastSky)
 
     def setSkyType(self, skyType):
         if skyType == TODGlobals.SKY_OFF:
