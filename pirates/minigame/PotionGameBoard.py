@@ -154,10 +154,7 @@ class PotionGameBoard(DirectFrame):
         xpLabel = DirectLabel(parent=aspect2d, relief=None, text='+ ' + str(xpAmt) + ' ' + PLocalizer.PotionGui['XPLabel'], text_scale=PiratesGuiGlobals.TextScaleTitleLarge, text_font=PiratesGlobals.getPirateOutlineFont(), text_align=TextNode.ACenter, text_fg=PiratesGuiGlobals.TextFG1, text_shadow=PiratesGuiGlobals.TextShadow, text_wordwrap=37, pos=(Xloc, 0, Zloc - 0.1), textMayChange=0)
         xpLabel.setTransparency(True)
         xpLabel.stash()
-        return Sequence(Func(xpLabel.unstash), Parallel(LerpPosInterval(xpLabel, duration=2.5, pos=(Xloc, 0.0, Zloc + 0.3), blendType='easeOut'), LerpColorScaleInterval(xpLabel, duration=1.5, colorScale=(1,
-                                                                                                                                                                                                            1,
-                                                                                                                                                                                                            1,
-                                                                                                                                                                                                            0), blendType='easeIn')), Func(xpLabel.removeNode))
+        return Sequence(Func(xpLabel.unstash), Parallel(LerpPosInterval(xpLabel, duration=2.5, pos=(Xloc, 0.0, Zloc + 0.3), blendType='easeOut'), LerpColorScaleInterval(xpLabel, duration=1.5, colorScale=(1, 1, 1, 0), blendType='easeIn')), Func(xpLabel.removeNode))
 
     def findGroups(self):
         self.groups = []
@@ -280,10 +277,7 @@ class PotionGameBoard(DirectFrame):
                 rotQuat.setHpr((piece.getH(), piece.getP() + 90, piece.getR()))
                 outInterval = Parallel(LerpQuatInterval(piece.background, duration=0.4, quat=rotQuat, blendType='easeIn'), piece.moveToBoardSlow(mergePiece.column, mergePiece.row))
             else:
-                outInterval = LerpColorInterval(piece.background, duration=0.6, color=(1,
-                                                                                       1,
-                                                                                       1,
-                                                                                       0))
+                outInterval = LerpColorInterval(piece.background, duration=0.6, color=(1, 1, 1, 0))
             self.potionGame.animationList.append(Sequence(Func(piece.setY, 5), outInterval, Func(piece.removeNode), Func(self.kill, piece)))
 
         return
@@ -298,21 +292,22 @@ class PotionGameBoard(DirectFrame):
                             if filled == False:
                                 filled = True
                                 piece = self.boardPieces[columnIndex][rowIndex2]
-                                self.boardPieces[columnIndex][rowIndex] = piece.pendingMatch or self.boardPieces[columnIndex][rowIndex2]
-                                self.boardPieces[columnIndex][rowIndex2] = None
-                                if piece in self.upgradeList:
-                                    rotQuat = Quat()
-                                    rotQuat2 = Quat()
-                                    rotQuat3 = Quat()
-                                    rotQuat.setHpr((piece.getH(), piece.getP() + 90, piece.getR()))
-                                    rotQuat2.setHpr((piece.getH(), piece.getP() + 270, piece.getR()))
-                                    rotQuat3.setHpr((piece.getH(), piece.getP() + 360, piece.getR()))
-                                    self.potionGame.animationList.append(Sequence(Func(piece.setY, -10), LerpQuatInterval(piece.background, duration=0.4, quat=rotQuat, blendType='easeIn'), Func(piece.upgrade), Parallel(piece.moveToBoardSlow(columnIndex, rowIndex), LerpQuatInterval(piece.background, duration=0.4, quat=rotQuat3, startQuat=rotQuat2, blendType='easeOut')), Func(piece.setY, 0)))
-                                    self.delayDropped = True
-                                    self.upgradeList.remove(piece)
-                                else:
-                                    self.delayDropped = True
-                                    self.potionGame.animationList.append(Sequence(Func(piece.setY, -5), Wait(0.5), piece.moveToBoard(columnIndex, rowIndex), Func(piece.setY, 0)))
+                                if not piece.pendingMatch:
+                                    self.boardPieces[columnIndex][rowIndex] = self.boardPieces[columnIndex][rowIndex2]
+                                    self.boardPieces[columnIndex][rowIndex2] = None
+                                    if piece in self.upgradeList:
+                                        rotQuat = Quat()
+                                        rotQuat2 = Quat()
+                                        rotQuat3 = Quat()
+                                        rotQuat.setHpr((piece.getH(), piece.getP() + 90, piece.getR()))
+                                        rotQuat2.setHpr((piece.getH(), piece.getP() + 270, piece.getR()))
+                                        rotQuat3.setHpr((piece.getH(), piece.getP() + 360, piece.getR()))
+                                        self.potionGame.animationList.append(Sequence(Func(piece.setY, -10), LerpQuatInterval(piece.background, duration=0.4, quat=rotQuat, blendType='easeIn'), Func(piece.upgrade), Parallel(piece.moveToBoardSlow(columnIndex, rowIndex), LerpQuatInterval(piece.background, duration=0.4, quat=rotQuat3, startQuat=rotQuat2, blendType='easeOut')), Func(piece.setY, 0)))
+                                        self.delayDropped = True
+                                        self.upgradeList.remove(piece)
+                                    else:
+                                        self.delayDropped = True
+                                        self.potionGame.animationList.append(Sequence(Func(piece.setY, -5), Wait(0.5), piece.moveToBoard(columnIndex, rowIndex), Func(piece.setY, 0)))
 
         for piece in self.upgradeList:
             rotQuat = Quat()
