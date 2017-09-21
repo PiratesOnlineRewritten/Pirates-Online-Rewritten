@@ -77,7 +77,7 @@ class HolidayManagerUD(DistributedObjectGlobalUD):
         self.d_registrationConfirm(channel)
 
     def unregisterAI(self, channel):
-        self.notify.debug('Received unregister for channel: %s!' % channel)
+        print('Received unregister for channel: %s!' % channel)
 
         if channel not in self.districts:
             self.notify.warning('Received unregister for none allocated channel!')
@@ -118,6 +118,9 @@ class HolidayManagerUD(DistributedObjectGlobalUD):
             date = HolidayGlobals.getHolidayDates(holidayId)
             currentTime = time.time()
 
+            if date is None:
+                continue
+            
             for index in range(len(date.startDates)):
                 start = date.getStartTime(index)
                 end = date.getEndTime(index)
