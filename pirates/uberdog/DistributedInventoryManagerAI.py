@@ -26,7 +26,7 @@ class DistributedInventoryManagerAI(DistributedObjectGlobalAI):
         del self.inventories[inventory.doId]
 
     def getInventory(self, avatarId):
-        for inventory in self.inventories:
+        for inventory in self.inventories.values():
 
             if inventory.getOwnerId() == avatarId:
                 return inventory
