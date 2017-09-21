@@ -360,4 +360,4 @@ eventlog-host 127.0.0.1:7197
 # Holidays:
 want-random-invasions #t
 want-random-treasurefleets #t
-want-random-queen-annes #t
+want-random-queen-annes #f
