@@ -2,22 +2,30 @@ from direct.distributed.DistributedObjectAI import DistributedObjectAI
 from direct.directnotify import DirectNotifyGlobal
 from pirates.creature.DistributedAnimalAI import DistributedAnimalAI
 from pirates.npc.DistributedNPCTownfolkAI import DistributedNPCTownfolkAI
+from pirates.npc.DistributedNPCSkeletonAI import DistributedNPCSkeletonAI
+from pirates.npc.DistributedNPCNavySailorAI import DistributedNPCNavySailorAI
+from pirates.npc.DistributedKillerGhostAI import DistributedKillerGhostAI
+from pirates.creature.DistributedCreatureAI import DistributedCreatureAI
 from pirates.piratesbase import PiratesGlobals
 from pirates.pirate import AvatarTypes
 from pirates.leveleditor import NPCList
 from pirates.piratesbase import PLocalizer
+from pirates.battle import EnemyGlobals
+import random
 
 class DistributedEnemySpawnerAI(DistributedObjectAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedEnemySpawnerAI')
 
     def __init__(self, air):
         DistributedObjectAI.__init__(self, air)
-        self.wantEnemies = config.GetBool('want-enemies', False)
+        self.wantEnemies = config.GetBool('want-enemies', True)
         self.wantDormantSpawns = config.GetBool('want-dormant-spawns', False)
         self.wantTownfolk = config.GetBool('want-townfolk', True)
         self.wantAnimals = config.GetBool('want-animals', True)
-        self.wantCreatures = config.GetBool('want-creatures', False)
         self.wantBosses = config.GetBool('want-bosses', False)
+
+        self.randomBosses = {}
+        self._enemies = {}
 
     def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic):
         newObj = None
@@ -35,7 +43,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
             if self.wantAnimals:
                 newObj = self.__generateAnimal(objType, objectData, parent, parentUid, objKey, dynamic)
         elif objType == 'Creature':
-            if self.wantCreatures and self.wantEnemies:
+            if self.wantEnemies and self.wantBosses:
                 pass
         elif objType == 'Skeleton':
             if self.wantEnemies and self.wantBosses:
@@ -107,7 +115,80 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         return townfolk
 
     def __generateEnemy(self, objType, objectData, parent, parentUid, objKey, dynamic):
-        pass
+        
+        spawnable = objectData.get('Spawnables', '')
+        if spawnable not in AvatarTypes.NPC_SPAWNABLES:
+            self.notify.warning('Failed to spawn %s (%s); Not a valid spawnable.' % (spawnable, objKey))
+
+        avatarType = random.choice(AvatarTypes.NPC_SPAWNABLES[spawnable])()
+        
+        enemyCls = None
+        if avatarType.isA(AvatarTypes.Undead):
+            enemyCls = DistributedNPCSkeletonAI
+        elif avatarType.isA(AvatarTypes.TradingCo) or avatarType.isA(AvatarTypes.Navy):
+            enemyCls = DistributedNPCNavySailorAI
+        elif avatarType.isA(AvatarTypes.LandCreature) or avatarType.isA(AvatarTypes.AirCreature):
+            enemyCls = DistributedCreatureAI
+        elif avatarType.isA(AvatarTypes.RageGhost):
+            enemyCls = DistributedKillerGhostAI
+        else:
+            self.notify.warning('Received unknown AvatarType: %s' % avatarType)
+            return
+
+        if enemyCls is None:
+            return
+
+        enemy = enemyCls(self.air)
+        enemy.setPos(objectData.get('Pos'))
+        enemy.setHpr(objectData.get('Hpr'))
+        enemy.setSpawnPosHpr(enemy.getPos(), enemy.getHpr())
+        enemy.setScale(objectData.get('Scale'))
+        enemy.setUniqueId(objKey)
+        enemy.setAvatarType(avatarType)
+
+        animSet = objectData.get('AnimSet', 'default')
+        noticeAnim1 = objectData.get('Notice Animation 1', '')
+        noticeAnim2 = objectData.get('Notice Animation 2', '')
+        greetingAnim = objectData.get('Greeting Animation', '')
+        enemy.setActorAnims(animSet, noticeAnim1, noticeAnim2, greetingAnim)
+
+        enemy.setLevel(EnemyGlobals.getRandomEnemyLevel(avatarType))
+
+        enemyHp, enemyMp = EnemyGlobals.getEnemyStats(avatarType, enemy.getLevel())
+        enemy.setMaxHp(enemyHp)
+        enemy.setHp(enemy.getMaxHp(), True)
+
+        enemy.setMaxMojo(enemyMp)
+        enemy.setMojo(enemyMp)
+
+        weapons = EnemyGlobals.getEnemyWeapons(avatarType, enemy.getLevel()).keys()
+        enemy.setCurrentWeapon(weapons[0], False)
+
+        enemy.setIsGhost(int(objectData.get('GhostFX', 0)))
+        if 'GhostColor' in objectData and objectData['GhostColor'].isdigit():
+            enemy.setGhostColor(int(objectData.get('GhostColor', 0)))
+
+        dnaId = None
+
+        if dnaId and hasattr(eneny,'setDNAId'):
+            enemy.setDNAId(dnaId)
+
+        name = avatarType.getName()
+        if dnaId and dnaId in NPCList.NPC_LIST:
+            name = NPCList.NPC_LIST[dnaId][NPCList.setName]
+        enemy.setName(name)  
+
+        if 'Start State' in objectData:
+            enemy.setStartState(objectData['Start State'])
+
+        self._enemies[objKey] = enemy
+
+        parent.generateChildWithRequired(enemy, PiratesGlobals.IslandLocalZone)
+
+        locationName = parent.getLocalizerName()
+        self.notify.debug('Generating %s (%s) under zone %d in %s at %s with doId %d' % (enemy.getName(), objKey, enemy.zoneId, locationName, enemy.getPos(), enemy.doId))
+
+        return enemy
 
     def __generateAnimal(self, objType, objectData, parent, parentUid, objKey, dynamic):
         species = objectData.get('Species', None)

@@ -2,6 +2,7 @@ from direct.directnotify import DirectNotifyGlobal
 from pirates.battle.DistributedBattleNPCAI import DistributedBattleNPCAI
 from pirates.economy.DistributedShopKeeperAI import DistributedShopKeeperAI
 from pirates.piratesbase import PiratesGlobals
+
 class DistributedNPCTownfolkAI(DistributedBattleNPCAI, DistributedShopKeeperAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedNPCTownfolkAI')
 
