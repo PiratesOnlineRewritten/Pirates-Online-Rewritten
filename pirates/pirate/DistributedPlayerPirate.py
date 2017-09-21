@@ -1239,7 +1239,7 @@ class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, Distribu
         return self.inventoryId
 
     def setInventoryId(self, inventoryId):
-        self.inventoryId = 100000002
+        self.inventoryId = inventoryId
 
     def getInventory(self):
         if not self:

@@ -895,6 +895,7 @@ class LoadAvatarFSM(AvatarOperationFSM):
             self.avId,
             channel,
             STATESERVER_OBJECT_DELETE_RAM)
+
         datagramCleanup.addUint32(self.avId)
         datagram = PyDatagram()
         datagram.addServerHeader(
@@ -904,9 +905,16 @@ class LoadAvatarFSM(AvatarOperationFSM):
         datagram.addString(datagramCleanup.getMessage())
         self.csm.air.send(datagram)
 
+        # setup the avatar's inventory.
+        self.csm.air.inventoryManager.initiateInventory(self.avId, self.inventorySetup)
+
+    def inventorySetup(self, inventoryId):
+        channel = self.csm.GetAccountConnectionChannel(self.target)
+
         # Activate the avatar on the DBSS:
         self.csm.air.sendActivate(
-            self.avId, 0, 0, self.csm.air.dclassesByName['DistributedPlayerPirateUD'], {})
+            self.avId, 0, 0, self.csm.air.dclassesByName['DistributedPlayerPirateUD'], {
+                'setInventoryId': (inventoryId,)})
 
         # Next, add them to the avatar channel:
         datagram = PyDatagram()
@@ -925,9 +933,6 @@ class LoadAvatarFSM(AvatarOperationFSM):
             CLIENTAGENT_SET_CLIENT_ID)
         datagram.addChannel(self.target<<32 | self.avId)
         self.csm.air.send(datagram)
-
-        # setup the avatar's inventory.
-        self.csm.air.inventoryManager.initiateInventory(self.avId)
 
         # Eliminate race conditions.
         taskMgr.doMethodLater(0.2, self.enterSetAvatarTask,
@@ -984,7 +989,6 @@ class UnloadAvatarFSM(OperationFSM):
         # Done!
         self.csm.air.writeServerEvent('avatarUnload', avId=self.avId)
         self.demand('Off')
-
 
 # --- CLIENT SERVICES MANAGER UBERDOG ---
 class ClientServicesManagerUD(DistributedObjectGlobalUD):

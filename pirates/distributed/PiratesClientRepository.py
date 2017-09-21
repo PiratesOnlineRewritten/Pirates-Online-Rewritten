@@ -458,7 +458,9 @@ class PiratesClientRepository(OTPClientRepository):
         localAvatar.setLocation(parentId=None, zoneId=None)
         localAvatar.generateInit()
         localAvatar.generate()
-        localAvatar.updateAllRequiredFields(localAvatar.dclass, di)
+        localAvatar.dclass.receiveUpdateBroadcastRequiredOwner(localAvatar, di)
+        localAvatar.announceGenerate()
+        localAvatar.postGenerateMessage()
         self.loadingScreen.endStep('LocalAvatar')
         self.loginFSM.request('playingGame')
 
