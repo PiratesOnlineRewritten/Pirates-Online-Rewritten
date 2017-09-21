@@ -58,7 +58,7 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         container.setType(objectData.get('type', 'Crate'))
 
         if 'Visual' in objectData and 'Color' in objectData['Visual']:
-            container.setContainerColor(objectData['Visual'].get('Color', (0, 0, 0, 0)))
+            container.setContainerColor(objectData['Visual'].get('Color', (1.0, 1.0, 1.0, 1.0)))
 
         container.setSearchTime(float(objectData.get('searchTime', '6.0')))
         container.setVisZone(objectData.get('VisZone', ''))
