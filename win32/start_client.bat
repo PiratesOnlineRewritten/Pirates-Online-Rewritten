@@ -16,7 +16,6 @@ if %INPUT%==1 (
 ) else if %INPUT%==2 (
     set POR_GAMESERVER=game.dev.piratesrewritten.com
 ) else if %INPUT%==3 (
-
     set /P POR_GAMESERVER=Gameserver: 
 ) else (
     goto selection
