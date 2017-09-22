@@ -125,8 +125,8 @@ ENV/
 
 # Game logs
 *.log
-
 logs/
+**/pirates-dev-log.txt
 
 # Screenshots
 *.jpeg
