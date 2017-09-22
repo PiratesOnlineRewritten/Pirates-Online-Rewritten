@@ -125,7 +125,7 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         interior.setModelPath(interiorModel)
         interior.setName(interior.getLocalizerName())
 
-        parent.generateChildWithRequired(interior, interiorZone)
+        self.air.worldCreator.world.generateChildWithRequired(interior, interiorZone)
         self.addObject(interior)
 
         # Create exterior doors
