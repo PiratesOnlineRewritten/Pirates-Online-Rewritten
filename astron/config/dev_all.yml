@@ -1,0 +1,73 @@
+daemon:
+    name: Astron Cluster
+
+general:
+    eventlogger: 127.0.0.1:7197
+    dc_files:
+        - ../dclass/otp.dc
+        - ../dclass/pirates.dc
+
+messagedirector:
+    bind: 127.0.0.1:7199
+
+uberdogs:
+    - class: CentralLogger
+      id: 4688
+      anonymous: false
+
+    - class: PiratesSettingsMgr
+      id: 4704
+      anonymous: true
+
+    - class: ClientServicesManager
+      id: 4665
+      anonymous: true
+
+    - class: DistributedTravelAgent
+      id: 4679
+      anonymous: false
+
+    - class: DistributedInventoryManager
+      id: 4677
+      anonymous: false
+
+    - class: HolidayManager
+      id: 4705
+      anonymous: false
+
+    - class: CodeRedemption
+      id: 4703
+      anonymous: false
+
+roles:
+    - type: clientagent
+      bind: 0.0.0.0:7198
+      version: pirates-dev
+      client:
+       relocate: true
+       add_interest: enabled
+      channels:
+        min: 1000000000
+        max: 1009999999
+
+    - type: stateserver
+      control: 10000
+
+    - type: database
+      control: 4003
+      generate:
+        min: 100000000
+        max: 399999999
+      backend:
+        type: yaml
+        directory: ../databases/astrondb
+
+    - type: dbss
+      database: 4003
+      ranges:
+        - min: 100000000
+          max: 399999999
+
+    - type: eventlogger
+      bind: 127.0.0.1:7197
+      output: ../logs/events-%y%m%d_%H%M%S.log

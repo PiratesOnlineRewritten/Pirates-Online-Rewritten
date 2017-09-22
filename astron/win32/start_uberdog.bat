@@ -18,4 +18,3 @@ rem Start AI server
 :main
 %PYTHON_CMD% -m pirates.uberdog.ServiceStart 
 goto main
-goto main
