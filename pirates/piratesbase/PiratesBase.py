@@ -814,8 +814,9 @@ class PiratesBase(OTPBase):
             return
         self.__alreadyExiting = True
         requestResult = False
-        self.funnel.end_session()
-        self.funnel.submit_events()
+        if hasattr(self, 'funnel'):
+            self.funnel.end_session()
+            self.funnel.submit_events()
         if hasattr(base, 'cr'):
             if self.cr.timeManager:
                 self.cr.timeManager.setDisconnectReason(PiratesGlobals.DisconnectCloseWindow)
