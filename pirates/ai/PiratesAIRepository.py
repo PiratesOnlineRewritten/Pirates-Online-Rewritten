@@ -17,6 +17,7 @@ from pirates.piratesbase.DistributedTimeOfDayManagerAI import DistributedTimeOfD
 from pirates.piratesbase.DistributedGameStatManagerAI import DistributedGameStatManagerAI
 from pirates.distributed.TargetManagerAI import TargetManagerAI
 from pirates.battle.DistributedEnemySpawnerAI import DistributedEnemySpawnerAI
+from pirates.trades.TradeManagerAI import TradeManagerAI
 from pirates.world.WorldCreatorAI import WorldCreatorAI
 
 class PiratesAIRepository(PiratesInternalRepository):
@@ -47,10 +48,10 @@ class PiratesAIRepository(PiratesInternalRepository):
         messenger.send('district-ready')
 
     def incrementPopulation(self):
-        pass
+        self.populationTracker.b_setPopulation(self.populationTracker.getPopulation() + 1)
 
     def decrementPopulation(self):
-        pass
+        self.populationTracker.b_setPopulation(self.populationTracker.getPopulation() - 1)
 
     def allocateZone(self, owner=None):
         zoneId = self.zoneAllocator.allocate()
@@ -109,6 +110,11 @@ class PiratesAIRepository(PiratesInternalRepository):
 
         self.magicWords = PiratesMagicWordManagerAI(self)
         self.magicWords.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
+
+        self.chatMgr = self.generateGlobalObject(OTP_DO_ID_CHAT_MANAGER, 'DistributedChatManager')
+
+        self.tradeMgr = TradeManagerAI(self)
+        self.tradeMgr.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
 
     def createZones(self):
         """
