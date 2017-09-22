@@ -32,9 +32,6 @@ set GAME_INGAME_UPGRADE=http://www.piratesrewritten.com/
 set GAME_INGAME_MOREINFO=http://www.piratesrewritten.com/about/
 set GAME_INGAME_NAMING=http://www.piratesrewritten.com/piratecode/
 
-rem Set Patcher urls
-set GAME_PATCHER_FILE_OPTIONS patcher.ver
-
 rem PlayToken input
 set /P POR_TOKEN=Token (Default: dev): || ^
 set POR_TOKEN=dev
@@ -46,8 +43,6 @@ ppython2 -h >nul 2>&1 && (
     set PYTHON_CMD=ppython
 )
 
-rem Log file path
-set LOG_FILE=pirates-dev-log.txt
 
 echo ====================================
 echo Starting Pirates Online Rewritten...
@@ -60,6 +55,6 @@ cd ../
 
 rem Start the game using the PYTHON_CMD variable
 :main
-%PYTHON_CMD% -m pirates.piratesbase.PiratesStart >> %LOG_FILE%
+%PYTHON_CMD% -m pirates.piratesbase.PiratesStart
 pause
 goto :main
