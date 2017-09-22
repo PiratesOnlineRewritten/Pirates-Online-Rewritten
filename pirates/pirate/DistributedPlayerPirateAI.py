@@ -14,6 +14,7 @@ class DistributedPlayerPirateAI(DistributedPlayerAI, HumanDNA, DistributedBattle
         DistributedQuestAvatarAI.__init__(self, air)
 
         self.inventoryId = 0
+        self.founder = False
 
     def setInventoryId(self, inventoryId):
         self.inventoryId = inventoryId
@@ -30,3 +31,16 @@ class DistributedPlayerPirateAI(DistributedPlayerAI, HumanDNA, DistributedBattle
 
     def d_relayTeleportLoc(self, shardId, zoneId, teleportMgrDoId):
         self.sendUpdateToAvatarId(self.doId, 'relayTeleportLoc', [shardId, zoneId, teleportMgrDoId])
+
+    def setFounder(self, founder):
+        self.founder = founder
+
+    def d_setFounder(self, founder):
+        self.sendUpdate('setFounder', [founder])
+
+    def b_setFounder(self, founder):
+        self.setFounder(founder)
+        self.d_setFounder(founder)
+
+    def getFounder(self):
+        return self.founder
