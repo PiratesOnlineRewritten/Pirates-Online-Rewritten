@@ -284,7 +284,6 @@ text-default-font models/fonts/BardiT_outline.bam
 
 # Server:
 server-version pirates-dev
-game-server 127.0.0.1
 
 # SSL:
 want-ssl-scheme #f

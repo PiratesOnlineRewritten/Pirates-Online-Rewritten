@@ -13,3 +13,6 @@ class PiratesDummyLauncher(DummyLauncherBase, PiratesQuickLauncher):
 
     def getPlayToken(self):
         return os.environ.get('POR_TOKEN', None)
+
+    def getGameServer(self):
+        return os.environ.get('POR_GAMESERVER', None)

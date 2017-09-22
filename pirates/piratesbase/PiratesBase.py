@@ -731,13 +731,12 @@ class PiratesBase(OTPBase):
         gameServer = self.config.GetString('game-server', '')
         if gameServer:
             self.notify.info('Using game-server from Configrc: %s ' % gameServer)
+        elif launcher.getGameServer():
+            gameServer = launcher.getGameServer()
+            self.notify.info('Using gameServer from launcher: %s ' % gameServer)
         else:
-            if launcher.getGameServer():
-                gameServer = launcher.getGameServer()
-                self.notify.info('Using gameServer from launcher: %s ' % gameServer)
-            else:
-                gameServer = 'localhost'
-                self.notify.info('Using gameServer localhost')
+            gameServer = '127.0.0.1'
+            self.notify.info('Using gameServer localhost')
 
         serverPort = self.config.GetInt('server-port', 7198)
         debugQuests = self.config.GetBool('debug-quests', True)
