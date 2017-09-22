@@ -46,20 +46,20 @@ class MastCache():
             for lod in self.genericGeomSets[index]:
                 lod.reparentTo(NodePath(self.charRoot))
 
-            data.charRoot = NodePath(self.charRoot).copyTo(NodePath()).node()
-            data.collisions = NodePath(data.charRoot).find('**/collisions')
-            if index == 0:
-                data.collisions.findAllMatches('**/*_1*').detach()
-                data.collisions.findAllMatches('**/*_2*').detach()
-            elif index == 1:
-                data.collisions.findAllMatches('**/*_2*').detach()
-            if custom:
-                for lod in self.customGeomSets[index]:
-                    lod.detachNode()
+        data.charRoot = NodePath(self.charRoot).copyTo(NodePath()).node()
+        data.collisions = NodePath(data.charRoot).find('**/collisions')
+        if index == 0:
+            data.collisions.findAllMatches('**/*_1*').detach()
+            data.collisions.findAllMatches('**/*_2*').detach()
+        elif index == 1:
+            data.collisions.findAllMatches('**/*_2*').detach()
+        if custom:
+            for lod in self.customGeomSets[index]:
+                lod.detachNode()
 
-            else:
-                for lod in self.genericGeomSets[index]:
-                    lod.detachNode()
+        else:
+            for lod in self.genericGeomSets[index]:
+                lod.detachNode()
 
         data.breakAnim = self.breakAnim
         data.metaAnims = self.metaAnims
@@ -177,9 +177,11 @@ def generateHullCache(modelClass):
         bad = locators.find('**/location_ropeLadder_0_%s' % side)
         if bad:
             bad.setName('location_ropeLadder_%s_0' % side)
+
         bad = locators.find('**/location_ropeLadder_1_%s' % side)
         if bad:
             bad.setName('location_ropeLadder_%s_1' % side)
+
         bad = locators.find('**/location_ropeLadder_1_%s1' % side)
         if bad:
             bad.setName('location_ropeLadder_%s_2' % side)
@@ -196,11 +198,13 @@ def generateHullCache(modelClass):
         walls.setTag('Hull Code', '255')
     else:
         collisions.attachNewNode('collision_walls')
+
     shipToShipCollide = collisions.find('**/collision_shiptoship')
     shipToShipCollide.setCollideMask(PiratesGlobals.ShipCollideBitmask)
     deck = collisions.find('**/collision_deck')
     if not deck:
         deck = collisions.attachNewNode('deck')
+
     mask = deck.getCollideMask()
     mask ^= PiratesGlobals.FloorBitmask
     mask |= PiratesGlobals.ShipFloorBitmask
@@ -208,6 +212,7 @@ def generateHullCache(modelClass):
     floors = collisions.find('**/collision_floors')
     if not floors:
         floors = collisions.find('**/collision_floor')
+
     mask = floors.getCollideMask()
     mask ^= PiratesGlobals.FloorBitmask
     mask |= PiratesGlobals.ShipFloorBitmask
@@ -241,6 +246,7 @@ def generateHullCache(modelClass):
         spikeMed.copyTo(geomMed)
         spikeLow.copyTo(geomLow)
         spikeLow.copyTo(geomSuperLow)
+
     flipRoot = NodePath('root')
     collisions.reparentTo(flipRoot)
     locators.reparentTo(flipRoot)
@@ -269,8 +275,8 @@ def generateHullCache(modelClass):
     geomSuperLow.detachNode()
     locators.detachNode()
     collisions.detachNode()
-    genericGeoms = [
-     geomHigh, geomMed, geomLow, geomSuperLow]
+    genericGeoms = [geomHigh, geomMed, geomLow, geomSuperLow]
+    
     customGeoms = [ x.copyTo(NodePath()) for x in genericGeoms ]
     for np in genericGeoms:
         trans = np.find('**/transparent')
