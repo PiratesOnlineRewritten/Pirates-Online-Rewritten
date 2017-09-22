@@ -252,7 +252,7 @@ dclass OtpAvatarManager : DistributedObject {
   shareAvatarResponse(uint32, uint32, uint8);
 };
 
-dclass DistributedChatManager : DistributedObject {
+dclass DistributedChatManager : DistributedObjectGlobal {
   online();
   adminChat(uint32, string);
   setAvatarLocation(uint32, uint32, uint32);
@@ -453,7 +453,7 @@ dclass PlayerFriendsManager : DistributedObject, TalkPath_account {
   removePlayerFriend(uint32);
 };
 
-dclass SpeedchatRelay : DistributedObject, TalkPath_account {
+dclass SpeedchatRelay : DistributedObjectGlobal, TalkPath_account {
   forwardSpeedchat(uint32, uint8, uint32 [], uint32, string(0-256), uint8) clsend;
 };
 
