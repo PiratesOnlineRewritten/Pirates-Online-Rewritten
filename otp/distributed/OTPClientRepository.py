@@ -110,26 +110,22 @@ class OTPClientRepository(ClientRepositoryBase):
         self.requiredLogin = config.GetString('required-login', 'auto')
         if self.requiredLogin == 'auto':
             self.notify.info('required-login auto.')
+        elif self.requiredLogin == 'green':
+            self.notify.error('The green code is out of date')
+        elif self.requiredLogin == 'blue':
+            if not self.blue:
+                self.notify.error('The tcr does not have the required blue login')
+        elif self.requiredLogin == 'playToken':
+            if not self.playToken:
+              self.notify.error('The tcr does not have the required playToken login')
+        elif self.requiredLogin == 'DISLToken':
+            if not self.DISLToken:
+              self.notify.error('The tcr does not have the required DISL token login')
+        elif self.requiredLogin == 'gameServer':
+            self.notify.info('Using game server name/password.')
+            self.DISLToken = None
         else:
-            if self.requiredLogin == 'green':
-                self.notify.error('The green code is out of date')
-            else:
-                if self.requiredLogin == 'blue':
-                    if not self.blue:
-                        self.notify.error('The tcr does not have the required blue login')
-                else:
-                    if self.requiredLogin == 'playToken':
-                        if not self.playToken:
-                            self.notify.error('The tcr does not have the required playToken login')
-                    elif self.requiredLogin == 'DISLToken':
-                        if not self.DISLToken:
-                            self.notify.error('The tcr does not have the required DISL token login')
-                    else:
-                        if self.requiredLogin == 'gameServer':
-                            self.notify.info('Using game server name/password.')
-                            self.DISLToken = None
-                        else:
-                            self.notify.error('The required-login was not recognized.')
+            self.notify.error('The required-login was not recognized.')
 
         self.wantMagicWords = base.config.GetString('want-magic-words', '')
         if self.launcher and hasattr(self.launcher, 'http'):
@@ -150,15 +146,14 @@ class OTPClientRepository(ClientRepositoryBase):
         elif self.blue:
             self.loginInterface = LoginGoAccount.LoginGoAccount(self)
             self.notify.info('loginInterface: LoginGoAccount')
+        elif self.playToken:
+            self.loginInterface = LoginWebPlayTokenAccount(self)
+            self.notify.info('loginInterface: LoginWebPlayTokenAccount')
+
+        elif self.DISLToken:
+            self.loginInterface = LoginDISLTokenAccount(self)
+            self.notify.info('loginInterface: LoginDISLTokenAccount')
         else:
-            if self.playToken:
-                self.loginInterface = LoginWebPlayTokenAccount(self)
-                self.notify.info('loginInterface: LoginWebPlayTokenAccount')
-
-            if self.DISLToken:
-                self.loginInterface = LoginDISLTokenAccount(self)
-                self.notify.info('loginInterface: LoginDISLTokenAccount')
-
             self.loginInterface = LoginTTAccount.LoginTTAccount(self)
             self.notify.info('loginInterface: LoginTTAccount')
 
