@@ -480,18 +480,10 @@ class DistributedNPCTownfolk(DistributedBattleNPC.DistributedBattleNPC, Distribu
         optionIds, stateCodes, bribeType = self.computeOptions()
         anyActive = False
         for i in range(len(optionIds)):
-            print optionIds[i]
-            print InteractGlobals.CANCEL
-            print '-'
-            print stateCodes[i]
-            print InteractGlobals.DISABLED
-            print '----'
             if (optionIds[i] != InteractGlobals.CANCEL) and (stateCodes[i] != InteractGlobals.DISABLED):
-                print 'Active?'
                 anyActive = True
                 break
 
-        print 'ANYACTIVE: %s '% anyActive
         if anyActive:
             if self.localAvatarHasBeenNoticed:
                 self.abortNotice()
