@@ -4,6 +4,7 @@ from direct.directnotify import DirectNotifyGlobal
 
 class DistributedRepairBenchAI(DistributedInteractiveAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedRepairBenchAI')
+    MULTIUSE = True
 
     def __init__(self, air):
         DistributedInteractiveAI.__init__(self, air)
