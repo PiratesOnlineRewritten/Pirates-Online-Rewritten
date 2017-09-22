@@ -15,6 +15,8 @@ AllAccessHoliday = False
 def getPaidStatus(avId, checkHoliday=True):
     global AllAccessHoliday
     av = base.cr.getDo(avId)
+    if not config.GetBool('want-paid-systems', False):
+        return FULL
     if av:
         if checkHoliday and AllAccessHoliday:
             return FULL
@@ -41,6 +43,8 @@ def setAllAccess(allAccess):
 
 def getPaidStatusAI(playerID):
     playerOb = simbase.air.getDo(playerID)
+    if not config.GetBool('want-paid-systems', False):
+        return FULL
     if playerOb:
         if AllAccessHoliday:
             return FULL
