@@ -24,7 +24,8 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         self.wantAnimals = config.GetBool('want-animals', True)
         self.wantBosses = config.GetBool('want-bosses', False)
 
-        self.randomBosses = {}
+        self.randomBosses = []
+        self.randomBossChance = config.GetInt('random-boss-spawn-change', 5)
         self._enemies = {}
 
     def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic):
@@ -121,6 +122,17 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
             self.notify.warning('Failed to spawn %s (%s); Not a valid spawnable.' % (spawnable, objKey))
 
         avatarType = random.choice(AvatarTypes.NPC_SPAWNABLES[spawnable])()
+        bossType = avatarType.getRandomBossType()
+
+        if bossType:
+            if random.randint(1, 100) <= self.randomBossChance:
+                if bossType not in self.randomBosses:
+                    self.randomBosses.append(bossType)
+                    avatarType = bossType
+            elif config.GetBool('force-random-bosses', False):
+                if bossType not in self.randomBosses:
+                    self.randomBosses.append(bossType)
+                    avatarType = bossType
         
         enemyCls = None
         if avatarType.isA(AvatarTypes.Undead):
@@ -136,6 +148,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
             return
 
         if enemyCls is None:
+            self.notify.warning('No Enemy Class defined for AvatarType: %s' % avatarType)
             return
 
         enemy = enemyCls(self.air)
@@ -169,13 +182,15 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
             enemy.setGhostColor(int(objectData.get('GhostColor', 0)))
 
         dnaId = None
-
         if dnaId and hasattr(eneny,'setDNAId'):
             enemy.setDNAId(dnaId)
 
         name = avatarType.getName()
         if dnaId and dnaId in NPCList.NPC_LIST:
             name = NPCList.NPC_LIST[dnaId][NPCList.setName]
+
+        if avatarType.getBoss():
+            name = PLocalizer.BossNames[avatarType.faction][avatarType.track][avatarType.id][0]
         enemy.setName(name)  
 
         if 'Start State' in objectData:
@@ -187,6 +202,9 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
 
         locationName = parent.getLocalizerName()
         self.notify.debug('Generating %s (%s) under zone %d in %s at %s with doId %d' % (enemy.getName(), objKey, enemy.zoneId, locationName, enemy.getPos(), enemy.doId))
+
+        if avatarType.getBoss():
+            self.notify.debug('Spawning boss %s on %s!' % (enemy.getName(), locationName))
 
         return enemy
 
