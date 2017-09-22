@@ -188,7 +188,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
 
         enemyHp, enemyMp = EnemyGlobals.getEnemyStats(avatarType, enemy.getLevel())
 
-        if avatarType.getBoss():
+        if avatarType.getBoss() and hasattr(enemy, 'bossData'):
             enemyHp = enemyHp * enemy.bossData['HpScale']
             enemyMp = enemyMp * enemy.bossData['MpScale']
 
@@ -228,7 +228,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         self.notify.debug('Generating %s (%s) under zone %d in %s at %s with doId %d' % (enemy.getName(), objKey, enemy.zoneId, locationName, enemy.getPos(), enemy.doId))
 
         if avatarType.getBoss():
-            print('Spawning boss %s (%s) on %s!' % (enemy.getName(), objKey, locationName))
+            self.notify.debug('Spawning boss %s (%s) on %s!' % (enemy.getName(), objKey, locationName))
 
         return enemy
 
