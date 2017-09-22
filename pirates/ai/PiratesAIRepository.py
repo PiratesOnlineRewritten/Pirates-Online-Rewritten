@@ -43,7 +43,7 @@ class PiratesAIRepository(PiratesInternalRepository):
         self.createZones()
 
         self.distributedDistrict.b_setAvailable(1)
-        self.notify.info('District is now ready.')
+        self.notify.info('District (%s) is now ready.' % self.districtName)
         messenger.send('district-ready')
 
     def incrementPopulation(self):
