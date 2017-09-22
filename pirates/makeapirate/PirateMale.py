@@ -1354,6 +1354,7 @@ class PirateMale(DirectObject.DirectObject):
 
         if self.clothesTextures != None:
             self.setPartTexture('SHIRT', shirtIdx[0], shirtIdx[1], layerShirtModified[0])
+
         for j in range(0, len(layerShirtModified[0])):
             parts = self.clothingsLayer1[layerShirtModified[0][j]]
             if parts.getNumPaths():
@@ -1364,39 +1365,46 @@ class PirateMale(DirectObject.DirectObject):
             if vestIdx[0] != 2:
                 if shirtIdx[0] not in (5, 7, 8, 9):
                     self.handleLayer2Hiding(self.clothingsLayer1, layerPant, 'belt')
-            layerVest = self.clothingsVest[vestIdx[0]]
-            parts = NodePathCollection()
-            if self.clothesTextures != None:
-                self.setPartTexture('VEST', vestIdx[0], vestIdx[1], layerVest[0])
-            for j in range(0, len(layerVest[0])):
-                parts = self.clothingsLayer2[layerVest[0][j]]
-                if parts.getNumPaths():
-                    parts.unstash()
 
+        layerVest = self.clothingsVest[vestIdx[0]]
+        parts = NodePathCollection()
+        if self.clothesTextures != None:
+            self.setPartTexture('VEST', vestIdx[0], vestIdx[1], layerVest[0])
+
+        for j in range(0, len(layerVest[0])):
+            parts = self.clothingsLayer2[layerVest[0][j]]
             if parts.getNumPaths():
-                if vestIdx[0] > 1:
-                    self.handleLayer2Hiding(self.clothingsLayer1, layerShirtModified, 'base', 'front', 'collar_v_low')
-                else:
-                    self.handleLayer2Hiding(self.clothingsLayer1, layerShirtModified)
-                self.handleLayer1Hiding(layerVest)
-            self.handleHeadHiding()
-            layerBelt = self.clothingsBelt[beltIdx[0]]
-            parts = NodePathCollection()
-            if self.clothesTextures != None:
-                self.setPartTexture('BELT', beltIdx[0], beltIdx[1], layerBelt[0])
-            for j in range(0, len(layerBelt[0])):
-                parts = self.clothingsLayer2[layerBelt[0][j]]
-                if parts.getNumPaths():
-                    parts.unstash()
+                parts.unstash()
 
-            if parts.getNumPaths() or vestIdx[0] == 3:
-                self.handleLayer2Hiding(self.clothingsLayer1, layerPant, 'belt')
-            if parts.getNumPaths() and vestIdx[0] == 3:
-                self.handleLayer2Hiding(self.clothingsLayer2, layerVest, 'belt')
+        if parts.getNumPaths():
+            if vestIdx[0] > 1:
+                self.handleLayer2Hiding(self.clothingsLayer1, layerShirtModified, 'base', 'front', 'collar_v_low')
+            else:
+                self.handleLayer2Hiding(self.clothingsLayer1, layerShirtModified)
+            self.handleLayer1Hiding(layerVest)
+
+        self.handleHeadHiding()
+        layerBelt = self.clothingsBelt[beltIdx[0]]
+        parts = NodePathCollection()
+        if self.clothesTextures != None:
+            self.setPartTexture('BELT', beltIdx[0], beltIdx[1], layerBelt[0])
+
+        for j in range(0, len(layerBelt[0])):
+            parts = self.clothingsLayer2[layerBelt[0][j]]
+            if parts.getNumPaths():
+                parts.unstash()
+
+        if parts.getNumPaths() or vestIdx[0] == 3:
+            self.handleLayer2Hiding(self.clothingsLayer1, layerPant, 'belt')
+
+        if parts.getNumPaths() and vestIdx[0] == 3:
+            self.handleLayer2Hiding(self.clothingsLayer2, layerVest, 'belt')
+
         layerCoat = self.clothingsCoat[coatIdx[0]]
         parts = NodePathCollection()
         if self.clothesTextures != None:
             self.setPartTexture('COAT', coatIdx[0], coatIdx[1], layerCoat[0])
+            
         for j in range(0, len(layerCoat[0])):
             parts = self.clothingsLayer3[layerCoat[0][j]]
             if parts.getNumPaths():

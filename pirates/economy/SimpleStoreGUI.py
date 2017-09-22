@@ -103,9 +103,7 @@ class SimpleStoreColorPicker(BorderFrame):
         charGui = loader.loadModel('models/gui/char_gui')
         for idx in range(0, numcolors):
             color = colorSet[idx]
-            colorButton = GuiButton.GuiButton(parent=self, pos=(offsetx, 0.0, offsety), image=(charGui.find('**/chargui_frame04'), charGui.find('**/chargui_frame04_down'), charGui.find('**/chargui_frame04_over')), image_scale=(0.115,
-                                                                                                                                                                                                                                   0.0,
-                                                                                                                                                                                                                                   0.088), helpText=PLocalizer.TailorColorStrings.get(color), helpDelay=0, command=self.selectColor)
+            colorButton = GuiButton.GuiButton(parent=self, pos=(offsetx, 0.0, offsety), image=(charGui.find('**/chargui_frame04'), charGui.find('**/chargui_frame04_down'), charGui.find('**/chargui_frame04_over')), image_scale=(0.115, 0.0, 0.088), helpText=PLocalizer.TailorColorStrings.get(color), helpDelay=0, command=self.selectColor)
             colorFrame = DirectFrame(parent=colorButton, frameSize=(-0.025, 0.025, -0.025, 0.025))
             colorButton['extraArgs'] = [
              color]
@@ -236,35 +234,15 @@ class SimpleStoreBuyPanelGUI(BorderFrame):
             self.item.quantity -= qtyMult
             self.updateGui()
 
-        self.qtyLabel = DirectLabel(parent=self, relief=None, state=DGG.DISABLED, text=PLocalizer.SimpleStoreQty, text_font=PiratesGlobals.getInterfaceFont(), text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ALeft, text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_wordwrap=11, text_pos=(0,
-                                                                                                                                                                                                                                                                                                                                                0,
-                                                                                                                                                                                                                                                                                                                                                0), pos=(-0.2,
-                                                                                                                                                                                                                                                                                                                                                         0,
-                                                                                                                                                                                                                                                                                                                                                         0.015))
-        self.minusButton = GuiButton.GuiButton(parent=self, text='-', text_fg=PiratesGuiGlobals.TextFG2, text_pos=(0.0, -0.014), text_scale=PiratesGuiGlobals.TextScaleTitleSmall, text_align=TextNode.ACenter, text_shadow=PiratesGuiGlobals.TextShadow, image=GuiButton.GuiButton.blueGenericButton, image_scale=(0.125,
-                                                                                                                                                                                                                                                                                                                    0.36,
-                                                                                                                                                                                                                                                                                                                    0.36), pos=(0.04,
-                                                                                                                                                                                                                                                                                                                                0.0,
-                                                                                                                                                                                                                                                                                                                                0.028), command=minusQuantity)
+        self.qtyLabel = DirectLabel(parent=self, relief=None, state=DGG.DISABLED, text=PLocalizer.SimpleStoreQty, text_font=PiratesGlobals.getInterfaceFont(), text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ALeft, text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_wordwrap=11, text_pos=(0, 0, 0), pos=(-0.2, 0, 0.015))
+        self.minusButton = GuiButton.GuiButton(parent=self, text='-', text_fg=PiratesGuiGlobals.TextFG2, text_pos=(0.0, -0.014), text_scale=PiratesGuiGlobals.TextScaleTitleSmall, text_align=TextNode.ACenter, text_shadow=PiratesGuiGlobals.TextShadow, image=GuiButton.GuiButton.blueGenericButton, image_scale=(0.125, 0.36, 0.36), pos=(0.04, 0.0, 0.028), command=minusQuantity)
         if self.item.quantity == qtyMult:
             self.minusButton['state'] = DGG.DISABLED
-        self.plusButton = GuiButton.GuiButton(parent=self, text='+', text_fg=PiratesGuiGlobals.TextFG2, text_pos=(0.0, -0.014), text_scale=PiratesGuiGlobals.TextScaleTitleSmall, text_align=TextNode.ACenter, text_shadow=PiratesGuiGlobals.TextShadow, image=GuiButton.GuiButton.blueGenericButton, image_scale=(0.125,
-                                                                                                                                                                                                                                                                                                                   0.36,
-                                                                                                                                                                                                                                                                                                                   0.36), pos=(0.18,
-                                                                                                                                                                                                                                                                                                                               0.0,
-                                                                                                                                                                                                                                                                                                                               0.038), command=plusQuantity)
+        self.plusButton = GuiButton.GuiButton(parent=self, text='+', text_fg=PiratesGuiGlobals.TextFG2, text_pos=(0.0, -0.014), text_scale=PiratesGuiGlobals.TextScaleTitleSmall, text_align=TextNode.ACenter, text_shadow=PiratesGuiGlobals.TextShadow, image=GuiButton.GuiButton.blueGenericButton, image_scale=(0.125, 0.36, 0.36), pos=(0.18, 0.0, 0.038), command=plusQuantity)
         if self.item.quantity == qtyLimit:
             self.plusButton['state'] = DGG.DISABLED
-        self.qtyText = DirectLabel(parent=self, relief=None, state=DGG.DISABLED, text=str(self.item.quantity), text_font=PiratesGlobals.getInterfaceFont(), text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ARight, text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_wordwrap=11, text_pos=(0,
-                                                                                                                                                                                                                                                                                                                                              0,
-                                                                                                                                                                                                                                                                                                                                              0), pos=(0.14,
-                                                                                                                                                                                                                                                                                                                                                       0,
-                                                                                                                                                                                                                                                                                                                                                       0.015), textMayChange=1)
-        self.qtyFullText = DirectLabel(parent=self, relief=None, state=DGG.DISABLED, text=PLocalizer.SimpleStoreFull, text_font=PiratesGlobals.getInterfaceFont(), text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ALeft, text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_wordwrap=11, text_pos=(0,
-                                                                                                                                                                                                                                                                                                                                                    0,
-                                                                                                                                                                                                                                                                                                                                                    0), pos=(0.17,
-                                                                                                                                                                                                                                                                                                                                                             0,
-                                                                                                                                                                                                                                                                                                                                                             0.015), textMayChange=1)
+        self.qtyText = DirectLabel(parent=self, relief=None, state=DGG.DISABLED, text=str(self.item.quantity), text_font=PiratesGlobals.getInterfaceFont(), text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ARight, text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_wordwrap=11, text_pos=(0, 0, 0), pos=(0.14, 0, 0.015), textMayChange=1)
+        self.qtyFullText = DirectLabel(parent=self, relief=None, state=DGG.DISABLED, text=PLocalizer.SimpleStoreFull, text_font=PiratesGlobals.getInterfaceFont(), text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ALeft, text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_wordwrap=11, text_pos=(0, 0, 0), pos=(0.17, 0, 0.015), textMayChange=1)
         self.qtyFullText.hide()
         quantity = self.item.getQuantityInInventory()
         if stackable:
@@ -273,25 +251,15 @@ class SimpleStoreBuyPanelGUI(BorderFrame):
             freeSpace = len(localAvatar.getInventory().getFreeLocations(self.item.itemClass, self.item.itemType))
         if self.item.quantity > freeSpace:
             self.qtyText['text_fg'] = VBase4(1, 0, 0, 1)
-        self.ownedLabel = DirectLabel(parent=self, relief=None, state=DGG.DISABLED, text=PLocalizer.SimpleStoreOwned + ' %s' % quantity, text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ALeft, text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_wordwrap=11, text_pos=(0,
-                                                                                                                                                                                                                                                                                                                          0,
-                                                                                                                                                                                                                                                                                                                          0.0), pos=(-0.2,
-                                                                                                                                                                                                                                                                                                                                     0,
-                                                                                                                                                                                                                                                                                                                                     0.08), text_font=PiratesGlobals.getInterfaceFont(), textMayChange=1)
+        self.ownedLabel = DirectLabel(parent=self, relief=None, state=DGG.DISABLED, text=PLocalizer.SimpleStoreOwned + ' %s' % quantity, text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ALeft, text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_wordwrap=11, text_pos=(0, 0, 0.0), pos=(-0.2, 0, 0.08), text_font=PiratesGlobals.getInterfaceFont(), textMayChange=1)
         totalCost = int(self.item.cost * qtyMult) * self.item.quantity / qtyMult
-        costText = choice(self.item.cost == 0, PLocalizer.ShopFree, str(totalCost))
-        self.costLabel = DirectLabel(parent=self, relief=None, state=DGG.DISABLED, image=self.store.CoinImage, image_scale=0.15, image_pos=Vec3(0.38, 0, 0.012), text=PLocalizer.SimpleStoreCost, text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ALeft, text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_wordwrap=11, text_pos=(0,
-                                                                                                                                                                                                                                                                                                                                                                                   0,
-                                                                                                                                                                                                                                                                                                                                                                                   0.0), pos=(-0.2, 0, -0.05), text_font=PiratesGlobals.getInterfaceFont(), textMayChange=1)
-        self.costText = DirectLabel(parent=self, relief=None, state=DGG.DISABLED, text=str(costText), text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ARight, text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_wordwrap=11, text_pos=(0,
-                                                                                                                                                                                                                                                                                        0,
-                                                                                                                                                                                                                                                                                        0.0), pos=(0.14, 0, -0.05), text_font=PiratesGlobals.getInterfaceFont())
+        costText = PLocalizer.ShopFree if self.item.cost == 0 else str(totalCost)
+        self.costLabel = DirectLabel(parent=self, relief=None, state=DGG.DISABLED, image=self.store.CoinImage, image_scale=0.15, image_pos=Vec3(0.38, 0, 0.012), text=PLocalizer.SimpleStoreCost, text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ALeft, text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_wordwrap=11, text_pos=(0, 0, 0.0), pos=(-0.2, 0, -0.05), text_font=PiratesGlobals.getInterfaceFont(), textMayChange=1)
+        self.costText = DirectLabel(parent=self, relief=None, state=DGG.DISABLED, text=str(costText), text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ARight, text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_wordwrap=11, text_pos=(0, 0, 0.0), pos=(0.14, 0, -0.05), text_font=PiratesGlobals.getInterfaceFont())
         totalMoney = localAvatar.getInventory().getGoldInPocket()
         if totalCost > totalMoney:
             self.costText['text_fg'] = VBase4(1, 0, 0, 1)
-        self.buyButton = GuiButton.GuiButton(parent=self, text=PLocalizer.PurchaseCommit, text_fg=PiratesGuiGlobals.TextFG2, text_pos=(0.0, -0.014), text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ACenter, text_shadow=PiratesGuiGlobals.TextShadow, image=GuiButton.GuiButton.blueGenericButton, image_scale=(0.6,
-                                                                                                                                                                                                                                                                                                                                   0.6,
-                                                                                                                                                                                                                                                                                                                                   0.6), pos=(0.0, 0.0, -0.115), command=self.store.handleBuyItem)
+        self.buyButton = GuiButton.GuiButton(parent=self, text=PLocalizer.PurchaseCommit, text_fg=PiratesGuiGlobals.TextFG2, text_pos=(0.0, -0.014), text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ACenter, text_shadow=PiratesGuiGlobals.TextShadow, image=GuiButton.GuiButton.blueGenericButton, image_scale=(0.6, 0.6, 0.6), pos=(0.0, 0.0, -0.115), command=self.store.handleBuyItem)
         if not self.purchasable:
             self.buyButton.hide()
         self.updateGui()
@@ -427,32 +395,17 @@ class SimpleStoreGUI(DirectFrame):
         self.backTabParent = self.attachNewNode('backTabs', sort=0)
         self.backTabParent.setPos(-0.5 * self.guiWidth, 0.0, -0.4 * self.guiHeight)
         textScale = PiratesGuiGlobals.TextScaleTitleSmall
-        self.cartFrame = BorderFrame(parent=self, state=DGG.DISABLED, frameSize=(-self.guiWidth / 2, self.guiWidth / 2, -self.guiHeight / 2, self.guiHeight / 2), text=PLocalizer.InventorySellTitle, text_align=TextNode.ACenter, text_font=PiratesGlobals.getPirateBoldOutlineFont(), text_fg=(1,
-                                                                                                                                                                                                                                                                                                 1,
-                                                                                                                                                                                                                                                                                                 1,
-                                                                                                                                                                                                                                                                                                 1), text_shadow=PiratesGuiGlobals.TextShadow, textMayChange=1, text_scale=textScale, text_pos=(self.guiWidth * 0.5, self.guiHeight * 0.95 - textScale), modelName='pir_m_gui_frm_main_blue', showHeadBoard=True, nameTag='---')
+        self.cartFrame = BorderFrame(parent=self, state=DGG.DISABLED, frameSize=(-self.guiWidth / 2, self.guiWidth / 2, -self.guiHeight / 2, self.guiHeight / 2), text=PLocalizer.InventorySellTitle, text_align=TextNode.ACenter, text_font=PiratesGlobals.getPirateBoldOutlineFont(), text_fg=(1, 1, 1, 1), text_shadow=PiratesGuiGlobals.TextShadow, textMayChange=1, text_scale=textScale, text_pos=(self.guiWidth * 0.5, self.guiHeight * 0.95 - textScale), modelName='pir_m_gui_frm_main_blue', showHeadBoard=True, nameTag='---')
         self.cartFrame.setPos(0.0, 0.0, 0.0)
         self.frontTabParent = self.attachNewNode('frontTab', sort=2)
         self.frontTabParent.setPos(-0.5 * self.guiWidth, 0.0, -0.4 * self.guiHeight)
-        currencyIcon = choice(self.pvpMode, self.RenownImage, self.CoinImage)
-        self.myGold = DirectFrame(parent=self.cartFrame, relief=None, text='000000', text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ACenter, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(0,
-                                                                                                                                                                                                            0), text_shadow=PiratesGuiGlobals.TextShadow, textMayChange=1, image=currencyIcon, image_scale=0.15, image_pos=(0.2,
-                                                                                                                                                                                                                                                                                                                            0,
-                                                                                                                                                                                                                                                                                                                            0.014), pos=(0.25 * self.guiWidth, 0, -0.35 * self.guiHeight))
-        self.sellButton = GuiButton.GuiButton(parent=self.cartFrame, text=PLocalizer.SimpleStoreSell, text_fg=PiratesGuiGlobals.TextFG2, text_pos=(0.0, -0.014), text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ACenter, text_shadow=PiratesGuiGlobals.TextShadow, image=GuiButton.GuiButton.blueGenericButton, image_scale=(0.6,
-                                                                                                                                                                                                                                                                                                                                               0.6,
-                                                                                                                                                                                                                                                                                                                                               0.6), command=self.showSellGUI)
+        currencyIcon = self.RenownImage if self.pvpMode else self.CoinImage
+        self.myGold = DirectFrame(parent=self.cartFrame, relief=None, text='000000', text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ACenter, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(0, 0), text_shadow=PiratesGuiGlobals.TextShadow, textMayChange=1, image=currencyIcon, image_scale=0.15, image_pos=(0.2, 0, 0.014), pos=(0.25 * self.guiWidth, 0, -0.35 * self.guiHeight))
+        self.sellButton = GuiButton.GuiButton(parent=self.cartFrame, text=PLocalizer.SimpleStoreSell, text_fg=PiratesGuiGlobals.TextFG2, text_pos=(0.0, -0.014), text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ACenter, text_shadow=PiratesGuiGlobals.TextShadow, image=GuiButton.GuiButton.blueGenericButton, image_scale=(0.6, 0.6, 0.6), command=self.showSellGUI)
         self.sellButton.setPos(0.28 * self.guiWidth, 0, -0.4 * self.guiHeight)
         charGui = loader.loadModel('models/gui/char_gui')
-        self.rotateSlider = DirectSlider(parent=base.a2dBottomLeft, relief=None, command=self.rotatePreviewPirate, image=charGui.find('**/chargui_slider_small'), image_scale=(2.15,
-                                                                                                                                                                               2.15,
-                                                                                                                                                                               1.5), thumb_relief=None, thumb_image=(charGui.find('**/chargui_slider_node'), charGui.find('**/chargui_slider_node_down'), charGui.find('**/chargui_slider_node_over')), pos=(0.8,
-                                                                                                                                                                                                                                                                                                                                                             0.0,
-                                                                                                                                                                                                                                                                                                                                                             0.09), text_align=TextNode.ACenter, text_scale=(0.1,
-                                                                                                                                                                                                                                                                                                                                                                                                             0.1), text_pos=(0.0,
-                                                                                                                                                                                                                                                                                                                                                                                                                             0.1), text_fg=PiratesGuiGlobals.TextFG1, scale=0.43, text=PLocalizer.RotateSlider, value=0.5, sortOrder=-1)
-        self.rotateSlider['extraArgs'] = [
-         self.rotateSlider]
+        self.rotateSlider = DirectSlider(parent=base.a2dBottomLeft, relief=None, command=self.rotatePreviewPirate, image=charGui.find('**/chargui_slider_small'), image_scale=(2.15, 2.15, 1.5), thumb_relief=None, thumb_image=(charGui.find('**/chargui_slider_node'), charGui.find('**/chargui_slider_node_down'), charGui.find('**/chargui_slider_node_over')), pos=(0.8, 0.0, 0.09), text_align=TextNode.ACenter, text_scale=(0.1, 0.1), text_pos=(0.0, 0.1), text_fg=PiratesGuiGlobals.TextFG1, scale=0.43, text=PLocalizer.RotateSlider, value=0.5, sortOrder=-1)
+        self.rotateSlider['extraArgs'] = [self.rotateSlider]
         self.rotateSliderOrigin = 0.5
         self.alertDialog = None
         self.accept('mouse1', self._startMouseReadTask)
@@ -481,9 +434,7 @@ class SimpleStoreGUI(DirectFrame):
         generic_box = main_gui.find('**/exit_button')
         generic_box_over = main_gui.find('**/exit_button_over')
         main_gui.removeNode()
-        self.closeButton = GuiButton.GuiButton(parent=self, relief=None, pos=(0.83,
-                                                                              0,
-                                                                              -0.14), image=(generic_box, generic_box, generic_box_over, generic_box), image_scale=0.4, command=self.closePanel)
+        self.closeButton = GuiButton.GuiButton(parent=self, relief=None, pos=(0.83, 0, -0.14), image=(generic_box, generic_box, generic_box_over, generic_box), image_scale=0.4, command=self.closePanel)
         self.xButton = OnscreenImage(parent=self.closeButton, image=generic_x, scale=0.2, pos=(-0.256, 0, 0.766))
         self.accept('TownfolkEndingInteract', self.closePanel)
         return
@@ -583,10 +534,7 @@ class SimpleStoreGUI(DirectFrame):
         if not self.itemCardPlaceholder:
             sizeX = 0.65
             sizeZ = 0.88
-            self.itemCardPlaceholder = BorderFrame(parent=self.cartFrame, state=DGG.DISABLED, frameSize=(-0.5 * sizeX, 0.5 * sizeX, -0.5 * sizeZ, 0.5 * sizeZ), imageColorScale=(0.75,
-                                                                                                                                                                                 0.75,
-                                                                                                                                                                                 0.9,
-                                                                                                                                                                                 0.75), modelName='pir_m_gui_frm_subframe')
+            self.itemCardPlaceholder = BorderFrame(parent=self.cartFrame, state=DGG.DISABLED, frameSize=(-0.5 * sizeX, 0.5 * sizeX, -0.5 * sizeZ, 0.5 * sizeZ), imageColorScale=(0.75, 0.75, 0.9, 0.75), modelName='pir_m_gui_frm_subframe')
             self.itemCardPlaceholder.setPos(self.buyPanelXFactor * self.guiWidth, 0.0, 0.125)
         if self.storeIconName and not self.storeIcon:
             storeIcon = loader.loadModel(self.storeIconName)
@@ -595,12 +543,8 @@ class SimpleStoreGUI(DirectFrame):
             self.storeIcon.getChildren()[0].setPos(1.933 * 2, 0, 1.55 * 2)
             self.storeIcon.setScale(0.1)
             storeIcon.removeNode()
-        self.titleText = DirectLabel(parent=self.itemCardPlaceholder, relief=None, state=DGG.DISABLED, text='', text_font=PiratesGlobals.getInterfaceFont(), text_scale=PiratesGuiGlobals.TextScaleTitleSmall, text_align=TextNode.ACenter, text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_wordwrap=14, text_pos=(0,
-                                                                                                                                                                                                                                                                                                                                                     0,
-                                                                                                                                                                                                                                                                                                                                                     0), pos=(0.0, 0.0, -0.505))
-        self.instructionText = DirectLabel(parent=self.itemCardPlaceholder, relief=None, state=DGG.DISABLED, text=PLocalizer.SimpleStoreClickPreview, text_font=PiratesGlobals.getInterfaceFont(), text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ACenter, text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_wordwrap=14, text_pos=(0,
-                                                                                                                                                                                                                                                                                                                                                                                      0,
-                                                                                                                                                                                                                                                                                                                                                                                      0), pos=(0.0, 0.0, -0.55))
+        self.titleText = DirectLabel(parent=self.itemCardPlaceholder, relief=None, state=DGG.DISABLED, text='', text_font=PiratesGlobals.getInterfaceFont(), text_scale=PiratesGuiGlobals.TextScaleTitleSmall, text_align=TextNode.ACenter, text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_wordwrap=14, text_pos=(0, 0, 0), pos=(0.0, 0.0, -0.505))
+        self.instructionText = DirectLabel(parent=self.itemCardPlaceholder, relief=None, state=DGG.DISABLED, text=PLocalizer.SimpleStoreClickPreview, text_font=PiratesGlobals.getInterfaceFont(), text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ACenter, text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_wordwrap=14, text_pos=(0, 0, 0), pos=(0.0, 0.0, -0.55))
         return
 
     def createPreviewPirate(self):
@@ -829,7 +773,7 @@ class SimpleStoreGUI(DirectFrame):
         return
 
     def updateBalance(self):
-        yourMoney = choice(self.pvpMode, PLocalizer.YourPVPMoney, PLocalizer.YourMoney)
+        yourMoney = PLocalizer.YourPVPMoney if self.pvpMode else PLocalizer.YourMoney
         self.myGold['text'] = yourMoney + ' ' + str(self.getMoney())
 
     def initTabs(self):
@@ -844,14 +788,10 @@ class SimpleStoreGUI(DirectFrame):
         newTab = self.tabBar.addTab(tabId, command=self.setTab, extraArgs=[tabId])
         newTab.displayName = displayName
         if image:
-            textPosition = (
-             -0.07, -0.2, 0.0)
+            textPosition = (-0.07, -0.2, 0.0)
         else:
-            textPosition = (
-             -0.07, -0.0, 0.0)
-        newTab.nameTag = DirectLabel(parent=newTab, relief=None, state=DGG.DISABLED, pos=choice(image, (0.06, 0, -0.035), (0.0,
-                                                                                                                           0,
-                                                                                                                           0.0)), text=text, text_pos=textPosition, text_scale=PiratesGuiGlobals.TextScaleLarge * 4.0, text_align=TextNode.ACenter, text_fg=PiratesGuiGlobals.TextFG1, text_shadow=PiratesGuiGlobals.TextShadow, text_font=PiratesGlobals.getInterfaceFont(), text_wordwrap=6, image=image, image_pos=(-0.1, 0.0, 0.07), image_scale=image_scale)
+            textPosition = (-0.07, -0.0, 0.0)
+        newTab.nameTag = DirectLabel(parent=newTab, relief=None, state=DGG.DISABLED, pos=(0.06, 0, -0.035) if image else (0.0, 0, 0.0), text=text, text_pos=textPosition, text_scale=PiratesGuiGlobals.TextScaleLarge * 4.0, text_align=TextNode.ACenter, text_fg=PiratesGuiGlobals.TextFG1, text_shadow=PiratesGuiGlobals.TextShadow, text_font=PiratesGlobals.getInterfaceFont(), text_wordwrap=6, image=image, image_pos=(-0.1, 0.0, 0.07), image_scale=image_scale)
         return
 
     def setTab(self, tabId):
@@ -887,17 +827,23 @@ class SimpleStoreGUI(DirectFrame):
         if self.buyPanelItem:
             if self.buyPanelItem.uid == itemId:
                 return
+
             if self.buyPanelItem:
                 self.buyPanel.destroy()
                 self.buyPanel = None
+
             if itemId is None and self.colorPanel:
                 self.colorPanel.hide()
-            item = self.stock.get(itemId)
-            self.buyPanelItem = item
-            if not self.buyPanelItem:
-                return
-            self.buyPanel = SimpleStoreBuyPanelGUI(self, self.cartFrame, self.buyPanelItem, purchasable=True)
-            self.buyPanel.setPos(self.buyPanelXFactor * self.guiWidth, 0.0, -0.475)
+
+        item = self.stock.get(itemId)
+        self.buyPanelItem = item
+        if not self.buyPanelItem:
+            return
+
+        self.buyPanel = SimpleStoreBuyPanelGUI(self, self.cartFrame, self.buyPanelItem, purchasable=True)
+        self.buyPanel.setPos(self.buyPanelXFactor * self.guiWidth, 0.0, -0.475)
+
+        if not self.colorPanel:
             self.colorPanel = self.colorPanel or SimpleStoreColorPicker(self, self.cartFrame, self.buyPanelItem)
             self.colorPanel.setPos(self.buyPanelXFactor * self.guiWidth, 0.0, -0.19)
         else:
@@ -907,28 +853,27 @@ class SimpleStoreGUI(DirectFrame):
             self.colorPanel.show()
         else:
             self.colorPanel.hide()
-        return
 
     def itemRollIn(self, itemId, task=None):
         if self.rollInItem:
             self.itemRollOut(self.rollInItem.uid)
+
         item = self.stock.get(itemId)
         self.rollInItem = item
         if self.rollInItem or self.clickedItem:
             self.itemCardPlaceholder.hide()
         if self.clickedItem and itemId == self.clickedItem.uid:
             self.setBuyPanelItem(itemId)
+        elif self.clickedItem and not self.rollInItem:
+            self.setBuyPanelItem(itemId)
         else:
-            if self.clickedItem and not self.rollInItem:
-                self.setBuyPanelItem(itemId)
-            else:
-                self.setBuyPanelItem(None)
-                if self.rollInItemTask:
-                    taskMgr.remove(self.rollInItemTask)
-                    self.rollInItemTask = None
-            if getBase().config.GetBool('want-simple-preview', 0):
-                self.setPreviewItem(itemId)
-        return
+            self.setBuyPanelItem(None)
+            if self.rollInItemTask:
+                taskMgr.remove(self.rollInItemTask)
+                self.rollInItemTask = None
+
+        if getBase().config.GetBool('want-simple-preview', 0):
+            self.setPreviewItem(itemId)
 
     def itemRollOut(self, itemId, task=None):
         if not self.rollInItem or self.rollInItem.uid != itemId:

@@ -58,26 +58,24 @@ class InteractGUI(DirectFrame):
                 else:
                     z -= 0.155
             else:
-                image = (
-                 middlePanel, middlePanel, middlePanelOver, middlePanel)
+                image = (middlePanel, middlePanel, middlePanelOver, middlePanel)
                 textPos = (0, -0.015)
                 if i == 1:
                     z -= 0.11
                 else:
                     z -= 0.105
-                if statusCode == InteractGlobals.NORMAL:
-                    state = DGG.NORMAL
-                    textFg = PiratesGuiGlobals.TextFG1
-                    imageColor = (1, 1, 1, 1)
-                else:
-                    if statusCode == InteractGlobals.DISABLED:
-                        state = DGG.DISABLED
-                        textFg = (0.3, 0.25, 0.2, 1)
-                        imageColor = (0.8, 0.8, 0.8, 1)
-                    if statusCode == InteractGlobals.HIGHLIGHT:
-                        state = DGG.NORMAL
-                        textFg = PiratesGuiGlobals.TextFG2
-                        imageColor = (1, 1, 1, 1)
+            if statusCode == InteractGlobals.NORMAL:
+                state = DGG.NORMAL
+                textFg = PiratesGuiGlobals.TextFG1
+                imageColor = (1, 1, 1, 1)
+            elif statusCode == InteractGlobals.DISABLED:
+                state = DGG.DISABLED
+                textFg = (0.3, 0.25, 0.2, 1)
+                imageColor = (0.8, 0.8, 0.8, 1)
+            elif statusCode == InteractGlobals.HIGHLIGHT:
+                state = DGG.NORMAL
+                textFg = PiratesGuiGlobals.TextFG2
+                imageColor = (1, 1, 1, 1)
             optionButton = DirectButton(parent=self, relief=None, state=state, pressEffect=0, text=optionName, text_fg=textFg, text_shadow=PiratesGuiGlobals.TextShadow, text_align=TextNode.ACenter, text_scale=0.05, text_pos=textPos, image=image, image_scale=0.4, image_color=imageColor, pos=(0, 0, z), command=optionCallback, extraArgs=[optionId])
             self.optionButtons.append(optionButton)
 

@@ -73,6 +73,7 @@ class DistributedNPCTownfolk(DistributedBattleNPC.DistributedBattleNPC, Distribu
         self.shipNamePanel = None
         self.classNameText = None
         self.shopId = PiratesGlobals.PORT_ROYAL_DEFAULTS
+        self.interactType = 0
         self.helpId = 0
         self.noticeSpeed = 0.75
         self.shouldGreetOnNotice = 0
@@ -215,8 +216,7 @@ class DistributedNPCTownfolk(DistributedBattleNPC.DistributedBattleNPC, Distribu
             else:
                 reaction = 'emote_wave'
         elif self.shouldTurnToNotice:
-            choiceList = [
-             'emote_yes']
+            choiceList = ['emote_yes']
             if not self.noticeReactionList:
                 return None
             reaction = random.choice(self.noticeReactionList)
@@ -241,25 +241,23 @@ class DistributedNPCTownfolk(DistributedBattleNPC.DistributedBattleNPC, Distribu
             self.shouldGreetOnNotice = 0
         if self.animSet in ['default', 'idleB', 'idleC']:
             self.shouldTurnToNotice = 1
+        elif self.animSet in ['sow', 'primp', 'stir']:
+            self.shouldTurnToNotice = 1
+            if not self.shouldGreetOnNotice:
+                self.closeNoticeDistance = 15.0
+        elif self.noticeAnim1 != '' or self.noticeAnim2 != '':
+            self.shouldTurnToNotice = 1
+            if not self.shouldGreetOnNotice:
+                self.closeNoticeDistance = 20.0
         else:
-            if self.animSet in ['sow', 'primp', 'stir']:
-                self.shouldTurnToNotice = 1
-                if not self.shouldGreetOnNotice:
-                    self.closeNoticeDistance = 15.0
-            else:
-                if self.noticeAnim1 != '' or self.noticeAnim2 != '':
-                    self.shouldTurnToNotice = 1
-                    if not self.shouldGreetOnNotice:
-                        self.closeNoticeDistance = 20.0
-                else:
-                    self.shouldTurnToNotice = 0
-                    if not self.shouldGreetOnNotice:
-                        self.closeNoticeDistance = 20.0
-                self.noticeReactionList = []
-                if self.noticeAnim1 != '':
-                    self.noticeReactionList.append(self.noticeAnim1)
-            if self.noticeAnim2 != '':
-                self.noticeReactionList.append(self.noticeAnim2)
+            self.shouldTurnToNotice = 0
+            if not self.shouldGreetOnNotice:
+                self.closeNoticeDistance = 20.0
+        self.noticeReactionList = []
+        if self.noticeAnim1 != '':
+            self.noticeReactionList.append(self.noticeAnim1)
+        if self.noticeAnim2 != '':
+            self.noticeReactionList.append(self.noticeAnim2)
         if self.noticeReactionList == [] and self.getAnimControlDict():
             self.noticeReactionList.append('emote_yes')
         self.preNoticeHeading = self.getHpr()
@@ -460,6 +458,7 @@ class DistributedNPCTownfolk(DistributedBattleNPC.DistributedBattleNPC, Distribu
         return False
 
     def offerOptions(self, dialogFlag):
+        print ''
         self.dialogFlag = dialogFlag
         if self.interactGUI:
             self.notify.warning('offerOptions: old interact GUI still around')
@@ -481,16 +480,25 @@ class DistributedNPCTownfolk(DistributedBattleNPC.DistributedBattleNPC, Distribu
         optionIds, stateCodes, bribeType = self.computeOptions()
         anyActive = False
         for i in range(len(optionIds)):
-            if optionIds[i] != InteractGlobals.CANCEL and stateCodes[i] != InteractGlobals.DISABLED:
+            print optionIds[i]
+            print InteractGlobals.CANCEL
+            print '-'
+            print stateCodes[i]
+            print InteractGlobals.DISABLED
+            print '----'
+            if (optionIds[i] != InteractGlobals.CANCEL) and (stateCodes[i] != InteractGlobals.DISABLED):
+                print 'Active?'
                 anyActive = True
                 break
 
+        print 'ANYACTIVE: %s '% anyActive
         if anyActive:
             if self.localAvatarHasBeenNoticed:
                 self.abortNotice()
             self.interactGUI = InteractGUI.InteractGUI()
             title = self.getMenuTitle()
             self.interactGUI.setOptions(title, optionIds, stateCodes, self.selectOptionConfirm, bribeType)
+
         elif self.dialogOpen == False:
             if self.firstDialog == True:
                 self.dialogFlag = 2
@@ -681,46 +689,52 @@ class DistributedNPCTownfolk(DistributedBattleNPC.DistributedBattleNPC, Distribu
         inv = localAvatar.getInventory()
         if inv is None:
             self.notify.warning('computeOptions: inventory not present')
-        else:
-            if len(inv.getQuestList()) >= inv.getStackLimit(InventoryType.OpenQuestSlot) or not self.hasQuestOffers():
-                questButtonState = InteractGlobals.DISABLED
-            for quest in inv.getQuestList():
-                foundBribe = 0
-                if quest.isComplete():
-                    continue
-                if quest.questDNA is None:
-                    self.notify.error('quest %s: does not contain a dna; is it a rogue quest, given in error?' % quest.getQuestId())
-                for task in quest.questDNA.getTasks():
-                    if isinstance(task, QuestTaskDNA.BribeNPCTaskDNA) and task.getNpcId() == self.getUniqueId():
-                        bribeButtonState = InteractGlobals.NORMAL
-                        foundBribe = 1
-                        bribeType = task.bribeType
-                        break
+        elif len(inv.getQuestList()) >= inv.getStackLimit(InventoryType.OpenQuestSlot) or not self.hasQuestOffers():
+            questButtonState = InteractGlobals.DISABLED
 
-                if foundBribe:
+        for quest in inv.getQuestList():
+            foundBribe = 0
+            if quest.isComplete():
+                continue
+            if quest.questDNA is None:
+                self.notify.error('quest %s: does not contain a dna; is it a rogue quest, given in error?' % quest.getQuestId())
+            for task in quest.questDNA.getTasks():
+                if isinstance(task, QuestTaskDNA.BribeNPCTaskDNA) and task.getNpcId() == self.getUniqueId():
+                    bribeButtonState = InteractGlobals.NORMAL
+                    foundBribe = 1
+                    bribeType = task.bribeType
                     break
 
-            if len(inv.getShipDoIdList()) >= inv.getCategoryLimit(InventoryCategory.SHIPS) or localAvatar.style.getTutorial() < PiratesGlobals.TUT_GOT_SHIP:
-                shipButtonState = InteractGlobals.DISABLED
-            if len(inv.getShipDoIdList()) <= 0:
-                sellShipButtonState = InteractGlobals.DISABLED
-                upgradeButtonState = InteractGlobals.DISABLED
-            for shipId in inv.getShipDoIdList():
-                sailButtonState = InteractGlobals.NORMAL
-                ship = base.cr.getOwnerView(shipId)
-                if ship:
-                    if ship.Hp < ship.maxHp:
-                        repairButtonState = InteractGlobals.NORMAL
+            if foundBribe:
+                break
 
-            if inv.getTreasureMapsList():
-                if sailButtonState == InteractGlobals.NORMAL:
-                    sailTMButtonState = InteractGlobals.NORMAL
+        if len(inv.getShipDoIdList()) >= inv.getCategoryLimit(InventoryCategory.SHIPS): # or localAvatar.style.getTutorial() < PiratesGlobals.TUT_GOT_SHIP:
+            shipButtonState = InteractGlobals.DISABLED
+
+        if len(inv.getShipDoIdList()) <= 0:
+            sellShipButtonState = InteractGlobals.DISABLED
+            upgradeButtonState = InteractGlobals.DISABLED
+
+        for shipId in inv.getShipDoIdList():
+            sailButtonState = InteractGlobals.NORMAL
+            ship = base.cr.getOwnerView(shipId)
+            if ship:
+                if ship.Hp < ship.maxHp:
+                    repairButtonState = InteractGlobals.NORMAL
+
+        if inv.getTreasureMapsList():
+            if sailButtonState == InteractGlobals.NORMAL:
+                sailTMButtonState = InteractGlobals.NORMAL
+
         if base.localAvatar.hp < base.localAvatar.getAdjMaxHp():
             healButtonState = InteractGlobals.NORMAL
+
         if base.localAvatar.mojo < base.localAvatar.getAdjMaxMojo():
             healMojoButtonState = InteractGlobals.NORMAL
+
         if self.shopInventory:
             storeButtonState = InteractGlobals.NORMAL
+
         inv = localAvatar.getInventory()
         avFishingLevel = ReputationGlobals.getLevelFromTotalReputation(InventoryType.FishingRep, inv.getReputation(InventoryType.FishingRep))[0]
         rodLvl = inv.getStackQuantity(InventoryType.FishingRod)
@@ -733,6 +747,7 @@ class DistributedNPCTownfolk(DistributedBattleNPC.DistributedBattleNPC, Distribu
         if localAvatar.style.getTutorial() < PiratesGlobals.TUT_GOT_SHIP:
             stowawayButtonState = InteractGlobals.DISABLED
             cannonDefenseButtonState = InteractGlobals.DISABLED
+
         optionIds = InteractGlobals.getNPCInteractMenu(self.avatarType)[1]
         buttonStateDict = {InteractGlobals.QUEST: questButtonState,InteractGlobals.TALK: InteractGlobals.DISABLED,InteractGlobals.DUEL: InteractGlobals.DISABLED,InteractGlobals.STORE: storeButtonState,InteractGlobals.SELL_ITEMS: sellItemButtonState,InteractGlobals.SHIPS: shipButtonState,InteractGlobals.SELL_SHIPS: sellShipButtonState,InteractGlobals.TRAIN: InteractGlobals.DISABLED,InteractGlobals.REPAIR: repairButtonState,InteractGlobals.OVERHAUL: overhaulButtonState,InteractGlobals.UPGRADE: upgradeButtonState,InteractGlobals.TRADE: InteractGlobals.DISABLED,InteractGlobals.HEAL_HP: healButtonState,InteractGlobals.HEAL_MOJO: healMojoButtonState,InteractGlobals.CANCEL: InteractGlobals.NORMAL,InteractGlobals.SAIL: sailButtonState,InteractGlobals.SAILTM: sailTMButtonState,InteractGlobals.BRIBE: bribeButtonState,InteractGlobals.ACCESSORIES_STORE: InteractGlobals.NORMAL,InteractGlobals.TATTOO_STORE: InteractGlobals.NORMAL,InteractGlobals.JEWELRY_STORE: InteractGlobals.NORMAL,InteractGlobals.BARBER_STORE: InteractGlobals.NORMAL,InteractGlobals.RESPEC: respecButtonState,InteractGlobals.MUSICIAN: InteractGlobals.NORMAL,InteractGlobals.PVP_REWARDS_TATTOO: InteractGlobals.NORMAL,InteractGlobals.PVP_REWARDS_COATS: InteractGlobals.NORMAL,InteractGlobals.PVP_REWARDS_HATS: InteractGlobals.NORMAL,InteractGlobals.STOWAWAY: stowawayButtonState,InteractGlobals.PLAY_CANNON_DEFENSE: cannonDefenseButtonState,InteractGlobals.POTION_TUTORIAL: potionTutorialButtonState,InteractGlobals.LAUNCH_FISHING_BOAT: launchFishingButtonState,InteractGlobals.LEGENDARY_FISH_STORY: tellLegendaryFishStoryButtonState,InteractGlobals.UPGRADE_ROD: upgradeRodButtonState,InteractGlobals.CATALOG_STORE: InteractGlobals.NORMAL,InteractGlobals.PLAY_SCRIMMAGE: InteractGlobals.NORMAL}
         stateCodes = []
@@ -742,8 +757,7 @@ class DistributedNPCTownfolk(DistributedBattleNPC.DistributedBattleNPC, Distribu
                 state = InteractGlobals.DISABLED
             stateCodes.append(state)
 
-        return (
-         optionIds, stateCodes, bribeType)
+        return (optionIds, stateCodes, bribeType)
         return None
 
     def d_selectOption(self, optionId):

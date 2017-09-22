@@ -103,8 +103,8 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         townfolk.setShopId(getattr(PiratesGlobals, shopId, 0))
 
         helpId = objectData.get('HelpID', 'NONE')
-        if helpId and helpId.isdigit():
-            townfolk.setHelpId(int(helpId))
+        if hasattr(PiratesGlobals, helpId):
+            townfolk.setHelpId(getattr(PiratesGlobals, helpId, 0))
 
         parent.generateChildWithRequired(townfolk, PiratesGlobals.IslandLocalZone)
 

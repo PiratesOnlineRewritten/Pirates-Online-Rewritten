@@ -71,6 +71,9 @@ class NametagGroup(object):
     def setChat(self, message, flags):
         pass #TODO
 
+    def clearChat(self):
+        pass #TODO
+
     def setAvatar(self, avatar):
         self.avatar = avatar
         self.updateTags()

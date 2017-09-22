@@ -15,7 +15,11 @@ class DistributedNPCTownfolkAI(DistributedBattleNPCAI, DistributedShopKeeperAI):
 
     def handleRequestInteraction(self, avatar, interactType, instant):
         if interactType == PiratesGlobals.INTERACT_TYPE_FRIENDLY:
+
             self.sendUpdateToAvatarId(avatar.doId, 'triggerInteractShow', [self.doId])
+            self.sendUpdateToAvatarId(avatar.doId, 'offerOptions', [2])
+
+            return self.ACCEPT
 
         return self.DENY
 
@@ -31,9 +35,6 @@ class DistributedNPCTownfolkAI(DistributedBattleNPCAI, DistributedShopKeeperAI):
 
     def getDNAId(self):
         return self.dnaId
-
-    def d_offerOptions(self, dialogFlag):
-        self.sendUpdate('offerOptions', [dialogFlag])
 
     def d_startTutorial(self, todo):
         self.sendUpdate('startTutorial', [todo])
