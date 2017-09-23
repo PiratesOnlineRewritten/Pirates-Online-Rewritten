@@ -1,6 +1,5 @@
 from direct.distributed.DistributedNodeAI import DistributedNodeAI
 from direct.directnotify import DirectNotifyGlobal
-from pirates.uberdog.UberDogGlobals import InventoryType
 from DistributedRepairGameBase import *
 import RepairGlobals
 import random
@@ -146,5 +145,4 @@ class DistributedRepairGameAI(DistributedNodeAI, DistributedRepairGameBase):
                 self.notify.warning('Failed to get inventory for avatar %d!' % avatar.doId)
                 return
 
-            starterCash = inventory.getStack(InventoryType.ItemTypeMoney)[1] if inventory.getStack(InventoryType.ItemTypeMoney) else 0
-            inventory.b_setStack(InventoryType.ItemTypeMoney, starterCash + goldReward)
+            inventory.setGoldInPocket(inventory.getGoldInPocket() + goldReward)

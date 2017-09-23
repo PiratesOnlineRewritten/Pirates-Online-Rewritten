@@ -1,6 +1,5 @@
 from direct.distributed.DistributedObjectAI import DistributedObjectAI
 from direct.directnotify import DirectNotifyGlobal
-from pirates.uberdog.UberDogGlobals import InventoryType
 import PotionRecipeData
 import PotionGlobals
 
@@ -101,7 +100,7 @@ class DistributedPotionGameAI(DistributedObjectAI):
             if not inventory:
                 self.notify.warning('Failed to get inventory for avatar %d!' % avatar.doId)
 
-                # Log failure for Game Masters 
+                # Log failure for Game Masters
                 self.air.writeServerEvent('recipe-error',
                     message='Failed to give player potion game rewards.',
                     targetAvId=self.avatar.doId,
@@ -113,7 +112,7 @@ class DistributedPotionGameAI(DistributedObjectAI):
 
                 return
 
-            potionRep = inventory.getAccumulator(InventoryType.PotionsRep)[1] if inventory.getAccumulator(InventoryType.PotionsRep) != None else 1
+            potionRep = inventory.getPotionsRep() or 1
 
             # Perform potion level sanity check
             requiredLevel = PotionRecipeData.getPotionData(recipeId)['level']
@@ -141,7 +140,7 @@ class DistributedPotionGameAI(DistributedObjectAI):
             # Aware XP
             rep = PotionGlobals.getPotionBuffXP(recipeId)
             potionId = PotionGlobals.potionBuffIdToInventoryTypeId(recipeId)
-            inventory.b_setAccumulator(InventoryType.PotionsRep, potionRep + rep)
+            inventory.setPotionsRep(potionRep + rep)
 
             #TODO give out potion
             self.notify.warning('TODO: Implement potion rewards; PotionId: %d!' % potionId)
