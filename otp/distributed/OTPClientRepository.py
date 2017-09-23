@@ -127,7 +127,7 @@ class OTPClientRepository(ClientRepositoryBase):
         else:
             self.notify.error('The required-login was not recognized.')
 
-        self.wantMagicWords = base.config.GetString('want-magic-words', '')
+        self.wantMagicWords = base.config.GetBool('want-magic-words', True)
         if self.launcher and hasattr(self.launcher, 'http'):
             self.http = self.launcher.http
         else:
