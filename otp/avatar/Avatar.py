@@ -269,7 +269,6 @@ class Avatar(Actor, ShadowCaster):
             self.playDialogueForString(self.nametag.getChat())
             if self.soundChatBubble != None:
                 base.playSfx(self.soundChatBubble, node=self)
-        return
 
     def playDialogueForString(self, chatString):
         searchString = chatString.lower()
@@ -284,14 +283,14 @@ class Avatar(Actor, ShadowCaster):
                 type = 'statementA'
             else:
                 type = 'statementB'
-            stringLength = len(chatString)
-            if stringLength <= OTPLocalizer.DialogLength1:
-                length = 1
-            if stringLength <= OTPLocalizer.DialogLength2:
-                length = 2
-            if stringLength <= OTPLocalizer.DialogLength3:
-                length = 3
-            length = 4
+        stringLength = len(chatString)
+        if stringLength <= OTPLocalizer.DialogLength1:
+            length = 1
+        if stringLength <= OTPLocalizer.DialogLength2:
+            length = 2
+        if stringLength <= OTPLocalizer.DialogLength3:
+            length = 3
+        length = 4
         self.playDialogue(type, length)
 
     def playDialogue(self, type, length):

@@ -845,9 +845,9 @@ class PiratesBase(OTPBase):
     def initNametagGlobals(self):
         arrow = loader.loadModel('models/gui/arrow')
         card = NodePath('card')
-        speech3d = ChatBalloon(loader.loadModel('models/gui/chatbox').node())
-        thought3d = ChatBalloon(loader.loadModel('models/gui/chatbox_thought_cutout').node())
-        speech2d = ChatBalloon(loader.loadModel('models/gui/chatbox_noarrow').node())
+        speech3d = ChatBalloon(loader.loadModel('models/gui/chatbox'))
+        thought3d = ChatBalloon(loader.loadModel('models/gui/chatbox_thought_cutout'))
+        speech2d = ChatBalloon(loader.loadModel('models/gui/chatbox_noarrow'))
         chatButtonGui = loader.loadModel('models/gui/triangle')
         chatButtonGui.setScale(0.1)
         chatButtonGui.flattenStrong()
@@ -877,18 +877,22 @@ class PiratesBase(OTPBase):
         self.marginManager = MarginManager()
         self.margins = self.aspect2d.attachNewNode(self.marginManager, DirectGuiGlobals.MIDGROUND_SORT_INDEX + 1)
         mm = self.marginManager
-        self.leftCells = [mm.addGridCell(0, 1.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop), mm.addGridCell(0, 2.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop), mm.addGridCell(0, 3.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop)]
-        self.bottomCells = [
-         mm.addGridCell(0.5, 0.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop), mm.addGridCell(1.5, 0.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop), mm.addGridCell(2.5, 0.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop), mm.addGridCell(3.5, 0.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop), mm.addGridCell(4.5, 0.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop)]
-        self.rightCells = [
-         mm.addGridCell(5, 2.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop), mm.addGridCell(5, 1.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop)]
+        self.leftCells = [mm.addGridCell(0, 1.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop),
+            mm.addGridCell(0, 2.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop),
+            mm.addGridCell(0, 3.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop)]
+        self.bottomCells = [mm.addGridCell(0.5, 0.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop),
+            mm.addGridCell(1.5, 0.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop),
+            mm.addGridCell(2.5, 0.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop),
+            mm.addGridCell(3.5, 0.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop),
+            mm.addGridCell(4.5, 0.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop)]
+        self.rightCells = [mm.addGridCell(5, 2.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop),
+            mm.addGridCell(5, 1.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop)]
 
     def getShardPopLimits(self):
         low = self.config.GetInt('shard-pop-limit-low', 100)
         mid = self.config.GetInt('shard-pop-limit-mid', 200)
         high = self.config.GetInt('shard-pop-limit-high', 300)
-        return (
-         low, mid, high)
+        return (low, mid, high)
 
     def toggleMarketingViewer(self):
         if not self.marketingViewerOn:
