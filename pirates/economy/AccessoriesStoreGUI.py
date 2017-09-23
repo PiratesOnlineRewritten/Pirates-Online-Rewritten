@@ -73,28 +73,18 @@ class AccessoriesStoreCartList(DirectScrolledFrame):
         self._parent = parent
         self.pvpMode = parent.pvpMode
         charGui = loader.loadModel('models/gui/char_gui')
-        DirectScrolledFrame.__init__(
-            self,
-            relief=None,
-            state=DGG.NORMAL,
-            manageScrollBars=0,
-            autoHideScrollBars=1,
-            frameSize=(0, self.width, 0, self.height),
-            canvasSize=(0, self.width - 0.05, 0.025, self.height - 0.025),
-            verticalScroll_relief=None,
-            verticalScroll_image=charGui.find('**/chargui_slider_small'),
-            verticalScroll_frameSize=(0, PiratesGuiGlobals.ScrollbarSize, 0, self.height),
-            verticalScroll_image_scale=(self.height + 0.05, 1, 0.75),
+        DirectScrolledFrame.__init__(self, relief=None, state=DGG.NORMAL, manageScrollBars=0, autoHideScrollBars=1, frameSize=(0, self.width, 0, self.height), canvasSize=(0, self.width - 0.05, 0.025, self.height - 0.025), verticalScroll_relief=None, verticalScroll_image=charGui.find('**/chargui_slider_small'), verticalScroll_frameSize=(0, PiratesGuiGlobals.ScrollbarSize, 0, self.height), verticalScroll_image_scale=(self.height + 0.05, 1, 0.75),
             verticalScroll_image_hpr=(0, 0, 90),
             verticalScroll_image_pos=(self.width - PiratesGuiGlobals.ScrollbarSize * 0.5 - 0.004, 0, self.height * 0.5),
             verticalScroll_image_color=(0.61, 0.6, 0.6, 1),
-            verticalScroll_thumb_image=(charGui.find('**/chargui_slider_node'), charGui.find('**/chargui_slider_node_down'), charGui.find('**/chargui_slider_node_over')),
+            verticalScroll_thumb_image=(charGui.find('**/chargui_slider_node'),
+            charGui.find('**/chargui_slider_node_down'),
+            charGui.find('**/chargui_slider_node_over')),
             verticalScroll_thumb_relief=None,
             verticalScroll_thumb_image_scale=0.25,
             verticalScroll_resizeThumb=0,
             horizontalScroll_relief=None,
-            sortOrder=5)   
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        1), verticalScroll_thumb_image=(charGui.find('**/chargui_slider_node'), charGui.find('**/chargui_slider_node_down'), charGui.find('**/chargui_slider_node_over')), verticalScroll_thumb_relief=None, verticalScroll_thumb_image_scale=0.25, verticalScroll_resizeThumb=0, horizontalScroll_relief=None, sortOrder=5)
+            sortOrder=5)
         self.initialiseoptions(AccessoriesStoreCartList)
         self.verticalScroll.incButton.destroy()
         self.verticalScroll.decButton.destroy()
@@ -105,7 +95,6 @@ class AccessoriesStoreCartList(DirectScrolledFrame):
         self.purchases = []
         self.itemColor = Vec4(0.2, 0.2, 0.2, 1.0)
         charGui.removeNode()
-        return
 
     def destroy(self):
         self.ignoreAll()
@@ -158,7 +147,7 @@ class AccessoriesStoreCartList(DirectScrolledFrame):
             text_shadow=PiratesGuiGlobals.TextShadow,
             text_pos=(0.06, 0.0),
             command=self.removePanel,
-            extraArgs=[data, mode]
+            extraArgs=[data, mode])
         panel.costLabel = DirectLabel(
             parent=panel,
             relief=None,
@@ -170,7 +159,7 @@ class AccessoriesStoreCartList(DirectScrolledFrame):
             text_pos=(0.45, 0.0),
             image=self._parent.CoinImage,
             image_scale=0.15,
-            image_pos=(0.48, 0.0, 0.014))                                                                                                                                                                                                                                                                               0.014))
+            image_pos=(0.48, 0.0, 0.014))
         panel.bind(DGG.ENTER, self.highlightStart, extraArgs=[panel])
         panel.bind(DGG.EXIT, self.highlightStop, extraArgs=[panel])
         panel.data = data
@@ -242,8 +231,8 @@ class AccessoriesStoreGUI(DirectFrame):
 
     def __init__(self, npc, shopId, **kw):
         optiondefs = (
-         ('relief', None, None), 
-         ('framSize', (0, self.width, 0, self.height), None), 
+         ('relief', None, None),
+         ('framSize', (0, self.width, 0, self.height), None),
          ('sortOrder', 20, None))
         self.defineoptions(kw, optiondefs)
         DirectFrame.__init__(self, None, **kw)
@@ -293,13 +282,13 @@ class AccessoriesStoreGUI(DirectFrame):
         self.cartFrame = DirectFrame(parent=self.panel, relief=None, frameSize=(0, self.cartWidth, 0, self.cartHeight))
         self.cartFrame.setPos(self.columnWidth + 0.025, 0, 0.08)
         self.categoryText = [
-            [PLocalizer.Hat, PLocalizer.Hats], 
-            [PLocalizer.Shirt, PLocalizer.Shirts], 
-            [PLocalizer.Vest, PLocalizer.Vests], 
-            [PLocalizer.Coat, PLocalizer.Coats], 
-            [PLocalizer.Pants, PLocalizer.Pants], 
-            [PLocalizer.Belt, PLocalizer.Belts], 
-            [None, None], 
+            [PLocalizer.Hat, PLocalizer.Hats],
+            [PLocalizer.Shirt, PLocalizer.Shirts],
+            [PLocalizer.Vest, PLocalizer.Vests],
+            [PLocalizer.Coat, PLocalizer.Coats],
+            [PLocalizer.Pants, PLocalizer.Pants],
+            [PLocalizer.Belt, PLocalizer.Belts],
+            [None, None],
             [PLocalizer.Shoe, PLocalizer.Shoes]]
         self.buyParchment = DirectFrame(
             parent=self.cartFrame,
@@ -589,7 +578,8 @@ class AccessoriesStoreGUI(DirectFrame):
                 text_shadow=PiratesGuiGlobals.TextShadow,
                 text_font=PiratesGlobals.getInterfaceOutlineFont(),
                 textMayChange=1)
-            self.selectColorButton = GuiButton.GuiButton(parent=self.colorFrame, state=DGG.DISABLED, text=PLocalizer.lConfirm, pos=(0.385, 0.0, -0.025), command=self.confirmColorSelect)
+            self.selectColorButton = GuiButton.GuiButton(parent=self.colorFrame, state=DGG.DISABLED, text=PLocalizer.lConfirm,
+                pos=(0.385, 0.0, -0.025), command=self.confirmColorSelect)
 
         def selectColor(id, colorFrame):
             self.selectColorButton['state'] = DGG.NORMAL
@@ -636,9 +626,9 @@ class AccessoriesStoreGUI(DirectFrame):
             self.hideColorFrame()
 
         self.cancelColorButton = GuiButton.GuiButton(
-            parent=self.colorFrame, 
-            text=PLocalizer.lCancel, 
-            pos=(0.65, 0.0, -0.025), 
+            parent=self.colorFrame,
+            text=PLocalizer.lCancel,
+            pos=(0.65, 0.0, -0.025),
             command=exitFrame)
         if len(self.colorButtons):
             for item in self.colorButtons:
@@ -657,7 +647,7 @@ class AccessoriesStoreGUI(DirectFrame):
                 state = DGG.DISABLED
             else:
                 state = DGG.NORMAL
-                        colorButton = GuiButton.GuiButton(
+            colorButton = GuiButton.GuiButton(
                 parent=self.colorFrame,
                 pos=(offsetx, 0.0, offsety),
                 command=selectColor,
@@ -668,10 +658,9 @@ class AccessoriesStoreGUI(DirectFrame):
                 helpText=PLocalizer.TailorColorStrings.get(color),
                 helpDelay=0)
             colorFrame = DirectFrame(
-                parent=colorButton, 
+                parent=colorButton,
                 frameSize=(-0.0325, 0.0325, -0.0325, 0.0325))
-            colorButton['extraArgs'] = [
-             color, colorButton]
+            colorButton['extraArgs'] = [color, colorButton]
             colorFrame['frameColor'] = DYE_COLORS[color]
             offsetx += 0.1
             if idx != 0 and (idx + 1) % 7 == 0:
@@ -699,7 +688,6 @@ class AccessoriesStoreGUI(DirectFrame):
             else:
                 color = 0
             self.setClothes(typeId, id, tex, color)
-        return
 
     def hideDisplayRegions(self):
         for id in range(len(self.clothRenders)):
@@ -779,7 +767,6 @@ class AccessoriesStoreGUI(DirectFrame):
             self.colorFrame.destroy()
         if self.blackout:
             self.blackout.destroy()
-        return
 
     def focusCamera(self, cameraId=BODY_CAMERA):
         if localAvatar.gameFSM.camIval is not None:
@@ -818,7 +805,6 @@ class AccessoriesStoreGUI(DirectFrame):
         self.camIval = camera.posHprInterval(t, pos=camPos, hpr=camHpr, blendType='easeOut')
         localAvatar.cameraFSM.request('Control')
         self.camIval.start()
-        return
 
     def createPirate(self):
         self.pirate = DynamicHuman.DynamicHuman()
@@ -903,7 +889,6 @@ class AccessoriesStoreGUI(DirectFrame):
         self.sellInventory.removeAllPanels()
         self.npc.sendRequestAccessories(purchaseArgList, sellArgList)
         self.changeMode(1, refresh=True)
-        return
 
     def updateBalance(self, extraArgs=None):
         self.myGold['text'] = str(self.getMoney())
@@ -1454,21 +1439,21 @@ class AccessoriesStoreGUI(DirectFrame):
                         else:
                             color = 0
                         clothButton = GuiButton.GuiButton(
-                            command=self.setClothes, 
-                            parent=self.panel, 
-                            state=buttonState, 
-                            text_fg=PiratesGuiGlobals.TextFG2, 
-                            text_pos=(0.0, -0.02), 
-                            text_scale=PiratesGuiGlobals.TextScaleLarge, 
-                            text_align=TextNode.ALeft, 
-                            text_shadow=PiratesGuiGlobals.TextShadow, 
-                            pos=startPos, 
-                            image_scale=buttonScale, 
-                            image_color=buttonColorA, 
-                            extraArgs=[clothingTypeId, id, tex, color, numButtons], 
-                            helpText=helpText, 
-                            helpDelay=0, 
-                            helpPos=(0.0, 0.0, -0.11), 
+                            command=self.setClothes,
+                            parent=self.panel,
+                            state=buttonState,
+                            text_fg=PiratesGuiGlobals.TextFG2,
+                            text_pos=(0.0, -0.02),
+                            text_scale=PiratesGuiGlobals.TextScaleLarge,
+                            text_align=TextNode.ALeft,
+                            text_shadow=PiratesGuiGlobals.TextShadow,
+                            pos=startPos,
+                            image_scale=buttonScale,
+                            image_color=buttonColorA,
+                            extraArgs=[clothingTypeId, id, tex, color, numButtons],
+                            helpText=helpText,
+                            helpDelay=0,
+                            helpPos=(0.0, 0.0, -0.11),
                             helpLeftAlign=True)
                         clothButton.selectedColor = [
                          color, None]
@@ -1477,58 +1462,58 @@ class AccessoriesStoreGUI(DirectFrame):
                             clothButton['text'] = text = str(uid)
                         if self.mode == BUYING and not owned:
                             clothButton.previewText = DirectFrame(
-                                parent=clothButton, relief=None, 
-                                text=PLocalizer.TailorPreview, 
-                                text_fg=PiratesGuiGlobals.TextFG1, 
-                                text_align=TextNode.ARight, 
-                                text_scale=PiratesGuiGlobals.TextScaleSmall, 
-                                text_shadow=PiratesGuiGlobals.TextShadow, 
-                                textMayChange=1, 
+                                parent=clothButton, relief=None,
+                                text=PLocalizer.TailorPreview,
+                                text_fg=PiratesGuiGlobals.TextFG1,
+                                text_align=TextNode.ARight,
+                                text_scale=PiratesGuiGlobals.TextScaleSmall,
+                                text_shadow=PiratesGuiGlobals.TextShadow,
+                                textMayChange=1,
                                 pos=(-0.02, 0, -0.08))
                         elif self.mode == SELLING:
                             clothButton.equippedText = DirectFrame(
-                                parent=clothButton, 
-                                relief=None, 
-                                text=PLocalizer.TattooShopOwned, 
-                                text_fg=PiratesGuiGlobals.TextFG1, 
-                                text_align=TextNode.ARight, 
-                                text_scale=PiratesGuiGlobals.TextScaleSmall, 
-                                text_shadow=PiratesGuiGlobals.TextShadow, 
-                                textMayChange=0, 
+                                parent=clothButton,
+                                relief=None,
+                                text=PLocalizer.TattooShopOwned,
+                                text_fg=PiratesGuiGlobals.TextFG1,
+                                text_align=TextNode.ARight,
+                                text_scale=PiratesGuiGlobals.TextScaleSmall,
+                                text_shadow=PiratesGuiGlobals.TextShadow,
+                                textMayChange=0,
                                 pos=(-0.02, 0, -0.08))
                             if equipped:
                                 clothButton.equippedText.show()
                             else:
                                 clothButton.equippedText.hide()
                         clothButton.addToCart = GuiButton.GuiButton(
-                            command=self.addToCart, 
-                            parent=clothButton, 
-                            text_fg=PiratesGuiGlobals.TextFG2, 
-                            text_pos=(0.0, -0.01), 
-                            text_scale=PiratesGuiGlobals.TextScaleLarge, 
-                            text_align=TextNode.ACenter, 
-                            text_shadow=PiratesGuiGlobals.TextShadow, 
-                            image_color=buttonColorB, 
-                            image_scale=(0.19, 0.22, 0.0, 0.055), 
-                            helpText=PLocalizer.ShopAddToCart, 
+                            command=self.addToCart,
+                            parent=clothButton,
+                            text_fg=PiratesGuiGlobals.TextFG2,
+                            text_pos=(0.0, -0.01),
+                            text_scale=PiratesGuiGlobals.TextScaleLarge,
+                            text_align=TextNode.ACenter,
+                            text_shadow=PiratesGuiGlobals.TextShadow,
+                            image_color=buttonColorB,
+                            image_scale=(0.19, 0.22, 0.0, 0.055),
+                            helpText=PLocalizer.ShopAddToCart,
                             helpDelay=0)
                         clothButton.colorPicker = GuiButton.GuiButton(
-                            command=self.showColorFrame, 
-                            parent=clothButton, 
-                            text_fg=PiratesGuiGlobals.TextFG2, 
-                            text_pos=(0.0, -0.01), 
-                            text_scale=PiratesGuiGlobals.TextScaleLarge, 
-                            text_align=TextNode.ACenter, 
-                            text_shadow=PiratesGuiGlobals.TextShadow, 
-                            image_color=buttonColorB, 
-                            image_scale=(0.08, 0.22, 0.22), 
-                            geom=self.ColorPickerIcon, 
-                            geom_scale=0.4, 
-                            geom_color=Vec4(0.8, 0.8, 0.8, 1), 
-                            pos=(0.045, 0.0, 0.055), 
-                            helpText=PLocalizer.ShopSelectColor, 
-                            helpPos=(-0.28, 0, 0.08), 
-                            helpDelay=0, 
+                            command=self.showColorFrame,
+                            parent=clothButton,
+                            text_fg=PiratesGuiGlobals.TextFG2,
+                            text_pos=(0.0, -0.01),
+                            text_scale=PiratesGuiGlobals.TextScaleLarge,
+                            text_align=TextNode.ACenter,
+                            text_shadow=PiratesGuiGlobals.TextShadow,
+                            image_color=buttonColorB,
+                            image_scale=(0.08, 0.22, 0.22),
+                            geom=self.ColorPickerIcon,
+                            geom_scale=0.4,
+                            geom_color=Vec4(0.8, 0.8, 0.8, 1),
+                            pos=(0.045, 0.0, 0.055),
+                            helpText=PLocalizer.ShopSelectColor,
+                            helpPos=(-0.28, 0, 0.08),
+                            helpDelay=0,
                             helpOpaque=1)
 
                         if self.mode == BUYING:
