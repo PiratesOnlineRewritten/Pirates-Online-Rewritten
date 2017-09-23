@@ -8,10 +8,9 @@ class DistributedChatManagerUD(DistributedObjectGlobalUD):
         DistributedObjectGlobalUD.__init__(self, air)
 
     def chatMessage(self, message, flags):
-        accountId = self.air.getAccountIdFromSender()
         avatarId = self.air.getAvatarIdFromSender()
 
-        if not accountId or not avatarId:
+        if not avatarId:
             return
 
         def queryAvatar(dclass, fields):
@@ -19,7 +18,7 @@ class DistributedChatManagerUD(DistributedObjectGlobalUD):
                 self.notify.warning('Failed to query avatar %d!' % avatarId)
                 return
 
-            dg = dclass.aiFormatUpdate('setTalk', avatarId, avatarId, self.air.ourChannel, [avatarId, accountId,
+            dg = dclass.aiFormatUpdate('setTalk', avatarId, avatarId, self.air.ourChannel, [avatarId, fields.get('setDISLid', (0,))[0],
                 fields.get('setName', ('',))[0], message, [], flags])
 
             self.air.send(dg)
