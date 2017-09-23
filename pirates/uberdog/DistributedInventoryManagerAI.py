@@ -59,6 +59,14 @@ class DistributedInventoryManagerAI(DistributedObjectGlobalAI):
 
         inventory.b_setStackLimit(InventoryType.Hp, avatar.getMaxHp())
         inventory.b_setStackLimit(InventoryType.Mojo, avatar.getMaxMojo())
-        inventory.b_setAccumulator(*inventory.getAccumulator(InventoryType.OverallRep))
+
+        for index in xrange(len(inventory.accumulators)):
+            inventory.d_setAccumulator(*inventory.accumulators[index])
+
+        for index in xrange(len(inventory.stackLimits)):
+            inventory.b_setStackLimit(*inventory.stackLimits[index])
+
+        for index in xrange(len(inventory.stacks)):
+            inventory.d_setStack(*inventory.stacks[index])
 
         inventory.d_requestInventoryComplete()

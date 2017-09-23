@@ -80,27 +80,26 @@ class DistributedBuildingDoor(DistributedDoor):
             return
 
         self.areaRequest = self.cr.relatedObjectMgr.requestObjects([interiorId], eachCallback=areaFinishedCallback)
-        localAvatar.setInterest(worldId, worldZoneId, [
-         'instanceInterest-Door'])
+        localAvatar.setInterest(worldId, worldZoneId, ['instanceInterest-Door'])
 
     def loadInteriorAreaFinished(self, interior, autoFadeIn):
         oldParent = self.getParentObj()
         oldWorld = oldParent.getParentObj()
-        oldWorld.removeWorldInterest(oldParent)
+        #oldWorld.removeWorldInterest(oldParent)
         localAvatar.clearInterestNamed(None, ['instanceInterest'])
         localAvatar.replaceInterestTag('instanceInterest-Door', 'instanceInterest')
         world = interior.getParentObj()
-        world.addWorldInterest(interior)
+        #world.addWorldInterest(interior)
         self.setupOtherSideDoors()
         interior.reparentTo(render)
         interior.setAutoFadeInOnEnter(autoFadeIn)
         interior.enterInteriorFromDoor(self.doorIndex)
-        return
 
     def requestInteraction(self, avId, interactType=0):
         if avId == localAvatar.doId and localAvatar.zombie and self.buildingUid != LocationConstants.LocationIds.KINGSHEAD_OUTER_DOOR:
             localAvatar.guiMgr.createWarning(PLocalizer.ZombieNoDoors, PiratesGuiGlobals.TextFG6)
             return
+
         DistributedDoor.requestInteraction(self, avId, interactType)
 
     def getDoorInfo(self):

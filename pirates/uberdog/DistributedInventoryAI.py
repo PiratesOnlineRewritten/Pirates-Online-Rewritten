@@ -56,7 +56,14 @@ class DistributedInventoryAI(DistributedObjectAI):
             return
 
         self.accumulators.append([accumulatorType, quantity])
-        self.sendUpdate('setAccumulators', [self.accumulators])
+
+        def inventorySet(fields):
+            if fields:
+                self.notify.warning('Failed to setAccumulators for %d avId %d!' % (self.doId, self.ownerId))
+                return
+
+        self.air.dbInterface.updateObject(self.air.dbId, self.doId, self.air.dclassesByName[self.__class__.__name__],
+            {'setAccumulators': (self.accumulators,)}, callback=inventorySet)
 
     def d_setAccumulator(self, accumulatorType, quantity):
         self.sendUpdateToAvatarId(self.ownerId, 'accumulator', [accumulatorType, quantity])
@@ -82,6 +89,14 @@ class DistributedInventoryAI(DistributedObjectAI):
 
         self.stackLimits.append([stackType, limit])
 
+        def inventorySet(fields):
+            if fields:
+                self.notify.warning('Failed to setStackLimits for %d avId %d!' % (self.doId, self.ownerId))
+                return
+
+        self.air.dbInterface.updateObject(self.air.dbId, self.doId, self.air.dclassesByName[self.__class__.__name__],
+            {'setStackLimits': (self.stackLimits,)}, callback=inventorySet)
+
     def d_setStackLimit(self, stackType, limit):
         self.sendUpdateToAvatarId(self.ownerId, 'stackLimit', [stackType, limit])
 
@@ -105,7 +120,14 @@ class DistributedInventoryAI(DistributedObjectAI):
             return
 
         self.stacks.append([stackType, quantity])
-        self.sendUpdate('setStacks', [self.stacks])
+
+        def inventorySet(fields):
+            if fields:
+                self.notify.warning('Failed to setAccumulators for %d avId %d!' % (self.doId, self.ownerId))
+                return
+
+        self.air.dbInterface.updateObject(self.air.dbId, self.doId, self.air.dclassesByName[self.__class__.__name__],
+            {'setStacks': (self.stacks,)}, callback=inventorySet)
 
     def d_setStack(self, stackType, quantity):
         self.sendUpdateToAvatarId(self.ownerId, 'stack', [stackType, quantity])
