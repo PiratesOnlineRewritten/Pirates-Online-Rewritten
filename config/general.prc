@@ -305,7 +305,6 @@ disable-sticky-keys 1
 
 # Other:
 want-logout #f
-skip-tutorial #f
 
 # Clock:
 clock-mode limited

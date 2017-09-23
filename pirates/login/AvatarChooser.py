@@ -631,14 +631,13 @@ class AvatarChooser(DirectObject, StateData):
             return
 
         self.choice = (subId, slot)
-
         base.funnel.add_to_event_queue(base.funnel.get_design_event('NEW_AVATAR', slot))
         self.ignore('rejectAvatarSlot')
         self.ignore('avatarSlotResponse')
         base.cr.cleanupWaitingForDatabase()
+        base.transitions.fadeOut()
         self.doneStatus = {'mode': 'create'}
         messenger.send(self.doneEvent, [self.doneStatus])
-        base.transitions.fadeOut()
 
     def __handleShare(self):
         if self.shareConfirmDialog:

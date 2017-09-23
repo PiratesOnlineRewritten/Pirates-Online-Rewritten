@@ -17,7 +17,7 @@ class Eyes(DirectObject.DirectObject):
 
     def __init__(self, main=None):
         self.main = main.main
-        self.parent = main.parent
+        self._parent = main._parent
         self.avatar = main.avatar
         self.mode = None
         self.load()
@@ -59,7 +59,7 @@ class Eyes(DirectObject.DirectObject):
     def unload(self):
         self.notify.debug('called eyes unload')
         del self.main
-        del self.parent
+        del self._parent
         del self.avatar
 
     def loadExtraArgs(self):
@@ -84,19 +84,19 @@ class Eyes(DirectObject.DirectObject):
         self.saveDNA()
 
     def setupButtons(self):
-        self.browFrame = DirectFrame(parent=self.parent, relief=None, text=PLocalizer.EyeBrowFrameTitle, text_fg=(1,
+        self.browFrame = DirectFrame(parent=self._parent, relief=None, text=PLocalizer.EyeBrowFrameTitle, text_fg=(1,
                                                                                                                   1,
                                                                                                                   1,
                                                                                                                   1), text_scale=0.18, text_pos=(0, -0.05), pos=(0, 0, -0.1), scale=0.7)
         self.browFrame.hide()
-        self.eyeFrame = DirectFrame(parent=self.parent, relief=None, text=PLocalizer.EyeFrameTitle, text_fg=(1,
+        self.eyeFrame = DirectFrame(parent=self._parent, relief=None, text=PLocalizer.EyeFrameTitle, text_fg=(1,
                                                                                                              1,
                                                                                                              1,
                                                                                                              1), text_scale=0.18, text_pos=(0, -0.05), pos=(0,
                                                                                                                                                             0,
                                                                                                                                                             -1.1), scale=0.7)
         self.eyeFrame.hide()
-        self.colorPicker = CharGuiPicker(self.main, parent=self.parent, text=PLocalizer.EyesColorFrameTitle, nextCommand=self.handleNextColor, backCommand=self.handleLastColor)
+        self.colorPicker = CharGuiPicker(self.main, parent=self._parent, text=PLocalizer.EyesColorFrameTitle, nextCommand=self.handleNextColor, backCommand=self.handleLastColor)
         self.colorPicker.setPos(0, 0, 0.2)
         self.colorPicker.hide()
         return

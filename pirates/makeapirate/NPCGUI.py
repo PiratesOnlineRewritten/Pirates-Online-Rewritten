@@ -15,7 +15,7 @@ class NPCGUI(DirectFrame, StateData.StateData):
 
     def __init__(self, main=None):
         self.main = main
-        self.parent = main.bookModel
+        self._parent = main.bookModel
         self.mode = None
         self.charGui = loader.loadModel('models/gui/char_gui')
         return
@@ -56,7 +56,7 @@ class NPCGUI(DirectFrame, StateData.StateData):
         self.setupButtons()
 
     def loadShapeGUI(self):
-        self.shapeFrameTitle = DirectFrame(parent=self.parent, pos=(0, 0, 0.8), scale=(0.66,
+        self.shapeFrameTitle = DirectFrame(parent=self._parent, pos=(0, 0, 0.8), scale=(0.66,
                                                                                        0.4,
                                                                                        0.53))
         self.shapeFrameTitle.hide()
@@ -64,7 +64,7 @@ class NPCGUI(DirectFrame, StateData.StateData):
     def unload(self):
         self.notify.debug('called NPCGUI unload')
         del self.main
-        del self.parent
+        del self._parent
         del self.avatar
 
     def showShapeCollections(self):
