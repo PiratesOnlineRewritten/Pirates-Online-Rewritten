@@ -44,18 +44,10 @@ class StowawayGUI(DirectFrame):
         self.storeInventory = InventoryItemList.InventoryItemList(self.inventory, self.height - 0.15, buy=PiratesGuiGlobals.InventoryAdd, listItemClass=StowawayItemGui)
         self.storeInventory.reparentTo(self.panel)
         self.storeInventory.setPos(0.03, 0, 0.04)
-        self.myGoldTitle = DirectFrame(parent=self.panel, relief=None, text=PLocalizer.YourMoney, text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ALeft, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(0.0,
-                                                                                                                                                                                                                       0.0), pos=(0.1,
-                                                                                                                                                                                                                                  0,
-                                                                                                                                                                                                                                  0.155))
-        self.myGold = DirectFrame(parent=self.myGoldTitle, relief=None, text=str(localAvatar.getMoney()), text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ARight, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(-0.055, 0.0), textMayChange=1, image=StowawayGUI.CoinImage, image_scale=0.15, image_pos=(-0.025,
-                                                                                                                                                                                                                                                                                                                         0,
-                                                                                                                                                                                                                                                                                                                         0.025), pos=(0.4,
-                                                                                                                                                                                                                                                                                                                                      0,
-                                                                                                                                                                                                                                                                                                                                      0))
+        self.myGoldTitle = DirectFrame(parent=self.panel, relief=None, text=PLocalizer.YourMoney, text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ALeft, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(0.0, 0.0), pos=(0.1, 0, 0.155))
+        self.myGold = DirectFrame(parent=self.myGoldTitle, relief=None, text=str(localAvatar.getMoney()), text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ARight, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(-0.055, 0.0), textMayChange=1, image=StowawayGUI.CoinImage, image_scale=0.15, image_pos=(-0.025, 0, 0.025), pos=(0.4, 0, 0))
         self.accept(PiratesGuiGlobals.InventoryBuyEvent, self.handleBuyItem)
         self.acceptOnce('escape', self.closePanel)
-        return
 
     def closePanel(self):
         messenger.send('exitStore')

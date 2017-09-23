@@ -89,15 +89,10 @@ class TattooStoreCartList(DirectScrolledFrame):
         self.listItemHeight = itemHeight
         self.listItemWidth = itemWidth
         self.height = height
-        self.parent = parent
+        self._parent = parent
         self.pvpMode = parent.pvpMode
         charGui = loader.loadModel('models/gui/char_gui')
-        DirectScrolledFrame.__init__(self, relief=None, state=DGG.NORMAL, manageScrollBars=0, autoHideScrollBars=1, frameSize=(0, self.width, 0, self.height), canvasSize=(0, self.width - 0.05, 0.025, self.height - 0.025), verticalScroll_relief=None, verticalScroll_image=charGui.find('**/chargui_slider_small'), verticalScroll_frameSize=(0, PiratesGuiGlobals.ScrollbarSize, 0, self.height), verticalScroll_image_scale=(self.height + 0.05, 1, 0.75), verticalScroll_image_hpr=(0,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           0,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           90), verticalScroll_image_pos=(self.width - PiratesGuiGlobals.ScrollbarSize * 0.5 - 0.004, 0, self.height * 0.5), verticalScroll_image_color=(0.61,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         0.6,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         0.6,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         1), verticalScroll_thumb_image=(charGui.find('**/chargui_slider_node'), charGui.find('**/chargui_slider_node_down'), charGui.find('**/chargui_slider_node_over')), verticalScroll_thumb_relief=None, verticalScroll_thumb_image_scale=0.25, verticalScroll_resizeThumb=0, horizontalScroll_relief=None, sortOrder=5)
+        DirectScrolledFrame.__init__(self, relief=None, state=DGG.NORMAL, manageScrollBars=0, autoHideScrollBars=1, frameSize=(0, self.width, 0, self.height), canvasSize=(0, self.width - 0.05, 0.025, self.height - 0.025), verticalScroll_relief=None, verticalScroll_image=charGui.find('**/chargui_slider_small'), verticalScroll_frameSize=(0, PiratesGuiGlobals.ScrollbarSize, 0, self.height), verticalScroll_image_scale=(self.height + 0.05, 1, 0.75), verticalScroll_image_hpr=(0, 0,  90), verticalScroll_image_pos=(self.width - PiratesGuiGlobals.ScrollbarSize * 0.5 - 0.004, 0, self.height * 0.5), verticalScroll_image_color=(0.61, 0.6, 0.6, 1), verticalScroll_thumb_image=(charGui.find('**/chargui_slider_node'), charGui.find('**/chargui_slider_node_down'), charGui.find('**/chargui_slider_node_over')), verticalScroll_thumb_relief=None, verticalScroll_thumb_image_scale=0.25, verticalScroll_resizeThumb=0, horizontalScroll_relief=None, sortOrder=5)
         self.initialiseoptions(TattooStoreCartList)
         self.verticalScroll.incButton.destroy()
         self.verticalScroll.decButton.destroy()
@@ -137,16 +132,12 @@ class TattooStoreCartList(DirectScrolledFrame):
         tattooId = data[2]
         itemCost = ItemGlobals.getGoldCost(uid)
         itemText = PLocalizer.getItemName(uid)
-        if self.parent.mode == 1:
+        if self._parent.mode == 1:
             itemCost = int(itemCost * ItemGlobals.GOLD_SALE_MULTIPLIER)
         maxLength = 23 - len(str(itemCost))
         isDisabled = 0
-        panel = DirectButton(parent=self, relief=None, text=itemText[:maxLength], text_fg=self.itemColor, text_align=TextNode.ALeft, text_scale=PiratesGuiGlobals.TextScaleMed, text_shadow=PiratesGuiGlobals.TextShadow, text_pos=(0.06,
-                                                                                                                                                                                                                                    0.0), command=self.removePanel, extraArgs=[data])
-        panel.costLabel = DirectLabel(parent=panel, relief=None, text=str(itemCost), text_fg=self.itemColor, text_align=TextNode.ARight, text_scale=PiratesGuiGlobals.TextScaleMed, text_shadow=PiratesGuiGlobals.TextShadow, text_pos=(0.45,
-                                                                                                                                                                                                                                        0.0), image=self.parent.CoinImage, image_scale=0.15, image_pos=(0.48,
-                                                                                                                                                                                                                                                                                                        0.0,
-                                                                                                                                                                                                                                                                                                        0.014))
+        panel = DirectButton(parent=self, relief=None, text=itemText[:maxLength], text_fg=self.itemColor, text_align=TextNode.ALeft, text_scale=PiratesGuiGlobals.TextScaleMed, text_shadow=PiratesGuiGlobals.TextShadow, text_pos=(0.06, 0.0), command=self.removePanel, extraArgs=[data])
+        panel.costLabel = DirectLabel(parent=panel, relief=None, text=str(itemCost), text_fg=self.itemColor, text_align=TextNode.ARight, text_scale=PiratesGuiGlobals.TextScaleMed, text_shadow=PiratesGuiGlobals.TextShadow, text_pos=(0.45, 0.0), image=self._parent.CoinImage, image_scale=0.15, image_pos=(0.48, 0.0, 0.014))
         panel.bind(DGG.ENTER, self.highlightStart, extraArgs=[panel])
         panel.bind(DGG.EXIT, self.highlightStop, extraArgs=[panel])
         panel.data = data
@@ -169,13 +160,13 @@ class TattooStoreCartList(DirectScrolledFrame):
     def removePanel(self, data, repack=1):
         for panel in self.panels:
             if panel.data == data:
-                self.parent.updateButton(data, 1)
+                self._parent.updateButton(data, 1)
                 self.panels.remove(panel)
                 self.purchases.remove(data)
                 panel.destroy()
                 if repack:
                     self.repackPanels()
-                self.parent.updateBalance()
+                self._parent.updateBalance()
                 return
 
     def hasPanel(self, data):
@@ -216,8 +207,7 @@ class TattooStoreGUI(DirectFrame):
     holidayIdList = []
 
     def __init__(self, npc, shopId, **kw):
-        optiondefs = (
-         ('relief', None, None), ('framSize', (0, self.width, 0, self.height), None), ('sortOrder', 20, None))
+        optiondefs = (('relief', None, None), ('framSize', (0, self.width, 0, self.height), None), ('sortOrder', 20, None))
         self.defineoptions(kw, optiondefs)
         DirectFrame.__init__(self, None, **kw)
         self.initialiseoptions(TattooStoreGUI)
@@ -264,22 +254,8 @@ class TattooStoreGUI(DirectFrame):
         self.cartHeight = self.height - 0.25
         self.cartFrame = DirectFrame(parent=self.panel, relief=None, frameSize=(0, self.cartWidth, 0, self.cartHeight))
         self.cartFrame.setPos(self.columnWidth + 0.025, 0, 0.08)
-        self.buyParchment = DirectFrame(parent=self.cartFrame, relief=None, text=PLocalizer.TailorPurchase, text_fg=PiratesGuiGlobals.TextFG1, text_align=TextNode.ACenter, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(0.0,
-                                                                                                                                                                                                                                   0.2), text_shadow=PiratesGuiGlobals.TextShadow, textMayChange=0, image=self.ParchmentIcon, image_scale=(0.24,
-                                                                                                                                                                                                                                                                                                                                           0.0,
-                                                                                                                                                                                                                                                                                                                                           0.3), image_pos=(0.0,
-                                                                                                                                                                                                                                                                                                                                                            0.0,
-                                                                                                                                                                                                                                                                                                                                                            0.0), pos=(0.3,
-                                                                                                                                                                                                                                                                                                                                                                       0.0,
-                                                                                                                                                                                                                                                                                                                                                                       0.92))
-        self.sellParchment = DirectFrame(parent=self.cartFrame, relief=None, text=PLocalizer.TailorSelling, text_fg=PiratesGuiGlobals.TextFG1, text_align=TextNode.ACenter, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(0.0,
-                                                                                                                                                                                                                                   0.2), text_shadow=PiratesGuiGlobals.TextShadow, textMayChange=0, image=self.ParchmentIcon, image_scale=(0.24,
-                                                                                                                                                                                                                                                                                                                                           0.0,
-                                                                                                                                                                                                                                                                                                                                           0.3), image_pos=(0.0,
-                                                                                                                                                                                                                                                                                                                                                            0.0,
-                                                                                                                                                                                                                                                                                                                                                            0.0), pos=(0.3,
-                                                                                                                                                                                                                                                                                                                                                                       0.0,
-                                                                                                                                                                                                                                                                                                                                                                       0.48))
+        self.buyParchment = DirectFrame(parent=self.cartFrame, relief=None, text=PLocalizer.TailorPurchase, text_fg=PiratesGuiGlobals.TextFG1, text_align=TextNode.ACenter, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(0.0, 0.2), text_shadow=PiratesGuiGlobals.TextShadow, textMayChange=0, image=self.ParchmentIcon, image_scale=(0.24, 0.0, 0.3), image_pos=(0.0, 0.0, 0.0), pos=(0.3, 0.0, 0.92))
+        self.sellParchment = DirectFrame(parent=self.cartFrame, relief=None, text=PLocalizer.TailorSelling, text_fg=PiratesGuiGlobals.TextFG1, text_align=TextNode.ACenter, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(0.0, 0.2), text_shadow=PiratesGuiGlobals.TextShadow, textMayChange=0, image=self.ParchmentIcon, image_scale=(0.24, 0.0, 0.3), image_pos=(0.0, 0.0, 0.0), pos=(0.3, 0.0, 0.48))
         self.purchaseInventory = TattooStoreCartList(self, self.cartWidth, self.cartHeight - 0.95, self.cartWidth, self.cartHeight / 20.0)
         self.purchaseInventory.reparentTo(self.cartFrame)
         self.purchaseInventory.setPos(0.0, 0.0, 0.76)
@@ -290,20 +266,10 @@ class TattooStoreGUI(DirectFrame):
         self.currentWardrobe = []
         yourMoney = PLocalizer.YourMoney
         currencyIcon = self.CoinImage
-        self.balanceTitle = DirectFrame(parent=self.cartFrame, relief=None, text=PLocalizer.Total, text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ALeft, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(0.0,
-                                                                                                                                                                                                                        0.0), text_shadow=PiratesGuiGlobals.TextShadow, pos=(0.09,
-                                                                                                                                                                                                                                                                             0,
-                                                                                                                                                                                                                                                                             0.225))
-        self.balanceValue = DirectFrame(parent=self.cartFrame, relief=None, text=str(self.balance), text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ARight, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(-0.055, 0.0), text_shadow=PiratesGuiGlobals.TextShadow, textMayChange=1, image=currencyIcon, image_scale=0.15, image_pos=(-0.025,
-                                                                                                                                                                                                                                                                                                                                                    0,
-                                                                                                                                                                                                                                                                                                                                                    0.015), pos=(self.cartWidth, 0, 0.225))
-        self.myGoldTitle = DirectFrame(parent=self.cartFrame, relief=None, text=yourMoney, text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ALeft, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(0.0,
-                                                                                                                                                                                                                0.0), text_shadow=PiratesGuiGlobals.TextShadow, pos=(0.09,
-                                                                                                                                                                                                                                                                     0,
-                                                                                                                                                                                                                                                                     0.155))
-        self.myGold = DirectFrame(parent=self.cartFrame, relief=None, text=str(self.getMoney()), text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ARight, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(-0.055, 0.0), text_shadow=PiratesGuiGlobals.TextShadow, textMayChange=1, image=currencyIcon, image_scale=0.15, image_pos=(-0.025,
-                                                                                                                                                                                                                                                                                                                                                 0,
-                                                                                                                                                                                                                                                                                                                                                 0.015), pos=(self.cartWidth, 0, 0.155))
+        self.balanceTitle = DirectFrame(parent=self.cartFrame, relief=None, text=PLocalizer.Total, text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ALeft, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(0.0, 0.0), text_shadow=PiratesGuiGlobals.TextShadow, pos=(0.09,0, 0.225))
+        self.balanceValue = DirectFrame(parent=self.cartFrame, relief=None, text=str(self.balance), text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ARight, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(-0.055, 0.0), text_shadow=PiratesGuiGlobals.TextShadow, textMayChange=1, image=currencyIcon, image_scale=0.15, image_pos=(-0.025, 0, 0.015), pos=(self.cartWidth, 0, 0.225))
+        self.myGoldTitle = DirectFrame(parent=self.cartFrame, relief=None, text=yourMoney, text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ALeft, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(0.0, 0.0), text_shadow=PiratesGuiGlobals.TextShadow, pos=(0.09, 0, 0.155))
+        self.myGold = DirectFrame(parent=self.cartFrame, relief=None, text=str(self.getMoney()), text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ARight, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(-0.055, 0.0), text_shadow=PiratesGuiGlobals.TextShadow, textMayChange=1, image=currencyIcon, image_scale=0.15, image_pos=(-0.025, 0, 0.015), pos=(self.cartWidth, 0, 0.155))
         self.commitButton = DialogButton.DialogButton(command=self.handleCommitPurchase, parent=self.cartFrame, text=PLocalizer.PurchaseCommit, text_fg=PiratesGuiGlobals.TextFG2, text_pos=(0.02, -PiratesGuiGlobals.TextScaleLarge * 0.25), text_scale=PiratesGuiGlobals.TextScaleLarge, text_shadow=PiratesGuiGlobals.TextShadow, buttonStyle=DialogButton.DialogButton.YES)
         self.commitButton.setPos(self.cartWidth / 2, 0, 0.005)
         self.closeButton = DialogButton.DialogButton(command=self.closePanel, parent=self.cartFrame, text=PLocalizer.lClose, text_fg=PiratesGuiGlobals.TextFG2, text_pos=(0.02, -PiratesGuiGlobals.TextScaleLarge * 0.25), text_scale=PiratesGuiGlobals.TextScaleLarge, text_shadow=PiratesGuiGlobals.TextShadow, buttonStyle=DialogButton.DialogButton.NO)
@@ -316,31 +282,15 @@ class TattooStoreGUI(DirectFrame):
         self.wardrobeButton.setPos(-0.18, 0.0, 1.15)
         tGui = loader.loadModel('models/gui/triangle')
         triangle = (tGui.find('**/triangle'), tGui.find('**/triangle_down'), tGui.find('**/triangle_over'))
-        self.nextPageButton = DirectButton(parent=self.panel, relief=None, state=DGG.DISABLED, image=triangle, image_scale=0.065, pos=(0.54,
-                                                                                                                                       0.0,
-                                                                                                                                       0.175), rolloverSound=None, command=self.nextPage)
-        self.prevPageButton = DirectButton(parent=self.panel, relief=None, state=DGG.DISABLED, image=triangle, image_scale=-0.065, pos=(0.16,
-                                                                                                                                        0.0,
-                                                                                                                                        0.175), rolloverSound=None, command=self.previousPage)
-        self.pageNumber = DirectFrame(parent=self.panel, relief=None, text='', text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ACenter, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(0.0,
-                                                                                                                                                                                                      0.0), text_shadow=PiratesGuiGlobals.TextShadow, pos=(0.35,
-                                                                                                                                                                                                                                                           0,
-                                                                                                                                                                                                                                                           0.1625))
-        self.titleLabel = DirectLabel(parent=self, relief=None, text='', text_fg=PiratesGuiGlobals.TextFG1, text_align=TextNode.ACenter, text_scale=PiratesGuiGlobals.TextScaleLarge * 1.3, text_shadow=PiratesGuiGlobals.TextShadow, pos=(0.62,
-                                                                                                                                                                                                                                           0.0,
-                                                                                                                                                                                                                                           1.33))
+        self.nextPageButton = DirectButton(parent=self.panel, relief=None, state=DGG.DISABLED, image=triangle, image_scale=0.065, pos=(0.54, 0.0, 0.175), rolloverSound=None, command=self.nextPage)
+        self.prevPageButton = DirectButton(parent=self.panel, relief=None, state=DGG.DISABLED, image=triangle, image_scale=-0.065, pos=(0.16, 0.0, 0.175), rolloverSound=None, command=self.previousPage)
+        self.pageNumber = DirectFrame(parent=self.panel, relief=None, text='', text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ACenter, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(0.0, 0.0), text_shadow=PiratesGuiGlobals.TextShadow, pos=(0.35, 0, 0.1625))
+        self.titleLabel = DirectLabel(parent=self, relief=None, text='', text_fg=PiratesGuiGlobals.TextFG1, text_align=TextNode.ACenter, text_scale=PiratesGuiGlobals.TextScaleLarge * 1.3, text_shadow=PiratesGuiGlobals.TextShadow, pos=(0.62, 0.0, 1.33))
         self.titleLabel.setBin('gui-fixed', 1)
         self.createPirate()
         charGui = loader.loadModel('models/gui/char_gui')
-        self.rotateSlider = DirectSlider(parent=base.a2dBottomLeft, relief=None, command=self.rotatePirate, image=charGui.find('**/chargui_slider_small'), image_scale=(2.15,
-                                                                                                                                                                        2.15,
-                                                                                                                                                                        1.5), thumb_relief=None, thumb_image=(charGui.find('**/chargui_slider_node'), charGui.find('**/chargui_slider_node_down'), charGui.find('**/chargui_slider_node_over')), pos=(0.8,
-                                                                                                                                                                                                                                                                                                                                                      0.0,
-                                                                                                                                                                                                                                                                                                                                                      0.09), text_align=TextNode.ACenter, text_scale=(0.1,
-                                                                                                                                                                                                                                                                                                                                                                                                      0.1), text_pos=(0.0,
-                                                                                                                                                                                                                                                                                                                                                                                                                      0.1), text_fg=PiratesGuiGlobals.TextFG1, scale=0.43, text=PLocalizer.RotateSlider, value=0.5, sortOrder=-1)
-        self.rotateSlider['extraArgs'] = [
-         self.rotateSlider]
+        self.rotateSlider = DirectSlider(parent=base.a2dBottomLeft, relief=None, command=self.rotatePirate, image=charGui.find('**/chargui_slider_small'), image_scale=(2.15, 2.15, 1.5), thumb_relief=None, thumb_image=(charGui.find('**/chargui_slider_node'), charGui.find('**/chargui_slider_node_down'), charGui.find('**/chargui_slider_node_over')), pos=(0.8, 0.0, 0.09), text_align=TextNode.ACenter, text_scale=(0.1, 0.1), text_pos=(0.0, 0.1), text_fg=PiratesGuiGlobals.TextFG1, scale=0.43, text=PLocalizer.RotateSlider, value=0.5, sortOrder=-1)
+        self.rotateSlider['extraArgs'] = [self.rotateSlider]
         self.rotateSliderOrigin = 0.5
         self.accept('mouse1', self._startMouseReadTask)
         self.accept('mouse1-up', self._stopMouseReadTask)
@@ -456,51 +406,49 @@ class TattooStoreGUI(DirectFrame):
         dummy = self.pirate.attachNewNode('dummy')
         if cameraId == BODY_CAMERA:
             dummy.setPos(dummy, 0, 10, self.pirate.headNode.getZ(self.pirate))
+        elif cameraId == CHEST_CAMERA:
+            dummy.setPos(dummy, 0, 4, self.pirate.headNode.getZ(self.pirate))
+        elif cameraId == LARM_CAMERA:
+            dummy.setPos(dummy, -5, 2, self.pirate.headNode.getZ(self.pirate))
+        elif cameraId == RARM_CAMERA:
+            dummy.setPos(dummy, 5, 2, self.pirate.headNode.getZ(self.pirate))
+        elif cameraId == FACE_CAMERA:
+            dummy.setPos(dummy, 0, 3, self.pirate.headNode.getZ(self.pirate) * 1.1)
         else:
-            if cameraId == CHEST_CAMERA:
-                dummy.setPos(dummy, 0, 4, self.pirate.headNode.getZ(self.pirate))
-            else:
-                if cameraId == LARM_CAMERA:
-                    dummy.setPos(dummy, -5, 2, self.pirate.headNode.getZ(self.pirate))
-                elif cameraId == RARM_CAMERA:
-                    dummy.setPos(dummy, 5, 2, self.pirate.headNode.getZ(self.pirate))
-                else:
-                    if cameraId == FACE_CAMERA:
-                        dummy.setPos(dummy, 0, 3, self.pirate.headNode.getZ(self.pirate) * 1.1)
-                    else:
-                        dummy.setPos(dummy, 0, 0, 0)
-                    dummy.wrtReparentTo(render)
-                    if cameraId == BODY_CAMERA:
-                        dummy.lookAt(self.pirate, self.pirate.headNode.getX(self.pirate), self.pirate.headNode.getY(self.pirate), self.pirate.headNode.getZ(self.pirate) * 0.9)
-                    elif cameraId == CHEST_CAMERA:
-                        dummy.lookAt(self.pirate, self.pirate.headNode.getX(self.pirate), self.pirate.headNode.getY(self.pirate), self.pirate.headNode.getZ(self.pirate))
-                    elif cameraId == LARM_CAMERA:
-                        dummy.lookAt(self.pirate, self.pirate.headNode.getX(self.pirate), self.pirate.headNode.getY(self.pirate), self.pirate.headNode.getZ(self.pirate) * 0.9)
-                    else:
-                        if cameraId == RARM_CAMERA:
-                            dummy.lookAt(self.pirate, self.pirate.headNode.getX(self.pirate), self.pirate.headNode.getY(self.pirate), self.pirate.headNode.getZ(self.pirate) * 0.9)
-                        if cameraId == FACE_CAMERA:
-                            dummy.lookAt(self.pirate, self.pirate.headNode.getX(self.pirate), self.pirate.headNode.getY(self.pirate), self.pirate.headNode.getZ(self.pirate) * 1.1)
-                        dummy.lookAt(0, 0, 0, 0)
-                dummy.setH(dummy, -17)
-                dummy.setP(dummy, -12)
-                camPos = dummy.getPos()
-                camHpr = Point3(dummy.getH(), dummy.getP(), 0)
-                dummy.detachNode()
-                camera.wrtReparentTo(render)
-                camH = camera.getH() % 360
-                h = camHpr[0] % 360
-                if camH > h:
-                    h += 360
-            if h - camH > 180:
-                h -= 360
+            dummy.setPos(dummy, 0, 0, 0)
+        dummy.wrtReparentTo(render)
+
+        if cameraId == BODY_CAMERA:
+            dummy.lookAt(self.pirate, self.pirate.headNode.getX(self.pirate), self.pirate.headNode.getY(self.pirate), self.pirate.headNode.getZ(self.pirate) * 0.9)
+        elif cameraId == CHEST_CAMERA:
+            dummy.lookAt(self.pirate, self.pirate.headNode.getX(self.pirate), self.pirate.headNode.getY(self.pirate), self.pirate.headNode.getZ(self.pirate))
+        elif cameraId == LARM_CAMERA:
+            dummy.lookAt(self.pirate, self.pirate.headNode.getX(self.pirate), self.pirate.headNode.getY(self.pirate), self.pirate.headNode.getZ(self.pirate) * 0.9)
+        elif cameraId == RARM_CAMERA:
+            dummy.lookAt(self.pirate, self.pirate.headNode.getX(self.pirate), self.pirate.headNode.getY(self.pirate), self.pirate.headNode.getZ(self.pirate) * 0.9)
+        elif cameraId == FACE_CAMERA:
+            dummy.lookAt(self.pirate, self.pirate.headNode.getX(self.pirate), self.pirate.headNode.getY(self.pirate), self.pirate.headNode.getZ(self.pirate) * 1.1)
+        else:
+            dummy.lookAt(0, 0, 0, 0)
+        dummy.setH(dummy, -17)
+        dummy.setP(dummy, -12)
+        camPos = dummy.getPos()
+        camHpr = Point3(dummy.getH(), dummy.getP(), 0)
+        dummy.detachNode()
+        camera.wrtReparentTo(render)
+        camH = camera.getH() % 360
+        h = camHpr[0] % 360
+        if camH > h:
+            h += 360
+        if h - camH > 180:
+            h -= 360
+
         camHpr.setX(h)
         camera.setH(camH)
         t = 1.5
         self.camIval = camera.posHprInterval(t, pos=camPos, hpr=camHpr, blendType='easeOut')
         localAvatar.cameraFSM.request('Control')
         self.camIval.start()
-        return
 
     def unloadPirate(self):
         if self.pirate:
@@ -577,32 +525,31 @@ class TattooStoreGUI(DirectFrame):
             self.balanceTitle['text'] = PLocalizer.Total
             self.balanceValue['text'] = str(abs(self.balance))
             self.commitButton['text'] = PLocalizer.PurchaseCommit
+        elif self.balance < 0:
+            self.balanceTitle['text'] = PLocalizer.Gain
+            self.balanceValue['text'] = str(abs(self.balance))
+            self.commitButton['text'] = PLocalizer.TailorSell
         else:
-            if self.balance < 0:
-                self.balanceTitle['text'] = PLocalizer.Gain
-                self.balanceValue['text'] = str(abs(self.balance))
-                self.commitButton['text'] = PLocalizer.TailorSell
+            self.balanceTitle['text'] = PLocalizer.Total
+            self.balanceValue['text'] = str(abs(self.balance))
+            self.commitButton['text'] = PLocalizer.GenericConfirmDone
+        if self.balance > self.getMoney() or transactions == 0:
+            if self.balance > self.getMoney():
+                self.balanceValue['text_fg'] = PiratesGuiGlobals.TextFG6
+            self.commitButton['state'] = DGG.DISABLED
+        elif self.balance < 0:
+            self.balanceValue['text_fg'] = PiratesGuiGlobals.TextFG4
+            self.commitButton['state'] = DGG.NORMAL
+        else:
+            self.balanceValue['text_fg'] = PiratesGuiGlobals.TextFG2
+            self.commitButton['state'] = DGG.NORMAL
+        inventory = base.localAvatar.getInventory()
+        myMoney = inventory.getGoldInPocket()
+        if inventory:
+            if myMoney < self.balance or self.purchaseInventory.panels == []:
+                self.commitButton['frameColor'] = PiratesGuiGlobals.ButtonColor3
             else:
-                self.balanceTitle['text'] = PLocalizer.Total
-                self.balanceValue['text'] = str(abs(self.balance))
-                self.commitButton['text'] = PLocalizer.GenericConfirmDone
-            if self.balance > self.getMoney() or transactions == 0:
-                if self.balance > self.getMoney():
-                    self.balanceValue['text_fg'] = PiratesGuiGlobals.TextFG6
-                self.commitButton['state'] = DGG.DISABLED
-            elif self.balance < 0:
-                self.balanceValue['text_fg'] = PiratesGuiGlobals.TextFG4
-                self.commitButton['state'] = DGG.NORMAL
-            else:
-                self.balanceValue['text_fg'] = PiratesGuiGlobals.TextFG2
-                self.commitButton['state'] = DGG.NORMAL
-            inventory = base.localAvatar.getInventory()
-            myMoney = inventory.getGoldInPocket()
-            if inventory:
-                if myMoney < self.balance or self.purchaseInventory.panels == []:
-                    self.commitButton['frameColor'] = PiratesGuiGlobals.ButtonColor3
-                else:
-                    self.commitButton['frameColor'] = PiratesGuiGlobals.ButtonColor4
+                self.commitButton['frameColor'] = PiratesGuiGlobals.ButtonColor4
 
     def checkPanel(self, panel, inventory, itemId):
         purchaseQty = self.purchaseInventory.getItemQuantity(itemId)
@@ -638,11 +585,8 @@ class TattooStoreGUI(DirectFrame):
         else:
             tabIcon = None
             tabScale = 0.0
-        newTab.nameTag = DirectLabel(parent=newTab, relief=None, state=DGG.DISABLED, pos=(0.0,
-                                                                                          0,
-                                                                                          0.0), image=tabIcon, image_scale=tabScale)
+        newTab.nameTag = DirectLabel(parent=newTab, relief=None, state=DGG.DISABLED, pos=(0.0, 0, 0.0), image=tabIcon, image_scale=tabScale)
         self.pageNames.append(id)
-        return
 
     def isPageAdded(self, pageName):
         return self.pageNames.count(pageName) > 0
@@ -954,6 +898,7 @@ class TattooStoreGUI(DirectFrame):
                         buttonState = DGG.DISABLED
                     else:
                         buttonState = DGG.NORMAL
+
                     tattooButton = GuiButton.GuiButton(command=self.applyTattoo, parent=self.panel, state=buttonState, text_fg=PiratesGuiGlobals.TextFG2, text_pos=(-0.02, -0.05), text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ALeft, text_shadow=PiratesGuiGlobals.TextShadow, pos=startPos, image_scale=buttonScale, image_color=buttonColorA, helpText=helpText, helpDelay=0, helpPos=(0.0, 0.0, -0.11), helpLeftAlign=True, extraArgs=[self.pirate, type, uid])
                     if tattooId == 0:
                         tattooButton['text_pos'] = (
@@ -976,29 +921,29 @@ class TattooStoreGUI(DirectFrame):
                             geom.setScale(1.0, 1.0, 1.0 / scale)
                             geom.setPos(0.0, 0.0, 0.01)
                         geom.reparentTo(tattooButton)
+
                     tattooButton.helpWatcher.setPos(tattooButton.getPos())
                     tattooButton.itemText = DirectFrame(parent=tattooButton, relief=None, text='', text_fg=PiratesGuiGlobals.TextFG1, text_align=TextNode.ACenter, text_scale=PiratesGuiGlobals.TextScaleSmall, text_shadow=PiratesGuiGlobals.TextShadow, textMayChange=True, pos=(-0.13, 0, -0.085))
                     if self.mode == BUYING and not owned:
                         tattooButton.itemText['text'] = PLocalizer.TailorPreview
                         tattooButton.itemText['image'] = None
+                    elif self.mode == SELLING and equipped:
+                        tattooButton.itemText['text'] = PLocalizer.TattooShopOwned
+                        tattooButton.itemText['image'] = None
                     else:
-                        if self.mode == SELLING and equipped:
-                            tattooButton.itemText['text'] = PLocalizer.TattooShopOwned
-                            tattooButton.itemText['image'] = None
-                        else:
-                            tattooButton.itemText['text'] = ''
-                            tattooButton.itemText['image'] = None
-                        if questDrop is True and self.mode == SELLING:
-                            tattooButton.itemText['image'] = self.questIcon
-                            tattooButton.itemText['image_color'] = Vec4(1, 1, 0, 1)
-                            tattooButton.itemText['image_scale'] = 0.2
-                            tattooButton.itemText['image_pos'] = (-0.12, 0, 0.15)
-                        tattooButton.addToCart = GuiButton.GuiButton(command=self.addToCart, parent=tattooButton, text_fg=PiratesGuiGlobals.TextFG2, text_pos=(0.0, -0.01), text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ACenter, text_shadow=PiratesGuiGlobals.TextShadow, image_color=buttonColorB, pos=(0.16,
-                                                                                                                                                                                                                                                                                                                               0.0,
-                                                                                                                                                                                                                                                                                                                               0.055))
-                        tattooButton.addToCart['extraArgs'] = [
-                         tattooButton, type, uid, location]
-                        if self.mode == BUYING and not owned and (self.pvpMode and landInfamyRequired or seaInfamyRequired):
+                        tattooButton.itemText['text'] = ''
+                        tattooButton.itemText['image'] = None
+
+                    if questDrop is True and self.mode == SELLING:
+                        tattooButton.itemText['image'] = self.questIcon
+                        tattooButton.itemText['image_color'] = Vec4(1, 1, 0, 1)
+                        tattooButton.itemText['image_scale'] = 0.2
+                        tattooButton.itemText['image_pos'] = (-0.12, 0, 0.15)
+
+                    tattooButton.addToCart = GuiButton.GuiButton(command=self.addToCart, parent=tattooButton, text_fg=PiratesGuiGlobals.TextFG2, text_pos=(0.0, -0.01), text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ACenter, text_shadow=PiratesGuiGlobals.TextShadow, image_color=buttonColorB, pos=(0.16, 0.0, 0.055))
+                    tattooButton.addToCart['extraArgs'] = [tattooButton, type, uid, location]
+                    if self.mode == BUYING and not owned:
+                        if self.pvpMode or landInfamyRequired or seaInfamyRequired:
                             tattooButton['state'] = DGG.DISABLED
                             tattooButton.itemText['text'] = ''
                             tattooButton.addToCart.hide()
@@ -1009,17 +954,16 @@ class TattooStoreGUI(DirectFrame):
                             tattooButton['text'] = infamyText
                             tattooButton['text_fg'] = PiratesGuiGlobals.TextFG6
                             tattooButton['text_pos'] = (-0.02, 0.05)
-                    tattooButton.cost = DirectFrame(parent=tattooButton, relief=None, text=str(cost), text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ARight, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(-0.055, 0.0), text_shadow=PiratesGuiGlobals.TextShadow, textMayChange=0, image=self.CoinImage, image_scale=0.15, image_pos=(-0.025,
-                                                                                                                                                                                                                                                                                                                                                        0,
-                                                                                                                                                                                                                                                                                                                                                        0.015), pos=(0.25, 0, -0.05))
+                        tattooButton.cost = DirectFrame(parent=tattooButton, relief=None, text=str(cost), text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ARight, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(-0.055, 0.0), text_shadow=PiratesGuiGlobals.TextShadow, textMayChange=0, image=self.CoinImage, image_scale=0.15, image_pos=(-0.025, 0, 0.015), pos=(0.25, 0, -0.05))
+
                 if not self.paid:
                     tattooButton.addToCart['geom'] = self.LockIcon
                     tattooButton.addToCart['geom_scale'] = 0.2
                     tattooButton.addToCart['geom_pos'] = Vec3(-0.1, 0.0, 0.0)
                     tattooButton.addToCart['command'] = localAvatar.guiMgr.showNonPayer
                     tattooButton.addToCart['extraArgs'] = ['JEWELRY_CANNOT_BUY-SELL', 10]
-                data = [
-                 type, uid, tattooId, location]
+
+                data = [type, uid, tattooId, location]
                 if self.mode == BUYING and owned:
                     tattooButton.addToCart.buyState = 0
                     tattooButton.addToCart['state'] = DGG.DISABLED
@@ -1041,12 +985,12 @@ class TattooStoreGUI(DirectFrame):
                     tattooButton.addToCart.buyState = 1
                     tattooButton.addToCart['state'] = DGG.NORMAL
                     tattooButton.addToCart.show()
-                    if self.mode == BUYING:
-                        tattooButton.addToCart['text'] = PLocalizer.TailorAddToCart
-                        if self.pvpMode and (landInfamyRequired or seaInfamyRequired):
-                            tattooButton.addToCart.hide()
-                    elif self.mode == SELLING:
-                        tattooButton.addToCart['text'] = PLocalizer.TailorSell
+                if self.mode == BUYING:
+                    tattooButton.addToCart['text'] = PLocalizer.TailorAddToCart
+                    if self.pvpMode and (landInfamyRequired or seaInfamyRequired):
+                        tattooButton.addToCart.hide()
+                elif self.mode == SELLING:
+                    tattooButton.addToCart['text'] = PLocalizer.TailorSell
                 startPos -= Vec3(0.0, 0.0, tattooButton.getHeight() - 0.02)
                 tattooButton.tattooType = tattooType
                 tattooButton.tattooUID = uid
@@ -1057,8 +1001,7 @@ class TattooStoreGUI(DirectFrame):
             self.tattooAmount += 1
 
         if not len(tattoos):
-            tattooButton = GuiButton.GuiButton(parent=self.panel, state=DGG.DISABLED, text=PLocalizer.TailorEmptyWardrobe, text_fg=PiratesGuiGlobals.TextFG2, text_pos=(0.0,
-                                                                                                                                                                        0.0), text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ACenter, text_shadow=PiratesGuiGlobals.TextShadow, pos=startPos, image_scale=buttonScale, image_color=buttonColorA)
+            tattooButton = GuiButton.GuiButton(parent=self.panel, state=DGG.DISABLED, text=PLocalizer.TailorEmptyWardrobe, text_fg=PiratesGuiGlobals.TextFG2, text_pos=(0.0, 0.0), text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ACenter, text_shadow=PiratesGuiGlobals.TextShadow, pos=startPos, image_scale=buttonScale, image_color=buttonColorA)
             tattooButton.tattooType = -1
             tattooButton.tattooUID = -1
             self.buttons.append(tattooButton)
