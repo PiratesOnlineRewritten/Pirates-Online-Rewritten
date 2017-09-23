@@ -62,8 +62,8 @@ class Boss(BossBase):
         ts.setCombineRgb(ts.CMReplace, ts.CSConstant, ts.COSrcColor)
         ts.setCombineAlpha(ts.CMReplace, ts.CSConstant, ts.COSrcAlpha)
         ts.setColor(Vec4(1, 1, 1, 0.01))
-        image = PNMImage.PNMImage(2, 2)
-        t = Texture.Texture()
+        image = PNMImage(2, 2)
+        t = Texture()
         t.load(image)
         self.instanceNode.setTexture(ts, t)
         self.instanceNode.getState().getAttrib(TextureAttrib.getClassType()).addOnStage(ts, t)
@@ -80,7 +80,7 @@ class Boss(BossBase):
     def addBossEffect(self, avType):
         if self.skipBossEffect():
             return
-        isUndead = avType != AvatarTypes.Navy
+        isUndead = (avType != AvatarTypes.Navy)
         if not self.instanceNode:
             self.setupBoss(isUndead)
         color = Vec4(0.25, 0.8, 0.0, 1.0)

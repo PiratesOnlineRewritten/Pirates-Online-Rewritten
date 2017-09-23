@@ -360,3 +360,7 @@ eventlog-host 127.0.0.1:7197
 want-random-invasions #t
 want-random-treasurefleets #t
 want-random-queen-annes #f
+
+# Paid Access:
+force-paid-status FULL
+unlimited-free-time #t

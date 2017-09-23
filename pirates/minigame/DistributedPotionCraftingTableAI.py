@@ -4,7 +4,8 @@ from pirates.minigame.DistributedPotionGameAI import DistributedPotionGameAI
 
 class DistributedPotionCraftingTableAI(DistributedInteractiveAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedPotionCraftingTableAI')
-
+    MULTIUSE = True
+    
     def __init__(self, air):
         DistributedInteractiveAI.__init__(self, air)
 

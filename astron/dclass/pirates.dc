@@ -1307,8 +1307,8 @@ dclass DistributedPlayerPirate : DistributedPlayer, DistributedBattleAvatar, Hum
   setBandId(uint32=0, uint32=0) required broadcast ram ownrecv;
   requestLookoutInvite(uint32, string, uint32, uint32, resultPair []);
   unlimitedInviteNotice(uint32);
-  setGuildId(uint32=0) required airecv broadcast ram;
-  setGuildName(string="") required broadcast ram;
+  setGuildId(uint32=0) required broadcast db ownrecv;
+  setGuildName(string="") required broadcast db ownrecv;
   setMaxHp(int16=250) required broadcast db;
   setHp(int16=250, uint8=0) required broadcast db ownrecv;
   setBandPvp(bool) clsend airecv;

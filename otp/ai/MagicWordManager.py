@@ -7,6 +7,7 @@ from direct.task import Task
 from direct.task.TaskProfiler import TaskProfiler
 from otp.avatar import Avatar
 import string
+import traceback
 from direct.showbase import PythonUtil
 from direct.showbase.PythonUtil import Functor, DelayedCall, ScratchPad
 from otp.otpbase import OTPGlobals
@@ -25,7 +26,6 @@ class MagicWordManager(DistributedObject.DistributedObject):
         self.guiPopupShown = 0
         self.texViewer = None
 
-
     def generate(self):
         DistributedObject.DistributedObject.generate(self)
         self.accept('magicWord', self.b_setMagicWord)
@@ -35,10 +35,8 @@ class MagicWordManager(DistributedObject.DistributedObject):
         else:
             self.accept(self.autoMagicWordEvent, self.doLoginMagicWords)
 
-
     def doLoginMagicWords(self):
         pass
-
 
     def disable(self):
         self.ignore(self.autoMagicWordEvent)
@@ -47,27 +45,20 @@ class MagicWordManager(DistributedObject.DistributedObject):
         self.hidefont()
         DistributedObject.DistributedObject.disable(self)
 
-
     def setMagicWord(self, word, avId, zoneId):
 
         try:
             self.doMagicWord(word, avId, zoneId)
         except:
-            response = PythonUtil.describeException(backTrace = 1)
+            response = traceback.format_exc()
             self.notify.warning('Ignoring error in magic word:\n%s' % response)
             self.setMagicWordResponse(response)
 
-
-
     def wordIs(self, word, w):
-        if not word == w:
-            pass
-        return word[:len(w) + 1] == '%s ' % w
-
+        return word[:len(w)] == w
 
     def getWordIs(self, word):
-        return Functor(self.wordIs, word)
-
+        return lambda w: self.wordIs(word, w)
 
     def doMagicWord(self, word, avId, zoneId):
         wordIs = self.getWordIs(word)

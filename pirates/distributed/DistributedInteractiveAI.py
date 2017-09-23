@@ -6,6 +6,7 @@ class DistributedInteractiveAI(DistributedNodeAI):
 
     ACCEPT = 1
     DENY = 0
+    MULTIUSE = False
 
     def __init__(self, air):
         DistributedNodeAI.__init__(self, air)
@@ -32,7 +33,11 @@ class DistributedInteractiveAI(DistributedNodeAI):
             self.d_rejectInteraction(avatar.doId)
             return
 
-        self.d_setUserId(avatar.doId)
+        if not self.MULTIUSE:
+            self.d_setUserId(avatar.doId)
+        else:
+            self.sendUpdateToAvatarId(avatar.doId, 'setUserId', [avatar.doId])
+
         self.sendUpdateToAvatarId(avatar.doId, 'acceptInteraction', [])
 
     def handleRequestInteraction(self, avatar, interactType, instant):
@@ -59,7 +64,10 @@ class DistributedInteractiveAI(DistributedNodeAI):
             self.d_rejectExit(avatar.doId)
             return
 
-        self.d_setUserId(0)
+        if not self.MULTIUSE:
+            self.d_setUserId(0)
+        else:
+            self.sendUpdateToAvatarId(avatar.doId, 'setUserId', [0])
 
     def demandExit(self):
         avatar = self.air.doId2do.get(self.air.getAvatarIdFromSender())

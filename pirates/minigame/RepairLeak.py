@@ -16,7 +16,6 @@ _activePosition = 0.5
 class RepairLeak(DirectButton, FSM.FSM):
 
     def __init__(self, name, parent, leakscale, **kw):
-        self.name = name
         pitchingGui = loader.loadModel('models/gui/pir_m_gui_srp_pitching_main')
         self.hole = pitchingGui.find('**/hole')
         if random.random() > 0.5:
@@ -28,6 +27,7 @@ class RepairLeak(DirectButton, FSM.FSM):
         self.defineoptions(kw, optiondefs)
         DirectButton.__init__(self, parent=parent, **kw)
         self.initialiseoptions(RepairLeak)
+        self.name = name
         FSM.FSM.__init__(self, 'leak_%sFSM' % self.name)
         self.onCleanup = None
         self.leakScale = leakscale

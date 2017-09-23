@@ -6,3 +6,6 @@ class SpeedchatRelayUD(DistributedObjectGlobalUD):
 
     def __init__(self, air):
         DistributedObjectGlobalUD.__init__(self, air)
+
+    def forwardSpeedchat(self, receiverId, speedchatType, parameters, senderAccountId, senderPlayerName, todo):
+        pass

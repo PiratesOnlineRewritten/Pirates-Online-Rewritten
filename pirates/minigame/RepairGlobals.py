@@ -8,8 +8,7 @@ class VariableContainer():
 
 AI = VariableContainer()
 AI.goldRewardRange = (15, 35)
-AI.goldRewardMultiplier = [
- (14.0, 3.0), (18.0, 2.5), (24.0, 2.0), (36.0, 1.6), (52.0, 1.3), (72.0, 1.15)]
+AI.goldRewardMultiplier = [(14.0, 3.0), (18.0, 2.5), (24.0, 2.0), (36.0, 1.6), (52.0, 1.3), (72.0, 1.15)]
 AI.repairRewardRange = (5000, 1000)
 AI.grapeshotEffectCooldown = 2.0
 AI.grapeshotEffectProbability = 0.5
@@ -44,8 +43,7 @@ Careening.superScrubDecreaseRate = 0.4
 Careening.superScrubIncreaseRate = 0.8
 Careening.barnacleHPRange = (30, 70)
 Careening.barnacleHPScaleRange = (1.0, 3.0)
-Careening.xRange = (
- -0.615, 0.375)
+Careening.xRange = (-0.615, 0.375)
 Careening.yRange = (-0.165, 0.515)
 Careening.barnacleRadius = 0.04
 Careening.mossPercentage = 0.75
@@ -84,9 +82,7 @@ Sawing.activeBoardPosition = (0.0, 0.0, 0.1)
 Sawing.boardYDist = 1.3
 from RepairGridPiece import GOAL_HORIZ_1, GOAL_HORIZ_2, GOAL_VERT_1
 Bracing = VariableContainer()
-Bracing.difficultyLevels = (
- (
-  8, (GOAL_HORIZ_1,)), (7, (GOAL_HORIZ_1,)), (6, (GOAL_HORIZ_1,)), (7, (GOAL_HORIZ_1, GOAL_VERT_1)), (6, (GOAL_HORIZ_1, GOAL_VERT_1)), (5, (GOAL_HORIZ_1, GOAL_VERT_1)), (4, (GOAL_HORIZ_1, GOAL_VERT_1)), (5, (GOAL_HORIZ_1, GOAL_HORIZ_2)), (4, (GOAL_HORIZ_1, GOAL_HORIZ_2)), (3, (GOAL_HORIZ_1, GOAL_HORIZ_2)))
+Bracing.difficultyLevels = ((8, (GOAL_HORIZ_1,)), (7, (GOAL_HORIZ_1,)), (6, (GOAL_HORIZ_1,)), (7, (GOAL_HORIZ_1, GOAL_VERT_1)), (6, (GOAL_HORIZ_1, GOAL_VERT_1)), (5, (GOAL_HORIZ_1, GOAL_VERT_1)), (4, (GOAL_HORIZ_1, GOAL_VERT_1)), (5, (GOAL_HORIZ_1, GOAL_HORIZ_2)), (4, (GOAL_HORIZ_1, GOAL_HORIZ_2)), (3, (GOAL_HORIZ_1, GOAL_HORIZ_2)))
 Bracing.moveTime = 0.08
 Bracing.fadeTime = 0.15
 Bracing.movePieceThreshold = 0.08
@@ -107,10 +103,8 @@ Pitching.leakCountRange = (16, 32)
 Pitching.maxLeaksRange = (2, 5)
 Pitching.useReticle = True
 Pitching.ratingGive = 0
-REPAIR_AT_SEA_REWARD_RATING = [
- 0, 1, 1, 1.5, 2.0]
-REPAIR_AT_SEA_GAME_MULTIPLIER = [
- 20, 60, 200, 40, 20]
+REPAIR_AT_SEA_REWARD_RATING = [0, 1, 1, 1.5, 2.0]
+REPAIR_AT_SEA_GAME_MULTIPLIER = [20, 60, 200, 40, 20]
 
 def getAtSeaRepairRating(rating, gameType):
     if rating > 4 or rating < 0:

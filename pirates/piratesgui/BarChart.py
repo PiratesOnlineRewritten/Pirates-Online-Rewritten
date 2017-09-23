@@ -46,9 +46,9 @@ class BarChart(DirectFrame):
                                                                                                                                                                                                                                                                                                                                                          0))
         if self.maxValue:
             meter['range'] = self.maxValue
+
         meterWidth = meter['frameSize'][1] - meter['frameSize'][0]
         percentFilled = float(meter['value']) / float(meter['range'])
-        print percentFilled
         newTextPos = meterWidth * percentFilled + 0.18
         meter['text_pos'] = (newTextPos, 0)
         label = DirectLabel(parent=meter, relief=None, text=data[0], text_scale=PiratesGuiGlobals.TextScaleSmall, text_align=TextNode.ALeft, text_pos=(0,
@@ -56,7 +56,6 @@ class BarChart(DirectFrame):
         self.statBars.append([meter, label])
         if repack:
             self.repackPanels()
-        return
 
     def clearAllBars(self):
         for i in range(len(self.statBars)):
@@ -78,6 +77,7 @@ class BarChart(DirectFrame):
             meter['range'] = datum[2]
             if self.maxValue:
                 meter['range'] = self.maxValue
+
             meterWidth = meter['frameSize'][1] - meter['frameSize'][0]
             percentFilled = min(1.0, float(meter['value']) / float(meter['range']))
             newTextPos = meterWidth * percentFilled + 0.18

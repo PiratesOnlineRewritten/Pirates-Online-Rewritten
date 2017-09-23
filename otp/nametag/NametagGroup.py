@@ -14,6 +14,10 @@ class NametagGroup(object):
     CCSpeedChat = NametagGlobals.CCSpeedChat
     CCFreeChat = NametagGlobals.CCFreeChat
 
+    CHAT_TIMEOUT_MAX = 12.0
+    CHAT_TIMEOUT_MIN = 4.0
+    CHAT_TIMEOUT_PROP = 0.5
+
     def __init__(self):
         self.avatar = None
         self.font = None
@@ -21,22 +25,29 @@ class NametagGroup(object):
         self.displayName = ''
         self.colorCode = 0
         self.active = False
-        self.contents = 0
         self.icon = NodePath('icon')
         self.nameWordwrap = 0
+        self.chatFlags = 0
+        self.chatString = ''
+        self.chatPage = 0
 
         self.nametag2d = Nametag2d()
         self.nametag3d = Nametag3d()
 
         self.chatPages = []
+        self.nametags = [self.nametag2d, self.nametag3d]
 
-        self.nametags = []
-        self.nametags.extend([self.nametag2d, self.nametag3d])
-
-        self.tickTask = taskMgr.add(self.__tick, self.getUniqueId(), sort=45)
+        self.tickTask = taskMgr.add(self.__tick, self.getUniqueName('tick'), sort=45)
+        self.stompTask = None
+        self.stompText = None
+        self.stompFlags = 0
+        self.chatTimeoutTask = None
 
     def getUniqueId(self):
         return 'NametagGroup-%s' % id(self)
+
+    def getUniqueName(self, name):
+        return '%s-%s' % (self.getUniqueId(), name)
 
     def getNametag2d(self):
         return self.nametag2d
@@ -68,11 +79,72 @@ class NametagGroup(object):
     def getNumChatPages(self):
         return len(self.chatPages)
 
-    def setChat(self, message, flags):
-        pass #TODO
+    def getChatStomp(self):
+        return bool(self.stompTask)
+
+    def getChat(self):
+        if self.chatPage >= len(self.chatPages):
+            return ''
+
+        return self.chatPages[self.chatPage]
+
+    def getStompText(self):
+        return self.stompText
+
+    def getStompDelay(self):
+        return 0.2
+
+    def setChat(self, chatString, chatFlags):
+        if not self.chatFlags & NametagGlobals.CFSpeech:
+            # We aren't already displaying some chat. Therefore, we don't have
+            # to stomp.
+            self._setChat(chatString, chatFlags)
+        else:
+            # Stomp!
+            self.clearChat()
+            self.stompText = chatString
+            self.stompFlags = chatFlags
+            self.stompTask = taskMgr.doMethodLater(self.getStompDelay(), self.__updateStomp, self.getUniqueName('chat'))
+
+    def _setChat(self, chatString, chatFlags):
+        if chatString:
+            self.chatPages = chatString.split('\x07')
+            self.chatFlags = chatFlags
+            self.chatString = chatString
+        else:
+            self.chatPages = []
+            self.chatFlags = 0
+
+        self.setPageNumber(0)
+        self._stopChatTimeout()
+        if chatFlags & NametagGlobals.CFTimeout:
+            self._startChatTimeout()
+
+    def __updateStomp(self, task):
+        self._setChat(self.stompText, self.stompFlags)
+        self.stompTask = None
 
     def clearChat(self):
-        pass #TODO
+        self._setChat('', 0)
+        if self.stompTask:
+            self.stompTask.remove()
+
+    def _startChatTimeout(self):
+        length = len(self.getChat())
+        timeout = min(max(length*self.CHAT_TIMEOUT_PROP, self.CHAT_TIMEOUT_MIN), self.CHAT_TIMEOUT_MAX)
+        self.chatTimeoutTask = taskMgr.doMethodLater(timeout, self.__doChatTimeout, self.getUniqueName('chat-timeout'))
+
+    def __doChatTimeout(self, task):
+        self._setChat('', 0)
+        return task.done
+
+    def _stopChatTimeout(self):
+        if self.chatTimeoutTask:
+            taskMgr.remove(self.chatTimeoutTask)
+
+    def setPageNumber(self, chatPage):
+        self.chatPage = chatPage
+        self.updateTags()
 
     def setAvatar(self, avatar):
         self.avatar = avatar
@@ -117,11 +189,8 @@ class NametagGroup(object):
         return self.active
 
     def setContents(self, contents):
-        self.contents = contents
-        self.updateTags()
-
-    def getContents(self):
-        return self.contents
+        for nametag in self.nametags:
+            nametag.setContents(contents)
 
     def getNameIcon(self):
         return self.icon
@@ -149,5 +218,6 @@ class NametagGroup(object):
         nametag.name = self.name
         nametag.displayName = self.displayName
         nametag.icon = self.icon
-        #nametag.contents = self.contents
+        nametag.chatFlags = self.chatFlags
+        nametag.chatString = self.chatString
         nametag.update()

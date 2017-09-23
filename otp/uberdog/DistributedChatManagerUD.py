@@ -1,8 +1,8 @@
-from direct.distributed.DistributedObjectGlobalUD import DistributedObjectGlobalUD
 from direct.directnotify import DirectNotifyGlobal
+from otp.uberdog.SpeedchatRelayUD import SpeedchatRelayUD
 
-class DistributedChatManagerUD(DistributedObjectGlobalUD):
+class DistributedChatManagerUD(SpeedchatRelayUD):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedChatManagerUD')
 
     def __init__(self, air):
-        DistributedObjectGlobalUD.__init__(self, air)
+        SpeedchatRelayUD.__init__(self, air)
