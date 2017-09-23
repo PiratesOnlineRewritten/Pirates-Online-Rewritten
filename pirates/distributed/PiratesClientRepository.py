@@ -357,6 +357,7 @@ class PiratesClientRepository(OTPClientRepository):
         else:
             self.tutorial = 1
             dna = HumanDNA.HumanDNA()
+            dna.makeMakeAPirate()
             newPotAv = PotentialAvatar(0, ['dbp', '', '', ''], dna, index, 0)
             self.csm.sendCreateAvatar(newPotAv.dna, '', newPotAv.position)
             self.accept('createdNewAvatar', self.handleAvatarCreated, [newPotAv])

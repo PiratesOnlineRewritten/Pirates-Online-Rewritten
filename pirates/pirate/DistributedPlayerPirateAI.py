@@ -44,3 +44,9 @@ class DistributedPlayerPirateAI(DistributedPlayerAI, HumanDNA, DistributedBattle
 
     def getFounder(self):
         return self.founder
+
+    def destroy(self):
+        self.d_setGameState('TeleportOut')
+
+        DistributedPlayerAI.destroy(self)
+        DistributedBattleAvatarAI.destroy(self)
