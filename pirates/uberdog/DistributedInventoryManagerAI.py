@@ -64,7 +64,7 @@ class DistributedInventoryManagerAI(DistributedObjectGlobalAI):
             inventory.d_setAccumulator(*inventory.accumulators[index])
 
         for index in xrange(len(inventory.stackLimits)):
-            inventory.b_setStackLimit(*inventory.stackLimits[index])
+            inventory.d_setStackLimit(*inventory.stackLimits[index])
 
         for index in xrange(len(inventory.stacks)):
             inventory.d_setStack(*inventory.stacks[index])
