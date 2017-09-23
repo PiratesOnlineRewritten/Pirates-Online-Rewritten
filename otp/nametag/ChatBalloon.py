@@ -19,7 +19,6 @@ class ChatBalloon:
     def generate(self, text, font, textColor=(0,0,0,1), balloonColor=(1,1,1,1),
                  wordWrap = 10.0, button=None, reversed=False):
 
-        print ('ChatBalloon', text, font, textColor, reversed)
         root = NodePath('balloon')
 
         # Add balloon geometry:
