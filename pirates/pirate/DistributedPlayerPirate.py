@@ -1298,10 +1298,11 @@ class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, Distribu
         return self.title + self.name
 
     def setGuildName(self, newname):
-        if newname == 'Null':
+        if not newname:
             self.guildName = PLocalizer.GuildNoGuild
         else:
             self.guildName = newname
+
         self.refreshName()
 
     def getGuildName(self):
