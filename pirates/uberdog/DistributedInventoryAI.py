@@ -53,9 +53,8 @@ class DistributedInventoryAI(DistributedObjectAI):
 
         if accumulator:
             self.accumulators[self.accumulators.index(accumulator)] = [accumulatorType, quantity]
-            return
-
-        self.accumulators.append([accumulatorType, quantity])
+        else:
+            self.accumulators.append([accumulatorType, quantity])
 
         def inventorySet(fields):
             if fields:
@@ -85,9 +84,8 @@ class DistributedInventoryAI(DistributedObjectAI):
 
         if stackLimit:
             self.stackLimits[self.stackLimits.index(stackLimit)] = [stackType, limit]
-            return
-
-        self.stackLimits.append([stackType, limit])
+        else:
+            self.stackLimits.append([stackType, limit])
 
         def inventorySet(fields):
             if fields:
@@ -117,9 +115,8 @@ class DistributedInventoryAI(DistributedObjectAI):
 
         if stack:
             self.stacks[self.stacks.index(stack)] = [stackType, quantity]
-            return
-
-        self.stacks.append([stackType, quantity])
+        else:
+            self.stacks.append([stackType, quantity])
 
         def inventorySet(fields):
             if fields:
