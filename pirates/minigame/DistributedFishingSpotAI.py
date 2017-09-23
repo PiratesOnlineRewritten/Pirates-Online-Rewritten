@@ -3,7 +3,6 @@ from pirates.inventory.LootableAI import LootableAI
 from direct.directnotify import DirectNotifyGlobal
 from pirates.ai import HolidayGlobals
 import FishingGlobals
-from pirates.uberdog.UberDogGlobals import InventoryType
 
 class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedFishingSpotAI')
@@ -90,8 +89,8 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
             self.notify.warning('Failed to get inventory for avatar %d!' % avatar.doId)
             return
 
-        inventory.b_setStack(InventoryType.ItemTypeMoney, inventory.getStack(InventoryType.ItemTypeMoney)[1] + reward)
-        inventory.b_setAccumulator(InventoryType.OverallRep, inventory.getAccumulator(InventoryType.OverallRep)[1] + experience)
+        inventory.setGoldInPocket(inventory.getGoldInPocket() + reward)
+        inventory.setFishingRep(inventory.getFishingRep() + experience)
 
     def lostLure(self, lureId):
         pass

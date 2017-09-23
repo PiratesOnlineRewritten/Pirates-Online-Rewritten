@@ -152,8 +152,8 @@ class ShipStoreGUI(GuiPanel.GuiPanel):
             if len(inventory.getShipDoIdList()) >= inventory.getCategoryLimit(InventoryCategory.SHIPS):
                 base.localAvatar.guiMgr.createWarning(PLocalizer.CannotHoldShipWarning, PiratesGuiGlobals.TextFG6)
                 return
-        nameData = [
-         PLocalizer.PirateShipPrefix.keys(), PLocalizer.PirateShipSuffix.keys()]
+
+        nameData = [PLocalizer.PirateShipPrefix.keys(), PLocalizer.PirateShipSuffix.keys()]
         self.namePanel = NamePanelGui.NamePanelGui(PLocalizer.NamePanelTitle, nameData)
         self.namePanel.setPos(0.2, 0, 0)
         self.lockStore()
@@ -183,14 +183,15 @@ class ShipStoreGUI(GuiPanel.GuiPanel):
             else:
                 self.balanceTitle['text'] = PLocalizer.Cost
                 self.balanceValue['text'] = str(abs(self.balance))
-            inventory = base.localAvatar.getInventory()
-            if inventory:
-                if inventory.getGoldInPocket() < self.balance:
-                    self.commitButton['frameColor'] = PiratesGuiGlobals.ButtonColor3
-                elif len(inventory.getShipDoIdList()) >= inventory.getCategoryLimit(InventoryCategory.SHIPS):
-                    self.commitButton['frameColor'] = PiratesGuiGlobals.ButtonColor3
-                else:
-                    self.commitButton['frameColor'] = PiratesGuiGlobals.ButtonColor4
+
+        inventory = base.localAvatar.getInventory()
+        if inventory:
+            if inventory.getGoldInPocket() < self.balance:
+                self.commitButton['frameColor'] = PiratesGuiGlobals.ButtonColor3
+            elif len(inventory.getShipDoIdList()) >= inventory.getCategoryLimit(InventoryCategory.SHIPS):
+                self.commitButton['frameColor'] = PiratesGuiGlobals.ButtonColor3
+            else:
+                self.commitButton['frameColor'] = PiratesGuiGlobals.ButtonColor4
 
     def lockStore(self):
         self.commitButton['state'] = DGG.DISABLED

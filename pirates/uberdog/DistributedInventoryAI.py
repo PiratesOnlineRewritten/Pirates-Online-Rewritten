@@ -1,5 +1,6 @@
 from direct.distributed.DistributedObjectAI import DistributedObjectAI
 from direct.directnotify import DirectNotifyGlobal
+from pirates.uberdog.UberDogGlobals import InventoryId, InventoryType
 
 class DistributedInventoryAI(DistributedObjectAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedInventoryAI')
@@ -162,6 +163,30 @@ class DistributedInventoryAI(DistributedObjectAI):
 
     def d_requestInventoryComplete(self):
         self.sendUpdateToAvatarId(self.ownerId, 'requestInventoryComplete', [])
+
+    def setGoldInPocket(self, quantity):
+        self.b_setStack(InventoryType.ItemTypeMoney, quantity)
+
+    def getGoldInPocket(self):
+        return self.getStack(InventoryType.ItemTypeMoney)[1]
+
+    def setOverallRep(self, quantity):
+        self.b_setAccumulator(InventoryType.OverallRep, quantity)
+
+    def getOverallRep(self):
+        return self.getAccumulator(InventoryType.OverallRep)[1]
+
+    def setPotionsRep(self, quantity):
+        self.b_setAccumulator(InventoryType.PotionsRep, quantity)
+
+    def getPotionsRep(self):
+        return self.getAccumulator(InventoryType.PotionsRep)[1]
+
+    def setFishingRep(self, quantity):
+        self.b_setAccumulator(InventoryType.FishingRep, quantity)
+
+    def getFishingRep(self):
+        return self.getAccumulator(InventoryType.FishingRep)[1]
 
     def delete(self):
         self.air.inventoryManager.removeInventory(self)
