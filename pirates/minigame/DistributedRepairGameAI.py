@@ -104,22 +104,22 @@ class DistributedRepairGameAI(DistributedNodeAI, DistributedRepairGameBase):
         # Check if this player is playing
         if avatar.doId not in self.avId2game:
             self.notify.warning('Received reportMincroGameProgress from an avatar not playing a minigame!')
-            self.air.writeServerEvent('suspicious-event', 
+            self.air.writeServerEvent('suspicious-event',
                 message='Received reportMincroGameProgress from an avatar not playing a repair minigame',
-                targetAvId=avatar.doId, 
+                targetAvId=avatar.doId,
                 gameIndex=gameIndex,
                 progress=progress,
-                rating=rating)    
+                rating=rating)
             return
 
         # Perform gameIndex sanity check
         if gameIndex != self.avId2game[avatar.doId]:
             self.notify.warning('Received reportMincroGameProgress from avatar for a game they are not post to be playing!')
-            self.air.writeServerEvent('suspicious-event', 
+            self.air.writeServerEvent('suspicious-event',
                 message='Received reportMincroGameProgress from avatar for a game they are not post to be playing',
-                targetAvId=avatar.doId, 
+                targetAvId=avatar.doId,
                 progress=progress,
-                rating=rating) 
+                rating=rating)
             return
 
         self.game2progress[gameIndex] = progress
