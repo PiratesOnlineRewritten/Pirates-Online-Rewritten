@@ -260,8 +260,8 @@ holidaySchedules = {
     (2009, Month.DECEMBER, 31, 0, 0, 0), (2010, Month.JANUARY, 2, 0, 0, 0)]),
   VALENTINESDAY: HolidayDates(HolidayDates.TYPE_YEARLY, [
     (Month.FEBRUARY, 10, 0, 0, 0), (Month.FEBRUARY, 17, 0, 0, 0)]),
-  ZOMBIEEMOTE: HolidayDates(HolidayDates.TYPE_CUSTOM, [
-    (2010, Month.OCTOBER, 1, 0, 0, 0), (2010, Month.NOVEMBER, 7, 0, 0, 0)]),
+  ZOMBIEEMOTE: HolidayDates(HolidayDates.TYPE_YEARLY, [
+    (Month.OCTOBER, 1, 0, 0, 0), (Month.NOVEMBER, 7, 0, 0, 0)]),
   INVASIONPORTROYAL: HolidayDates(HolidayDates.TYPE_CUSTOM, []),
   WRECKEDGOVERNORSMANSION: HolidayDates(HolidayDates.TYPE_CUSTOM, []),
   INVASIONTORTUGA: HolidayDates(HolidayDates.TYPE_CUSTOM, [
