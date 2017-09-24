@@ -79,10 +79,10 @@ class PiratesInternalRepository(AstronInternalRepository):
                 if self.getAvatarIdFromSender() > 100000000:
                     self.kickChannel(self.getMsgSender())
 
-                self.writeServerEvent('internal-exception', 
-                    avId=self.getAvatarIdFromSender(),
-                    accountId=self.getAccountIdFromSender(),
-                    exception=traceback.format_exc())
+            self.writeServerEvent('internal-exception', 
+                avId=self.getAvatarIdFromSender(),
+                accountId=self.getAccountIdFromSender(),
+                exception=traceback.format_exc())
 
             self.notify.warning('internal-exception: %s (%s)' % (repr(e), self.getAvatarIdFromSender()))
             print traceback.format_exc()
