@@ -14,6 +14,10 @@ class PiratesMagicWordManagerAI(MagicWordManagerAI):
         msg = ""
         if magicWord.count("setMoney"):
             args = magicWord.split()
+            if len(args) <= 1:
+                msg = "MW: Invalid number of arguments! (2 arguments or more are needed)"
+                self.setMagicWordResponse(avId, msg)
+                return
             av = simbase.air.doId2do.get(avId, None)
             if not av:
                 return
@@ -28,5 +32,5 @@ class PiratesMagicWordManagerAI(MagicWordManagerAI):
             trade.sendTrade()
             msg = "MW: Set Money!"
             
-        if avId in simbase.air.doId2do and msg != "":
-            self.sendUpdateToAvatarId(avId, 'setMagicWordResponse', [msg])
+        if msg != "":
+            self.setMagicWordResponse(avId, msg)

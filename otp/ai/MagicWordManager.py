@@ -11,6 +11,7 @@ import traceback
 from direct.showbase import PythonUtil
 from direct.showbase.PythonUtil import Functor, DelayedCall, ScratchPad
 from otp.otpbase import OTPGlobals
+from otp.nametag.NametagGlobals import *
 from direct.distributed.ClockDelta import *
 from direct.showutil.TexViewer import TexViewer
 
@@ -637,8 +638,7 @@ class MagicWordManager(DistributedObject.DistributedObject):
 
 
     def d_setWho(self, avIds):
-        self.sendUpdate('setWho', [
-            avIds])
+        self.sendUpdate('setWho', [avIds])
 
 
     def _handleGPTCfinished(self, ct, gptcJob):

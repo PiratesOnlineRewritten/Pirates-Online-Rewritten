@@ -1,5 +1,4 @@
-import time
-import random
+import time, random, functools
 from panda3d.core import *
 from direct.directnotify.DirectNotifyGlobal import directNotify
 from pirates.distributed.PiratesInternalRepository import PiratesInternalRepository
@@ -30,7 +29,12 @@ class PiratesAIRepository(PiratesInternalRepository):
         self.districtName = districtName
         self.zoneAllocator = UniqueIdAllocator(PiratesGlobals.DynamicZonesBegin, PiratesGlobals.DynamicZonesEnd)
         self.zoneId2owner = {}
+        self.contextGen = SerialMaskedGen(0xFFFFFFFFL)
+        self.contextToClassName = {}
         self.uidMgr = UniqueIdManager(self)
+        
+    def allocateContext(self):
+        return self.contextGen.next()
 
     def handleConnected(self):
         self.districtId = self.allocateChannel()
@@ -123,3 +127,19 @@ class PiratesAIRepository(PiratesInternalRepository):
 
         self.worldCreator = WorldCreatorAI(self)
         self.worldCreator.loadObjectsFromFile(WorldGlobals.PiratesWorldSceneFile)
+        
+    def queryObjectField(self, dclassName, fieldName, doId, context):
+        callback = functools.partial(self.handleQueryObjectField, context=context, fieldName=fieldName)
+        self.dbInterface.queryObject(self.dbId, doId, callback, [fieldName])
+        
+    def handleQueryObjectField(self, dclass, fields, context, fieldName):
+        dclassName = self.contextToClassName.get(context, None)
+        if not dclassName:
+            self.notify.warning('Context %d does not have a DClass name paired with it!' % (context))
+            return
+        if dclass != self.air.dclassesByName[dclassName]:
+            self.notify.warning('Bad DClass %d return not equal to what was reguested (%s)!' % (dclass, dclassName))
+            return    
+            
+        field = fields[fieldName]
+        messenger.send("doFieldResponse-%s" % (context), [context, field])
