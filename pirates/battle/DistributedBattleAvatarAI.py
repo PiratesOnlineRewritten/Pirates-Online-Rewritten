@@ -1,6 +1,7 @@
 from direct.directnotify import DirectNotifyGlobal
 from pirates.reputation. DistributedReputationAvatarAI import  DistributedReputationAvatarAI
 from Teamable import Teamable
+from direct.distributed.ClockDelta import globalClockDelta
 
 class DistributedBattleAvatarAI(DistributedReputationAvatarAI, Teamable):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedBattleAvatarAI')
@@ -47,6 +48,9 @@ class DistributedBattleAvatarAI(DistributedReputationAvatarAI, Teamable):
 
     def getAvatarType(self):
         return self.avatarType
+
+    def d_setGameState(self, gameState):
+        self.sendUpdate('setGameState', [gameState, globalClockDelta.getRealNetworkTime(bits=16)])
 
     def setIsGhost(self, isGhost):
         self.isGhost = isGhost

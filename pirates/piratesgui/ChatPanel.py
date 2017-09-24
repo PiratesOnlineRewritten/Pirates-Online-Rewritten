@@ -535,70 +535,72 @@ class ChatPanel(DirectFrame, FSM):
                 elif message.getSenderAccountId():
                     buttonCommand = self.handlePlayerPress
                     buttonArgs = [message.getSenderAccountId(), useName]
-                if message.getTalkType() == INFO_GUILD and message.getReceiverAvatarId():
-                    wantTwoNames = True
-                else:
-                    wantTwoNames = False
-                if wantTwoNames:
-                    buttonCommand2 = self.handleAvatarPress
-                    buttonArgs2 = [message.getReceiverAvatarId(), useName2]
-                nameArray = (
-                 '\x01' + MESSAGE_COLOR_TABLE[message.getTalkType()][self.fontColorStyle] + '\x01' + useName + '\x02', '\x01' + MESSAGE_COLOR_TABLE[message.getTalkType()][self.fontColorStyle] + '\x01' + useName + '\x02', '\x01' + MESSAGE_OVER_TABLE[message.getTalkType()][self.fontColorStyle] + '\x01' + useName + '\x02', '\x01' + MESSAGE_COLOR_TABLE[message.getTalkType()][self.fontColorStyle] + '\x01' + useName + '\x02')
-                nameButton = DirectButton(parent=NodePath(), relief=None, text=nameArray, text_align=TextNode.ALeft, text_pos=(0.0,
-                                                                                                                               0.0), text_shadow=self.shadowColor, text_shadowOffset=self.shadowOffset, text_font=self.nameFont, textMayChange=0, command=buttonCommand, extraArgs=buttonArgs)
-                left, right, bottom, top = nameButton.getBounds()
-                nameGFX = TextGraphic(nameButton, left, right, 0, 1)
-                buttonName = '%s%s' % (message.getTalkType(), useName)
-                tpMgr.setGraphic(buttonName, nameGFX)
-                if wantTwoNames:
-                    nameArray2 = (
-                     '\x01' + MESSAGE_COLOR_TABLE[message.getTalkType()][self.fontColorStyle] + '\x01' + useName2 + '\x02', '\x01' + MESSAGE_COLOR_TABLE[message.getTalkType()][self.fontColorStyle] + '\x01' + useName2 + '\x02', '\x01' + MESSAGE_OVER_TABLE[message.getTalkType()][self.fontColorStyle] + '\x01' + useName2 + '\x02', '\x01' + MESSAGE_COLOR_TABLE[message.getTalkType()][self.fontColorStyle] + '\x01' + useName2 + '\x02')
-                    nameButton2 = DirectButton(parent=NodePath(), relief=None, text=nameArray2, text_align=TextNode.ALeft, text_pos=(0.0,
-                                                                                                                                     0.0), text_shadow=self.shadowColor, text_shadowOffset=self.shadowOffset, text_font=self.nameFont, textMayChange=0, command=buttonCommand2, extraArgs=buttonArgs2)
-                    left, right, bottom, top = nameButton2.getBounds()
-                    nameGFX2 = TextGraphic(nameButton2, left, right, 0, 1)
-                    buttonName2 = '%s%s' % (message.getTalkType(), useName2)
-                    tpMgr.setGraphic(buttonName2, nameGFX2)
-                del tpMgr
-                self.lineDict[message.getMessageId()] = (
-                 message, nameButton, buttonName)
-                if nameButton:
-                    messageName = '\x05' + buttonName + '\x05'
-                    if wantTwoNames:
-                        messageName2 = '\x05' + buttonName2 + '\x05'
-                else:
-                    messageName = message.getSenderAvatarName() + ': '
-                messageBody = message.getBody()
-                chatString = ''
-                if '%s' in message.getBody() and message.getTalkType() == INFO_OPEN:
-                    someMessage = message.getBody() % messageName
-                elif '%s' in message.getBody() and message.getTalkType() == INFO_GUILD:
-                    if wantTwoNames:
-                        if extraInfo:
-                            someMessage = message.getBody() % (messageName, messageName2, extraInfo[0])
-                        else:
-                            someMessage = message.getBody() % (messageName, messageName2)
-                    elif extraInfo:
-                        someMessage = message.getBody() % (messageName, extraInfo[0])
-                    else:
-                        someMessage = message.getBody() % messageName
-                else:
-                    someMessage = messageName + message.getBody()
-                chatCode = MESSAGE_STYLE_TABLE[message.getTalkType()][self.fontColorStyle]
-                self.wordWrapper.setText(someMessage)
-                wrappedText = self.wordWrapper.getWordwrappedText().split('\n')
-                tab = '    '
-                for i in range(len(wrappedText)):
-                    if i == 0:
-                        if chatCode:
-                            wrappedText[i] = '\x01' + chatCode + '\x01' + wrappedText[i] + '\x02'
-                    elif i > 0:
-                        wrappedText[i] = '    ' + '\x01' + chatCode + '\x01' + wrappedText[i] + '\x02'
-                    if i < len(wrappedText) - 1:
-                        wrappedText[i] += '\n'
 
-            for text in wrappedText:
-                chatString += text
+        if message.getTalkType() == INFO_GUILD and message.getReceiverAvatarId():
+            wantTwoNames = True
+        else:
+            wantTwoNames = False
+
+        if wantTwoNames:
+            buttonCommand2 = self.handleAvatarPress
+            buttonArgs2 = [message.getReceiverAvatarId(), useName2]
+
+        nameArray = (
+         '\x01' + MESSAGE_COLOR_TABLE[message.getTalkType()][self.fontColorStyle] + '\x01' + useName + '\x02', '\x01' + MESSAGE_COLOR_TABLE[message.getTalkType()][self.fontColorStyle] + '\x01' + useName + '\x02', '\x01' + MESSAGE_OVER_TABLE[message.getTalkType()][self.fontColorStyle] + '\x01' + useName + '\x02', '\x01' + MESSAGE_COLOR_TABLE[message.getTalkType()][self.fontColorStyle] + '\x01' + useName + '\x02')
+        nameButton = DirectButton(parent=NodePath(), relief=None, text=nameArray, text_align=TextNode.ALeft, text_pos=(0.0,
+                                                                                                                       0.0), text_shadow=self.shadowColor, text_shadowOffset=self.shadowOffset, text_font=self.nameFont, textMayChange=0, command=buttonCommand, extraArgs=buttonArgs)
+        left, right, bottom, top = nameButton.getBounds()
+        nameGFX = TextGraphic(nameButton, left, right, 0, 1)
+        buttonName = '%s%s' % (message.getTalkType(), useName)
+        tpMgr.setGraphic(buttonName, nameGFX)
+        if wantTwoNames:
+            nameArray2 = ('\x01' + MESSAGE_COLOR_TABLE[message.getTalkType()][self.fontColorStyle] + '\x01' + useName2 + '\x02', '\x01' + MESSAGE_COLOR_TABLE[message.getTalkType()][self.fontColorStyle] + '\x01' + useName2 + '\x02', '\x01' + MESSAGE_OVER_TABLE[message.getTalkType()][self.fontColorStyle] + '\x01' + useName2 + '\x02', '\x01' + MESSAGE_COLOR_TABLE[message.getTalkType()][self.fontColorStyle] + '\x01' + useName2 + '\x02')
+            nameButton2 = DirectButton(parent=NodePath(), relief=None, text=nameArray2, text_align=TextNode.ALeft, text_pos=(0.0,
+                                                                                                                             0.0), text_shadow=self.shadowColor, text_shadowOffset=self.shadowOffset, text_font=self.nameFont, textMayChange=0, command=buttonCommand2, extraArgs=buttonArgs2)
+            left, right, bottom, top = nameButton2.getBounds()
+            nameGFX2 = TextGraphic(nameButton2, left, right, 0, 1)
+            buttonName2 = '%s%s' % (message.getTalkType(), useName2)
+            tpMgr.setGraphic(buttonName2, nameGFX2)
+        del tpMgr
+        self.lineDict[message.getMessageId()] = (
+         message, nameButton, buttonName)
+        if nameButton:
+            messageName = '\x05' + buttonName + '\x05'
+            if wantTwoNames:
+                messageName2 = '\x05' + buttonName2 + '\x05'
+        else:
+            messageName = message.getSenderAvatarName() + ': '
+        messageBody = message.getBody()
+        chatString = ''
+        if '%s' in message.getBody() and message.getTalkType() == INFO_OPEN:
+            someMessage = message.getBody() % messageName
+        elif '%s' in message.getBody() and message.getTalkType() == INFO_GUILD:
+            if wantTwoNames:
+                if extraInfo:
+                    someMessage = message.getBody() % (messageName, messageName2, extraInfo[0])
+                else:
+                    someMessage = message.getBody() % (messageName, messageName2)
+            elif extraInfo:
+                someMessage = message.getBody() % (messageName, extraInfo[0])
+            else:
+                someMessage = message.getBody() % messageName
+        else:
+            someMessage = messageName + message.getBody()
+        chatCode = MESSAGE_STYLE_TABLE[message.getTalkType()][self.fontColorStyle]
+        self.wordWrapper.setText(someMessage)
+        wrappedText = self.wordWrapper.getWordwrappedText().split('\n')
+        tab = '    '
+        for i in range(len(wrappedText)):
+            if i == 0:
+                if chatCode:
+                    wrappedText[i] = '\x01' + chatCode + '\x01' + wrappedText[i] + '\x02'
+            elif i > 0:
+                wrappedText[i] = '    ' + '\x01' + chatCode + '\x01' + wrappedText[i] + '\x02'
+            if i < len(wrappedText) - 1:
+                wrappedText[i] += '\n'
+
+        for text in wrappedText:
+            chatString += text
 
         return chatString
 

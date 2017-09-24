@@ -17,7 +17,7 @@ class Nose(DirectObject.DirectObject):
 
     def __init__(self, main=None):
         self.main = main.main
-        self.parent = main.parent
+        self._parent = main._parent
         self.avatar = main.avatar
         self.mode = None
         self.load()
@@ -64,7 +64,7 @@ class Nose(DirectObject.DirectObject):
     def unload(self):
         self.notify.debug('called Nose unload')
         del self.main
-        del self.parent
+        del self._parent
         del self.avatar
 
     def loadExtraArgs(self):
@@ -89,7 +89,7 @@ class Nose(DirectObject.DirectObject):
         self.saveDNA()
 
     def setupButtons(self):
-        self.noseFrame = DirectFrame(parent=self.parent, relief=None, text=PLocalizer.NoseFrameTitle, text_fg=(1,
+        self.noseFrame = DirectFrame(parent=self._parent, relief=None, text=PLocalizer.NoseFrameTitle, text_fg=(1,
                                                                                                                1,
                                                                                                                1,
                                                                                                                1), text_scale=0.18, text_pos=(0, -0.05), pos=(0,

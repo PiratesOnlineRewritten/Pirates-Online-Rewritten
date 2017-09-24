@@ -126,11 +126,11 @@ class PiratesClientRepository(OTPClientRepository):
         self.statusDatabase = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_STATUS_DATABASE, 'StatusDatabase')
         self.csm = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_CLIENT_SERVICES_MANAGER, 'ClientServicesManager')
         self.inventoryManager = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_PIRATES_INVENTORY_MANAGER, 'DistributedInventoryManager')
-        self.wantSeapatch = base.config.GetBool('want-seapatch', 1)
-        self.wantSpecialEffects = base.config.GetBool('want-special-effects', 1)
-        self.wantMakeAPirate = base.config.GetBool('wantMakeAPirate', 0)
-        self.forceTutorial = base.config.GetBool('force-tutorial', 0)
-        self.skipTutorial = base.config.GetBool('skip-tutorial', 0)
+        self.wantSeapatch = base.config.GetBool('want-seapatch', True)
+        self.wantSpecialEffects = base.config.GetBool('want-special-effects', True)
+        self.wantMakeAPirate = base.config.GetBool('wantMakeAPirate', False)
+        self.forceTutorial = base.config.GetBool('force-tutorial', False)
+        self.skipTutorial = base.config.GetBool('skip-tutorial', False)
         self.tutorialObject = None
         self.avChoiceDoneEvent = None
         self.avChoice = None
@@ -357,6 +357,7 @@ class PiratesClientRepository(OTPClientRepository):
         else:
             self.tutorial = 1
             dna = HumanDNA.HumanDNA()
+            dna.makeMakeAPirate()
             newPotAv = PotentialAvatar(0, ['dbp', '', '', ''], dna, index, 0)
             self.csm.sendCreateAvatar(newPotAv.dna, '', newPotAv.position)
             self.accept('createdNewAvatar', self.handleAvatarCreated, [newPotAv])

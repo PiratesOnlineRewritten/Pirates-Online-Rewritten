@@ -100,15 +100,20 @@ class TalkAssistant(DirectObject.DirectObject):
             if doId != localAvatar.doId:
                 self.lastWhisperDoId = doId
                 self.lastWhisper = self.lastWhisperDoId
+
             if not self.historyByDoId.has_key(doId):
                 self.historyByDoId[doId] = []
+
             self.historyByDoId[doId].append(message)
             if not self.shownWhiteListWarning and scrubbed and doId == localAvatar.doId:
                 self.doWhiteListWarning()
                 self.shownWhiteListWarning = 1
-            self.floodDataByDoId[doId] = self.floodDataByDoId.has_key(doId) or [
-             0.0, self.stampTime(), message]
+
+            self.floodDataByDoId[doId] = self.floodDataByDoId.has_key(doId) or [0.0, self.stampTime(), message]
         else:
+            if doId not in self.floodDataByDoId:
+                return 0
+
             oldTime = self.floodDataByDoId[doId][1]
             newTime = self.stampTime()
             timeDiff = newTime - oldTime
@@ -116,11 +121,12 @@ class TalkAssistant(DirectObject.DirectObject):
             contentMult = 1.0
             if len(message.getBody()) < 6:
                 contentMult += 0.2 * float(6 - len(message.getBody()))
+
             if self.floodDataByDoId[doId][2].getBody() == message.getBody():
                 contentMult += 1.0
+
             floodRating = max(0, 3.0 * contentMult + oldRating - timeDiff)
-            self.floodDataByDoId[doId] = [
-             floodRating, self.stampTime(), message]
+            self.floodDataByDoId[doId] = [floodRating, self.stampTime(), message]
             if floodRating > self.floodThreshold:
                 if oldRating < self.floodThreshold:
                     self.floodDataByDoId[doId] = [
@@ -130,6 +136,7 @@ class TalkAssistant(DirectObject.DirectObject):
                     self.floodDataByDoId[doId] = [
                      oldRating - timeDiff, self.stampTime(), message]
                     return 2
+
         return 0
 
     def addToHistoryDISLId(self, message, dISLId, scrubbed=0):
@@ -238,7 +245,6 @@ class TalkAssistant(DirectObject.DirectObject):
         self.receiveOpenTalk(localAvatar.doId, localAvatar.getName, None, None, "Okay I won't call tech support, because I am cool")
         self.receiveGMTalk(1003, 'God of Text', None, None, 'Good because I have seen it already')
         self.floodThreshold = hold
-        return
 
     def printHistoryComplete(self):
         print 'HISTORY COMPLETE'
@@ -535,11 +541,11 @@ class TalkAssistant(DirectObject.DirectObject):
             onlineMessage = OTPLocalizer.FriendOnline
         else:
             onlineMessage = OTPLocalizer.FriendOffline
+
         newMessage = TalkMessage(self.countMessage(), self.stampTime(), onlineMessage, None, None, friendId, friendName, localAvatar.doId, localAvatar.getName(), localAvatar.DISLid, localAvatar.DISLname, UPDATE_FRIEND, None)
         self.historyComplete.append(newMessage)
         self.historyUpdates.append(newMessage)
         messenger.send('NewOpenMessage', [newMessage])
-        return
 
     def receiveGuildUpdate(self, memberId, memberName, isOnline):
         if base.cr.identifyFriend(memberId) is None:
@@ -547,13 +553,13 @@ class TalkAssistant(DirectObject.DirectObject):
                 onlineMessage = OTPLocalizer.GuildMemberOnline
             else:
                 onlineMessage = OTPLocalizer.GuildMemberOffline
+
             newMessage = TalkMessage(self.countMessage(), self.stampTime(), onlineMessage, memberId, memberName, None, None, None, None, None, None, UPDATE_GUILD, None)
             self.addHandle(memberId, newMessage)
             self.historyComplete.append(newMessage)
             self.historyUpdates.append(newMessage)
             self.historyGuild.append(newMessage)
             messenger.send('NewOpenMessage', [newMessage])
-        return
 
     def receiveOpenSpeedChat(self, type, messageIndex, senderAvId, name=None):
         error = None
@@ -618,8 +624,10 @@ class TalkAssistant(DirectObject.DirectObject):
             chatFlags = CFSpeech | CFTimeout
             if self.isThought(message):
                 chatFlags = CFThought
-            base.localAvatar.sendUpdate('setTalk', [0, 0, '', message, [], 0])
+
+            base.cr.chatManager.sendChatMessage(message, chatFlags)
             messenger.send('chatUpdate', [message, chatFlags])
+
         return error
 
     def sendWhisperTalk(self, message, receiverAvId):

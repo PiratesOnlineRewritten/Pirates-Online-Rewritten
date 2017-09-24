@@ -27,7 +27,7 @@ class BodyGUI(DirectFrame, StateData.StateData):
 
     def __init__(self, main=None):
         self.main = main
-        self.parent = main.bookModel
+        self._parent = main.bookModel
         self.avatar = main.avatar
         self.mode = None
         self.entered = False
@@ -71,7 +71,7 @@ class BodyGUI(DirectFrame, StateData.StateData):
          self.main.charGui.find('**/chargui_female_a'), self.main.charGui.find('**/chargui_female_b'), self.main.charGui.find('**/chargui_female_c'), self.main.charGui.find('**/chargui_female_d'), self.main.charGui.find('**/chargui_female_e')]
         self.femaleShapeButtonIconsOver = [
          self.main.charGui.find('**/chargui_female_a_over'), self.main.charGui.find('**/chargui_female_b_over'), self.main.charGui.find('**/chargui_female_c_over'), self.main.charGui.find('**/chargui_female_d_over'), self.main.charGui.find('**/chargui_female_e_over')]
-        self.shapeFrameTitle = DirectFrame(parent=self.parent, relief=None, text=PLocalizer.BodyShapeFrameTitle, text_fg=(1,
+        self.shapeFrameTitle = DirectFrame(parent=self._parent, relief=None, text=PLocalizer.BodyShapeFrameTitle, text_fg=(1,
                                                                                                                           1,
                                                                                                                           1,
                                                                                                                           1), text_scale=0.18, text_pos=(0,
@@ -80,7 +80,7 @@ class BodyGUI(DirectFrame, StateData.StateData):
         return
 
     def loadHeightGUI(self):
-        self.heightSlider = CharGuiSlider(self.main, parent=self.parent, text=PLocalizer.BodyHeightFrameTitle, command=self.updateHeightSlider, range=(-0.2,
+        self.heightSlider = CharGuiSlider(self.main, parent=self._parent, text=PLocalizer.BodyHeightFrameTitle, command=self.updateHeightSlider, range=(-0.2,
                                                                                                                                                        0.2))
         self.heightSlider.setPos(-0.3, 0, -0.7)
         self.heightSlider.setScale(0.7)
@@ -89,7 +89,7 @@ class BodyGUI(DirectFrame, StateData.StateData):
 
     def loadColorGUI(self):
         idx = 0
-        self.maleColorFrameTitle = DirectFrame(parent=self.parent, relief=None, image=self.main.charGui.find('**/chargui_frame05'), image_pos=(0, 0, -0.6), image_scale=(1.5,
+        self.maleColorFrameTitle = DirectFrame(parent=self._parent, relief=None, image=self.main.charGui.find('**/chargui_frame05'), image_pos=(0, 0, -0.6), image_scale=(1.5,
                                                                                                                                                                          1,
                                                                                                                                                                          1.25), text=PLocalizer.BodyColorFrameTitle, text_fg=(1,
                                                                                                                                                                                                                               1,
@@ -113,7 +113,7 @@ class BodyGUI(DirectFrame, StateData.StateData):
             xOffset += 0.2
 
         idx = 1
-        self.femaleColorFrameTitle = DirectFrame(parent=self.parent, relief=None, image=self.main.charGui.find('**/chargui_frame05'), image_pos=(0, 0, -0.6), image_scale=(1.5,
+        self.femaleColorFrameTitle = DirectFrame(parent=self._parent, relief=None, image=self.main.charGui.find('**/chargui_frame05'), image_pos=(0, 0, -0.6), image_scale=(1.5,
                                                                                                                                                                            1,
                                                                                                                                                                            1.25), text=PLocalizer.BodyColorFrameTitle, text_fg=(1,
                                                                                                                                                                                                                                 1,
@@ -141,7 +141,7 @@ class BodyGUI(DirectFrame, StateData.StateData):
     def unload(self):
         self.notify.debug('called bodyGUI unload')
         del self.main
-        del self.parent
+        del self._parent
         del self.avatar
 
     def showShapeCollections(self):
@@ -187,7 +187,7 @@ class BodyGUI(DirectFrame, StateData.StateData):
         self.hideColorCollections()
 
     def setupButtons(self):
-        self.texturePicker = CharGuiPicker(self.main, parent=self.parent, text=PLocalizer.BodyHairFrameTitle, nextCommand=self.handleNextTexture, backCommand=self.handleLastTexture)
+        self.texturePicker = CharGuiPicker(self.main, parent=self._parent, text=PLocalizer.BodyHairFrameTitle, nextCommand=self.handleNextTexture, backCommand=self.handleLastTexture)
         self.texturePicker.setPos(0, 0, -1)
         self.texturePicker.hide()
         shapeButtonTexts = [
