@@ -55,22 +55,20 @@ class FishFSM(FSM.FSM):
         self.fish.startBiteBubbleEffect()
         if self.fish.myData['size'] == 'small':
             biteSFX = self.fish.fishManager.gameObject.sfx['biteSmall']
-        else:
-            if self.fish.myData['size'] == 'medium':
-                biteSFX = self.fish.fishManager.gameObject.sfx['biteSmall']
-            else:
-                if self.fish.myData['size'] == 'large':
-                    biteSFX = self.fish.fishManager.gameObject.sfx['biteLarge']
-                elif self.fish.myData['size'] == 'super':
-                    biteSFX = self.fish.fishManager.gameObject.sfx['biteLarge']
-                if self.fish.getX() < self.fish.fishManager.gameObject.lure.getX():
-                    self.fish.actor.changeAnimationTo('bite', False)
-                    biteOffset = self.fish.mouthJoint.getPos() * -1.0 * self.fish.actor.getSx()
-                self.fish.actor.changeAnimationTo('biteOpposite', False)
-                biteOffset = self.fish.mouthJoint.getPos() * -1.0 * self.fish.actor.getSx()
-            self.fish.fishManager.activeFish = self.fish
-            if self.fish.fishMoveSequence:
-                self.fish.fishMoveSequence.pause()
+        elif self.fish.myData['size'] == 'medium':
+            biteSFX = self.fish.fishManager.gameObject.sfx['biteSmall']
+        elif self.fish.myData['size'] == 'large':
+            biteSFX = self.fish.fishManager.gameObject.sfx['biteLarge']
+        elif self.fish.myData['size'] == 'super':
+            biteSFX = self.fish.fishManager.gameObject.sfx['biteLarge']
+        if self.fish.getX() < self.fish.fishManager.gameObject.lure.getX():
+            self.fish.actor.changeAnimationTo('bite', False)
+            biteOffset = self.fish.mouthJoint.getPos() * -1.0 * self.fish.actor.getSx()
+        self.fish.actor.changeAnimationTo('biteOpposite', False)
+        biteOffset = self.fish.mouthJoint.getPos() * -1.0 * self.fish.actor.getSx()
+        self.fish.fishManager.activeFish = self.fish
+        if self.fish.fishMoveSequence:
+            self.fish.fishMoveSequence.pause()
         biteDuration = 1.083
         self.fish.fishManager.gameObject.lureAngle = 0
         self.fish.wrtReparentTo(self.fish.fishManager.gameObject.lure)

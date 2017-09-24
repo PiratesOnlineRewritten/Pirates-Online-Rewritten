@@ -64,22 +64,30 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
         if not avatar:
             return
 
-        fish = FishingGlobals.allFishData[fishId]
-        minWeight, maxWeight = fish['weightRange']
-
-        if not minWeight <= weight <= maxWeight:
+        fishData = FishingGlobals.getFishData(fishId)
+        if not fishData:
             self.air.logPotentialHacker(
-                message='Received caughtFish update for invalid weight.',
-                targetAvId=avatar.doId,
+                message='Received caughtFish update for an invalid fish!',
+                accountId=self.air.getAccountIdFromSender(),
                 fishId=fishId,
                 weight=weight)
             return
 
-        reward = fish['gold']
+        minWeight, maxWeight = fishData['weightRange']
+
+        if not minWeight <= weight <= maxWeight:
+            self.air.logPotentialHacker(
+                message='Received caughtFish update for invalid weight.',
+                accountId=self.air.getAccountIdFromSender(),
+                fishId=fishId,
+                weight=weight)
+            return
+
+        reward = fishData['gold']
         if self.air.holidayMgr.isHolidayActive(HolidayGlobals.DOUBLEGOLDHOLIDAY) or self.air.holidayMgr.isHolidayActive(HolidayGlobals.DOUBLEGOLDHOLIDAYPAID):
             reward = reward * 2
 
-        experience = fish['experience']
+        experience = fishData['experience']
         if self.air.holidayMgr.isHolidayActive(HolidayGlobals.DOUBLEXPHOLIDAY):
             experience = experience * 2
 
@@ -93,7 +101,22 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
         inventory.setFishingRep(inventory.getFishingRep() + experience)
 
     def lostLure(self, lureId):
-        pass
+        if lureId not in [InventoryType.RegularLure, InventoryType.LegendaryLure]:
+            self.air.logPotentialHacker(
+                message='Received lostLure with an invalid lure Id!',
+                accountId=self.aior.getAccountIdFromSender(),
+                lureId=lureId)
+            return
+
+        inventory = self.air.inventoryManager.getInventory(avatar.doId)
+
+        if not inventory:
+            self.notify.warning('Failed to get inventory for avatar %d!' % avatar.doId)
+            return
+
+        lureCount = inventory.getStack(lureId) or 0
+        lureCount = max(lureCount - 1, 0)
+        inventory.b_setStack(lureId, lureCount)
 
     def d_firstTimeFisher(self, avatarId):
         self.sendUpdateToAvaarId(avatarId, 'firstTimeFisher', [])
