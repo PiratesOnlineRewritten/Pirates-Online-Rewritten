@@ -30,7 +30,7 @@ class DistributedTimeOfDayManagerAI(DistributedObjectAI, TimeOfDayManagerBase):
         self.isJolly = int(config.GetBool('start-moon-jolly', False))
         self.weatherTimeMin = config.GetInt('weather-time-min', 5) * 60
         self.weatherTimeMax = config.GetInt('weather-time-max', 10) * 60
-        self.wantAdvancedWeather = config.GetBool('advanced-weather', True)
+        self.wantAdvancedWeather = config.GetBool('advanced-weather', False)
         self.weatherId = TODGlobals.WEATHER_NORMAL
 
     def announceGenerate(self):
