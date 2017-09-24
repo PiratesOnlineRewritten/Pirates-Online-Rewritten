@@ -14,10 +14,10 @@ class PiratesMagicWordManagerAI(MagicWordManagerAI):
         msg = ""
         if magicWord.count("setMoney"):
             args = magicWord.split()
-            av = simbase.air.doId2do.get(av, None)
+            av = simbase.air.doId2do.get(avId, None)
             if not av:
                 return
-            count = args[1]
+            count = int(args[1])
             curGold = av.getInventory().getGoldInPocket()
             # print "Debug: Args being passed to AIMAgicWordTrade:\t%s" % av
             trade = AIMagicWordTrade(av, av.getDoId(), avatarId = av.getDoId())

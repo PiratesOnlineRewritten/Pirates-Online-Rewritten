@@ -153,6 +153,7 @@ class PiratesClientRepository(OTPClientRepository):
         self.questDependency = QuestLadderDependency()
         self.questChoiceSibsMap = QuestChoiceDynMap()
         self.accountDetailRecord = AccountDetailRecord()
+        self.avPlayedRecently = False
         base.loadingScreen.beginStep('MasterHumans', 52, 45)
         self.humanHigh = [MasterHuman.MasterHuman(), MasterHuman.MasterHuman()]
         self.humanHigh[0].billboardNode.removeNode()

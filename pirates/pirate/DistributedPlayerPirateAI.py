@@ -28,6 +28,11 @@ class DistributedPlayerPirateAI(DistributedPlayerAI, HumanDNA, DistributedBattle
 
     def getInventoryId(self):
         return self.inventoryId
+        
+    def getInventory(self):
+        if self.inventoryId in simbase.air.doId2do:
+            return simbase.air.doId2do[self.inventoryId]
+        return None
 
     def d_relayTeleportLoc(self, shardId, zoneId, teleportMgrDoId):
         self.sendUpdateToAvatarId(self.doId, 'relayTeleportLoc', [shardId, zoneId, teleportMgrDoId])
