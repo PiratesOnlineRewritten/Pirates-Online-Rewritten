@@ -2,6 +2,9 @@ from direct.directnotify import DirectNotifyGlobal
 from pirates.battle.DistributedBattleNPCAI import DistributedBattleNPCAI
 from pirates.economy.DistributedShopKeeperAI import DistributedShopKeeperAI
 from pirates.piratesbase import PiratesGlobals
+from pirates.pirate import AvatarTypes
+from pirates.uberdog.UberDogGlobals import InventoryType
+
 
 class DistributedNPCTownfolkAI(DistributedBattleNPCAI, DistributedShopKeeperAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedNPCTownfolkAI')
@@ -18,6 +21,21 @@ class DistributedNPCTownfolkAI(DistributedBattleNPCAI, DistributedShopKeeperAI):
 
             self.sendUpdateToAvatarId(avatar.doId, 'triggerInteractShow', [self.doId])
             self.sendUpdateToAvatarId(avatar.doId, 'offerOptions', [2])
+
+            if self.avatarType.isA(AvatarTypes.Fishmaster):
+
+                inventory = self.air.inventoryManager.getInventory(avatar.doId)
+
+                if not inventory:
+                    self.notify.warning('Failed to get inventory avatar %d!' % avatar.doId)
+                    return self.DENY
+
+                currentFishingRod = inventory.getStack(InventoryType.FishingRod) or 0
+                if currentFishingRod <= 0:
+                    self.notify.debug('Rewarding avatar %d with a starter fishing pole and lures' % avatar.doId)
+
+                    inventory.b_setStack(InventoryType.FishingRod, 1)
+                    inventory.b_setStack(InventoryType.RegularLure, 10)
 
             return self.ACCEPT
 
