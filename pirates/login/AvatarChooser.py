@@ -526,22 +526,23 @@ class AvatarChooser(DirectObject, StateData):
                         self.deniedConfirmDialog = PDialog.PDialog(text=PLocalizer.AvatarChooserPleaseRename, style=OTPDialog.Acknowledge, command=self.__handleDenied)
                     self.handleDialogOnScreen = 1
                 self.renameButton.show()
-            if not potAv.lastLogout or int(time.time() / 60) - potAv.lastLogout > 60:
-                potAv.defaultShard = 0
-                base.cr.avPlayedRecently = False
-            else:
-                base.cr.avPlayedRecently = True
-            if base.cr.defaultShard == 0:
-                self.shardPanel['preferredShard'] = potAv.defaultShard
-        return
+
+        if not potAv.lastLogout or int(time.time() / 60) - potAv.lastLogout > 60:
+            potAv.defaultShard = 0
+            base.cr.avPlayedRecently = False
+        else:
+            base.cr.avPlayedRecently = True
+
+        if base.cr.defaultShard == 0:
+            self.shardPanel['preferredShard'] = potAv.defaultShard
 
     def __hideHighlightedAvatar(self):
         if self.av:
             self.av.delete()
             self.av = None
+
         self.highlightFrame.hide()
         self.renameButton.hide()
-        return
 
     def __handleRename(self):
         self.enterNameMode()
@@ -590,7 +591,6 @@ class AvatarChooser(DirectObject, StateData):
 
         if self.subAvButtons[sub][slot]['state'] == DGG.NORMAL and initialSlot != slot:
             self.__handleHighlight(sub, slot)
-        return
 
     def __handleArrowDown(self):
         if self.gameOptions is not None and not self.gameOptions.isHidden():
