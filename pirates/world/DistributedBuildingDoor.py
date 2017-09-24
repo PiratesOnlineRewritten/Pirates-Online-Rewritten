@@ -70,6 +70,7 @@ class DistributedBuildingDoor(DistributedDoor):
             self.privateInteriorId = 0
         else:
             self.privateInteriorId = interiorId
+
         self.loadInstanceWorld(worldId, worldZoneId, interiorId, autoFadeIn)
 
     def loadInstanceWorld(self, worldId, worldZoneId, interiorId, autoFadeIn):
@@ -85,11 +86,12 @@ class DistributedBuildingDoor(DistributedDoor):
     def loadInteriorAreaFinished(self, interior, autoFadeIn):
         oldParent = self.getParentObj()
         oldWorld = oldParent.getParentObj()
-        #oldWorld.removeWorldInterest(oldParent)
+        oldWorld.goOffStage()
         localAvatar.clearInterestNamed(None, ['instanceInterest'])
         localAvatar.replaceInterestTag('instanceInterest-Door', 'instanceInterest')
+        localAvatar.b_setLocation(interior.doId, PiratesGlobals.InteriorDoorZone)
         world = interior.getParentObj()
-        #world.addWorldInterest(interior)
+        interior.turnOn(localAvatar)
         self.setupOtherSideDoors()
         interior.reparentTo(render)
         interior.setAutoFadeInOnEnter(autoFadeIn)

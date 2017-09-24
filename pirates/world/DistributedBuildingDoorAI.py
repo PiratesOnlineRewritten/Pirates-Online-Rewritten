@@ -36,5 +36,3 @@ class DistributedBuildingDoorAI(DistributedDoorAI):
 
         self.sendUpdateToAvatarId(avatar.doId, 'setPrivateInteriorInstance', [self.interiorWorldParentId, self.interiorWorldZoneId,
             self.interiorDoId, True])
-
-        avatar.b_setLocation(self.interiorDoId, self.interiorWorldZoneId)
