@@ -100,6 +100,7 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
             bonusReward = reward * 2
 
         if bonusReward:
+            reward += bonusReward
             self.sendUpdateToAvatarId(avatar.doId, 'setGoldBonus', [bonusReward])
 
         experience = fishData['experience']
@@ -108,6 +109,7 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
             bonusExperience = experience * 2
 
         if bonusExperience:
+            experience += bonusExperience
             self.sendUpdateToAvatarId(avatar.doId, 'setXpBonus', [bonusExperience])
 
         inventory = self.air.inventoryManager.getInventory(avatar.doId)
@@ -128,7 +130,7 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
 
         if not avatar:
             return
-    
+
         if lureId not in [InventoryType.RegularLure, InventoryType.LegendaryLure]:
             self.air.logPotentialHacker(
                 message='Received lostLure with an invalid lure Id!',
