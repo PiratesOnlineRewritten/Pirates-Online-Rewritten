@@ -11,7 +11,8 @@ class DistributedRepairGameAI(DistributedNodeAI, DistributedRepairGameBase):
         DistributedNodeAI.__init__(self, air)
         DistributedRepairGameBase.__init__(self)
 
-        self.avId2game = {}
+        self.avatar2game = {}
+        self.avatar2timeout = {}
         self.game2progress = {gameIndex: GAME_OPEN for gameIndex in xrange(self.getGameCount())}
 
     def setDifficulty(self, difficulty):
@@ -51,10 +52,10 @@ class DistributedRepairGameAI(DistributedNodeAI, DistributedRepairGameBase):
         self.setLocation(ON_LAND if land else AT_SEA)
 
     def joinGame(self, avatar):
-        if avatar.doId in self.avId2game:
+        if avatar.doId in self.avatar2game:
             return False
 
-        if len(self.avId2game) >= self.getGameCount():
+        if len(self.avatar2game) >= self.getGameCount():
             return False
 
         self.sendUpdateToAvatarId(avatar.doId, 'start', [self.location])
@@ -62,24 +63,30 @@ class DistributedRepairGameAI(DistributedNodeAI, DistributedRepairGameBase):
         for gameIndex in self.game2progress:
             self.d_setMincroGameProgress(avatar.doId, gameIndex, self.game2progress[gameIndex])
 
-        self.sendUpdateToAvatarId(avatar.doId, 'setAvIds2CurrentGameList', [self.avId2game.values(),
-            self.avId2game.keys()])
+        self.sendUpdateToAvatarId(avatar.doId, 'setAvIds2CurrentGameList', [self.avatar2game.values(),
+            self.avatar2game.keys()])
 
+        self.addTimeout(avatar)
         return True
 
     def quitGame(self, avatar):
-        if avatar.doId in self.avId2game:
-            del self.avId2game[avatar.doId]
+        if avatar.doId in self.avatar2game:
+            del self.avatar2game[avatar.doId]
 
+        self.removeTimeout(avatar)
         self.sendUpdateToAvatarId(avatar.doId, 'stop', [])
         return True
+
+    def __quit(self, avatar, task):
+        self.quitGame(avatar)
+        return task.done
 
     def resetGame(self):
         for gameIndex in self.game2progress:
             self.game2progress[gameIndex] = GAME_OPEN
 
             # Update progress to all players
-            for avatarId in self.avId2game:
+            for avatarId in self.avatar2game:
                 self.d_setMincroGameProgress(avatarId, gameIndex, self.game2progress[gameIndex])
 
     def requestMincroGame(self, gameIndex):
@@ -89,13 +96,28 @@ class DistributedRepairGameAI(DistributedNodeAI, DistributedRepairGameBase):
             self.notify.warning('Failed to requestMincroGame for non-existant avatar!')
             return
 
-        if avatar.doId in self.avId2game:
-            if self.avId2game[avatar.doId] == gameIndex:
+        if avatar.doId in self.avatar2game:
+            if self.avatar2game[avatar.doId] == gameIndex:
                 self.d_requestMincroGameResponse(avatar.doId, False)
                 return
 
-        self.avId2game[avatar.doId] = gameIndex
+        self.avatar2game[avatar.doId] = gameIndex
+        self.addTimeout(avatar)
+
         self.d_requestMincroGameResponse(avatar.doId, True)
+
+    def addTimeout(self, avatar):
+        if avatar.doId in self.avatar2timeout:
+            self.removeTimeout(avatar)
+
+        self.avatar2timeout[avatar.doId] = taskMgr.doMethodLater(RepairGlobals.AI.inactiveClientKickTime, self.__quit,
+            self.uniqueName('timeout-%d' % avatar.doId), extraArgs=[avatar], appendTask=True)
+
+    def removeTimeout(self, avatar):
+        if avatar.doId not in self.avatar2timeout:
+            return
+
+        taskMgr.remove(self.avatar2timeout.pop(avatar.doId))
 
     def d_requestMincroGameResponse(self, avatarId, success):
         self.sendUpdateToAvatarId(avatarId, 'requestMincroGameResponse', [success, self.difficulty])
@@ -111,7 +133,7 @@ class DistributedRepairGameAI(DistributedNodeAI, DistributedRepairGameBase):
             return
 
         # Check if this player is playing
-        if avatar.doId not in self.avId2game:
+        if avatar.doId not in self.avatar2game:
             self.air.logPotentialHacker(
                 message='Received reportMincroGameProgress from an avatar not playing a repair minigame',
                 accountId=self.air.getAccountIdFromSender(),
@@ -122,7 +144,7 @@ class DistributedRepairGameAI(DistributedNodeAI, DistributedRepairGameBase):
             return
 
         # Perform gameIndex sanity check
-        if gameIndex != self.avId2game[avatar.doId]:
+        if gameIndex != self.avatar2game[avatar.doId]:
             self.air.logPotentialHacker(
                 message='Received reportMincroGameProgress from avatar for a game they are not post to be playing',
                 accountId=self.air.getAccountIdFromSender(),
@@ -131,10 +153,11 @@ class DistributedRepairGameAI(DistributedNodeAI, DistributedRepairGameBase):
                 rating=rating)
             return
 
+        self.addTimeout(avatar)
         self.game2progress[gameIndex] = progress
 
         # Update progress to all players
-        for avatarId in self.avId2game:
+        for avatarId in self.avatar2game:
             self.d_setMincroGameProgress(avatarId, gameIndex, self.game2progress[gameIndex])
 
         if not self.isComplete():
