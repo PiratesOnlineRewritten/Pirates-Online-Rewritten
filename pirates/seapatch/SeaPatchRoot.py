@@ -38,6 +38,9 @@ class SeaPatchRoot(object):
     def addFlatWell(self, todo1, todo2, todo3, todo4, todo5, todo6):
         pass
 
+    def removeFlatWell(self, uniqueName):
+        pass
+
     def resetEnvironment(self):
         pass
 
