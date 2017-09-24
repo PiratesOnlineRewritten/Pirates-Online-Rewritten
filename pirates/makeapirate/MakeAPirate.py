@@ -1158,28 +1158,31 @@ class MakeAPirate(DirectObject, StateData.StateData, FSM.FSM):
         if self.wantNPCViewer:
             self.tattooGui.save()
             self.jewelryGui.save()
+
         if self.skipTutorial:
-            newPotAv = PotentialAvatar.PotentialAvatar(0, [
-             'dbp', '', '', ''], self.pirate.style, self.index, 0)
+            newPotAv = PotentialAvatar.PotentialAvatar(0, ['dbp', '', '', ''], self.pirate.style, self.index, 0)
             self.newPotAv = newPotAv
+
         if self.isNPCEditor:
             if saveNPC:
                 self.editorAvatar.setDNAString(self.pirate.style)
                 self.piratesEditor.updateNPC('Save')
             else:
                 self.piratesEditor.updateNPC('Cancel')
+
             self.exit()
             self.unload()
 
         def sendDone():
             if not (self.isNPCEditor or self.wantNPCViewer):
-                messenger.send(self.doneEvent, [self.pirate.model.currentClothing])
+                messenger.send(self.doneEvent, [])
 
             base.transitions.fadeIn(1.0)
 
         def chooseAv(avId):
+            self.avId = avId
             base.cr.csm.sendChooseAvatar(avId)
-            base.transitions.fadeIn()
+            sendDone()
 
         def createAv():
             self.acceptOnce('createdNewAvatar', chooseAv)

@@ -3,24 +3,14 @@ title Pirates Online Rewritten - UberDOG
 cd ../../
 
 rem Choose correct python command to execute the game
-for /f %%i in ('where ppython') do set PANDA_LOCATION=%%i
-echo GOT %PANDA_LOCATION%
+set PYTHON_CMD=ppython
 
-rem Choose correct python command to execute the game
-ppython -h >nul 2>&1 && (
-    set PYTHON_CMD=ppython2
-) || (
-    set PYTHON_CMD=ppython
-) || (
-    set PYTHON_CMD=python
-)
-
-echo ====================================
-echo Starting Pirates Online Rewritten...
+echo ============================================
+echo Starting Pirates Online Rewritten UberDOG...
 echo PPython: %PYTHON_CMD%
-echo ====================================
+echo ============================================
 
-rem Start AI server
+rem Start UberDOG server
 :main
 %PYTHON_CMD% -m pirates.uberdog.ServiceStart 
 goto main
