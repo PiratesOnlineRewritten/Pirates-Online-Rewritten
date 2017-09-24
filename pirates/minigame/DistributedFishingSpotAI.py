@@ -108,7 +108,7 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
             bonusExperience = experience * 2
 
         if bonusExperience:
-            self.sendUpdateToAvatarId(avatar.doId, 'setXpBonus', bonusExperience)
+            self.sendUpdateToAvatarId(avatar.doId, 'setXpBonus', [bonusExperience])
 
         inventory = self.air.inventoryManager.getInventory(avatar.doId)
 
