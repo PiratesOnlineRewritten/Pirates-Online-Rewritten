@@ -11,15 +11,7 @@ set BASE_CHANNEL=401000000
 title Pirates Online Rewritten - AI (%DISTRICT_NAME%)
 
 rem Choose correct python command to execute the game
-ppython -h >nul 2>&1 && (
-    set PYTHON_CMD= C:\Panda3D-1.10.0\python\ppython.exe
-) || (
-    set PYTHON_CMD=ppython2
-) || (
-    set PYTHON_CMD=ppython
-) || (
-    set PYTHON_CMD=python
-)
+set PYTHON_CMD=ppython
 
 echo ====================================
 echo Starting Pirates Online Rewritten...
