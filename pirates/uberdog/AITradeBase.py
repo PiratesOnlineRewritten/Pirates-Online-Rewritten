@@ -1,4 +1,4 @@
-from pirates.ai.PiratesAsyncRequest import PiratesAsyncRequest as AsyncRequest
+from direct.distributed.AsyncRequest import AsyncRequest
 from pirates.uberdog.UberDogGlobals import InventoryId, InventoryType, isLocatable, GiftOrigin
 from pirates.uberdog.TradableInventoryBase import InvItem
 import types
@@ -394,6 +394,7 @@ class AITradeBase(AsyncRequest):
             self.air.getInventoryMgr(self.avatarId).sendApprovedTrade(0, self.inventoryId, self.giving, self.taking, context, origin, self.unequippables)
         else:
             AsyncRequest.finish(self)
+        return
 
     def rejectTradeMsg(self, context):
         return 'rejectApprovedTrade-%s' % (context,)

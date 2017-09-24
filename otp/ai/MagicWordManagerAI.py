@@ -8,8 +8,5 @@ class MagicWordManagerAI(DistributedObjectAI):
         DistributedObjectAI.__init__(self, air)
         
     def setMagicWord(self, magicWord, avId, zoneId, userSignature): 
-        self.setMagicWordResponse(avId, "Default response message!")
-            
-    def setMagicWordResponse(self, avId, msg):
         if avId in simbase.air.doId2do:
-            self.sendUpdateToAvatarId(avId, 'setMagicWordResponse', [msg])
+            self.sendUpdateToAvatarId(avId, 'setMagicWordResponse', ["Default response message!"])
