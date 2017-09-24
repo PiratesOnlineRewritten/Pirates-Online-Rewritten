@@ -20,8 +20,8 @@ class StatusDatabaseUD(DistributedObjectGlobalUD):
             self.air.dbInterface.queryObject(self.air.dbId, i, functools.partial(self.__handleToonInfo, avId=i, sender=sender))
             
     def __handleToonInfo(self, dclass, fields, avId, sender):
-        if dclass != self.air.dclassesByName['DistributedToonAI']:
-            self.notify.warning('Avatar %d with non-Toon dclass %d was detected!!' % (avId, dclass))
+        if dclass != self.air.dclassesByName['DistributedPlayerPirateAI']:
+            self.notify.warning('Avatar %d with non-Pirate dclass %d was detected!!' % (avId, dclass))
             return
         
         accountId = fields['setDISLid'][0]
