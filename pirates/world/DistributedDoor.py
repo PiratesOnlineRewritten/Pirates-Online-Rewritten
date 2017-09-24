@@ -187,7 +187,7 @@ class DistributedDoor(DistributedInteractive.DistributedInteractive):
         if self.buildingUid == LocationIds.KINGSHEAD_OUTER_DOOR and not Freebooter.getPaidStatus(localAvatar.getDoId()):
             localAvatar.guiMgr.showNonPayer(quest='Restricted_Location', focus=0)
             return
-        print 'requestinteraction', 0
+
         if avId == localAvatar.doId:
             self.fadeOut()
             return
@@ -204,7 +204,7 @@ class DistributedDoor(DistributedInteractive.DistributedInteractive):
                 if self.buildingUid == LocationIds.UNDEAD_POKER_SHACK:
                     localAvatar.guiMgr.createWarning(PLocalizer.ClubheartsQuestWarning, PiratesGuiGlobals.TextFG6)
                 return
-        print 'requestinteraction', 2
+
         DistributedInteractive.DistributedInteractive.requestInteraction(self, avId, interactType)
 
     def rejectInteraction(self):
