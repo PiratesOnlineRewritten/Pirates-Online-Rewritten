@@ -2,6 +2,7 @@ from direct.directnotify import DirectNotifyGlobal
 from pirates.reputation. DistributedReputationAvatarAI import  DistributedReputationAvatarAI
 from Teamable import Teamable
 from direct.distributed.ClockDelta import globalClockDelta
+from pirates.piratesbase import EmoteGlobals
 
 class DistributedBattleAvatarAI(DistributedReputationAvatarAI, Teamable):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedBattleAvatarAI')
@@ -380,3 +381,9 @@ class DistributedBattleAvatarAI(DistributedReputationAvatarAI, Teamable):
 
     def getInInvasion(self):
         return self.inInvasion
+
+    def setEmote(self, emoteId):
+        if emoteId not in EmoteGlobals.emotes:
+            return
+
+        self.sendUpdate('playEmote', [emoteId])
