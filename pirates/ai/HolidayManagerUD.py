@@ -29,7 +29,7 @@ class HolidayManagerUD(DistributedObjectGlobalUD):
         self.holdayTimerTask = taskMgr.doMethodLater(15, self.__runHolidayTimer, 'holidayTimerTask')
 
         if self.wantRandomizedSchedules:
-            self.randomScheduleTask = taskMgr.doMethodLater(60, self.__runRandomizedSchedules, 'randomShceduleTask')
+            self.randomScheduleTask = taskMgr.doMethodLater(6, self.__runRandomizedSchedules, 'randomShceduleTask')
 
         self.d_requestRegister()
 
@@ -262,12 +262,12 @@ class HolidayManagerUD(DistributedObjectGlobalUD):
                     if hour in window:
                         windowCheck = True
 
-                if not windowCheck:
+                if not windowCheck and not config.GetBool('ignore-window-conflict', False):
                     continue
 
                 if not config.GetBool('ignore-schedule-random-check', False):
-                    rngCheck = random.randint(config.GetInt('schedule-random-min', 1), config.GetInt('schedule-random-max', 10))
-                    if not rngCheck < config.GetInt('schedule-random-percent', 4):
+                    rngCheck = random.randint(0, 100)
+                    if not rngCheck < config.GetInt('schedule-random-percent', 10):
                         continue
 
                 startDuration, endDuration = data.get('duration', (1, 0))
