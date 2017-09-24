@@ -1,6 +1,7 @@
 from pirates.distributed.DistributedInteractiveAI import DistributedInteractiveAI
 from pirates.inventory.LootableAI import LootableAI
 from direct.directnotify import DirectNotifyGlobal
+from pirates.uberdog.UberDogGlobals import InventoryType
 from pirates.ai import HolidayGlobals
 import FishingGlobals
 
@@ -15,7 +16,17 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
         self.onBoat = False
 
     def handleRequestInteraction(self, avatar, interactType, instant):
-        self.d_spotFilledByAvId(self.air.getAvatarIdFromSender())
+        avatarId = self.air.getAvatarIdFromSender()
+        self.d_spotFilledByAvId(avatarId)
+
+        inventory = self.air.inventoryManager.getInventory(avatar.doId)
+
+        if not inventory:
+            self.notify.warning('Failed to get inventory for avatar %d!' % avatar.doId)
+            return
+
+        if not inventory.getStack(InventoryType.FishingTutorial):
+            self.sendUpdateToAvatarId(avatarId, 'firstTimeFisher', [])
 
         return self.ACCEPT
 
@@ -84,12 +95,16 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
             return
 
         reward = fishData['gold']
+        bonusReward = 0
         if self.air.holidayMgr.isHolidayActive(HolidayGlobals.DOUBLEGOLDHOLIDAY) or self.air.holidayMgr.isHolidayActive(HolidayGlobals.DOUBLEGOLDHOLIDAYPAID):
-            reward = reward * 2
+            bonusReward = reward * 2
+        self.sendUpdateToAvatarId(avatar.doId, 'setGoldBonus', [bonusReward])
 
         experience = fishData['experience']
+        bonusExperience = 0
         if self.air.holidayMgr.isHolidayActive(HolidayGlobals.DOUBLEXPHOLIDAY):
-            experience = experience * 2
+            bonusExperience = experience * 2
+        self.sendUpdateToAvatarId(avatar.doId, 'setXpBonus', bonusExperience)
 
         inventory = self.air.inventoryManager.getInventory(avatar.doId)
 
@@ -99,6 +114,10 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
 
         inventory.setGoldInPocket(inventory.getGoldInPocket() + reward)
         inventory.setFishingRep(inventory.getFishingRep() + experience)
+
+        # Clear Tutorial flags
+        if not inventory.getStack(InventoryType.FishingTutorial):
+            inventory.b_setStack(InventoryType.FishingTutorial, 1)
 
     def lostLure(self, lureId):
         if lureId not in [InventoryType.RegularLure, InventoryType.LegendaryLure]:
@@ -118,14 +137,5 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
         lureCount = max(lureCount - 1, 0)
         inventory.b_setStack(lureId, lureCount)
 
-    def d_firstTimeFisher(self, avatarId):
-        self.sendUpdateToAvaarId(avatarId, 'firstTimeFisher', [])
-
     def d_spotFilledByAvId(self, avId):
         self.sendUpdate('spotFilledByAvId', [avId])
-
-    def d_setXpBonus(self, xpBonusAmount):
-        self.sendUpdate('setXpBonus', [xpBonusAmount])
-
-    def d_setGoldBonus(self, goldBonusAmount):
-        self.sendUpdate('setGoldBonus', [goldBonusAmount])
