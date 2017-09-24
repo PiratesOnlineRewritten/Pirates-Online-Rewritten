@@ -10,7 +10,7 @@ class PiratesMagicWordManagerAI(MagicWordManagerAI):
     def __init__(self, air):
         MagicWordManagerAI.__init__(self, air)
         
-    def setMagicWord(magicWord, avId, zoneId, userSignature): 
+    def setMagicWord(self, magicWord, avId, zoneId, userSignature): 
         msg = ""
         if magicWord.count("setMoney"):
             args = magicWord.split()
