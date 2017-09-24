@@ -3,9 +3,11 @@ title Pirates Online Rewritten - UberDOG
 cd ../../
 
 rem Choose correct python command to execute the game
+for /f %%i in ('where ppython') do set PANDA_LOCATION=%%i
+echo GOT %PANDA_LOCATION%
+
+rem Choose correct python command to execute the game
 ppython -h >nul 2>&1 && (
-    set PYTHON_CMD=C:\Panda3D-1.10.0\python\ppython.exe
-) || (
     set PYTHON_CMD=ppython2
 ) || (
     set PYTHON_CMD=ppython
