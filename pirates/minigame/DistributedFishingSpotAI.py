@@ -98,13 +98,17 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
         bonusReward = 0
         if self.air.holidayMgr.isHolidayActive(HolidayGlobals.DOUBLEGOLDHOLIDAY) or self.air.holidayMgr.isHolidayActive(HolidayGlobals.DOUBLEGOLDHOLIDAYPAID):
             bonusReward = reward * 2
-        self.sendUpdateToAvatarId(avatar.doId, 'setGoldBonus', [bonusReward])
+
+        if bonusReward:
+            self.sendUpdateToAvatarId(avatar.doId, 'setGoldBonus', [bonusReward])
 
         experience = fishData['experience']
         bonusExperience = 0
         if self.air.holidayMgr.isHolidayActive(HolidayGlobals.DOUBLEXPHOLIDAY):
             bonusExperience = experience * 2
-        self.sendUpdateToAvatarId(avatar.doId, 'setXpBonus', bonusExperience)
+
+        if bonusExperience:
+            self.sendUpdateToAvatarId(avatar.doId, 'setXpBonus', bonusExperience)
 
         inventory = self.air.inventoryManager.getInventory(avatar.doId)
 
