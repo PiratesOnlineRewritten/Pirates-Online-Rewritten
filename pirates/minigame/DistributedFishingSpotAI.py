@@ -124,6 +124,11 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
             inventory.b_setStack(InventoryType.FishingTutorial, 1)
 
     def lostLure(self, lureId):
+        avatar = self.air.doId2do.get(self.air.getAvatarIdFromSender())
+
+        if not avatar:
+            return
+    
         if lureId not in [InventoryType.RegularLure, InventoryType.LegendaryLure]:
             self.air.logPotentialHacker(
                 message='Received lostLure with an invalid lure Id!',
