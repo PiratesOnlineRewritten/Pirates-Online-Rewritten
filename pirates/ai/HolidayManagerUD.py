@@ -29,7 +29,7 @@ class HolidayManagerUD(DistributedObjectGlobalUD):
         self.holdayTimerTask = taskMgr.doMethodLater(15, self.__runHolidayTimer, 'holidayTimerTask')
 
         if self.wantRandomizedSchedules:
-            self.randomScheduleTask = taskMgr.doMethodLater(6, self.__runRandomizedSchedules, 'randomShceduleTask')
+            self.randomScheduleTask = taskMgr.doMethodLater(60, self.__runRandomizedSchedules, 'randomShceduleTask')
 
         self.d_requestRegister()
 
