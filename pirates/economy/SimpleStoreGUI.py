@@ -89,7 +89,7 @@ class SimpleStoreColorPicker(BorderFrame):
         self.item = item
         self.colorButtons = []
         self.selectedColor = None
-        self.parent = parentFrame
+        self._parent = parentFrame
         self.setup()
         return
 
@@ -119,7 +119,7 @@ class SimpleStoreColorPicker(BorderFrame):
                 colorFrame.setColorScale(0.5, 0.5, 0.5, 0.5)
 
     def destroy(self):
-        self.parent = None
+        self._parent = None
         for button in self.colorButtons:
             button.destroy()
 

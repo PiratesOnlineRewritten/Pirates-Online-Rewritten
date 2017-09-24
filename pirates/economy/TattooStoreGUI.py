@@ -901,8 +901,7 @@ class TattooStoreGUI(DirectFrame):
 
                     tattooButton = GuiButton.GuiButton(command=self.applyTattoo, parent=self.panel, state=buttonState, text_fg=PiratesGuiGlobals.TextFG2, text_pos=(-0.02, -0.05), text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ALeft, text_shadow=PiratesGuiGlobals.TextShadow, pos=startPos, image_scale=buttonScale, image_color=buttonColorA, helpText=helpText, helpDelay=0, helpPos=(0.0, 0.0, -0.11), helpLeftAlign=True, extraArgs=[self.pirate, type, uid])
                     if tattooId == 0:
-                        tattooButton['text_pos'] = (
-                         -0.13, 0.02)
+                        tattooButton['text_pos'] = (-0.13, 0.02)
                         tattooButton['text'] = desc
                         tattooButton['text_wordwrap'] = 5
                         tattooButton['text_align'] = TextNode.ACenter
