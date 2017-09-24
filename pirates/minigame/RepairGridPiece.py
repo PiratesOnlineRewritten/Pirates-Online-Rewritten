@@ -129,7 +129,6 @@ class RepairGridPiece(DirectButton, FSM.FSM):
                 self.setGeomState('idle')
             self.selectedOutlineGeom.hide()
             taskMgr.remove(self.uniqueName('RepairGridPiece.updateTask'))
-        return
 
     def onMoveButtonPressed(self, dir1, dir2):
         if not self.moveInterval.isPlaying():
@@ -167,10 +166,10 @@ class RepairGridPiece(DirectButton, FSM.FSM):
                 moveDirection = directions[2]
             elif absX > absZ and diff.getX() < 0.0 and absX > threshold:
                 moveDirection = directions[3]
-            if moveDirection:
-                if self.onMoveButtonPressed(*moveDirection) and self.grabPoint is not None:
-                    self.grabPoint += VBase3(SPACING * moveDirection[0], 0.0, SPACING * moveDirection[1])
-        return
+
+        if moveDirection:
+            if self.onMoveButtonPressed(*moveDirection) and self.grabPoint is not None:
+                self.grabPoint += VBase3(SPACING * moveDirection[0], 0.0, SPACING * moveDirection[1])
 
     def setType(self, type):
         self.pieceType = type

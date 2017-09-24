@@ -59,33 +59,34 @@ class DialMeter(DirectFrame):
                 meterColor = Vec4(0.8, 0.0, 0.0, 1.0)
             else:
                 meterColor = self['meterColor']
-            self.meterFaceHalf1.clearColorScale()
-            self.meterFaceHalf2.clearColorScale()
-            if progress == 0:
+
+        self.meterFaceHalf1.clearColorScale()
+        self.meterFaceHalf2.clearColorScale()
+        if progress == 0:
+            self.meterFaceHalf1.hide()
+            self.meterFaceHalf2.hide()
+            self.meterFace.setColor(meterColor)
+        else:
+            if progress == 1:
                 self.meterFaceHalf1.hide()
                 self.meterFaceHalf2.hide()
                 self.meterFace.setColor(meterColor)
             else:
-                if progress == 1:
-                    self.meterFaceHalf1.hide()
-                    self.meterFaceHalf2.hide()
-                    self.meterFace.setColor(meterColor)
+                self.meterFaceHalf1.show()
+                self.meterFaceHalf2.show()
+                self.meterFace.setColor(self['baseColor'])
+                if progress < 0.5:
+                    self.meterFaceHalf1.setColor(meterColor)
+                    self.meterFaceHalf2.setColor(self['baseColor'])
                 else:
-                    self.meterFaceHalf1.show()
-                    self.meterFaceHalf2.show()
-                    self.meterFace.setColor(self['baseColor'])
-                    if progress < 0.5:
-                        self.meterFaceHalf1.setColor(meterColor)
-                        self.meterFaceHalf2.setColor(self['baseColor'])
-                    else:
-                        self.meterFaceHalf1.setColor(meterColor)
-                        self.meterFaceHalf2.setColor(meterColor)
-                        if self.backwards:
-                            progress = progress - 0.5
-                        progress = progress + 0.5
-                startPoint = 180
-                clockWise = 1
-                if self.backwards:
-                    self.meterFaceHalf2.setR(-180 * (progress / 0.5))
-                self.meterFaceHalf1.setR(startPoint)
-                self.meterFaceHalf2.setR(startPoint + clockWise * 180 * (progress / 0.5))
+                    self.meterFaceHalf1.setColor(meterColor)
+                    self.meterFaceHalf2.setColor(meterColor)
+                    if self.backwards:
+                        progress = progress - 0.5
+                    progress = progress + 0.5
+        startPoint = 180
+        clockWise = 1
+        if self.backwards:
+            self.meterFaceHalf2.setR(-180 * (progress / 0.5))
+        self.meterFaceHalf1.setR(startPoint)
+        self.meterFaceHalf2.setR(startPoint + clockWise * 180 * (progress / 0.5))
