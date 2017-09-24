@@ -43,7 +43,7 @@ class PiratesInternalRepository(AstronInternalRepository):
         msgDg.addUint16(6)
         msgDg.addString(message)
 
-        self.writeServerEvent('systemMessage', 
+        self.writeServerEvent('system-message', 
             sourceChannel=self.ourChannel, 
             message=message, 
             targetChannel=channel)
@@ -52,6 +52,21 @@ class PiratesInternalRepository(AstronInternalRepository):
         dg.addServerHeader(channel, self.ourChannel, CLIENTAGENT_SEND_DATAGRAM)
         dg.addString(msgDg.getMessage())
         self.send(dg)
+
+    def kickChannel(self, channel, reason=1, message='An unexpected problem has occured.'):
+        dg = PyDatagram()
+        dg.addServerHeader(channel, self.ourChannel, CLIENTAGENT_EJECT)
+        dg.addUint16(reason)
+        dg.addString(message)
+        self.send(dg)      
+
+    def logPotentialHacker(self, message, kickChannel=False, **kwargs):
+        self.notify.warning(message)
+
+        self.air.writeServerEvent('suspicious-event', message=message, **kwargs)
+
+        if kickChannel:
+            self.kickChannel(kickChannel)     
 
     def readerPollOnce(self):
         try:
@@ -62,11 +77,7 @@ class PiratesInternalRepository(AstronInternalRepository):
 
             if config.GetBool('boot-on-error', False):
                 if self.getAvatarIdFromSender() > 100000000:
-                    dg = PyDatagram()
-                    dg.addServerHeader(self.getMsgSender(), self.ourChannel, CLIENTAGENT_EJECT)
-                    dg.addUint16(1)
-                    dg.addString('An unexpected problem has occurred.')
-                    self.send(dg)
+                    self.kickChannel(self.getMsgSender())
 
                 self.writeServerEvent('internal-exception', 
                     avId=self.getAvatarIdFromSender(),

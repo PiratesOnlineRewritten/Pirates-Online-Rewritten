@@ -384,6 +384,31 @@ class DistributedBattleAvatarAI(DistributedReputationAvatarAI, Teamable):
 
     def setEmote(self, emoteId):
         if emoteId not in EmoteGlobals.emotes:
+
+            # Log potential hacking
+            self.air.logPotentialHacker(
+                message='Avatar attempted to use invalid emote',
+                accountId=self.air.getAccountIdFromSender(),
+                emoteId=emoteId)
+
             return
+
+        prereqs = EmoteGlobals.getEmotePrereqs(emoteId)
+        if prereqs:
+
+            fault = False
+            for prereq in prereqs:
+                if not prereq.avIsReadyAI(self):
+                    fault = True
+
+            if fault:
+
+                # Log potential hacking
+                self.air.logPotentialHacker(
+                    message='Avatar attempted to use emote that does not meet requirements',
+                    accountId=self.air.getAccountIdFromSender(),
+                    emoteId=emoteId)
+
+                return
 
         self.sendUpdate('playEmote', [emoteId])

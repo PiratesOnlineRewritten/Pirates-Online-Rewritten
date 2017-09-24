@@ -301,4 +301,4 @@ class IsHoliday(QuestPrereq):
         return base.cr.newsManager and self.holidayId in base.cr.newsManager.getHolidayIdList()
 
     def avIsReadyAI(self, av):
-        return simbase.air.holidayManager.isHolidayActive(self.holidayId)
+        return simbase.air.holidayMgr.isHolidayActive(self.holidayId)

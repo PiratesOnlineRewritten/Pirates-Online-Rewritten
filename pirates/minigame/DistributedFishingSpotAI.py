@@ -68,7 +68,7 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
         minWeight, maxWeight = fish['weightRange']
 
         if not minWeight <= weight <= maxWeight:
-            self.air.writeServerEvent('suspicious-event',
+            self.air.logPotentialHacker(
                 message='Received caughtFish update for invalid weight.',
                 targetAvId=avatar.doId,
                 fishId=fishId,

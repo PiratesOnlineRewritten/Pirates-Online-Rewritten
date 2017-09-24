@@ -40,7 +40,7 @@ class DistributedPotionGameAI(DistributedObjectAI):
         if not verified:
             self.notify.warning('Received update from an unexpected avatar (%d); Expected %d' % (sender, avatar.doId))
 
-            self.air.writeServerEvent('suspicious-event',
+            self.air.logPotentialHacker(
                 message='Received update from an unexpected avatar while playing Potions.',
                 targetAvId=sender,
                 expected=self.avatar.doId)
@@ -56,7 +56,7 @@ class DistributedPotionGameAI(DistributedObjectAI):
             if not PotionRecipeData.getPotionData(recipeId):
                 self.notify.warning('Received complete Recipe for an invalid recipe %d!' % recipeId)
 
-                self.air.writeServerEvent('suspicious-event',
+                self.air.logPotentialHacker(
                     message='Received complete Recipe for an invalid recipe.',
                     targetAvId=self.avatar.doId,
                     recipeId=recipeId)
@@ -69,7 +69,7 @@ class DistributedPotionGameAI(DistributedObjectAI):
         elif self.__workingRecipe != recipeId:
             self.notify.warning('Attempted to complete recipe that has not been started!')
 
-            self.air.writeServerEvent('suspicious-event',
+            self.air.logPotentialHacker(
                 message='Attempted to complete recipe that has not been started!',
                 targetAvId=self.avatar.doId,
                 recipeId=recipeId)
@@ -84,7 +84,7 @@ class DistributedPotionGameAI(DistributedObjectAI):
             if PotionRecipeData.getDisabled(recipeId):
                 self.notify.warning('%d completed a disabled potion recipe! (%d)' % (self.avatar.doId, recipeId))
 
-                self.air.writeServerEvent('suspicious-event',
+                self.air.logPotentialHacker(
                     message='Attempted to complete a disabled recipe!',
                     targetAvId=self.avatar.doId,
                     recipeId=recipeId)
@@ -119,7 +119,7 @@ class DistributedPotionGameAI(DistributedObjectAI):
             if potionRep < requiredLevel:
                 self.notify.warning('%d completed a potion they are not a high enough level for! (%d); Requires %s. Has %s' % (self.avatar.doId, recipeId, requiredLevel, potionRep))
 
-                self.air.writeServerEvent('suspicious-event',
+                self.air.logPotentialHacker(
                     message='Attempted to complete a potion they are not a high enough level for!',
                     targetAvId=self.avatar.doId,
                     recipeId=recipeId,
