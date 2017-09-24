@@ -111,8 +111,6 @@ class PiratesAIRepository(PiratesInternalRepository):
         self.magicWords = PiratesMagicWordManagerAI(self)
         self.magicWords.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
 
-        self.chatMgr = self.generateGlobalObject(OTP_DO_ID_CHAT_MANAGER, 'DistributedChatManager')
-
         self.tradeMgr = TradeManagerAI(self)
         self.tradeMgr.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
 

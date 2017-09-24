@@ -7,16 +7,16 @@ class HumanBase():
         self.setDNAString(dna)
 
     def setDNAString(self, dnaString=None):
-        if not dnaString:
+        if dnaString == None:
             self.setDefaultDNA()
-        elif not isinstance(dnaString, str):
+        elif isinstance(dnaString, HumanDNA.HumanDNA):
             self.style = copy.deepcopy(dnaString)
         else:
-            self.setDefaultDNA() #TODO
+            self.style = HumanDNA.HumanDNA()
+            self.style.makeFromNetString(dnaString)
 
     def setDefaultDNA(self):
-        newDNA = HumanDNA.HumanDNA()
-        self.style = newDNA
+        self.style = HumanDNA.HumanDNA()
 
     def setTutorial(self, val):
         self.style.setTutorial(val)
