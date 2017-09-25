@@ -31,7 +31,7 @@ class InteriorAreaBuilderAI(AreaBuilderBaseAI):
 
         interiorDoor = DistributedInteriorDoorAI(self.air)
         interiorDoor.setUniqueId(objKey)
-        interiorDoor.setHpr(objectData.get('Hpr', (0, 0, 0)))
+        interiorDoor.setPos(objectData.get('Pos', (0, 0, 0)))
         interiorDoor.setHpr(objectData.get('Hpr', (0, 0, 0)))
         interiorDoor.setScale(objectData.get('Scale', 1))
         interiorDoor.setInteriorId(self.parent.doId, self.parent.parentId, self.parent.zoneId)
