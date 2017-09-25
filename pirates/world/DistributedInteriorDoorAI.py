@@ -10,11 +10,9 @@ class DistributedInteriorDoorAI(DistributedDoorAI):
         self.interiorDoId = 0
         self.interiorParentId = 0
         self.interiorZoneId = 0
-
         self.exteriorDoId = 0
         self.exteriorWorldParentId = 0
         self.exteriorWorldZoneId = 0
-
         self.buildingDoorId = 0
 
     def setInteriorId(self, interiorDoId, interiorParentId, interiorZoneId):

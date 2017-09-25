@@ -88,14 +88,16 @@ class DistributedBuildingDoor(DistributedDoor):
         oldWorld = oldParent.getParentObj()
         oldWorld.goOffStage()
         localAvatar.clearInterestNamed(None, ['instanceInterest'])
+        localAvatar.clearInterestNamed(None, ['areaInterest'])
         localAvatar.replaceInterestTag('instanceInterest-Door', 'instanceInterest')
-        localAvatar.b_setLocation(interior.doId, PiratesGlobals.InteriorDoorZone)
         world = interior.getParentObj()
         interior.turnOn(localAvatar)
         self.setupOtherSideDoors()
         interior.reparentTo(render)
         interior.setAutoFadeInOnEnter(autoFadeIn)
         interior.enterInteriorFromDoor(self.doorIndex)
+        localAvatar.setInterest(interior.doId, PiratesGlobals.InteriorDoorZone, ['areaInterest'])
+        localAvatar.b_setLocation(interior.doId, PiratesGlobals.InteriorDoorZone)
 
     def requestInteraction(self, avId, interactType=0):
         if avId == localAvatar.doId and localAvatar.zombie and self.buildingUid != LocationConstants.LocationIds.KINGSHEAD_OUTER_DOOR:

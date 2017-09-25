@@ -19,12 +19,13 @@ class AreaBuilderBaseAI(DirectObject):
         if objType == ObjectList.AREA_TYPE_ISLAND:
             newObj = self.__createIsland(objectData, parent, parentUid, objKey, dynamic)
         else:
-            areaParent = parent
-            if not areaParent or not hasattr(areaParent, 'builder'):
+            if not parent or not hasattr(parent, 'builder'):
                 areaParent = self.air.worldCreator.world.uidMgr.justGetMeMeObject(parentUid)
 
                 if not areaParent:
                     return newObj
+            else:
+                areaParent = parent
 
             newObj = areaParent.builder.createObject(objType, objectData, parent, parentUid, objKey, dynamic)
 
@@ -36,6 +37,7 @@ class AreaBuilderBaseAI(DirectObject):
     def getObjectTruePos(self, objKey, parentUid, objectData):
         if self.isChildObject(objKey, parentUid) and 'GridPos' in objectData:
             return objectData.get('GridPos')
+
         return objectData.get('Pos')
 
     def __createIsland(self, objectData, parent, parentUid, objKey, dynamic):
@@ -62,7 +64,7 @@ class AreaBuilderBaseAI(DirectObject):
 
         return island
 
-    def addObject(self, object):
+    def addObject(self, object, uniqueId=None):
         if not object:
             self.notify.warning('Cannot add an invalid object!')
             return
@@ -71,10 +73,10 @@ class AreaBuilderBaseAI(DirectObject):
             self.notify.warning('Cannot add an already existing object %d!' % object.doId)
             return
 
-        self.parent.uidMgr.addUid(object.getUniqueId(), object.doId)
+        self.parent.uidMgr.addUid(uniqueId or object.getUniqueId(), object.doId)
         self.objectList[object.doId] = object
 
-    def removeObject(self, object):
+    def removeObject(self, object, uniqueId=None):
         if not object:
             self.notify.warning('Cannot remove an invalid object!')
             return
@@ -83,8 +85,15 @@ class AreaBuilderBaseAI(DirectObject):
             self.notify.warning('Cannot remove a non-existant object %d!' % object.doId)
             return
 
-        self.parent.uidMgr.removeUid(object.getUniqueId())
+        self.parent.uidMgr.removeUid(uniqueId or object.getUniqueId())
         del self.objectList[object.doId]
+
+    def getObject(self, doId=None, uniqueId=None):
+        for object in self.objectList:
+            if object.doId == doId or object.getUniqueId() == uniqueId:
+                return object
+
+        return None
 
     def deleteObject(self, doId):
         object = self.objectList.get(doId)

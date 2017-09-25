@@ -17,6 +17,7 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
 
     def __init__(self, air, parent):
         AreaBuilderBaseAI.__init__(self, air, parent)
+
         self.wantSearchables = config.GetBool('want-searchables', True)
         self.wantFishing = config.GetBool('want-fishing-game', True)
         self.wantPotionTable = config.GetBool('want-potion-game', False)
@@ -30,27 +31,29 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
         newObj = None
 
         if objType == 'Searchable Container' and self.wantSearchables:
-            newObj = self.__generateSearchableContainer(parent, parentUid, objKey, objectData)
+            newObj = self.__createSearchableContainer(parent, parentUid, objKey, objectData)
         elif objType == 'FishingSpot' and self.wantFishing:
-            newObj = self.__generateFishingSpot(parent, parentUid, objKey, objectData)
+            newObj = self.__createFishingSpot(parent, parentUid, objKey, objectData)
         elif objType == 'PotionTable' and self.wantPotionTable:
-            newObj = self.__generatePotionTable(parent, parentUid, objKey, objectData)
+            newObj = self.__createPotionTable(parent, parentUid, objKey, objectData)
         elif objType in ['Animal', 'Townsperson', 'Spawn Node', 'Dormant NPC Spawn Node', 'Skeleton', 'NavySailor', 'Creature', 'Ghost']:
             newObj = self.air.spawner.createObject(objType, objectData, parent, parentUid, objKey, dynamic)
         elif objType == 'Building Exterior' and self.wantBuildingInteriors:
-            newObj = self.__generateBuildingExterior(parent, parentUid, objKey, objectData)
+            newObj = self.__createBuildingExterior(parent, parentUid, objKey, objectData)
+        elif objType == ObjectList.DOOR_LOCATOR_NODE and self.wantBuildingInteriors:
+            newObj = self.__createDoorLocatorNode(parent, parentUid, objKey, objectData)
         elif objType == 'Dinghy' and self.wantDinghys:
-            newObj = self.__generateDinghy(parent, parentUid, objKey, objectData)
+            newObj = self.__createDinghy(parent, parentUid, objKey, objectData)
         elif objType == 'Object Spawn Node' and self.wantSpawnNodes:
-            newObj = self.__generateObjectSpawnNode(parent, parentUid, objKey, objectData)
+            newObj = self.__createObjectSpawnNode(parent, parentUid, objKey, objectData)
         elif objType == 'RepairBench' and self.wantRepairBench:
-            newObj = self.__generateRepairBench(parent, parentUid, objKey, objectData)
+            newObj = self.__createRepairBench(parent, parentUid, objKey, objectData)
         elif objType == ObjectList.AREA_TYPE_ISLAND_REGION and self.wantIslandAreas:
-            newObj = self.__generateIslandArea(parent, parentUid, objKey, objectData)
+            newObj = self.__createIslandArea(parent, parentUid, objKey, objectData)
 
         return newObj
 
-    def __generateSearchableContainer(self, parent, parentUid, objKey, objectData):
+    def __createSearchableContainer(self, parent, parentUid, objKey, objectData):
         container = DistributedSearchableContainerAI(self.air)
         container.setUniqueId(objKey)
         container.setPos(self.getObjectTruePos(objKey, parentUid, objectData))
@@ -71,7 +74,7 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
 
         return container
 
-    def __generateFishingSpot(self, parent, parentUid, objKey, objectData):
+    def __createFishingSpot(self, parent, parentUid, objKey, objectData):
         fishingSpot = DistributedFishingSpotAI(self.air)
         fishingSpot.setPos(self.getObjectTruePos(objKey, parentUid, objectData))
         fishingSpot.setHpr(objectData.get('Hpr', (0, 0, 0)))
@@ -84,7 +87,7 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
 
         return fishingSpot
 
-    def __generatePotionTable(self, parent, parentUid, objKey, objectData):
+    def __createPotionTable(self, parent, parentUid, objKey, objectData):
         table = DistributedPotionCraftingTableAI(self.air)
         table.setPos(self.getObjectTruePos(objKey, parentUid, objectData))
         table.setHpr(objectData.get('Hpr', (0, 0, 0)))
@@ -98,7 +101,7 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
 
         return table
 
-    def __generateBuildingExterior(self, parent, parentUid, objKey, objectData):
+    def __createBuildingExterior(self, parent, parentUid, objKey, objectData):
         from pirates.world.DistributedJailInteriorAI import DistributedJailInteriorAI
         from pirates.world.DistributedGAInteriorAI import DistributedGAInteriorAI
 
@@ -113,50 +116,47 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
             self.notify.warning('Failed to spawn interior: %s; No interior model found in %s.' % (objKey, interiorFile))
             return None
 
-        # allocate a new zone for this interior
-        interiorZone = self.air.allocateZone()
-
-        if 'Jail' in interiorFile:
-            interiorClass = DistributedJailInteriorAI
-        else:
-            interiorClass = DistributedGAInteriorAI
-
+        interiorClass = DistributedJailInteriorAI if 'Jail' in interiorFile else DistributedGAInteriorAI
         interior = interiorClass(self.air)
         interior.setUniqueId(exteriorUid)
+        interior.setHpr(objectData.get('Hpr', (0, 0, 0)))
+        interior.setHpr(objectData.get('Hpr', (0, 0, 0)))
+        interior.setScale(objectData.get('Scale', 1))
         interior.setModelPath(interiorModel)
         interior.setName(interior.getLocalizerName())
 
-        self.air.worldCreator.world.generateChildWithRequired(interior, interiorZone)
-        self.addObject(interior)
+        self.parent.getParentObj().generateChildWithRequired(interior, self.air.allocateZone())
+        self.parent.getParentObj().builder.addObject(interior, objKey)
 
-        # Create exterior doors
-        foundDoor = False
-        if 'Objects' in objectData:
-            for childKey, childData in objectData['Objects'].items():
-                childType = childData.get('Type', '')
-                if childType == 'Door Locator Node':
-                    extDoor = DistributedBuildingDoorAI(self.air)
-
-                    extDoor.setUniqueId(childKey)
-                    extDoor.setPos(childData.get('Pos', (0, 0, 0)))
-                    extDoor.setHpr(childData.get('Hpr', (0, 0, 0)))
-                    extDoor.setScale(childData.get('Scale', (1, 1, 1)))
-
-                    extDoor.setInteriorId(interior.doId, interior.getUniqueId(), interior.parentId, interior.zoneId)
-                    extDoor.setBuildingUid(objKey)
-
-                    parent.generateChildWithRequired(extDoor, PiratesGlobals.IslandLocalZone)
-
-                    foundDoor = True
-
-        if not foundDoor:
-            self.notify.warning('%s (%s) has an interior, but no exterior door was found!' % (interior.getLocalizerName(), objKey))
-
-        #self.air.worldCreator.loadObjectsFromFile(interiorFile + '.py', self)
+        self.air.worldCreator.loadObjectDict(objectData.get('Objects', {}), self.parent, objKey, False)
+        self.air.worldCreator.loadObjectsFromFile(interiorFile + '.py', interior)
 
         return interior
 
-    def __generateDinghy(self, parent, parentUid, objKey, objectData):
+    def __createDoorLocatorNode(self, parent, parentUid, objKey, objectData):
+        from pirates.world.DistributedGAInteriorAI import DistributedGAInteriorAI
+
+        interior = self.parent.getParentObj().uidMgr.justGetMeMeObject(parentUid)
+
+        if not interior or not isinstance(interior, DistributedGAInteriorAI):
+            self.notify.warning('Cannot create door for a non-existant interior %s!' % parentUid)
+            return
+
+        buildingDoor = DistributedBuildingDoorAI(self.air)
+        buildingDoor.setUniqueId(objKey)
+        buildingDoor.setHpr(objectData.get('Hpr', (0, 0, 0)))
+        buildingDoor.setHpr(objectData.get('Hpr', (0, 0, 0)))
+        buildingDoor.setScale(objectData.get('Scale', 1))
+        buildingDoor.setInteriorId(interior.doId, interior.getUniqueId(), interior.parentId, interior.zoneId)
+        buildingDoor.setBuildingUid(parentUid)
+
+        interior.setExteriorDoor(buildingDoor)
+        self.parent.generateChildWithRequired(buildingDoor, PiratesGlobals.IslandLocalZone)
+        self.addObject(buildingDoor)
+
+        return buildingDoor
+
+    def __createDinghy(self, parent, parentUid, objKey, objectData):
         dinghy = DistributedDinghyAI(self.air)
         dinghy.setPos(self.getObjectTruePos(objKey, parentUid, objectData))
         dinghy.setHpr(objectData.get('Hpr', (0, 0, 0)))
@@ -168,7 +168,7 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
 
         return dinghy
 
-    def __generateObjectSpawnNode(self, parent, parentUid, objKey, objectData):
+    def __createObjectSpawnNode(self, parent, parentUid, objKey, objectData):
         spawnClass = DistributedSurfaceTreasureAI if objectData['Spawnables'] == 'Surface Treasure' else DistributedBuriedTreasureAI
 
         spawnNode = spawnClass(self.air)
@@ -185,7 +185,7 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
 
         return spawnNode
 
-    def __generateRepairBench(self, parent, parentUid, objKey, objectData):
+    def __createRepairBench(self, parent, parentUid, objKey, objectData):
         bench = DistributedRepairBenchAI(self.air)
         bench.setPos(self.getObjectTruePos(objKey, parentUid, objectData))
         bench.setHpr(objectData.get('Hpr', (0, 0, 0)))
@@ -198,7 +198,7 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
 
         return bench
 
-    def __generateIslandArea(self, parent, parentUid, objKey, objectData):
+    def __createIslandArea(self, parent, parentUid, objKey, objectData):
         from pirates.world.DistributedGameAreaAI import DistributedGameAreaAI
 
         areaFile = objectData.get('File', None)
@@ -206,15 +206,12 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
             self.notify.warning('Failed to generate Island Game Area %s; No file defined' % objKey)
             return
 
-        # allocate a new zone for this area
-        areaZone = self.air.allocateZone()
-
         islandArea = DistributedGameAreaAI(self.air)
         islandArea.setUniqueId(objKey)
         islandArea.setName(islandArea.getLocalizerName())
         islandArea.setModelPath(objectData['Visual']['Model'])
 
-        self.parent.generateChildWithRequired(islandArea, areaZone)
+        self.parent.generateChildWithRequired(islandArea, self.air.allocateZone())
         self.addObject(islandArea)
         self.broadcastObjectPosition(islandArea)
         self.air.worldCreator.loadObjectsFromFile(areaFile + '.py', islandArea)

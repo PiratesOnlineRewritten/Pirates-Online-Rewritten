@@ -18,8 +18,8 @@ class WorldCreatorAI(WorldCreatorBase, DirectObject):
     def isObjectInCurrentGamePhase(cls, object):
         return True
 
-    def loadObjectsFromFile(self, filename, parent, parentIsObj=False):
-        return WorldCreatorBase.loadObjectsFromFile(self, filename, parent, parentIsObj)
+    def loadObjectsFromFile(self, filename, parent=None, parentIsObj=False):
+        return WorldCreatorBase.loadObjectsFromFile(self, filename, parent or self.air, parentIsObj)
 
     def getObjectParentUid(self, objKey):
         found = None

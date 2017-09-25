@@ -318,13 +318,11 @@ class DistributedGAInterior(DistributedGameArea, DistributedCartesianGrid, Mappa
         self.unstash()
         self.loadConnectors()
         DistributedGameArea.handleOnStage(self)
-        DistributedCartesianGrid.handleOnStage(self)
 
     @report(types=['args'], dConfigParam=['dteleport'])
     def handleOffStage(self, av=None):
         self.stash()
         DistributedGameArea.handleOffStage(self)
-        DistributedCartesianGrid.handleOffStage(self)
 
     def getLevel(self):
         return 1
