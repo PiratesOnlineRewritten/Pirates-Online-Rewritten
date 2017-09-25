@@ -4,6 +4,7 @@ from pirates.creature.DistributedAnimalAI import DistributedAnimalAI
 from pirates.npc.DistributedNPCTownfolkAI import DistributedNPCTownfolkAI
 from pirates.npc.DistributedNPCSkeletonAI import DistributedNPCSkeletonAI
 from pirates.npc.DistributedNPCNavySailorAI import DistributedNPCNavySailorAI
+from pirates.npc.DistributedGhostAI import DistributedGhostAI
 from pirates.npc.DistributedKillerGhostAI import DistributedKillerGhostAI
 from pirates.npc.DistributedBossSkeletonAI import DistributedBossSkeletonAI
 from pirates.npc.DistributedBossNavySailorAI import DistributedBossNavySailorAI
@@ -51,7 +52,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
                 newObj = self.__generateAnimal(objType, objectData, parent, parentUid, objKey, dynamic)
         elif objType == 'Creature':
             if self.wantEnemies and self.wantNormalBosses:
-                pass
+                self.notify.warning('Received unknown generate: %s' % objType)
         elif objType == 'Skeleton':
             if self.wantEnemies and self.wantNormalBosses:
                 newObj = self.__generateBossSkeleton(objType, objectData, parent, parentUid, objKey, dynamic)
@@ -156,6 +157,8 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
             enemyCls = DistributedCreatureAI
         elif avatarType.isA(AvatarTypes.RageGhost):
             enemyCls = DistributedKillerGhostAI
+        elif avatarType.isA(AvatarTypes.Ghost):
+            enemyCls = DistributedGhostAI
         else:
             self.notify.warning('Received unknown AvatarType: %s' % avatarType)
             return
