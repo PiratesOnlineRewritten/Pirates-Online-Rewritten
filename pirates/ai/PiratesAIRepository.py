@@ -120,4 +120,4 @@ class PiratesAIRepository(PiratesInternalRepository):
         """
 
         self.worldCreator = WorldCreatorAI(self)
-        self.worldCreator.loadObjectsFromFile(WorldGlobals.PiratesWorldSceneFile)
+        self.worldCreator.loadObjectsFromFile(WorldGlobals.PiratesWorldSceneFile, self)

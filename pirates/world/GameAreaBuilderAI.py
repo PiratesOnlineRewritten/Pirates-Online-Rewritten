@@ -11,7 +11,7 @@ from pirates.world.DistributedDinghyAI import DistributedDinghyAI
 from pirates.treasuremap.DistributedBuriedTreasureAI import DistributedBuriedTreasureAI
 from pirates.treasuremap.DistributedSurfaceTreasureAI import DistributedSurfaceTreasureAI
 
-class GridAreaBuilderAI(AreaBuilderBaseAI):
+class GameAreaBuilderAI(AreaBuilderBaseAI):
     notify = directNotify.newCategory('GridAreaBuilderAI')
     AREAZONE = PiratesGlobals.IslandLocalZone
 

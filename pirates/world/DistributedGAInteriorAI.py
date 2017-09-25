@@ -1,6 +1,7 @@
 from direct.distributed.DistributedCartesianGridAI import DistributedCartesianGridAI
 from direct.directnotify import DirectNotifyGlobal
 from pirates.world.DistributedGameAreaAI import DistributedGameAreaAI
+from pirates.world.InteriorAreaBuilderAI import InteriorAreaBuilderAI
 from pirates.world.WorldGlobals import *
 
 class DistributedGAInteriorAI(DistributedCartesianGridAI, DistributedGameAreaAI):
@@ -12,6 +13,7 @@ class DistributedGAInteriorAI(DistributedCartesianGridAI, DistributedGameAreaAI)
 
         DistributedGameAreaAI.__init__(self, air)
         self.connectorId = 0
+        self.builder = InteriorAreaBuilderAI(air, self)
 
     def delete(self):
         # since our current zone was allocated, we need to free the zone
