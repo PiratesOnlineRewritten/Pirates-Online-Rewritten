@@ -11,6 +11,7 @@ from pirates.npc.DistributedBossNavySailorAI import DistributedBossNavySailorAI
 from pirates.npc import BossNPCList
 from pirates.creature.DistributedCreatureAI import DistributedCreatureAI
 from pirates.creature.DistributedRavenAI import DistributedRavenAI
+from pirates.creature.DistributedSeagullAI import DistributedSeagullAI
 from pirates.piratesbase import PiratesGlobals
 from pirates.pirate.AvatarType import AvatarType
 from pirates.pirate import AvatarTypes
@@ -253,10 +254,13 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         animalClass = DistributedAnimalAI
         if species == 'Raven':
             animalClass = DistributedRavenAI
+        elif species == 'Seagull':
+            animalClass = DistributedSeagullAI
 
         animal = animalClass(self.air)
 
-        animal.setPos(objectData.get('Pos'))
+        pos = parent.builder.getObjectTruePos(objKey, parentUid, objectData)
+        animal.setPos(pos)
         animal.setHpr(objectData.get('Hpr'))
         animal.setSpawnPosHpr(animal.getPos(), animal.getHpr())
         animal.setScale(objectData.get('Scale'))
