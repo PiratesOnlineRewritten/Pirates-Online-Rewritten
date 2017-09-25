@@ -331,7 +331,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
     def __generateBossNavy(self, objType, objectData, parent, parentUid, objKey, dynamic):
         navy = DistributedBossNavySailorAI(self.air)
 
-        pos = objectData.get('GridPos', objectData.get('Pos')) #parent.builder.getObjectTruePos(objKey, parentUid, objectData)
+        pos = parent.builder.getObjectTruePos(objKey, parentUid, objectData)
         navy.setPos(pos)
         navy.setHpr(objectData.get('Hpr'))
         navy.setSpawnPosHpr(navy.getPos(), navy.getHpr())
