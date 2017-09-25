@@ -1,12 +1,12 @@
-from pirates.battle.DistributedBattleNPCAI import DistributedBattleNPCAI
 from pirates.npc.BossAI import BossAI
 from direct.directnotify import DirectNotifyGlobal
+from pirates.npc.DistributedNPCNavySailorAI import DistributedNPCNavySailorAI
 
-class DistributedBossNavySailorAI(DistributedBattleNPCAI, BossAI):
+class DistributedBossNavySailorAI(DistributedNPCNavySailorAI, BossAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedBossNavySailorAI')
 
     def __init__(self, air):
-        DistributedBattleNPCAI.__init__(self, air)
+        DistributedNPCNavySailorAI.__init__(self, air)
         BossAI.__init__(self, air)
         self.dnaId = ''
 

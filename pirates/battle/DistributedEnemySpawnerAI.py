@@ -10,6 +10,7 @@ from pirates.npc.DistributedBossNavySailorAI import DistributedBossNavySailorAI
 from pirates.npc import BossNPCList
 from pirates.creature.DistributedCreatureAI import DistributedCreatureAI
 from pirates.piratesbase import PiratesGlobals
+from pirates.pirate.AvatarType import AvatarType
 from pirates.pirate import AvatarTypes
 from pirates.leveleditor import NPCList
 from pirates.piratesbase import PLocalizer
@@ -25,7 +26,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         self.wantDormantSpawns = config.GetBool('want-dormant-spawns', True)
         self.wantTownfolk = config.GetBool('want-townfolk', True)
         self.wantAnimals = config.GetBool('want-animals', True)
-        self.wantNormalBosses = config.GetBool('want-normal-bosses', False)
+        self.wantNormalBosses = config.GetBool('want-normal-bosses', True)
         self.wantRandomBosses = config.GetBool('want-random-bosses', True)
 
         self.randomBosses = []
@@ -56,7 +57,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
                 newObj = self.__generateBossSkeleton(objType, objectData, parent, parentUid, objKey, dynamic)
         elif objType == 'NavySailor':
             if self.wantEnemies and self.wantNormalBosses:
-                pass
+                newObj = self.__generateBossNavy(objType, objectData, parent, parentUid, objKey, dynamic)
         else:
             self.notify.warning('Received unknown generate: %s' % objType)
 
@@ -270,7 +271,8 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
     def __generateBossSkeleton(self, objType, objectData, parent, parentUid, objKey, dynamic):
         skeleton = DistributedBossSkeletonAI(self.air)
 
-        skeleton.setPos(objectData.get('Pos'))
+        pos = parent.builder.getObjectTruePos(objKey, parentUid, objectData)
+        skeleton.setPos(pos)
         skeleton.setHpr(objectData.get('Hpr'))
         skeleton.setSpawnPosHpr(skeleton.getPos(), skeleton.getHpr())
         skeleton.setScale(objectData.get('Scale'))
@@ -278,13 +280,18 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
 
 
         avId = objectData.get('AvId', 1)
-        avatarType = AvatarTypes.FrenchBossA #pickUndead(avId, avId)
-        avatarType.getBossType()
+        avTrack = objectData.get('AvTrack', 0)
+        avatarType = AvatarType(faction=AvatarTypes.Undead.faction, track=avTrack, id=avId)
+        avatarType.setBoss(objectData.get('Boss', True))
         skeleton.setAvatarType(avatarType)
-        skeleton.loadBossData(objKey, avatarType)
+        try:
+            skeleton.loadBossData(objKey, avatarType)
+        except:
+            self.notify.warning('Failed to load %s (%s); An error occured while loading boss data' % (objType, objKey))
+            return None
 
         skeleton.setName(skeleton.bossData['Name'])
-        skeleton.setLevel(skeleton.bossData['Level'] or 1)
+        skeleton.setLevel(skeleton.bossData['Level'] or EnemyGlobals.getRandomEnemyLevel(avatarType))
 
         animSet = objectData.get('AnimSet', 'default')
         noticeAnim1 = objectData.get('Notice Animation 1', '')
@@ -292,23 +299,22 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         greetingAnim = objectData.get('Greeting Animation', '')
         skeleton.setActorAnims(animSet, noticeAnim1, noticeAnim2, greetingAnim)
 
-        #enemyHp, enemyMp = EnemyGlobals.getEnemyStats(avatarType, skeleton.getLevel())
-        #skeleton.setMaxHp(enemyHp)
-        #skeleton.setHp(skeleton.getMaxHp(), True)
+        enemyHp, enemyMp = EnemyGlobals.getEnemyStats(avatarType, skeleton.getLevel())
+        enemyHp = enemyHp * skeleton.bossData.get('HpScale', 1)
+        enemyMp = enemyMp * skeleton.bossData.get('MpScale', 1)
 
-        #skeleton.setMaxMojo(enemyMp)
-        #skeleton.setMojo(enemyMp)
+        skeleton.setMaxHp(enemyHp)
+        skeleton.setHp(skeleton.getMaxHp(), True)
 
-        #weapons = EnemyGlobals.getEnemyWeapons(avatarType, skeleton.getLevel()).keys()
-        #skeleton.setCurrentWeapon(weapons[0], False)
+        skeleton.setMaxMojo(enemyMp)
+        skeleton.setMojo(enemyMp)
+
+        weapons = EnemyGlobals.getEnemyWeapons(avatarType, skeleton.getLevel()).keys()
+        skeleton.setCurrentWeapon(weapons[0], False)
 
         skeleton.setIsGhost(int(objectData.get('GhostFX', 0)))
         if 'GhostColor' in objectData and objectData['GhostColor'].isdigit():
             skeleton.setGhostColor(int(objectData.get('GhostColor', 0)))
-
-        dnaId = objectData.get('DNA', None)
-        if dnaId and hasattr(skeleton,'setDNAId'):
-            skeleton.setDNAId(dnaId)
 
         if 'Start State' in objectData:
             skeleton.setStartState(objectData['Start State'])
@@ -318,4 +324,75 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         parent.generateChildWithRequired(skeleton, PiratesGlobals.IslandLocalZone)
 
         locationName = parent.getLocalizerName()
-        print('Generating %s (%s) under zone %d in %s at %s with doId %d' % (skeleton.getName(), objKey, skeleton.zoneId, locationName, skeleton.getPos(), skeleton.doId))
+        self.notify.debug('Generating %s (%s) under zone %d in %s at %s with doId %d' % (skeleton.getName(), objKey, skeleton.zoneId, locationName, skeleton.getPos(), skeleton.doId))
+
+        return skeleton
+
+    def __generateBossNavy(self, objType, objectData, parent, parentUid, objKey, dynamic):
+        navy = DistributedBossNavySailorAI(self.air)
+
+        pos = objectData.get('GridPos', objectData.get('Pos')) #parent.builder.getObjectTruePos(objKey, parentUid, objectData)
+        navy.setPos(pos)
+        navy.setHpr(objectData.get('Hpr'))
+        navy.setSpawnPosHpr(navy.getPos(), navy.getHpr())
+        navy.setScale(objectData.get('Scale'))
+        navy.setUniqueId(objKey)
+
+        avId = objectData.get('AvId', 1)
+        avTrack = objectData.get('AvTrack', 0)
+        factionName = objectData.get('NavyFaction', 'Navy')
+        if not hasattr(AvatarTypes, factionName):
+            self.notify.warning('Failed to generate %s (%s); %s is not a valid faction' % (objType, objKey, factionName))
+            return
+        faction = getattr(AvatarTypes, factionName, AvatarTypes.Navy)
+
+        avatarType = AvatarType(faction=faction.faction, track=avTrack, id=avId)
+        avatarType.setBoss(objectData.get('Boss', True))
+        navy.setAvatarType(avatarType)
+        try:
+            navy.loadBossData(objKey, avatarType)
+        except:
+            self.notify.warning('Failed to load %s (%s); An error occured while loading boss data' % (objType, objKey))
+            return None
+
+        navy.setName(navy.bossData['Name'])
+        navy.setLevel(navy.bossData['Level'] or EnemyGlobals.getRandomEnemyLevel(avatarType))
+
+        animSet = objectData.get('AnimSet', 'default')
+        noticeAnim1 = objectData.get('Notice Animation 1', '')
+        noticeAnim2 = objectData.get('Notice Animation 2', '')
+        greetingAnim = objectData.get('Greeting Animation', '')
+        navy.setActorAnims(animSet, noticeAnim1, noticeAnim2, greetingAnim)
+
+        enemyHp, enemyMp = EnemyGlobals.getEnemyStats(avatarType, navy.getLevel())
+        enemyHp = enemyHp * navy.bossData.get('HpScale', 1)
+        enemyMp = enemyMp * navy.bossData.get('MpScale', 1)
+
+        navy.setMaxHp(enemyHp)
+        navy.setHp(navy.getMaxHp(), True)
+
+        navy.setMaxMojo(enemyMp)
+        navy.setMojo(enemyMp)
+
+        weapons = EnemyGlobals.getEnemyWeapons(avatarType, navy.getLevel()).keys()
+        navy.setCurrentWeapon(weapons[0], False)
+
+        navy.setIsGhost(int(objectData.get('GhostFX', 0)))
+        if 'GhostColor' in objectData and objectData['GhostColor'].isdigit():
+            navy.setGhostColor(int(objectData.get('GhostColor', 0)))
+
+        dnaId = objectData.get('DNA', objKey)
+        if dnaId:
+            navy.setDNAId(dnaId)
+
+        if 'Start State' in objectData:
+            navy.setStartState(objectData['Start State'])
+
+        self._enemies[objKey] = navy
+
+        parent.generateChildWithRequired(navy, PiratesGlobals.IslandLocalZone)
+
+        locationName = parent.getLocalizerName()
+        self.notify.debug('Generating %s (%s) under zone %d in %s at %s with doId %d' % (navy.getName(), objKey, navy.zoneId, locationName, navy.getPos(), navy.doId))
+
+        return navy

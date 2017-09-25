@@ -73,7 +73,7 @@ class DistributedNPCTownfolk(DistributedBattleNPC.DistributedBattleNPC, Distribu
         self.shipNamePanel = None
         self.classNameText = None
         self.shopId = PiratesGlobals.PORT_ROYAL_DEFAULTS
-        self.interactType = 0
+        self.interactType = PiratesGlobals.INTERACT_TYPE_FRIENDLY #TODO?
         self.helpId = 0
         self.noticeSpeed = 0.75
         self.shouldGreetOnNotice = 0
