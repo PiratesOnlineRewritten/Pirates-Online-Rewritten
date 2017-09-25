@@ -329,7 +329,8 @@ skip-tutorial #t
 force-tutorial #f
 
 # World:
-#default-world PortRoyalWorld
+default-world piratesWorld
+want-map-flavor-anims #t
 
 # Analytics:
 analytics-game-key 28f391f68f5e07f7713d044ea81f92ca
@@ -363,3 +364,23 @@ want-random-queen-annes #f
 # Paid Access:
 force-paid-status FULL
 unlimited-free-time #t
+
+# Shadows:
+want-avatar-shadows #t
+
+# Movement:
+smooth-lag 1
+
+#Make-A-Pirate:
+want-tattoos #t
+want-jewelry #t
+
+#PVP:
+want-land-infamy #t
+want-sea-infamy #t
+
+# Leaks:
+crash-on-proactive-leak-detect #f
+
+#Server Queue:
+disable-server-queueing #t
