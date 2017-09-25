@@ -87,7 +87,7 @@ class PiratesMagicWordManager(MagicWordManager.MagicWordManager):
 
         if MagicWordManager.MagicWordManager.doMagicWord(self, word, avId, zoneId) == 1:
             pass
-        1
+        
         if word == '~walk':
             localAvatar.b_setGameState('LandRoam')
             localAvatar.motionFSM.on()
@@ -263,23 +263,19 @@ class PiratesMagicWordManager(MagicWordManager.MagicWordManager):
                     self.rainSplashes2 = None
 
             else:
-                RainDrops = RainDrops
-                import pirates.effects.RainDrops
+                from pirates.effects.RainDrops import RainDrops
                 self.rainDrops = RainDrops(base.camera)
                 self.rainDrops.reparentTo(render)
                 self.rainDrops.startLoop()
-                RainMist = RainMist
-                import pirates.effects.RainMist
+                from pirates.effects.RainMist import RainMist
                 self.rainMist = RainMist(base.camera)
                 self.rainMist.reparentTo(render)
                 self.rainMist.startLoop()
-                RainSplashes = RainSplashes
-                import pirates.effects.RainSplashes
+                from pirates.effects.RainSplashes import RainSplashes
                 self.rainSplashes = RainSplashes(base.camera)
                 self.rainSplashes.reparentTo(render)
                 self.rainSplashes.startLoop()
-                RainSplashes2 = RainSplashes2
-                import pirates.effects.RainSplashes2
+                from pirates.effects.RainSplashes2 import RainSplashes2
                 self.rainSplashes2 = RainSplashes2(base.camera)
                 self.rainSplashes2.reparentTo(render)
                 self.rainSplashes2.startLoop()
