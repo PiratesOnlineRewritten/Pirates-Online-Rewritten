@@ -5,6 +5,7 @@ from direct.distributed.GridParent import GridParent
 
 class AreaBuilderBaseAI(DirectObject):
     notify = directNotify.newCategory('AreaBuilderBaseAI')
+    AREAZONE = 0
 
     def __init__(self, air, parent):
         self.air = air
@@ -14,17 +15,28 @@ class AreaBuilderBaseAI(DirectObject):
     def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic, parentIsObj=False, fileName=None, actualParentObj=None):
         newObj = None
 
+
         if objType == ObjectList.AREA_TYPE_ISLAND:
             newObj = self.__createIsland(objectData, parent, parentUid, objKey, dynamic)
         else:
-            parent = self.air.worldCreator.world.uidMgr.justGetMeMeObject(parentUid)
+            areaParent = parent
+            if not areaParent or not hasattr(areaParent, 'builder'):
+                areaParent = self.air.worldCreator.world.uidMgr.justGetMeMeObject(parentUid)
 
-            if not parent:
-                return newObj
+                if not areaParent:
+                    return newObj, True
 
-            newObj = parent.builder.createObject(objType, objectData, parent, parentUid, objKey, dynamic)
+            newObj = areaParent.builder.createObject(objType, objectData, parent, parentUid, objKey, dynamic)
 
         return newObj
+
+    def isChildObject(self, objKey, parentUid):
+        return self.air.worldCreator.getObjectParentUid(objKey) != parentUid
+
+    def getObjectTruePos(self, objKey, parentUid, objectData):
+        if self.isChildObject(objKey, parentUid) and 'GridPos' in objectData:
+            return objectData.get('GridPos')
+        return objectData.get('Pos')
 
     def __createIsland(self, objectData, parent, parentUid, objKey, dynamic):
         from pirates.world.DistributedIslandAI import DistributedIslandAI

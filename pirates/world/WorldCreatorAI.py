@@ -18,8 +18,16 @@ class WorldCreatorAI(WorldCreatorBase, DirectObject):
     def isObjectInCurrentGamePhase(cls, object):
         return True
 
-    def loadObjectsFromFile(self, filename, parentIsObj=False):
-        return WorldCreatorBase.loadObjectsFromFile(self, filename, self.air, parentIsObj)
+    def loadObjectsFromFile(self, filename, parent, parentIsObj=False):
+        return WorldCreatorBase.loadObjectsFromFile(self, filename, parent, parentIsObj)
+
+    def getObjectParentUid(self, objKey):
+        found = None
+        for fileName in self.fileDicts.keys():
+            found = self.getObjectDataFromFileByUid(objKey, fileName, getParentUid=True)
+            if found:
+                break
+        return found
 
     def getIslandWorldDataByUid(self, uid, world=None):
         if world is None:

@@ -65,7 +65,8 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
     def __generateTownsperon(self, objType, objectData, parent, parentUid, objKey, dynamic):
         townfolk = DistributedNPCTownfolkAI(self.air)
 
-        townfolk.setPos(objectData.get('Pos'))
+        pos = parent.builder.getObjectTruePos(objKey, parentUid, objectData)
+        townfolk.setPos(pos)
         townfolk.setHpr(objectData.get('Hpr'))
         townfolk.setSpawnPosHpr(townfolk.getPos(), townfolk.getHpr())
         townfolk.setScale(objectData.get('Scale'))
@@ -162,8 +163,9 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
             self.notify.warning('No Enemy class defined for AvatarType: %s' % avatarType)
             return
 
+        pos = parent.builder.getObjectTruePos(objKey, parentUid, objectData)
         enemy = enemyCls(self.air)
-        enemy.setPos(objectData.get('Pos'))
+        enemy.setPos(pos)
         enemy.setHpr(objectData.get('Hpr'))
         enemy.setSpawnPosHpr(enemy.getPos(), enemy.getHpr())
         enemy.setScale(objectData.get('Scale'))

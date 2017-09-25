@@ -13,6 +13,7 @@ from pirates.treasuremap.DistributedSurfaceTreasureAI import DistributedSurfaceT
 
 class GridAreaBuilderAI(AreaBuilderBaseAI):
     notify = directNotify.newCategory('GridAreaBuilderAI')
+    AREAZONE = PiratesGlobals.IslandLocalZone
 
     def __init__(self, air, parent):
         AreaBuilderBaseAI.__init__(self, air, parent)
@@ -52,7 +53,7 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
     def __generateSearchableContainer(self, parent, parentUid, objKey, objectData):
         container = DistributedSearchableContainerAI(self.air)
         container.setUniqueId(objKey)
-        container.setPos(objectData.get('Pos', (0, 0, 0)))
+        container.setPos(self.getObjectTruePos(objKey, parentUid, objectData))
         container.setHpr(objectData.get('Hpr', (0, 0, 0)))
         container.setScale(objectData.get('Scale', (1, 1, 1)))
         container.setType(objectData.get('type', 'Crate'))
@@ -72,7 +73,7 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
 
     def __generateFishingSpot(self, parent, parentUid, objKey, objectData):
         fishingSpot = DistributedFishingSpotAI(self.air)
-        fishingSpot.setPos(objectData.get('Pos', (0, 0, 0)))
+        fishingSpot.setPos(self.getObjectTruePos(objKey, parentUid, objectData))
         fishingSpot.setHpr(objectData.get('Hpr', (0, 0, 0)))
         fishingSpot.setScale(objectData.get('Scale', (1, 1, 1)))
         fishingSpot.setOceanOffset(float(objectData.get('Ocean Offset', 1)))
@@ -85,7 +86,7 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
 
     def __generatePotionTable(self, parent, parentUid, objKey, objectData):
         table = DistributedPotionCraftingTableAI(self.air)
-        table.setPos(objectData.get('Pos', (0, 0, 0)))
+        table.setPos(self.getObjectTruePos(objKey, parentUid, objectData))
         table.setHpr(objectData.get('Hpr', (0, 0, 0)))
         table.setScale(objectData.get('Scale', (1, 1, 1)))
 
@@ -151,13 +152,13 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         if not foundDoor:
             self.notify.warning('%s (%s) has an interior, but no exterior door was found!' % (interior.getLocalizerName(), objKey))
 
-        self.air.worldCreator.loadObjectsFromFile(interiorFile + '.py', interior)
+        #self.air.worldCreator.loadObjectsFromFile(interiorFile + '.py', self)
 
         return interior
 
     def __generateDinghy(self, parent, parentUid, objKey, objectData):
         dinghy = DistributedDinghyAI(self.air)
-        dinghy.setPos(objectData.get('Pos', (0, 0, 0)))
+        dinghy.setPos(self.getObjectTruePos(objKey, parentUid, objectData))
         dinghy.setHpr(objectData.get('Hpr', (0, 0, 0)))
         dinghy.setInteractRadius(float(objectData.get('Aggro Radius', 25)))
 
@@ -171,7 +172,7 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
         spawnClass = DistributedSurfaceTreasureAI if objectData['Spawnables'] == 'Surface Treasure' else DistributedBuriedTreasureAI
 
         spawnNode = spawnClass(self.air)
-        spawnNode.setPos(objectData.get('Pos', (0, 0, 0)))
+        spawnNode.setPos(self.getObjectTruePos(objKey, parentUid, objectData))
         spawnNode.setHpr(objectData.get('Hpr', (0, 0, 0)))
         spawnNode.setScale(objectData.get('Scale', (1, 1, 1)))
         spawnNode.setStartingDepth(int(objectData.get('startingDepth', 10)))
@@ -186,7 +187,7 @@ class GridAreaBuilderAI(AreaBuilderBaseAI):
 
     def __generateRepairBench(self, parent, parentUid, objKey, objectData):
         bench = DistributedRepairBenchAI(self.air)
-        bench.setPos(objectData.get('Pos', (0, 0, 0)))
+        bench.setPos(self.getObjectTruePos(objKey, parentUid, objectData))
         bench.setHpr(objectData.get('Hpr', (0, 0, 0)))
         bench.setScale(objectData.get('Scale', (1, 1, 1)))
         bench.setDifficulty(int(objectData.get('difficulty', '0')))
