@@ -3,6 +3,7 @@ from pirates.inventory.LootableAI import LootableAI
 from direct.directnotify import DirectNotifyGlobal
 from pirates.uberdog.UberDogGlobals import InventoryType
 from pirates.ai import HolidayGlobals
+from pirates.reputation import ReputationGlobals
 import FishingGlobals
 
 class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
@@ -117,6 +118,15 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
         if not inventory:
             self.notify.warning('Failed to get inventory for avatar %d!' % avatar.doId)
             return
+
+        currentLevel = ReputationGlobals.getLevelFromTotalReputation(InventoryType.FishingRep, inventory.getFishingRep())[0]
+        expectedLevel = ReputationGlobals.getLevelFromTotalReputation(InventoryType.FishingRep, inventory.getFishingRep() + experience)[0]
+
+        if expectedLevel > currentLevel:
+            if expectedLevel in FishingGlobals.unlockLevelToSkillId:
+                unlockedSkill = FishingGlobals.unlockLevelToSkillId[expectedLevel]
+
+                inventory.b_setStack(unlockedSkill, 1)
 
         inventory.setGoldInPocket(inventory.getGoldInPocket() + reward)
         inventory.setFishingRep(inventory.getFishingRep() + experience)
