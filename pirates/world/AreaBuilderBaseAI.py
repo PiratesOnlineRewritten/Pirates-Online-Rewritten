@@ -24,7 +24,7 @@ class AreaBuilderBaseAI(DirectObject):
                 areaParent = self.air.worldCreator.world.uidMgr.justGetMeMeObject(parentUid)
 
                 if not areaParent:
-                    return newObj, True
+                    return newObj
 
             newObj = areaParent.builder.createObject(objType, objectData, parent, parentUid, objKey, dynamic)
 
