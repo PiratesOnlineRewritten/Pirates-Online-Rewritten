@@ -6,6 +6,7 @@ from direct.showbase.InputStateGlobal import inputState
 from direct.task import Task
 from direct.task.TaskProfiler import TaskProfiler
 from otp.avatar import Avatar
+from otp.nametag.NametagGlobals import CFSpeech, CFThought, CFTimeout, CFPageButton, CFNoQuitButton, CFQuitButton
 import string
 import traceback
 from direct.showbase import PythonUtil
@@ -632,8 +633,11 @@ class MagicWordManager(DistributedObject.DistributedObject):
 
     def setMagicWordResponse(self, response):
         self.notify.info(response)
-        base.localAvatar.setChatAbsolute(response, CFSpeech | CFTimeout)
-        base.talkAssistant.receiveDeveloperMessage(response)
+        if config.GetBool('want-original-magics', False):
+            base.localAvatar.setChatAbsolute(response, CFSpeech | CFTimeout)
+            base.talkAssistant.receiveDeveloperMessage(response)
+        else:
+            base.talkAssistant.receiveSystemMessage(str(response))
 
 
     def d_setWho(self, avIds):
