@@ -10,6 +10,7 @@ from pirates.npc.DistributedBossSkeletonAI import DistributedBossSkeletonAI
 from pirates.npc.DistributedBossNavySailorAI import DistributedBossNavySailorAI
 from pirates.npc import BossNPCList
 from pirates.creature.DistributedCreatureAI import DistributedCreatureAI
+from pirates.creature.DistributedRavenAI import DistributedRavenAI
 from pirates.piratesbase import PiratesGlobals
 from pirates.pirate.AvatarType import AvatarType
 from pirates.pirate import AvatarTypes
@@ -251,8 +252,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
 
         animalClass = DistributedAnimalAI
         if species == 'Raven':
-            self.notify.warning('Attempted to spawn unsupported Animal: %s' % species)
-            return
+            animalClass = DistributedRavenAI
 
         animal = animalClass(self.air)
 

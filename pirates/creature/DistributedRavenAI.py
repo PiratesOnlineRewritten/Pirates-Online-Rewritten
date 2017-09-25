@@ -1,8 +1,8 @@
-from direct.distributed.DistributedObjectAI import DistributedObjectAI
 from direct.directnotify import DirectNotifyGlobal
+from pirates.creature.DistributedCreatureAI import DistributedCreatureAI
 
-class DistributedRavenAI(DistributedObjectAI):
+class DistributedRavenAI(DistributedCreatureAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedRavenAI')
 
     def __init__(self, air):
-        DistributedObjectAI.__init__(self, air)
+        DistributedCreatureAI.__init__(self, air)
