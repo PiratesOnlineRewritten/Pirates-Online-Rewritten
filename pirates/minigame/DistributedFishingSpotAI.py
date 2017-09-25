@@ -144,7 +144,7 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
             self.notify.warning('Failed to get inventory for avatar %d!' % avatar.doId)
             return
 
-        lureCount = inventory.getStack(lureId) or 0
+        lureCount = inventory.getStack(lureId)[1] if inventory.getStack(lureId) else 0
         lureCount = max(lureCount - 1, 0)
         inventory.b_setStack(lureId, lureCount)
 
