@@ -85,8 +85,8 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
             return
 
         minWeight, maxWeight = fishData['weightRange']
-
-        if not minWeight <= weight <= maxWeight:
+        
+        if weight < minWeight or weight > maxWeight:
             self.air.logPotentialHacker(
                 message='Received caughtFish update for invalid weight.',
                 accountId=self.air.getAccountIdFromSender(),
@@ -94,7 +94,7 @@ class DistributedFishingSpotAI(DistributedInteractiveAI, LootableAI):
                 weight=weight)
             return
 
-        reward = fishData['gold']
+        reward = fishData['gold'] * weight
         bonusReward = 0
         if self.air.holidayMgr.isHolidayActive(HolidayGlobals.DOUBLEGOLDHOLIDAY) or self.air.holidayMgr.isHolidayActive(HolidayGlobals.DOUBLEGOLDHOLIDAYPAID):
             bonusReward = reward * 2
