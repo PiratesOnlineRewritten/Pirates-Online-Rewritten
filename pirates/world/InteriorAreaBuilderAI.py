@@ -6,6 +6,8 @@ from pirates.world.DistributedInteriorDoorAI import DistributedInteriorDoorAI
 from pirates.minigame.DistributedPokerTableAI import DistributedPokerTableAI
 from pirates.minigame.DistributedHoldemTableAI import DistributedHoldemTableAI
 from pirates.minigame.DistributedBlackjackTableAI import DistributedBlackjackTableAI
+from pirates.minigame.Distributed7StudTableAI import Distributed7StudTableAI
+from pirates.minigame.DistributedBishopsHandTableAI import DistributedBishopsHandTableAI
 
 class InteriorAreaBuilderAI(AreaBuilderBaseAI):
     notify = directNotify.newCategory('InteriorAreaBuilderAI')
@@ -58,6 +60,10 @@ class InteriorAreaBuilderAI(AreaBuilderBaseAI):
             tableCls = DistributedHoldemTableAI
         elif gameType == 'Blackjack':
             tableCls = DistributedBlackjackTableAI
+        elif gameType == '7Stud':
+            tableCls = Distributed7StudTableAI
+        elif gameType == 'Bishops':
+            tableCls = DistributedBishopsHandTableAI
         else:
             self.notify.warning('Failed to generate Parlor Table %s; %s is not a valid game type' % (objKey, gameType))
             return
