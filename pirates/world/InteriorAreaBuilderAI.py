@@ -73,7 +73,8 @@ class InteriorAreaBuilderAI(AreaBuilderBaseAI):
 
         if isinstance(gameTable, DistributedPokerTableAI):
             gameTable.setGameType(gameType)
-            gameTable.setBetMultiplier(int(objectData.get('BetMultiplier', '1')))
+
+        gameTable.setBetMultiplier(int(objectData.get('BetMultiplier', '1')))
 
         self.parent.generateChildWithRequired(gameTable, PiratesGlobals.InteriorDoorZone)
         self.addObject(gameTable)
