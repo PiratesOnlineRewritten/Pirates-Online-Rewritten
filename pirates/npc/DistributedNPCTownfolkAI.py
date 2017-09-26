@@ -95,9 +95,6 @@ class DistributedNPCTownfolkAI(DistributedBattleNPCAI, DistributedShopKeeperAI):
     def getHelpId(self):
         return self.helpId
 
-    def requestMusic(self, songId):
-        pass
-
     def d_playMusic(self, songId):
         self.sendUpdate('playMusic', [songId])
 
