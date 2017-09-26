@@ -19,6 +19,9 @@ class DistributedNPCTownfolkAI(DistributedBattleNPCAI, DistributedShopKeeperAI):
     def handleRequestInteraction(self, avatar, interactType, instant):
         if interactType == PiratesGlobals.INTERACT_TYPE_FRIENDLY:
 
+            if self.avatarType.isA(AvatarTypes.ScrimmageMaster):
+                return
+
             self.sendUpdateToAvatarId(avatar.doId, 'triggerInteractShow', [self.doId])
             self.sendUpdateToAvatarId(avatar.doId, 'offerOptions', [2])
 
