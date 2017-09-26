@@ -3,6 +3,8 @@ from pirates.minigame.DistributedGameTableAI import DistributedGameTableAI
 
 class DistributedBlackjackTableAI(DistributedGameTableAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedBlackjackTableAI')
+    AVAILABLE_SEATS = 7
+    TABLE_AI = 3
 
     def __init__(self, air):
         DistributedGameTableAI.__init__(self, air)
@@ -11,7 +13,7 @@ class DistributedBlackjackTableAI(DistributedGameTableAI):
         self.runningStakes = 0
         self.betMultiplier = 1
         self.hands = []
-        self.chipsCount = []
+        self.chipsCount = [0] * self.AVAILABLE_SEATS
 
     def setPendingStakes(self, pending):
         self.pendingStakes = pending
