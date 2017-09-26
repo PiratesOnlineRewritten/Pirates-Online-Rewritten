@@ -35,7 +35,7 @@ objectStruct = {
             'File': '',
             'Environment': 'OpenSky',
             'Footstep Sound': 'Sand',
-            'Minimap': False,
+            'Minimap': True,
             'Objects': {
                 '1151101067.25dzlu': {
                     'Type': 'Tree',
@@ -18863,7 +18863,9 @@ objectStruct = {
                 }
             },
             'Undockable': True,
-            'Visibility': 'Grid',
+            'VisSize': '',
+            'VisZone': '36',
+            'Visibility': 'Section',
             'Visual': {
                 'Model': 'models/islands/pir_m_are_isl_nassau'
             }
