@@ -1,5 +1,6 @@
 from direct.directnotify import DirectNotifyGlobal
 from pirates.minigame.DistributedGameTableAI import DistributedGameTableAI
+from pirates.minigame import TableGlobals
 
 class DistributedPokerTableAI(DistributedGameTableAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedPokerTableAI')
@@ -12,6 +13,7 @@ class DistributedPokerTableAI(DistributedGameTableAI):
         self.potSize = 0
         self.anteList = []
         self.tableState = (0, 0, [], [], [], [0, 0, 0, 0, 0, 0, 0, 0])
+        self.setTableType(TableGlobals.CARD_TABLE)
 
     def setGameType(self, gameType):
         self.gameType = gameType
