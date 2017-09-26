@@ -61,7 +61,7 @@ class StowawayGUI(DirectFrame):
         if not inventory:
             return
         if useCode == PiratesGuiGlobals.InventoryAdd:
-            if inventory.getGoldInPocket() < EconomyGlobals.StowawayCost[itemId]:
+            if base.localAvatar.getMoney() < EconomyGlobals.StowawayCost[itemId]:
                 base.localAvatar.guiMgr.createWarning(PLocalizer.NotEnoughMoneyWarning, PiratesGuiGlobals.TextFG6)
                 return
             messenger.send('requestStowaway', [itemId])

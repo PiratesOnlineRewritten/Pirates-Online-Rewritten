@@ -595,10 +595,10 @@ class JewelryStoreGUI(DirectFrame):
             return
         inventory = base.localAvatar.getInventory()
         if inventory:
-            if inventory.getGoldInPocket() < self.balance:
+            if base.localAvatar.getMoney() < self.balance:
                 base.localAvatar.guiMgr.createWarning(PLocalizer.NotEnoughMoneyWarning, PiratesGuiGlobals.TextFG6)
                 return
-            if self.balance < 0 and inventory.getGoldInPocket() + self.balance > GOLD_CAP:
+            if self.balance < 0 and base.localAvatar.getMoney() + self.balance > GOLD_CAP:
                 base.localAvatar.guiMgr.createWarning(PLocalizer.CannotHoldGoldWarning, PiratesGuiGlobals.TextFG6)
                 return
         purchaseArgList = []
@@ -667,7 +667,7 @@ class JewelryStoreGUI(DirectFrame):
                 self.commitButton['state'] = DGG.NORMAL
             inventory = base.localAvatar.getInventory()
             if inventory:
-                if inventory.getGoldInPocket() < self.balance or self.purchaseInventory.panels == []:
+                if base.localAvatar.getMoney() < self.balance or self.purchaseInventory.panels == []:
                     self.commitButton['frameColor'] = PiratesGuiGlobals.ButtonColor3
                 else:
                     self.commitButton['frameColor'] = PiratesGuiGlobals.ButtonColor4

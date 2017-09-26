@@ -698,7 +698,7 @@ class SimpleStoreGUI(DirectFrame):
             return 0
         if self.pvpMode:
             return inventory.getStackQuantity(InventoryType.PVPCurrentInfamy)
-        return inventory.getGoldInPocket()
+        return base.localAvatar.getMoney()
 
     def getMaxMoney(self, inventory):
         if not inventory:
@@ -727,7 +727,7 @@ class SimpleStoreGUI(DirectFrame):
             return
         stackable = self.buyPanelItem.checkStackable()
         inventory = base.localAvatar.getInventory()
-        myMoney = inventory.getGoldInPocket()
+        myMoney = base.localAvatar.getMoney()
         if self.pvpMode:
             myMoney = self.getMoney()
         if inventory:

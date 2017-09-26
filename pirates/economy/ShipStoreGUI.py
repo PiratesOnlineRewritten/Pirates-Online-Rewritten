@@ -143,10 +143,10 @@ class ShipStoreGUI(GuiPanel.GuiPanel):
                 return
         inventory = base.localAvatar.getInventory()
         if inventory:
-            if inventory.getGoldInPocket() < self.balance:
+            if base.localAvatar.getMoney() < self.balance:
                 base.localAvatar.guiMgr.createWarning(PLocalizer.NotEnoughMoneyWarning, PiratesGuiGlobals.TextFG6)
                 return
-            if self.balance < 0 and inventory.getGoldInPocket() + self.balance > InventoryGlobals.GOLD_CAP:
+            if self.balance < 0 and base.localAvatar.getMoney() + self.balance > InventoryGlobals.GOLD_CAP:
                 base.localAvatar.guiMgr.createWarning(PLocalizer.CannotHoldGoldWarning, PiratesGuiGlobals.TextFG6)
                 return
             if len(inventory.getShipDoIdList()) >= inventory.getCategoryLimit(InventoryCategory.SHIPS):
@@ -186,7 +186,7 @@ class ShipStoreGUI(GuiPanel.GuiPanel):
 
         inventory = base.localAvatar.getInventory()
         if inventory:
-            if inventory.getGoldInPocket() < self.balance:
+            if base.localAvatar.getMoney() < self.balance:
                 self.commitButton['frameColor'] = PiratesGuiGlobals.ButtonColor3
             elif len(inventory.getShipDoIdList()) >= inventory.getCategoryLimit(InventoryCategory.SHIPS):
                 self.commitButton['frameColor'] = PiratesGuiGlobals.ButtonColor3

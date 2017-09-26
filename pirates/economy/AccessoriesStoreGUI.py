@@ -857,7 +857,7 @@ class AccessoriesStoreGUI(DirectFrame):
             base.localAvatar.guiMgr.createWarning(PLocalizer.EmptyPurchaseWarning, PiratesGuiGlobals.TextFG6)
             return
         inventory = base.localAvatar.getInventory()
-        myMoney = inventory.getGoldInPocket()
+        myMoney = base.localAvatar.getMoney()
         if inventory:
             if myMoney < self.balance:
                 base.localAvatar.guiMgr.createWarning(PLocalizer.NotEnoughMoneyWarning, PiratesGuiGlobals.TextFG6)
@@ -925,7 +925,7 @@ class AccessoriesStoreGUI(DirectFrame):
             self.balanceValue['text_fg'] = PiratesGuiGlobals.TextFG2
             self.commitButton['state'] = DGG.NORMAL
         inventory = base.localAvatar.getInventory()
-        myMoney = inventory.getGoldInPocket()
+        myMoney = base.localAvatar.getMoney()
         if self.pvpMode:
             myMoney = self.getMoney()
         if inventory:
@@ -1871,7 +1871,7 @@ class AccessoriesStoreGUI(DirectFrame):
     def getMoney(self):
         inventory = base.localAvatar.getInventory()
         if inventory:
-            return inventory.getGoldInPocket()
+            return base.localAvatar.getMoney()
         else:
             return 0
 

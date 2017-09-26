@@ -481,7 +481,7 @@ class TattooStoreGUI(DirectFrame):
             base.localAvatar.guiMgr.createWarning(PLocalizer.EmptyPurchaseWarning, PiratesGuiGlobals.TextFG6)
             return
         inventory = base.localAvatar.getInventory()
-        myMoney = inventory.getGoldInPocket()
+        myMoney = base.localAvatar.getMoney()
         if inventory:
             if myMoney < self.balance:
                 base.localAvatar.guiMgr.createWarning(PLocalizer.NotEnoughMoneyWarning, PiratesGuiGlobals.TextFG6)
@@ -544,7 +544,7 @@ class TattooStoreGUI(DirectFrame):
             self.balanceValue['text_fg'] = PiratesGuiGlobals.TextFG2
             self.commitButton['state'] = DGG.NORMAL
         inventory = base.localAvatar.getInventory()
-        myMoney = inventory.getGoldInPocket()
+        myMoney = base.localAvatar.getMoney()
         if inventory:
             if myMoney < self.balance or self.purchaseInventory.panels == []:
                 self.commitButton['frameColor'] = PiratesGuiGlobals.ButtonColor3
@@ -1067,7 +1067,7 @@ class TattooStoreGUI(DirectFrame):
     def getMoney(self):
         inventory = base.localAvatar.getInventory()
         if inventory:
-            return inventory.getGoldInPocket()
+            return base.localAvatar.getMoney()
         else:
             return 0
 
