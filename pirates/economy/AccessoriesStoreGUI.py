@@ -1331,271 +1331,269 @@ class AccessoriesStoreGUI(DirectFrame):
                     if id != -1 and (not holiday or holiday in AccessoriesStoreGUI.holidayIdList):
                         clothes.append([clothingId, color, 0, cost, False, id, tex, holiday, 0])
 
-        else:
-            if self.mode == SELLING:
-                if self.currentWardrobe:
-                    for item in self.currentWardrobe:
-                        uid = item[0]
-                        location = item[1]
-                        type = ItemGlobals.getType(uid)
-                        if type == clothingTypeId:
-                            if gender == 'm':
-                                id = ItemGlobals.getMaleModelId(uid)
-                                if id != -1:
-                                    tex = ItemGlobals.getMaleTextureId(uid)
-                            else:
-                                id = ItemGlobals.getFemaleModelId(uid)
-                                if id != -1:
-                                    tex = ItemGlobals.getFemaleTextureId(uid)
-                            color = item[2]
-                            original = False
-                            cost = ItemGlobals.getGoldCost(uid)
-                            equipped = False
-                            holiday = ItemGlobals.getHoliday(uid)
-                            if id != -1:
-                                if location in range(Locations.RANGE_EQUIP_CLOTHES[0], Locations.RANGE_EQUIP_CLOTHES[1]):
-                                    equipped = True
-                                clothes.append([uid, color, original, cost, equipped, id, tex, holiday, location])
-
-            if not config.GetBool('tailor-debug', 0):
-                clothes.sort(self.sortItems)
-            clothingAmount = 0
-            startPos = Vec3(0.35, 0.0, 1.05)
-            buttonScale = Vec3(0.6, 0.6, 0.6)
-            for item in self.buttons:
-                item.destroy()
-
-            self.buttons = []
-            self.clothingAmount = 0
-            self.buttonIndex = startIndex
-            if self.mode == BUYING:
-                self.storeButton['state'] = DGG.DISABLED
-                self.wardrobeButton['state'] = DGG.NORMAL
-                buttonColorA = Vec4(0.7, 0.95, 0.7, 1.0)
-                buttonColorB = Vec4(0.4, 0.65, 0.4, 1.0)
-                self.purchaseInventory.setItemColor(Vec4(0.3, 0.95, 0.3, 1.0))
-            elif self.mode == SELLING:
-                self.storeButton['state'] = DGG.NORMAL
-                self.wardrobeButton['state'] = DGG.DISABLED
-                buttonColorA = Vec4(0.95, 0.7, 0.7, 1.0)
-                buttonColorB = Vec4(0.65, 0.4, 0.4, 1.0)
-                self.sellInventory.setItemColor(Vec4(0.95, 0.3, 0.3, 1.0))
-            self.reloadPirateDNA()
-            regionData = []
-            for cloth in clothes:
-                numButtons = self.clothingAmount - startIndex
-                if numButtons < self.buttonsPerPage and self.clothingAmount >= startIndex:
-                    uid = cloth[0]
-                    clothColorId = cloth[1]
-                    original = cloth[2]
+        elif self.mode == SELLING:
+            if self.currentWardrobe:
+                for item in self.currentWardrobe:
+                    uid = item[0]
+                    location = item[1]
                     type = ItemGlobals.getType(uid)
-                    if gender == 'm':
-                        id = ItemGlobals.getMaleModelId(uid)
-                        if id != -1:
-                            tex = ItemGlobals.getMaleTextureId(uid)
+                    if type == clothingTypeId:
+                        if gender == 'm':
+                            id = ItemGlobals.getMaleModelId(uid)
+                            if id != -1:
+                                tex = ItemGlobals.getMaleTextureId(uid)
                         else:
                             id = ItemGlobals.getFemaleModelId(uid)
-                            tex = ItemGlobals.getFemaleTextureId(uid)
+                            if id != -1:
+                                tex = ItemGlobals.getFemaleTextureId(uid)
+                        color = item[2]
+                        original = False
+                        cost = ItemGlobals.getGoldCost(uid)
+                        equipped = False
+                        holiday = ItemGlobals.getHoliday(uid)
+                        if id != -1:
+                            if location in range(Locations.RANGE_EQUIP_CLOTHES[0], Locations.RANGE_EQUIP_CLOTHES[1]):
+                                equipped = True
+                            clothes.append([uid, color, original, cost, equipped, id, tex, holiday, location])
+
+        if not config.GetBool('tailor-debug', 0):
+            clothes.sort(self.sortItems)
+
+        clothingAmount = 0
+        startPos = Vec3(0.35, 0.0, 1.05)
+        buttonScale = Vec3(0.6, 0.6, 0.6)
+        for item in self.buttons:
+            item.destroy()
+
+        self.buttons = []
+        self.clothingAmount = 0
+        self.buttonIndex = startIndex
+        if self.mode == BUYING:
+            self.storeButton['state'] = DGG.DISABLED
+            self.wardrobeButton['state'] = DGG.NORMAL
+            buttonColorA = Vec4(0.7, 0.95, 0.7, 1.0)
+            buttonColorB = Vec4(0.4, 0.65, 0.4, 1.0)
+            self.purchaseInventory.setItemColor(Vec4(0.3, 0.95, 0.3, 1.0))
+        elif self.mode == SELLING:
+            self.storeButton['state'] = DGG.NORMAL
+            self.wardrobeButton['state'] = DGG.DISABLED
+            buttonColorA = Vec4(0.95, 0.7, 0.7, 1.0)
+            buttonColorB = Vec4(0.65, 0.4, 0.4, 1.0)
+            self.sellInventory.setItemColor(Vec4(0.95, 0.3, 0.3, 1.0))
+
+        self.reloadPirateDNA()
+        regionData = []
+        for cloth in clothes:
+            numButtons = self.clothingAmount - startIndex
+            if numButtons < self.buttonsPerPage and self.clothingAmount >= startIndex:
+                uid = cloth[0]
+                clothColorId = cloth[1]
+                original = cloth[2]
+                type = ItemGlobals.getType(uid)
+                if gender == 'm':
+                    id = ItemGlobals.getMaleModelId(uid)
+                    if id != -1:
+                        tex = ItemGlobals.getMaleTextureId(uid)
                     else:
                         id = ItemGlobals.getFemaleModelId(uid)
-                        if id != -1:
-                            tex = ItemGlobals.getFemaleTextureId(uid)
+                        tex = ItemGlobals.getFemaleTextureId(uid)
+                else:
+                    id = ItemGlobals.getFemaleModelId(uid)
+                    if id != -1:
+                        tex = ItemGlobals.getFemaleTextureId(uid)
+                    else:
+                        id = ItemGlobals.getMaleModelId(uid)
+                        tex = ItemGlobals.getMaleTextureId(uid)
+                shortDesc = PLocalizer.getItemName(uid)
+                longDesc = PLocalizer.getItemFlavorText(uid)
+                owned = False
+                newItem = False
+                equipped = cloth[4]
+                clothCost = cloth[3]
+                location = cloth[8]
+                landInfamyLevel = ItemGlobals.getLandInfamyRequirement(uid)
+                seaInfamyLevel = ItemGlobals.getSeaInfamyRequirement(uid)
+                inventory = localAvatar.getInventory()
+                if inventory:
+                    landInfamyRequired = landInfamyLevel and TitleGlobals.getRank(TitleGlobals.LandPVPTitle, inventory.getStackQuantity(InventoryType.PVPTotalInfamyLand)) < landInfamyLevel
+                    seaInfamyRequired = seaInfamyLevel and TitleGlobals.getRank(TitleGlobals.ShipPVPTitle, inventory.getStackQuantity(InventoryType.PVPTotalInfamySea)) < seaInfamyLevel
+                else:
+                    landInfamyRequired = False
+                    seaInfamyRequired = False
+                if self.mode == SELLING:
+                    clothCost = int(clothCost * ItemGlobals.GOLD_SALE_MULTIPLIER)
+                colorsOwned = []
+                colorsNotOwned = []
+                if ItemGlobals.canDyeItem(uid):
+                    colorSet = range(0, 21)
+                else:
+                    colorSet = []
+                if self.mode == SELLING:
+                    buttonState = DGG.DISABLED
+                else:
+                    buttonState = DGG.NORMAL
+                helpText = longDesc
+                if uid in ClothingGlobals.quest_items:
+                    helpText = PLocalizer.ShopQuestItem + '!\n\n' + helpText
+                if len(colorsNotOwned):
+                    color = colorsNotOwned[0]
+                else:
+                    color = 0
+                clothButton = GuiButton.GuiButton(
+                    command=self.setClothes,
+                    parent=self.panel,
+                    state=buttonState,
+                    text_fg=PiratesGuiGlobals.TextFG2,
+                    text_pos=(0.0, -0.02),
+                    text_scale=PiratesGuiGlobals.TextScaleLarge,
+                    text_align=TextNode.ALeft,
+                    text_shadow=PiratesGuiGlobals.TextShadow,
+                    pos=startPos,
+                    image_scale=buttonScale,
+                    image_color=buttonColorA,
+                    extraArgs=[clothingTypeId, id, tex, color, numButtons],
+                    helpText=helpText,
+                    helpDelay=0,
+                    helpPos=(0.0, 0.0, -0.11),
+                    helpLeftAlign=True)
+                clothButton.selectedColor = [color, None]
+                clothButton.helpWatcher.setPos(clothButton.getPos())
+                if config.GetBool('tailor-debug', 0):
+                    clothButton['text'] = text = str(uid)
+                if self.mode == BUYING and not owned:
+                    clothButton.previewText = DirectFrame(
+                        parent=clothButton, relief=None,
+                        text=PLocalizer.TailorPreview,
+                        text_fg=PiratesGuiGlobals.TextFG1,
+                        text_align=TextNode.ARight,
+                        text_scale=PiratesGuiGlobals.TextScaleSmall,
+                        text_shadow=PiratesGuiGlobals.TextShadow,
+                        textMayChange=1,
+                        pos=(-0.02, 0, -0.08))
+                elif self.mode == SELLING:
+                    clothButton.equippedText = DirectFrame(
+                        parent=clothButton,
+                        relief=None,
+                        text=PLocalizer.TattooShopOwned,
+                        text_fg=PiratesGuiGlobals.TextFG1,
+                        text_align=TextNode.ARight,
+                        text_scale=PiratesGuiGlobals.TextScaleSmall,
+                        text_shadow=PiratesGuiGlobals.TextShadow,
+                        textMayChange=0,
+                        pos=(-0.02, 0, -0.08))
+                    if equipped:
+                        clothButton.equippedText.show()
+                    else:
+                        clothButton.equippedText.hide()
+                clothButton.addToCart = GuiButton.GuiButton(
+                    command=self.addToCart,
+                    parent=clothButton,
+                    text_fg=PiratesGuiGlobals.TextFG2,
+                    text_pos=(0.0, -0.01),
+                    text_scale=PiratesGuiGlobals.TextScaleLarge,
+                    text_align=TextNode.ACenter,
+                    text_shadow=PiratesGuiGlobals.TextShadow,
+                    image_color=buttonColorB,
+                    image_scale=(0.19, 0.22, 0.0, 0.055),
+                    helpText=PLocalizer.ShopAddToCart,
+                    helpDelay=0)
+                clothButton.colorPicker = GuiButton.GuiButton(
+                    command=self.showColorFrame,
+                    parent=clothButton,
+                    text_fg=PiratesGuiGlobals.TextFG2,
+                    text_pos=(0.0, -0.01),
+                    text_scale=PiratesGuiGlobals.TextScaleLarge,
+                    text_align=TextNode.ACenter,
+                    text_shadow=PiratesGuiGlobals.TextShadow,
+                    image_color=buttonColorB,
+                    image_scale=(0.08, 0.22, 0.22),
+                    geom=self.ColorPickerIcon,
+                    geom_scale=0.4,
+                    geom_color=Vec4(0.8, 0.8, 0.8, 1),
+                    pos=(0.045, 0.0, 0.055),
+                    helpText=PLocalizer.ShopSelectColor,
+                    helpPos=(-0.28, 0, 0.08),
+                    helpDelay=0,
+                    helpOpaque=1)
+
+                if self.mode == BUYING:
+                    clothButton.addToCart['extraArgs'] = [clothButton, clothingType, id, tex, clothCost, uid]
+                else:
+                    clothButton.addToCart['extraArgs'] = [clothButton, clothingType, id, tex, clothCost, uid, clothColorId, location]
+
+                clothButton.colorPicker['extraArgs'] = [clothButton, clothingType, id, tex, clothCost, uid]
+                if self.mode == SELLING:
+                    clothButton.colorPicker.hide()
+                if len(colorSet) <= 1 or len(colorSet) - len(colorsOwned) == 1:
+                    clothButton.colorPicker.hide()
+                clothButton.bind(DGG.ENTER, self.highlightClothStart, extraArgs=[self.clothingAmount])
+                clothButton.bind(DGG.EXIT, self.highlightClothStop, extraArgs=[self.clothingAmount])
+                if self.mode == BUYING and not owned:
+                    if clothCost == 0:
+                        clothCost = PLocalizer.ShopFree
+                    if self.pvpMode and landInfamyRequired or seaInfamyRequired:
+                        clothButton['state'] = DGG.DISABLED
+                        clothButton.previewText['text'] = ''
+                        clothButton.addToCart.hide()
+                        if landInfamyRequired:
+                            infamyText = PLocalizer.LandInfamyRequirement % landInfamyLevel
                         else:
-                            id = ItemGlobals.getMaleModelId(uid)
-                            tex = ItemGlobals.getMaleTextureId(uid)
-                        shortDesc = PLocalizer.getItemName(uid)
-                        longDesc = PLocalizer.getItemFlavorText(uid)
-                        owned = False
-                        newItem = False
-                        equipped = cloth[4]
-                        clothCost = cloth[3]
-                        location = cloth[8]
-                        landInfamyLevel = ItemGlobals.getLandInfamyRequirement(uid)
-                        seaInfamyLevel = ItemGlobals.getSeaInfamyRequirement(uid)
-                        inventory = localAvatar.getInventory()
-                        if inventory:
-                            landInfamyRequired = landInfamyLevel and TitleGlobals.getRank(TitleGlobals.LandPVPTitle, inventory.getStackQuantity(InventoryType.PVPTotalInfamyLand)) < landInfamyLevel
-                            seaInfamyRequired = seaInfamyLevel and TitleGlobals.getRank(TitleGlobals.ShipPVPTitle, inventory.getStackQuantity(InventoryType.PVPTotalInfamySea)) < seaInfamyLevel
-                        else:
-                            landInfamyRequired = False
-                            seaInfamyRequired = False
-                        if self.mode == SELLING:
-                            clothCost = int(clothCost * ItemGlobals.GOLD_SALE_MULTIPLIER)
-                        colorsOwned = []
-                        colorsNotOwned = []
-                        if ItemGlobals.canDyeItem(uid):
-                            colorSet = range(0, 21)
-                        else:
-                            colorSet = []
-                        if self.mode == SELLING:
-                            buttonState = DGG.DISABLED
-                        else:
-                            buttonState = DGG.NORMAL
-                        helpText = longDesc
-                        if uid in ClothingGlobals.quest_items:
-                            helpText = PLocalizer.ShopQuestItem + '!\n\n' + helpText
-                        if len(colorsNotOwned):
-                            color = colorsNotOwned[0]
-                        else:
-                            color = 0
-                        clothButton = GuiButton.GuiButton(
-                            command=self.setClothes,
-                            parent=self.panel,
-                            state=buttonState,
-                            text_fg=PiratesGuiGlobals.TextFG2,
-                            text_pos=(0.0, -0.02),
-                            text_scale=PiratesGuiGlobals.TextScaleLarge,
-                            text_align=TextNode.ALeft,
-                            text_shadow=PiratesGuiGlobals.TextShadow,
-                            pos=startPos,
-                            image_scale=buttonScale,
-                            image_color=buttonColorA,
-                            extraArgs=[clothingTypeId, id, tex, color, numButtons],
-                            helpText=helpText,
-                            helpDelay=0,
-                            helpPos=(0.0, 0.0, -0.11),
-                            helpLeftAlign=True)
-                        clothButton.selectedColor = [
-                         color, None]
-                        clothButton.helpWatcher.setPos(clothButton.getPos())
-                        if config.GetBool('tailor-debug', 0):
-                            clothButton['text'] = text = str(uid)
-                        if self.mode == BUYING and not owned:
-                            clothButton.previewText = DirectFrame(
-                                parent=clothButton, relief=None,
-                                text=PLocalizer.TailorPreview,
-                                text_fg=PiratesGuiGlobals.TextFG1,
-                                text_align=TextNode.ARight,
-                                text_scale=PiratesGuiGlobals.TextScaleSmall,
-                                text_shadow=PiratesGuiGlobals.TextShadow,
-                                textMayChange=1,
-                                pos=(-0.02, 0, -0.08))
+                            infamyText = PLocalizer.SeaInfamyRequirement % seaInfamyLevel
+                        clothButton['text'] = infamyText
+                        clothButton['text_fg'] = PiratesGuiGlobals.TextFG6
+                        clothButton['text_pos'] = (-0.02, 0.05)
+
+                    clothButton.cost = DirectFrame(parent=clothButton, relief=None, text=str(clothCost), text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ARight, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(-0.055, 0.0), text_shadow=PiratesGuiGlobals.TextShadow, textMayChange=0, image=self.CoinImage, image_scale=0.15, image_pos=(-0.025, 0, 0.015), pos=(0.25, 0, -0.05))
+                    if original:
+                        clothButton.addToCart['state'] = DGG.DISABLED
+                        clothButton.addToCart.hide()
+                        clothButton.originalItem = DirectFrame(parent=clothButton, relief=None, text=PLocalizer.TailorStartingItem, text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ACenter, text_scale=PiratesGuiGlobals.TextScaleLarge, text_shadow=PiratesGuiGlobals.TextShadow, textMayChange=0, pos=(0.16, 0.0, 0.04))
+                    if not self.paid:
+                        clothButton.addToCart['geom'] = self.LockIcon
+                        clothButton.addToCart['geom_scale'] = 0.2
+                        clothButton.addToCart['geom_pos'] = Vec3(-0.1, 0.0, 0.0)
+                        clothButton.addToCart['command'] = localAvatar.guiMgr.showNonPayer
+                        clothButton.addToCart['extraArgs'] = ['CLOTHING_CANNOT_BUY-SELL', 10]
+                data = [clothingType, id, tex, clothColorId, clothCost, uid, location]
+                if self.mode == BUYING and owned:
+                    clothButton.addToCart.buyState = 0
+                    clothButton.addToCart['state'] = DGG.DISABLED
+                    clothButton['state'] = DGG.DISABLED
+                    clothButton.addToCart['text'] = PLocalizer.TailorPurchased
+                elif self.mode == BUYING and self.purchaseInventory.hasPanel(data, self.mode):
+                    clothButton.addToCart.buyState = 0
+                    clothButton.addToCart['state'] = DGG.NORMAL
+                    clothButton.addToCart['text'] = PLocalizer.TailorRemove
+                    if not self.pvpMode or not (landInfamyRequired or seaInfamyRequired):
+                        clothButton.addToCart.show()
+                elif self.mode == SELLING and self.sellInventory.hasPanel(data, self.mode):
+                    clothButton.addToCart.buyState = 0
+                    clothButton.addToCart['state'] = DGG.NORMAL
+                    clothButton.addToCart['text'] = PLocalizer.TailorRemove
+                else:
+                    clothButton.addToCart.buyState = 1
+                    clothButton.addToCart['state'] = DGG.NORMAL
+                    if self.mode == BUYING:
+                        clothButton.addToCart['text'] = PLocalizer.TailorAddToCart
+                        if self.pvpMode and (landInfamyRequired or seaInfamyRequired):
+                            clothButton.addToCart.hide()
                         elif self.mode == SELLING:
-                            clothButton.equippedText = DirectFrame(
-                                parent=clothButton,
-                                relief=None,
-                                text=PLocalizer.TattooShopOwned,
-                                text_fg=PiratesGuiGlobals.TextFG1,
-                                text_align=TextNode.ARight,
-                                text_scale=PiratesGuiGlobals.TextScaleSmall,
-                                text_shadow=PiratesGuiGlobals.TextShadow,
-                                textMayChange=0,
-                                pos=(-0.02, 0, -0.08))
-                            if equipped:
-                                clothButton.equippedText.show()
-                            else:
-                                clothButton.equippedText.hide()
-                        clothButton.addToCart = GuiButton.GuiButton(
-                            command=self.addToCart,
-                            parent=clothButton,
-                            text_fg=PiratesGuiGlobals.TextFG2,
-                            text_pos=(0.0, -0.01),
-                            text_scale=PiratesGuiGlobals.TextScaleLarge,
-                            text_align=TextNode.ACenter,
-                            text_shadow=PiratesGuiGlobals.TextShadow,
-                            image_color=buttonColorB,
-                            image_scale=(0.19, 0.22, 0.0, 0.055),
-                            helpText=PLocalizer.ShopAddToCart,
-                            helpDelay=0)
-                        clothButton.colorPicker = GuiButton.GuiButton(
-                            command=self.showColorFrame,
-                            parent=clothButton,
-                            text_fg=PiratesGuiGlobals.TextFG2,
-                            text_pos=(0.0, -0.01),
-                            text_scale=PiratesGuiGlobals.TextScaleLarge,
-                            text_align=TextNode.ACenter,
-                            text_shadow=PiratesGuiGlobals.TextShadow,
-                            image_color=buttonColorB,
-                            image_scale=(0.08, 0.22, 0.22),
-                            geom=self.ColorPickerIcon,
-                            geom_scale=0.4,
-                            geom_color=Vec4(0.8, 0.8, 0.8, 1),
-                            pos=(0.045, 0.0, 0.055),
-                            helpText=PLocalizer.ShopSelectColor,
-                            helpPos=(-0.28, 0, 0.08),
-                            helpDelay=0,
-                            helpOpaque=1)
+                            clothButton.addToCart['text'] = PLocalizer.TailorSell
 
-                        if self.mode == BUYING:
-                            clothButton.addToCart['extraArgs'] = [
-                             clothButton, clothingType, id, tex, clothCost, uid]
-                        else:
-                            clothButton.addToCart['extraArgs'] = [
-                             clothButton, clothingType, id, tex, clothCost, uid, clothColorId, location]
-
-                        clothButton.colorPicker['extraArgs'] = [
-                         clothButton, clothingType, id, tex, clothCost, uid]
-                        if self.mode == SELLING:
-                            clothButton.colorPicker.hide()
-                        if len(colorSet) <= 1 or len(colorSet) - len(colorsOwned) == 1:
-                            clothButton.colorPicker.hide()
-                        clothButton.bind(DGG.ENTER, self.highlightClothStart, extraArgs=[self.clothingAmount])
-                        clothButton.bind(DGG.EXIT, self.highlightClothStop, extraArgs=[self.clothingAmount])
-                        if self.mode == BUYING and not owned:
-                            if clothCost == 0:
-                                clothCost = PLocalizer.ShopFree
-                            if self.pvpMode and landInfamyRequired or seaInfamyRequired:
-                                clothButton['state'] = DGG.DISABLED
-                                clothButton.previewText['text'] = ''
-                                clothButton.addToCart.hide()
-                                if landInfamyRequired:
-                                    infamyText = PLocalizer.LandInfamyRequirement % landInfamyLevel
-                                else:
-                                    infamyText = PLocalizer.SeaInfamyRequirement % seaInfamyLevel
-                                clothButton['text'] = infamyText
-                                clothButton['text_fg'] = PiratesGuiGlobals.TextFG6
-                                clothButton['text_pos'] = (-0.02, 0.05)
-                            clothButton.cost = DirectFrame(parent=clothButton, relief=None, text=str(clothCost), text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ARight, text_scale=PiratesGuiGlobals.TextScaleLarge, text_pos=(-0.055, 0.0), text_shadow=PiratesGuiGlobals.TextShadow, textMayChange=0, image=self.CoinImage, image_scale=0.15, image_pos=(-0.025, 0, 0.015), pos=(0.25, 0, -0.05))
-                            if original:
-                                clothButton.addToCart['state'] = DGG.DISABLED
-                                clothButton.addToCart.hide()
-                                clothButton.originalItem = DirectFrame(parent=clothButton, relief=None, text=PLocalizer.TailorStartingItem, text_fg=PiratesGuiGlobals.TextFG2, text_align=TextNode.ACenter, text_scale=PiratesGuiGlobals.TextScaleLarge, text_shadow=PiratesGuiGlobals.TextShadow, textMayChange=0, pos=(0.16, 0.0, 0.04))
-                        if not self.paid:
-                            clothButton.addToCart['geom'] = self.LockIcon
-                            clothButton.addToCart['geom_scale'] = 0.2
-                            clothButton.addToCart['geom_pos'] = Vec3(-0.1, 0.0, 0.0)
-                            clothButton.addToCart['command'] = localAvatar.guiMgr.showNonPayer
-                            clothButton.addToCart['extraArgs'] = ['CLOTHING_CANNOT_BUY-SELL', 10]
-                        data = [
-                         clothingType, id, tex, clothColorId, clothCost, uid, location]
-                        if self.mode == BUYING and owned:
-                            clothButton.addToCart.buyState = 0
-                            clothButton.addToCart['state'] = DGG.DISABLED
-                            clothButton['state'] = DGG.DISABLED
-                            clothButton.addToCart['text'] = PLocalizer.TailorPurchased
-                        elif self.mode == BUYING and self.purchaseInventory.hasPanel(data, self.mode):
-                            clothButton.addToCart.buyState = 0
-                            clothButton.addToCart['state'] = DGG.NORMAL
-                            clothButton.addToCart['text'] = PLocalizer.TailorRemove
-                            if not self.pvpMode or not (landInfamyRequired or seaInfamyRequired):
-                                clothButton.addToCart.show()
-                        elif self.mode == SELLING and self.sellInventory.hasPanel(data, self.mode):
-                            clothButton.addToCart.buyState = 0
-                            clothButton.addToCart['state'] = DGG.NORMAL
-                            clothButton.addToCart['text'] = PLocalizer.TailorRemove
-                        else:
-                            clothButton.addToCart.buyState = 1
-                            clothButton.addToCart['state'] = DGG.NORMAL
-                            if self.mode == BUYING:
-                                clothButton.addToCart['text'] = PLocalizer.TailorAddToCart
-                                if self.pvpMode and (landInfamyRequired or seaInfamyRequired):
-                                    clothButton.addToCart.hide()
-                            elif self.mode == SELLING:
-                                clothButton.addToCart['text'] = PLocalizer.TailorSell
-                    if equipped and type == ClothingGlobals.PANT:
-                        clothButton.addToCart['state'] = DGG.DISABLED
-                    elif equipped and gender == 'f' and type == ClothingGlobals.SHIRT:
-                        clothButton.addToCart['state'] = DGG.DISABLED
-                    startPos -= Vec3(0.0, 0.0, clothButton.getHeight() - 0.02)
-                    clothButton.clothModelId = id
-                    clothButton.clothModelType = ClothingGlobals.CLOTHING_STRING[type]
-                    clothButton.clothTextureId = tex
-                    clothButton.clothColorId = clothColorId
-                    clothButton.clothUid = uid
-                    clothButton.original = original
-                    clothButton.clothLocation = location
-                    regionData.append([ClothingGlobals.CLOTHING_STRING[type], id, tex, clothColorId])
-                    self.buttons.append(clothButton)
+                if equipped and type == ClothingGlobals.PANT:
+                    clothButton.addToCart['state'] = DGG.DISABLED
+                elif equipped and gender == 'f' and type == ClothingGlobals.SHIRT:
+                    clothButton.addToCart['state'] = DGG.DISABLED
+                startPos -= Vec3(0.0, 0.0, clothButton.getHeight() - 0.02)
+                clothButton.clothModelId = id
+                clothButton.clothModelType = ClothingGlobals.CLOTHING_STRING[type]
+                clothButton.clothTextureId = tex
+                clothButton.clothColorId = clothColorId
+                clothButton.clothUid = uid
+                clothButton.original = original
+                clothButton.clothLocation = location
+                regionData.append([ClothingGlobals.CLOTHING_STRING[type], id, tex, clothColorId])
+                self.buttons.append(clothButton)
                 self.clothingAmount += 1
 
             if not len(clothes):
@@ -1607,6 +1605,7 @@ class AccessoriesStoreGUI(DirectFrame):
                 clothButton.clothUid = -1
                 clothButton.original = -1
                 self.buttons.append(clothButton)
+
             if len(clothes):
                 self.setupDisplayRegions(regionData, pageName)
             else:
@@ -1627,8 +1626,9 @@ class AccessoriesStoreGUI(DirectFrame):
                 if remainder > 0:
                     numPages += 1.0 - remainder
                 page = startIndex / self.buttonsPerPage + 1
-            numPages = 1
-            page = 1
+            else:
+                numPages = 1
+                page = 1
         self.pageNumber['text'] = '%s %s / %s' % (PLocalizer.TailorPage, page, int(numPages))
         return
 
