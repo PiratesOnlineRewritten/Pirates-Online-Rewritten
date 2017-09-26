@@ -29,6 +29,15 @@ class WorldCreatorAI(WorldCreatorBase, DirectObject):
                 break
         return found
 
+    def getObjectFilenameByUid(self, objKey):
+        file = None
+        for fileName in self.fileDicts.keys():
+            found = self.getObjectDataFromFileByUid(objKey, fileName, getParentUid=True)
+            if found:
+                file = fileName
+                break
+        return file
+
     def getIslandWorldDataByUid(self, uid, world=None):
         if world is None:
             world = self.world

@@ -142,10 +142,13 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
     def __createDoorLocatorNode(self, parent, parentUid, objKey, objectData):
         from pirates.world.DistributedGAInteriorAI import DistributedGAInteriorAI
 
-        interior = self.parent.getParentObj().uidMgr.justGetMeMeObject(parentUid)
+        actualParentUid = self.air.worldCreator.getObjectParentUid(objKey)
+        parentData = self.air.worldCreator.getObjectDataByUid(actualParentUid)
 
+        interior = self.parent.getParentObj().uidMgr.justGetMeMeObject(parentUid)
         if not interior or not isinstance(interior, DistributedGAInteriorAI):
-            self.notify.warning('Cannot create door for a non-existant interior %s!' % parentUid)
+            if parentData.get('File', None):
+                self.notify.warning('Cannot create door for a non-existant interior %s!' % parentUid)
             return
 
         buildingDoor = DistributedBuildingDoorAI(self.air)

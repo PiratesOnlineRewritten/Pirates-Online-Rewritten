@@ -31,7 +31,7 @@ class InteriorAreaBuilderAI(AreaBuilderBaseAI):
         exteriorDoor = self.parent.getExteriorDoor()
 
         if not exteriorDoor:
-            self.notify.warning('Cannot create interior door for interior %d, with no exterior door!' % self.parent.doId)
+            self.notify.warning('Cannot create interior door for interior %d (%s), with no exterior door!' % (self.parent.doId, self.air.worldCreator.getObjectFilenameByUid(objKey)))
             return
 
         interiorDoor = DistributedInteriorDoorAI(self.air)
