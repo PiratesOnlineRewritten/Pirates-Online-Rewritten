@@ -7434,15 +7434,21 @@ objectStruct = {
                             'type': 'Barrel'
                         },
                         '1189538176.0dchiappe0': {
-                            'Type': 'Animated Prop',
+                            'Type': 'Animal',
+                            'Patrol Radius': '12.0000',
                             'GridPos': Point3(-390.951, -1950.424, 33.082),
                             'Hpr': VBase3(-127.345, 0.0, 0.0),
+                            'PoseAnim': '',
+                            'PoseFrame': '',
+                            'Respawns': True,
                             'Pos': Point3(76.87, -5.175, 29.538),
                             'Scale': VBase3(2.289, 2.289, 2.289),
-                            'Visual': {
-                                'Animate': 'models/char/seagull_idle',
-                                'Model': 'models/char/seagull_hi'
-                            }
+                            'Species': 'Seagull',
+                            'Start State': 'Idle',
+                            'StartFrame': '0',
+                            'VisSize': '',
+                            'spawnTimeBegin': 5.5,
+                            'spawnTimeEnd': 20.5
                         }
                     },
                     'Pos': Point3(-382.352, -2026.987, 3.544),
@@ -17120,54 +17126,84 @@ objectStruct = {
                     }
                 },
                 '1189537920.0dchiappe': {
-                    'Type': 'Animated Prop',
+                    'Type': 'Animal',
+                    'Patrol Radius': '12.0000',
                     'Hpr': VBase3(-114.226, 0.0, 0.0),
                     'Pos': Point3(136.229, -1609.462, 17.452),
+                    'PoseAnim': '',
+                    'PoseFrame': '',
+                    'Respawns': True,
                     'Scale': VBase3(1.875, 1.875, 1.875),
-                    'Visual': {
-                        'Animate': 'models/char/seagull_groom_idle',
-                        'Model': 'models/char/seagull_hi'
-                    }
+                    'Species': 'Seagull',
+                    'Start State': 'Idle',
+                    'StartFrame': '0',
+                    'VisSize': '',
+                    'spawnTimeBegin': 5.5,
+                    'spawnTimeEnd': 20.5
                 },
                 '1189537920.0dchiappe0': {
-                    'Type': 'Animated Prop',
+                    'Type': 'Animal',
+                    'Patrol Radius': '12.0000',
                     'Hpr': VBase3(-9.181, 0.0, 0.0),
                     'Pos': Point3(122.018, -1605.912, 27.245),
+                    'PoseAnim': '',
+                    'PoseFrame': '',
+                    'Respawns': True,
                     'Scale': VBase3(2.09, 2.09, 2.09),
-                    'Visual': {
-                        'Animate': 'models/char/seagull_idle',
-                        'Model': 'models/char/seagull_hi'
-                    }
+                    'Species': 'Seagull',
+                    'Start State': 'Idle',
+                    'StartFrame': '0',
+                    'VisSize': '',
+                    'spawnTimeBegin': 5.5,
+                    'spawnTimeEnd': 20.5
                 },
                 '1189538048.0dchiappe': {
-                    'Type': 'Animated Prop',
+                    'Type': 'Animal',
+                    'Patrol Radius': '12.0000',
                     'Hpr': VBase3(-105.829, 0.0, 0.0),
                     'Pos': Point3(425.515, -2105.169, 16.007),
+                    'PoseAnim': '',
+                    'PoseFrame': '',
+                    'Respawns': True,
                     'Scale': VBase3(1.822, 1.822, 1.822),
-                    'Visual': {
-                        'Animate': 'models/char/seagull_idle',
-                        'Model': 'models/char/seagull_hi'
-                    }
+                    'Species': 'Seagull',
+                    'Start State': 'Idle',
+                    'StartFrame': '0',
+                    'VisSize': '',
+                    'spawnTimeBegin': 5.5,
+                    'spawnTimeEnd': 20.5
                 },
                 '1189538176.0dchiappe': {
-                    'Type': 'Animated Prop',
+                    'Type': 'Animal',
+                    'Patrol Radius': '12.0000',
                     'Hpr': VBase3(-62.942, 0.0, 0.0),
                     'Pos': Point3(437.632, -2165.776, 11.607),
+                    'PoseAnim': '',
+                    'PoseFrame': '',
+                    'Respawns': True,
                     'Scale': VBase3(1.0, 1.0, 1.0),
-                    'Visual': {
-                        'Animate': 'models/char/seagull_groom_idle',
-                        'Model': 'models/char/seagull_hi'
-                    }
+                    'Species': 'Seagull',
+                    'Start State': 'Idle',
+                    'StartFrame': '0',
+                    'VisSize': '',
+                    'spawnTimeBegin': 5.5,
+                    'spawnTimeEnd': 20.5
                 },
                 '1189538304.0dchiappe': {
-                    'Type': 'Animated Prop',
+                    'Type': 'Animal',
+                    'Patrol Radius': '12.0000',
                     'Hpr': VBase3(-116.473, 0.0, 0.0),
                     'Pos': Point3(-466.817, -1928.208, 17.301),
+                    'PoseAnim': '',
+                    'PoseFrame': '',
+                    'Respawns': True,
                     'Scale': VBase3(1.978, 1.978, 1.978),
-                    'Visual': {
-                        'Animate': 'models/char/seagull_idle',
-                        'Model': 'models/char/seagull_hi'
-                    }
+                    'Species': 'Seagull',
+                    'Start State': 'Idle',
+                    'StartFrame': '0',
+                    'VisSize': '',
+                    'spawnTimeBegin': 5.5,
+                    'spawnTimeEnd': 20.5
                 },
                 '1189545796.82kmuller': {
                     'Type': 'Collision Barrier',
@@ -17232,14 +17268,20 @@ objectStruct = {
                     }
                 },
                 '1189631104.0dchiappe0': {
-                    'Type': 'Animated Prop',
+                    'Type': 'Animal',
+                    'Patrol Radius': '12.0000',
                     'Hpr': Point3(0.0, 0.0, 0.0),
                     'Pos': Point3(276.77, -994.652, 56.918),
+                    'PoseAnim': '',
+                    'PoseFrame': '',
+                    'Respawns': True,
                     'Scale': VBase3(1.349, 1.349, 1.349),
-                    'Visual': {
-                        'Animate': 'models/char/seagull_groom_idle',
-                        'Model': 'models/char/seagull_hi'
-                    }
+                    'Species': 'Seagull',
+                    'Start State': 'Idle',
+                    'StartFrame': '0',
+                    'VisSize': '',
+                    'spawnTimeBegin': 5.5,
+                    'spawnTimeEnd': 20.5
                 },
                 '1190245852.74kmuller': {
                     'Type': 'Player Spawn Node',
