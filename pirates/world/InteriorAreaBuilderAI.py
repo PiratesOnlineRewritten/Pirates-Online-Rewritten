@@ -8,6 +8,7 @@ from pirates.minigame.DistributedHoldemTableAI import DistributedHoldemTableAI
 from pirates.minigame.DistributedBlackjackTableAI import DistributedBlackjackTableAI
 from pirates.minigame.Distributed7StudTableAI import Distributed7StudTableAI
 from pirates.minigame.DistributedBishopsHandTableAI import DistributedBishopsHandTableAI
+from pirates.minigame.DistributedLiarsDiceAI import DistributedLiarsDiceAI
 
 class InteriorAreaBuilderAI(AreaBuilderBaseAI):
     notify = directNotify.newCategory('InteriorAreaBuilderAI')
@@ -64,6 +65,8 @@ class InteriorAreaBuilderAI(AreaBuilderBaseAI):
             tableCls = Distributed7StudTableAI
         elif gameType == 'Bishops':
             tableCls = DistributedBishopsHandTableAI
+        elif gameTable == 'LiarsDice':
+            tableCls = DistributedLiarsDiceAI
         else:
             self.notify.warning('Failed to generate Parlor Table %s; %s is not a valid game type' % (objKey, gameType))
             return
@@ -73,14 +76,14 @@ class InteriorAreaBuilderAI(AreaBuilderBaseAI):
         gameTable.setPos(objectData.get('Pos', (0, 0, 0)))
         gameTable.setHpr(objectData.get('Hpr', (0, 0, 0)))
         gameTable.setScale(objectData.get('Scale', 1))
-        gameTable.setTableType(1)
 
         gameTable.generatePlayers(gameTable.AVAILABLE_SEATS, gameTable.TABLE_AI)
 
         if isinstance(gameTable, DistributedPokerTableAI):
             gameTable.setGameType(gameType)
 
-        gameTable.setBetMultiplier(int(objectData.get('BetMultiplier', '1')))
+        if isinstance(gameTable, DistributedPokerTableAI) or isinstance(gameTable, DistributedBlackjackTableAI):
+            gameTable.setBetMultiplier(int(objectData.get('BetMultiplier', '1')))
 
         self.parent.generateChildWithRequired(gameTable, PiratesGlobals.InteriorDoorZone)
         self.addObject(gameTable)
