@@ -1,5 +1,6 @@
 from direct.showbase.DirectObject import DirectObject
 from direct.directnotify.DirectNotifyGlobal import directNotify
+from direct.distributed.GridParent import GridParent
 from pirates.leveleditor import ObjectList
 from direct.distributed.GridParent import GridParent
 from panda3d.core import Point3, NodePath
@@ -31,6 +32,23 @@ class AreaBuilderBaseAI(DirectObject):
             newObj = areaParent.builder.createObject(objType, objectData, parent, parentUid, objKey, dynamic)
 
         return newObj
+
+    def parentObjectToCell(self, object, zoneId=None):
+        if not object:
+            self.notify.warning('Failed to parent to cell for non-existant object!')
+            return
+
+        if zoneId is None:
+            zoneId = self.parent.getZoneFromXYZ(object.getPos())
+
+        cell = GridParent.getCellOrigin(self, zoneId)
+        originalPos = object.getPos()
+
+        object.reparentTo(cell)
+        object.setPos(self.parent, originalPos)
+
+        self.broadcastObjectPosition(object)
+
 
     def isChildObject(self, objKey, parentUid):
         return self.air.worldCreator.getObjectParentUid(objKey) != parentUid

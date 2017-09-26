@@ -3,6 +3,9 @@ from direct.directnotify.DirectNotifyGlobal import directNotify
 from pirates.piratesbase import PiratesGlobals
 from pirates.leveleditor import ObjectList
 from pirates.world.DistributedInteriorDoorAI import DistributedInteriorDoorAI
+from pirates.minigame.DistributedPokerTableAI import DistributedPokerTableAI
+from pirates.minigame.DistributedHoldemTableAI import DistributedHoldemTableAI
+from pirates.minigame.DistributedBlackjackTableAI import DistributedBlackjackTableAI
 
 class InteriorAreaBuilderAI(AreaBuilderBaseAI):
     notify = directNotify.newCategory('InteriorAreaBuilderAI')
@@ -18,7 +21,7 @@ class InteriorAreaBuilderAI(AreaBuilderBaseAI):
         if objType == ObjectList.DOOR_LOCATOR_NODE:
             newObj = self.__createDoorLocatorNode(objectData, parent, parentUid, objKey)
         elif objType == 'Parlor Game' and self.wantParlorGames:
-            pass
+            newObj = self.__createParlorTable(objectData, parent, parentUid, objKey)
         elif objType in ['Animal', 'Townsperson', 'Spawn Node', 'Dormant NPC Spawn Node', 'Skeleton', 'NavySailor', 'Creature', 'Ghost']:
             newObj = self.air.spawner.createObject(objType, objectData, parent, parentUid, objKey, dynamic, PiratesGlobals.InteriorDoorZone)
 
@@ -45,3 +48,38 @@ class InteriorAreaBuilderAI(AreaBuilderBaseAI):
         self.addObject(interiorDoor)
 
         return interiorDoor
+
+    def __createParlorTable(self, objectData, parent, parentUid, objKey):
+
+        tableCls = None
+        gameType = objectData.get('Category', 'Unknown')
+
+        if gameType == 'Holdem':
+            tableCls = DistributedHoldemTableAI
+        elif gameType == 'Blackjack':
+            tableCls = DistributedBlackjackTableAI
+        else:
+            self.notify.warning('Failed to generate Parlor Table %s; %s is not a valid game type' % (objKey, gameType))
+            return
+
+        gameTable = tableCls(self.air)
+        gameTable.setUniqueId(objKey)
+        gameTable.setPos(objectData.get('Pos', (0, 0, 0)))
+        gameTable.setHpr(objectData.get('Hpr', (0, 0, 0)))
+        gameTable.setScale(objectData.get('Scale', 1))
+        gameTable.setTableType(1)
+
+        gameTable.generatePlayers(gameTable.AVAILABLE_SEATS, gameTable.TABLE_AI)
+
+        if isinstance(gameTable, DistributedPokerTableAI):
+            gameTable.setGameType(gameType)
+            gameTable.setBetMultiplier(int(objectData.get('BetMultiplier', '1')))
+
+        self.parent.generateChildWithRequired(gameTable, PiratesGlobals.InteriorDoorZone)
+        self.addObject(gameTable)
+
+        self.broadcastObjectPosition(gameTable)
+
+        return gameTable
+
+
