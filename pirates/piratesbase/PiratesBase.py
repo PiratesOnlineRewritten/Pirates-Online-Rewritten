@@ -696,6 +696,8 @@ class PiratesBase(OTPBase):
         taskMgr.doMethodLater(3.0, clearScreenshotMsg, 'clearScreenshot')
 
     def showScreenshots(self):
+        if not os.path.exists(os.curdir + '/' + PLocalizer.ScreenshotDir):
+            return
         filenames = os.listdir(os.curdir + '/' + PLocalizer.ScreenshotDir)
         for f in filenames:
             if 'jpg' in f:
