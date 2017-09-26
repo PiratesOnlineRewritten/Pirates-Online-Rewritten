@@ -530,10 +530,10 @@ objectStruct = {
                         'Model': 'models/buildings/english_k'
                     }
                 },
-                '1153417506.13dzlu': {
+                '1153417506.828659a2': {
                     'Type': 'Building Exterior',
-                    'File': 'port_royal_building_int_tailor',
-                    'ExtUid': '1153417506.13dzlu0',
+                    'File': 'nassau_building_int_tailor',
+                    'ExtUid': '1153417506.828659a2',
                     'Hpr': VBase3(-14.495, 0.0, 0.0),
                     'Objects': {
                         '1201026944.0dxschafe5': {
@@ -703,10 +703,10 @@ objectStruct = {
                         'Model': 'models/vegetation/fern_tree_d'
                     }
                 },
-                '1153419342.98dzlu': {
+                '1153419342.828659a2': {
                     'Type': 'Building Exterior',
-                    'File': 'port_royal_building_int_barber',
-                    'ExtUid': '1153419342.98dzlu0',
+                    'File': 'nassau_building_int_barber',
+                    'ExtUid': '1153419342.828659a20',
                     'Hpr': VBase3(-141.118, 0.0, 2.181),
                     'Objects': {
                         '1201026944.0dxschafe39': {
@@ -728,10 +728,10 @@ objectStruct = {
                         'SignImage': 'models/buildings/sign1_eng_a_icon_barber'
                     }
                 },
-                '1153419460.35dzlu': {
+                '1153419460.828659a2': {
                     'Type': 'Building Exterior',
-                    'File': 'port_royal_building_int_19',
-                    'ExtUid': '1153419460.35dzlu0',
+                    'File': 'nassau_building_int_19',
+                    'ExtUid': '1153419460.828659a20',
                     'Hpr': VBase3(104.945, 0.0, 0.0),
                     'Objects': {
                         '1201026944.0dxschafe28': {
@@ -767,10 +767,10 @@ objectStruct = {
                         'SignImage': 'models/buildings/sign1_eng_a_icon_blacksmith'
                     }
                 },
-                '1153419634.08dzlu': {
+                '1153419634.828659a2': {
                     'Type': 'Building Exterior',
-                    'File': 'port_royal_building_int_tavern_2',
-                    'ExtUid': '1153419634.08dzlu0',
+                    'File': 'nassau_building_int_tavern_2',
+                    'ExtUid': '1153419634.828659a20',
                     'Hpr': VBase3(154.712, 0.0, 0.0),
                     'Objects': {
                         '1182904080.19kmuller': {
@@ -803,10 +803,10 @@ objectStruct = {
                         'SignImage': 'models/buildings/sign1_eng_a_icon_tavern'
                     }
                 },
-                '1153419689.81dzlu': {
+                '1153419689.8268659a2': {
                     'Type': 'Building Exterior',
-                    'File': 'port_royal_building_int_tavern',
-                    'ExtUid': '1153419689.81dzlu0',
+                    'File': 'nassau_building_int_tavern',
+                    'ExtUid': '1153419689.8268659a20',
                     'Hpr': VBase3(112.915, 0.0, 0.0),
                     'Objects': {
                         '1201026944.0dxschafe8': {
@@ -866,10 +866,10 @@ objectStruct = {
                         'Model': 'models/buildings/english_e'
                     }
                 },
-                '1153420207.67dzlu': {
+                '1153420207.826859a2': {
                     'Type': 'Building Exterior',
-                    'File': 'port_royal_building_int_3',
-                    'ExtUid': '1153420207.67dzlu0',
+                    'File': 'nassau_building_int_3',
+                    'ExtUid': '1153420207.826859a20',
                     'Hpr': VBase3(52.663, -2.596, -0.752),
                     'Objects': {
                         '1201026944.0dxschafe26': {
@@ -19019,8 +19019,8 @@ objectStruct = {
         '1153415449.06dzlu0': '["Objects"]["1150922126.828659a2"]["Objects"]["1153415449.06dzlu"]',
         '1153416604.97dzlu': '["Objects"]["1150922126.828659a2"]["Objects"]["1153416604.97dzlu"]',
         '1153416604.97dzlu0': '["Objects"]["1150922126.828659a2"]["Objects"]["1153416604.97dzlu"]',
-        '1153417506.13dzlu': '["Objects"]["1150922126.828659a2"]["Objects"]["1153417506.13dzlu"]',
-        '1153417506.13dzlu0': '["Objects"]["1150922126.828659a2"]["Objects"]["1153417506.13dzlu"]',
+        '1153417506.828659a2': '["Objects"]["1150922126.828659a2"]["Objects"]["1153417506.828659a2"]',
+        '1153417506.828659a2': '["Objects"]["1150922126.828659a2"]["Objects"]["1153417506.828659a2"]',
         '1153417777.89dzlu': '["Objects"]["1150922126.828659a2"]["Objects"]["1153417777.89dzlu"]',
         '1153417777.89dzlu0': '["Objects"]["1150922126.828659a2"]["Objects"]["1153417777.89dzlu"]',
         '1153417998.2dzlu': '["Objects"]["1150922126.828659a2"]["Objects"]["1153417998.2dzlu"]',
@@ -19038,22 +19038,22 @@ objectStruct = {
         '1153419177.97dzlu': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419177.97dzlu"]',
         '1153419177.97dzlu0': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419177.97dzlu"]',
         '1153419216.56dzlu': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419216.56dzlu"]',
-        '1153419342.98dzlu': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419342.98dzlu"]',
-        '1153419342.98dzlu0': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419342.98dzlu"]',
-        '1153419460.35dzlu': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419460.35dzlu"]',
-        '1153419460.35dzlu0': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419460.35dzlu"]',
+        '1153419342.828659a2': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419342.828659a2"]',
+        '1153419342.828659a20': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419342.828659a2"]',
+        '1153419460.828659a2': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419460.828659a2"]',
+        '1153419460.828659a20': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419460.828659a2"]',
         '1153419593.91dzlu': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419593.91dzlu"]',
         '1153419593.91dzlu0': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419593.91dzlu"]',
-        '1153419634.08dzlu': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419634.08dzlu"]',
-        '1153419634.08dzlu0': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419634.08dzlu"]',
-        '1153419689.81dzlu': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419689.81dzlu"]',
-        '1153419689.81dzlu0': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419689.81dzlu"]',
+        '1153419634.828659a2': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419634.828659a2"]',
+        '1153419634.828659a20': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419634.828659a2"]',
+        '1153419689.8268659a2': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419689.8268659a2"]',
+        '1153419689.8268659a20': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419689.8268659a2"]',
         '1153419865.41dzlu': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419865.41dzlu"]',
         '1153419865.41dzlu0': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419865.41dzlu"]',
         '1153420002.97dzlu': '["Objects"]["1150922126.828659a2"]["Objects"]["1153420002.97dzlu"]',
         '1153420002.97dzlu0': '["Objects"]["1150922126.828659a2"]["Objects"]["1153420002.97dzlu"]',
-        '1153420207.67dzlu': '["Objects"]["1150922126.828659a2"]["Objects"]["1153420207.67dzlu"]',
-        '1153420207.67dzlu0': '["Objects"]["1150922126.828659a2"]["Objects"]["1153420207.67dzlu"]',
+        '1153420207.826859a2': '["Objects"]["1150922126.828659a2"]["Objects"]["1153420207.826859a2"]',
+        '1153420207.826859a20': '["Objects"]["1150922126.828659a2"]["Objects"]["1153420207.826859a2"]',
         '1153420255.91dzlu': '["Objects"]["1150922126.828659a2"]["Objects"]["1153420255.91dzlu"]',
         '1153420255.91dzlu0': '["Objects"]["1150922126.828659a2"]["Objects"]["1153420255.91dzlu"]',
         '1153420265.66dzlu': '["Objects"]["1150922126.828659a2"]["Objects"]["1153420265.66dzlu"]',
@@ -20303,7 +20303,7 @@ objectStruct = {
         '1182902897.88kmuller': '["Objects"]["1150922126.828659a2"]["Objects"]["1182902897.88kmuller"]',
         '1182903334.13kmuller': '["Objects"]["1150922126.828659a2"]["Objects"]["1182903334.13kmuller"]',
         '1182903373.78kmuller': '["Objects"]["1150922126.828659a2"]["Objects"]["1182903373.78kmuller"]',
-        '1182904080.19kmuller': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419634.08dzlu"]["Objects"]["1182904080.19kmuller"]',
+        '1182904080.19kmuller': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419634.828659a2"]["Objects"]["1182904080.19kmuller"]',
         '1182904197.3kmuller': '["Objects"]["1150922126.828659a2"]["Objects"]["1182904197.3kmuller"]',
         '1182904372.3kmuller': '["Objects"]["1150922126.828659a2"]["Objects"]["1182904372.3kmuller"]',
         '1182905451.11kmuller': '["Objects"]["1150922126.828659a2"]["Objects"]["1182905451.11kmuller"]',
@@ -20642,10 +20642,10 @@ objectStruct = {
         '1201026944.0dxschafe22': '["Objects"]["1150922126.828659a2"]["Objects"]["1155767402.81fxlara"]["Objects"]["1201026944.0dxschafe22"]',
         '1201026944.0dxschafe23': '["Objects"]["1150922126.828659a2"]["Objects"]["1155771754.68fxlara"]["Objects"]["1201026944.0dxschafe23"]',
         '1201026944.0dxschafe24': '["Objects"]["1150922126.828659a2"]["Objects"]["1153423464.2dzlu"]["Objects"]["1201026944.0dxschafe24"]',
-        '1201026944.0dxschafe25': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419634.08dzlu"]["Objects"]["1201026944.0dxschafe25"]',
-        '1201026944.0dxschafe26': '["Objects"]["1150922126.828659a2"]["Objects"]["1153420207.67dzlu"]["Objects"]["1201026944.0dxschafe26"]',
+        '1201026944.0dxschafe25': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419634.828659a2"]["Objects"]["1201026944.0dxschafe25"]',
+        '1201026944.0dxschafe26': '["Objects"]["1150922126.828659a2"]["Objects"]["1153420207.826859a2"]["Objects"]["1201026944.0dxschafe26"]',
         '1201026944.0dxschafe27': '["Objects"]["1150922126.828659a2"]["Objects"]["1168472743.02kmuller"]["Objects"]["1201026944.0dxschafe27"]',
-        '1201026944.0dxschafe28': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419460.35dzlu"]["Objects"]["1201026944.0dxschafe28"]',
+        '1201026944.0dxschafe28': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419460.828659a2"]["Objects"]["1201026944.0dxschafe28"]',
         '1201026944.0dxschafe29': '["Objects"]["1150922126.828659a2"]["Objects"]["1153420657.11dzlu"]["Objects"]["1201026944.0dxschafe29"]',
         '1201026944.0dxschafe3': '["Objects"]["1150922126.828659a2"]["Objects"]["1153420647.55dzlu"]["Objects"]["1201026944.0dxschafe3"]',
         '1201026944.0dxschafe30': '["Objects"]["1150922126.828659a2"]["Objects"]["1153503986.0dzlu"]["Objects"]["1201026944.0dxschafe30"]',
@@ -20657,14 +20657,14 @@ objectStruct = {
         '1201026944.0dxschafe36': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419865.41dzlu"]["Objects"]["1201026944.0dxschafe36"]',
         '1201026944.0dxschafe37': '["Objects"]["1150922126.828659a2"]["Objects"]["1155773612.45fxlara"]["Objects"]["1201026944.0dxschafe37"]',
         '1201026944.0dxschafe38': '["Objects"]["1150922126.828659a2"]["Objects"]["1183482682.31kmuller"]["Objects"]["1201026944.0dxschafe38"]',
-        '1201026944.0dxschafe39': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419342.98dzlu"]["Objects"]["1201026944.0dxschafe39"]',
+        '1201026944.0dxschafe39': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419342.828659a2"]["Objects"]["1201026944.0dxschafe39"]',
         '1201026944.0dxschafe4': '["Objects"]["1150922126.828659a2"]["Objects"]["1153416604.97dzlu"]["Objects"]["1201026944.0dxschafe4"]',
         '1201026944.0dxschafe40': '["Objects"]["1150922126.828659a2"]["Objects"]["1201026944.0dxschafe40"]',
         '1201026944.0dxschafe41': '["Objects"]["1150922126.828659a2"]["Objects"]["1201026944.0dxschafe41"]',
-        '1201026944.0dxschafe5': '["Objects"]["1150922126.828659a2"]["Objects"]["1153417506.13dzlu"]["Objects"]["1201026944.0dxschafe5"]',
+        '1201026944.0dxschafe5': '["Objects"]["1150922126.828659a2"]["Objects"]["1153417506.828659a2"]["Objects"]["1201026944.0dxschafe5"]',
         '1201026944.0dxschafe6': '["Objects"]["1150922126.828659a2"]["Objects"]["1153423952.64dzlu"]["Objects"]["1201026944.0dxschafe6"]',
         '1201026944.0dxschafe7': '["Objects"]["1150922126.828659a2"]["Objects"]["1153417777.89dzlu"]["Objects"]["1201026944.0dxschafe7"]',
-        '1201026944.0dxschafe8': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419689.81dzlu"]["Objects"]["1201026944.0dxschafe8"]',
+        '1201026944.0dxschafe8': '["Objects"]["1150922126.828659a2"]["Objects"]["1153419689.8268659a2"]["Objects"]["1201026944.0dxschafe8"]',
         '1201026944.0dxschafe9': '["Objects"]["1150922126.828659a2"]["Objects"]["1155772882.54fxlara"]["Objects"]["1201026944.0dxschafe9"]',
         '1207592932.5kmuller': '["Objects"]["1150922126.828659a2"]["Objects"]["1207592932.5kmuller"]',
         '1207602622.03kmuller': '["Objects"]["1150922126.828659a2"]["Objects"]["1207602622.03kmuller"]',
