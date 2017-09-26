@@ -475,8 +475,13 @@ def getItemIcons(itemId):
     return None
 
 
-__itemTypeIcons = {ItemType.PISTOL_POUCH: 'pir_t_ico_gun_shotPouch',ItemType.DAGGER_POUCH: 'pir_t_ico_knf_belt',ItemType.GRENADE_POUCH: 'pir_t_ico_bom_pouch',ItemType.CANNON_POUCH: 'pir_t_ico_can_ammoBarrel',ItemType.FISHING_POUCH: 'pir_t_gui_fsh_tackleBasket'}
-
+__itemTypeIcons = {
+    ItemType.PISTOL_POUCH: 'pir_t_ico_gun_shotPouch', 
+    ItemType.DAGGER_POUCH: 'pir_t_ico_knf_belt', 
+    ItemType.GRENADE_POUCH: 'pir_t_ico_bom_pouch', 
+    ItemType.CANNON_POUCH: 'pir_t_ico_can_ammoBarrel', 
+    ItemType.FISHING_POUCH: 'pir_t_gui_fsh_tackleBasket'
+}
 def getItemTypeIcon(ammoTypeId):
     item = __itemTypeIcons.get(ammoTypeId)
     if item:
@@ -488,69 +493,122 @@ def getItemTypeIcon(ammoTypeId):
 
 MELEE_SHELF_L1 = []
 MELEE_SHELF_L2 = [
- ItemId.CUTLASS_L2, ItemId.CUTLASS_L3, ItemId.DAGGER_L2, ItemId.DAGGER_L3]
+    ItemId.CUTLASS_L2, ItemId.CUTLASS_L3, ItemId.DAGGER_L2, ItemId.DAGGER_L3
+]
 MELEE_SHELF_L3 = [
- ItemId.CUTLASS_L5, ItemId.CUTLASS_L6, ItemId.DAGGER_L5, ItemId.DAGGER_L6]
+    ItemId.CUTLASS_L5, ItemId.CUTLASS_L6, ItemId.DAGGER_L5, ItemId.DAGGER_L6
+]
 MISSILE_SHELF_L1 = []
 MISSILE_SHELF_L2 = [
- ItemId.PISTOL_L2, ItemId.PISTOL_L3]
+    ItemId.PISTOL_L2, ItemId.PISTOL_L3
+]
 MISSILE_SHELF_L3 = [
- ItemId.PISTOL_L5, ItemId.PISTOL_L6]
+    ItemId.PISTOL_L5, ItemId.PISTOL_L6
+]
 DAGGER_AMMO_SHELF_L1 = [
- ItemId.ASP_DAGGER, ItemId.ADDER_DAGGER]
+    ItemId.ASP_DAGGER, ItemId.ADDER_DAGGER
+]
 DAGGER_AMMO_SHELF_L2 = [
- ItemId.SIDEWINDER_DAGGER, ItemId.VIPERNEST_DAGGER]
+    ItemId.SIDEWINDER_DAGGER, ItemId.VIPERNEST_DAGGER
+]
 CANNON_AMMO_SHELF_L1 = [
- ItemId.CHAIN_SHOT, ItemId.GRAPE_SHOT]
+    ItemId.CHAIN_SHOT, ItemId.GRAPE_SHOT
+]
 CANNON_AMMO_SHELF_L2 = [
- ItemId.FIREBRAND, ItemId.THUNDERBOLT, ItemId.EXPLOSIVE, ItemId.FURY]
+    ItemId.FIREBRAND, ItemId.THUNDERBOLT, ItemId.EXPLOSIVE, ItemId.FURY
+]
 SIEGE_SHELF = [
- ItemId.SHIP_REPAIR_KIT]
+    ItemId.SHIP_REPAIR_KIT
+]
 PISTOL_AMMO_SHELF_L1 = [
- ItemId.VENOMSHOT, ItemId.IRONSHOT]
+    ItemId.VENOMSHOT, ItemId.IRONSHOT
+]
 PISTOL_AMMO_SHELF_L2 = [
- ItemId.GOLDENSHOT, ItemId.SILVERSHOT, ItemId.STEELSHOT]
+    ItemId.GOLDENSHOT, ItemId.SILVERSHOT, ItemId.STEELSHOT
+]
 PISTOL_POUCH_SHELF = [
- ItemId.PISTOL_POUCH_L1, ItemId.PISTOL_POUCH_L2, ItemId.PISTOL_POUCH_L3]
+    ItemId.PISTOL_POUCH_L1, ItemId.PISTOL_POUCH_L2, ItemId.PISTOL_POUCH_L3
+]
 DAGGER_POUCH_SHELF = [
- ItemId.DAGGER_POUCH_L1, ItemId.DAGGER_POUCH_L2, ItemId.DAGGER_POUCH_L3]
+    ItemId.DAGGER_POUCH_L1, ItemId.DAGGER_POUCH_L2, ItemId.DAGGER_POUCH_L3
+]
 GRENADE_POUCH_SHELF = [
- ItemId.GRENADE_POUCH_L1, ItemId.GRENADE_POUCH_L2, ItemId.GRENADE_POUCH_L3]
+    ItemId.GRENADE_POUCH_L1, ItemId.GRENADE_POUCH_L2, ItemId.GRENADE_POUCH_L3
+]
 CANNON_POUCH_SHELF = [
- ItemId.CANNON_POUCH_L1, ItemId.CANNON_POUCH_L2, ItemId.CANNON_POUCH_L3]
+    ItemId.CANNON_POUCH_L1, ItemId.CANNON_POUCH_L2, ItemId.CANNON_POUCH_L3
+]
 BOMB_AMMO_SHELF_L1 = [
- ItemId.SHOCKBOMB_G, ItemId.FLAME_G]
+    ItemId.SHOCKBOMB_G, ItemId.FLAME_G
+]
 BOMB_AMMO_SHELF_L2 = [
- ItemId.SMOKE_G, ItemId.SIEGE_G]
+    ItemId.SMOKE_G, ItemId.SIEGE_G
+]
 TONIC_SHELF_L1 = [
- ItemId.POTION_1, ItemId.POTION_2, ItemId.POTION_3]
+    ItemId.POTION_1, ItemId.POTION_2, ItemId.POTION_3
+]
 TONIC_SHELF_L2 = [
- ItemId.POTION_4, ItemId.POTION_5]
+    ItemId.POTION_4, ItemId.POTION_5
+]
 BOMB_SHELF_L1 = []
 BOMB_SHELF_L2 = []
 BOMB_SHELF_L3 = []
 WEAPON_SHELF_ALL = CANNON_AMMO_SHELF_L1
 SHIP_ITEM_SHELF = [
- ItemId.SMALL_BOTTLE, ItemId.MEDIUM_BOTTLE, ItemId.LARGE_BOTTLE]
+    ItemId.SMALL_BOTTLE, ItemId.MEDIUM_BOTTLE, ItemId.LARGE_BOTTLE
+]
 MUSIC_SHELF = [
- InventoryType.Song_1, InventoryType.Song_2, InventoryType.Song_3, InventoryType.Song_4, InventoryType.Song_5, InventoryType.Song_6, InventoryType.Song_7, InventoryType.Song_8, InventoryType.Song_9, InventoryType.Song_10, InventoryType.Song_11, InventoryType.Song_12, InventoryType.Song_13, InventoryType.Song_14, InventoryType.Song_15, InventoryType.Song_16, InventoryType.Song_17, InventoryType.Song_18, InventoryType.Song_19, InventoryType.Song_20, InventoryType.Song_21, InventoryType.Song_22]
+    InventoryType.Song_1,
+    InventoryType.Song_2,
+    InventoryType.Song_3,
+    InventoryType.Song_4,
+    InventoryType.Song_5, 
+    InventoryType.Song_6, 
+    InventoryType.Song_7, 
+    InventoryType.Song_8,
+    InventoryType.Song_9, 
+    InventoryType.Song_10, 
+    InventoryType.Song_11, 
+    InventoryType.Song_12,
+    InventoryType.Song_13, 
+    InventoryType.Song_14, 
+    InventoryType.Song_15, 
+    InventoryType.Song_16,
+    InventoryType.Song_17, 
+    InventoryType.Song_18, 
+    InventoryType.Song_19, 
+    InventoryType.Song_20,
+    InventoryType.Song_21, 
+    InventoryType.Song_22
+]
 MOJO_SHELF_L1 = []
 MOJO_SHELF_L2 = [
- ItemId.WAND_L2, ItemId.WAND_L3, ItemId.DOLL_L2, ItemId.DOLL_L3]
+    ItemId.WAND_L2, ItemId.WAND_L3, ItemId.DOLL_L2, ItemId.DOLL_L3
+]
 MOJO_SHELF_L3 = [
- ItemId.WAND_L5, ItemId.WAND_L6, ItemId.DOLL_L5, ItemId.DOLL_L6]
+    ItemId.WAND_L5, ItemId.WAND_L6, ItemId.DOLL_L5, ItemId.DOLL_L6
+]
 MOJO_SHELF_ALL = MOJO_SHELF_L1 + MOJO_SHELF_L2 + MOJO_SHELF_L3
 SHIP_SHELF = [
- ItemId.INTERCEPTOR_L1, ItemId.MERCHANT_L1, ItemId.WARSHIP_L1, ItemId.BRIG_L1, ItemId.INTERCEPTOR_L2, ItemId.MERCHANT_L2, ItemId.WARSHIP_L2, ItemId.BRIG_L2, ItemId.INTERCEPTOR_L3, ItemId.MERCHANT_L3, ItemId.WARSHIP_L3, ItemId.BRIG_L3]
+    ItemId.INTERCEPTOR_L1, ItemId.MERCHANT_L1, ItemId.WARSHIP_L1, ItemId.BRIG_L1, ItemId.INTERCEPTOR_L2, ItemId.MERCHANT_L2, ItemId.WARSHIP_L2, ItemId.BRIG_L2, ItemId.INTERCEPTOR_L3, ItemId.MERCHANT_L3, ItemId.WARSHIP_L3, ItemId.BRIG_L3
+]
 STOWAWAY_SHELF = [
- LocationIds.PORT_ROYAL_ISLAND, LocationIds.TORTUGA_ISLAND, LocationIds.CUBA_ISLAND, LocationIds.DEL_FUEGO_ISLAND]
+    LocationIds.PORT_ROYAL_ISLAND, LocationIds.TORTUGA_ISLAND, LocationIds.CUBA_ISLAND, LocationIds.DEL_FUEGO_ISLAND
+]
 FISHING_ROD_SHELF = [
- ItemId.FISHING_ROD2, ItemId.FISHING_ROD3]
+    ItemId.FISHING_ROD2, ItemId.FISHING_ROD3
+]
 FISHING_LURE_SHELF = [
- ItemId.FISHING_LURE1, ItemId.FISHING_LURE2]
-CollectionValues = {0: 10,1: 25,2: 100}
-__pouchTypeToAmmo = {ItemType.PISTOL_POUCH: [ItemId.VENOMSHOT, ItemId.IRONSHOT, ItemId.GOLDENSHOT, ItemId.SILVERSHOT, ItemId.STEELSHOT],ItemType.DAGGER_POUCH: [ItemId.ASP_DAGGER, ItemId.ADDER_DAGGER, ItemId.SIDEWINDER_DAGGER, ItemId.VIPERNEST_DAGGER],ItemType.GRENADE_POUCH: [ItemId.SHOCKBOMB_G, ItemId.FLAME_G, ItemId.SMOKE_G, ItemId.SIEGE_G],ItemType.CANNON_POUCH: [ItemId.CHAIN_SHOT, ItemId.GRAPE_SHOT, ItemId.FIREBRAND, ItemId.THUNDERBOLT, ItemId.EXPLOSIVE, ItemId.FURY],ItemType.FISHING_POUCH: [ItemId.FISHING_LURE1, ItemId.FISHING_LURE2]}
-
+    ItemId.FISHING_LURE1, ItemId.FISHING_LURE2
+]
+CollectionValues = {
+    0: 10,
+    1: 25,
+    2: 100
+}
+__pouchTypeToAmmo = {
+    ItemType.PISTOL_POUCH: [ItemId.VENOMSHOT, ItemId.IRONSHOT, ItemId.GOLDENSHOT, ItemId.SILVERSHOT, ItemId.STEELSHOT], ItemType.DAGGER_POUCH: [ItemId.ASP_DAGGER, ItemId.ADDER_DAGGER, ItemId.SIDEWINDER_DAGGER, ItemId.VIPERNEST_DAGGER], ItemType.GRENADE_POUCH: [ItemId.SHOCKBOMB_G, ItemId.FLAME_G, ItemId.SMOKE_G, ItemId.SIEGE_G], ItemType.CANNON_POUCH: [ItemId.CHAIN_SHOT, ItemId.GRAPE_SHOT, ItemId.FIREBRAND, ItemId.THUNDERBOLT, ItemId.EXPLOSIVE, ItemId.FURY], ItemType.FISHING_POUCH: [ItemId.FISHING_LURE1, ItemId.FISHING_LURE2]
+}
 def getPouchAmmoList(pouchType):
     ammoList = __pouchTypeToAmmo.get(pouchType)
     if ammoList:
@@ -565,8 +623,17 @@ for pouchKey in __pouchTypeToAmmo:
     for ammoType in __pouchTypeToAmmo[pouchKey]:
         __ammoTypeToPouchType[ammoType] = pouchKey
 
-__pouchTypeToPouchs = {ItemType.PISTOL_POUCH: [ItemId.PISTOL_POUCH_L1, ItemId.PISTOL_POUCH_L2, ItemId.PISTOL_POUCH_L3],ItemType.DAGGER_POUCH: [ItemId.DAGGER_POUCH_L1, ItemId.DAGGER_POUCH_L2, ItemId.DAGGER_POUCH_L3],ItemType.GRENADE_POUCH: [ItemId.GRENADE_POUCH_L1, ItemId.GRENADE_POUCH_L2, ItemId.GRENADE_POUCH_L3],ItemType.CANNON_POUCH: [ItemId.CANNON_POUCH_L1, ItemId.CANNON_POUCH_L2, ItemId.CANNON_POUCH_L3],ItemType.FISHING_POUCH: [ItemId.FISHING_POUCH_L1]}
-
+__pouchTypeToPouchs = {
+    ItemType.PISTOL_POUCH: [ItemId.PISTOL_POUCH_L1, 
+    ItemId.PISTOL_POUCH_L2, ItemId.PISTOL_POUCH_L3], 
+    ItemType.DAGGER_POUCH: [ItemId.DAGGER_POUCH_L1, 
+    ItemId.DAGGER_POUCH_L2, ItemId.DAGGER_POUCH_L3], 
+    ItemType.GRENADE_POUCH: [ItemId.GRENADE_POUCH_L1, 
+    ItemId.GRENADE_POUCH_L2, ItemId.GRENADE_POUCH_L3], 
+    ItemType.CANNON_POUCH: [ItemId.CANNON_POUCH_L1, 
+    ItemId.CANNON_POUCH_L2, ItemId.CANNON_POUCH_L3], 
+    ItemType.FISHING_POUCH: [ItemId.FISHING_POUCH_L1]
+}
 def getListOfPouches(pouchType):
     return __pouchTypeToPouchs[pouchType]
 
@@ -591,4 +658,9 @@ def getInventoryBonus(itemId, index=-1):
     return 0
 
 
-StowawayCost = {LocationIds.PORT_ROYAL_ISLAND: 25,LocationIds.TORTUGA_ISLAND: 25,LocationIds.CUBA_ISLAND: 50,LocationIds.DEL_FUEGO_ISLAND: 200}
+StowawayCost = {
+    LocationIds.PORT_ROYAL_ISLAND: 25,
+    LocationIds.TORTUGA_ISLAND: 25,
+    LocationIds.CUBA_ISLAND: 50,
+    LocationIds.DEL_FUEGO_ISLAND: 200
+}

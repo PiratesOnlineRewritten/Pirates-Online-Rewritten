@@ -247,7 +247,7 @@ class DistributedGameTable(DistributedInteractive.DistributedInteractive):
         name = 'Dealer'
         if self._getAvTeamFromVariation() == PiratesGlobals.VILLAGER_TEAM:
             dna = HumanDNA.HumanDNA()
-            dna.makeNPCTownfolk(seed=self.doId)
+            dna.makeNPCDealer(seed=self.doId)
             dna.setName(name)
             dna.clothes.coat = 0
             dna.clothes.vest = 2
@@ -272,8 +272,7 @@ class DistributedGameTable(DistributedInteractive.DistributedInteractive):
         topCard.reparentTo(self.dealer.leftHandNode)
 
     def createAIPlayers(self, AIList):
-        self.AIPlayers = [
-         0] * self.NumSeats
+        self.AIPlayers = [0] * self.NumSeats
         for i in range(len(AIList)):
             if AIList[i] == 0:
                 pass

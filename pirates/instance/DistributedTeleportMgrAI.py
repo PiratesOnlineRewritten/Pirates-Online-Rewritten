@@ -18,7 +18,7 @@ class DistributedTeleportMgrAI(DistributedObjectAI):
             return
 
         instance = self.air.worldCreator.world
-        area = instance.uidMgr.justGetMeMeObject('1150922126.8dzlu')
+        area = instance.uidMgr.justGetMeMeObject('1150922126.828659a2')
 
         self.teleporting[avatar.doId] = [instance.doId, area.doId]
         self.d_confirmTeleport(avatar.doId, True, [[instance.parentId, instance.zoneId]], instance.doId, area.doId)
