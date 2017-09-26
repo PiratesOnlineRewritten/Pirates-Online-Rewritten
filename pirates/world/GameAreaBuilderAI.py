@@ -23,8 +23,8 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
         self.wantPotionTable = config.GetBool('want-potion-game', False)
         self.wantBuildingInteriors = config.GetBool('want-building-interiors', True)
         self.wantDinghys = config.GetBool('want-dignhys', True)
-        self.wantSpawnNodes = config.GetBool('want-spawn-nodes', False)
-        self.wantRepairBench = config.GetBool('want-repair-game', True)
+        self.wantSpawnNodes = config.GetBool('want-spawn-nodes', True)
+        self.wantRepairBench = config.GetBool('want-repair-game', False)
         self.wantIslandAreas = config.GetBool('want-island-game-areas', True)
 
     def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic):
