@@ -64,14 +64,13 @@ restore-initial-pose #f
 
 # Cache:
 model-cache-max-kbytes 262144
-want-disk-cache #t
+want-disk-cache #f
 state-cache #t
 transform-cache #t
 model-cache-textures #f
 
 # Textures:
-textures-power-2 none
-#textures-power-2 down
+textures-power-2 down
 texture-anisotropic-degree 16
 texture-magfilter linear
 texture-minfilter linear
@@ -264,7 +263,7 @@ notify-level-Actor error
 notify-level-DisplayOptions debug
 
 # Graphics Library:
-gl-finish #f
+gl-finish #t
 gl-force-no-error #t
 gl-check-errors #f
 gl-force-no-flush #t
@@ -322,7 +321,7 @@ want-screenshot-viewer #t
 model-path ./screenshots
 
 # V-Sync:
-sync-video #f
+sync-video #t
 
 # Tutorial:
 skip-tutorial #t
@@ -375,12 +374,12 @@ smooth-lag 1
 want-tattoos #t
 want-jewelry #t
 
-#PVP:
+# PVP:
 want-land-infamy #t
 want-sea-infamy #t
 
 # Leaks:
 crash-on-proactive-leak-detect #f
 
-#Server Queue:
+# Server Queue:
 disable-server-queueing #t
