@@ -57,6 +57,9 @@ class AreaBuilderBaseAI(DirectObject):
         if self.isChildObject(objKey, parentUid):
             parentUid = self.air.worldCreator.getObjectParentUid(objKey)
             parentData = self.air.worldCreator.getObjectDataByUid(parentUid)
+            
+            if parentData['Type'] == 'Island':
+                return objectData.get('Pos'), NodePath()
 
             parentObject = NodePath('psuedo-%s' % parentUid)
 
