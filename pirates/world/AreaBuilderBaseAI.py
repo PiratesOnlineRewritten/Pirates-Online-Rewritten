@@ -2,6 +2,7 @@ from direct.showbase.DirectObject import DirectObject
 from direct.directnotify.DirectNotifyGlobal import directNotify
 from pirates.leveleditor import ObjectList
 from direct.distributed.GridParent import GridParent
+from panda3d.core import Point3, NodePath
 
 class AreaBuilderBaseAI(DirectObject):
     notify = directNotify.newCategory('AreaBuilderBaseAI')
@@ -34,11 +35,20 @@ class AreaBuilderBaseAI(DirectObject):
     def isChildObject(self, objKey, parentUid):
         return self.air.worldCreator.getObjectParentUid(objKey) != parentUid
 
-    def getObjectTruePos(self, objKey, parentUid, objectData):
-        if self.isChildObject(objKey, parentUid) and 'GridPos' in objectData:
-            return objectData.get('GridPos')
+    def getObjectTruePosAndParent(self, objKey, parentUid, objectData):
+        if self.isChildObject(objKey, parentUid):
+            parentUid = self.air.worldCreator.getObjectParentUid(objKey)
+            parentData = self.air.worldCreator.getObjectDataByUid(parentUid)
 
-        return objectData.get('Pos')
+            parentObject = NodePath('psuedo-%s' % parentUid)
+
+            if not 'GridPos' in objectData:
+                parentObject.setPos(parentData.get('Pos', Point3(0, 0, 0)))
+                parentObject.setHpr(parentData.get('Hpr', Point3(0, 0, 0)))
+
+            objectPos = objectData.get('GridPos', objectData.get('Pos', Point3(0, 0, 0)))
+            return objectPos, parentObject
+        return objectData.get('Pos'), NodePath()
 
     def __createIsland(self, objectData, parent, parentUid, objKey, dynamic):
         from pirates.world.DistributedIslandAI import DistributedIslandAI

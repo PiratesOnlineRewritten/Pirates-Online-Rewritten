@@ -5,7 +5,7 @@ from pirates.leveleditor import ObjectList
 from pirates.world.DistributedInteriorDoorAI import DistributedInteriorDoorAI
 
 class InteriorAreaBuilderAI(AreaBuilderBaseAI):
-    notify = directNotify.newCategory('GridAreaBuilderAI')
+    notify = directNotify.newCategory('InteriorAreaBuilderAI')
 
     def __init__(self, air, parent):
         AreaBuilderBaseAI.__init__(self, air, parent)
@@ -19,6 +19,8 @@ class InteriorAreaBuilderAI(AreaBuilderBaseAI):
             newObj = self.__createDoorLocatorNode(objectData, parent, parentUid, objKey)
         elif objType == 'Parlor Game' and self.wantParlorGames:
             pass
+        elif objType in ['Animal', 'Townsperson', 'Spawn Node', 'Dormant NPC Spawn Node', 'Skeleton', 'NavySailor', 'Creature', 'Ghost']:
+            newObj = self.air.spawner.createObject(objType, objectData, parent, parentUid, objKey, dynamic, PiratesGlobals.InteriorDoorZone)
 
         return newObj
 

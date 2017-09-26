@@ -12,7 +12,7 @@ from pirates.treasuremap.DistributedBuriedTreasureAI import DistributedBuriedTre
 from pirates.treasuremap.DistributedSurfaceTreasureAI import DistributedSurfaceTreasureAI
 
 class GameAreaBuilderAI(AreaBuilderBaseAI):
-    notify = directNotify.newCategory('GridAreaBuilderAI')
+    notify = directNotify.newCategory('GameAreaBuilderAI')
     AREAZONE = PiratesGlobals.IslandLocalZone
 
     def __init__(self, air, parent):
@@ -37,7 +37,7 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
         elif objType == 'PotionTable' and self.wantPotionTable:
             newObj = self.__createPotionTable(parent, parentUid, objKey, objectData)
         elif objType in ['Animal', 'Townsperson', 'Spawn Node', 'Dormant NPC Spawn Node', 'Skeleton', 'NavySailor', 'Creature', 'Ghost']:
-            newObj = self.air.spawner.createObject(objType, objectData, parent, parentUid, objKey, dynamic)
+            newObj = self.air.spawner.createObject(objType, objectData, parent, parentUid, objKey, dynamic, PiratesGlobals.IslandLocalZone)
         elif objType == 'Building Exterior' and self.wantBuildingInteriors:
             newObj = self.__createBuildingExterior(parent, parentUid, objKey, objectData)
         elif objType == ObjectList.DOOR_LOCATOR_NODE and self.wantBuildingInteriors:
@@ -56,8 +56,10 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
     def __createSearchableContainer(self, parent, parentUid, objKey, objectData):
         container = DistributedSearchableContainerAI(self.air)
         container.setUniqueId(objKey)
-        container.setPos(self.getObjectTruePos(objKey, parentUid, objectData))
-        container.setHpr(objectData.get('Hpr', (0, 0, 0)))
+
+        pos, parentObj = self.getObjectTruePosAndParent(objKey, parentUid, objectData)
+        container.setPos(parentObj, pos)
+        container.setHpr(parentObj, objectData.get('Hpr', (0, 0, 0)))
         container.setScale(objectData.get('Scale', (1, 1, 1)))
         container.setType(objectData.get('type', 'Crate'))
 
@@ -76,8 +78,10 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
 
     def __createFishingSpot(self, parent, parentUid, objKey, objectData):
         fishingSpot = DistributedFishingSpotAI(self.air)
-        fishingSpot.setPos(self.getObjectTruePos(objKey, parentUid, objectData))
-        fishingSpot.setHpr(objectData.get('Hpr', (0, 0, 0)))
+
+        pos, parentObj = self.getObjectTruePosAndParent(objKey, parentUid, objectData)
+        fishingSpot.setPos(parentObj, pos)
+        fishingSpot.setHpr(parentObj, objectData.get('Hpr', (0, 0, 0)))
         fishingSpot.setScale(objectData.get('Scale', (1, 1, 1)))
         fishingSpot.setOceanOffset(float(objectData.get('Ocean Offset', 1)))
 
@@ -89,8 +93,10 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
 
     def __createPotionTable(self, parent, parentUid, objKey, objectData):
         table = DistributedPotionCraftingTableAI(self.air)
-        table.setPos(self.getObjectTruePos(objKey, parentUid, objectData))
-        table.setHpr(objectData.get('Hpr', (0, 0, 0)))
+
+        pos, parentObj = self.getObjectTruePosAndParent(objKey, parentUid, objectData)
+        table.setPos(parentObj, pos)
+        table.setHpr(parentObj, objectData.get('Hpr', (0, 0, 0)))
         table.setScale(objectData.get('Scale', (1, 1, 1)))
 
         table.setPotionZone(int(objectData.get('Potion Zone', 0)))
@@ -144,7 +150,7 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
 
         buildingDoor = DistributedBuildingDoorAI(self.air)
         buildingDoor.setUniqueId(objKey)
-        buildingDoor.setHpr(objectData.get('Hpr', (0, 0, 0)))
+        buildingDoor.setPos(objectData.get('Pos', (0, 0, 0)))
         buildingDoor.setHpr(objectData.get('Hpr', (0, 0, 0)))
         buildingDoor.setScale(objectData.get('Scale', 1))
         buildingDoor.setInteriorId(interior.doId, interior.getUniqueId(), interior.parentId, interior.zoneId)
@@ -158,8 +164,10 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
 
     def __createDinghy(self, parent, parentUid, objKey, objectData):
         dinghy = DistributedDinghyAI(self.air)
-        dinghy.setPos(self.getObjectTruePos(objKey, parentUid, objectData))
-        dinghy.setHpr(objectData.get('Hpr', (0, 0, 0)))
+
+        pos, parentObj = self.getObjectTruePosAndParent(objKey, parentUid, objectData)
+        dinghy.setPos(parentObj, pos)
+        dinghy.setHpr(parentObj, objectData.get('Hpr', (0, 0, 0)))
         dinghy.setInteractRadius(float(objectData.get('Aggro Radius', 25)))
 
         parent.generateChildWithRequired(dinghy, PiratesGlobals.IslandLocalZone)
@@ -172,8 +180,10 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
         spawnClass = DistributedSurfaceTreasureAI if objectData['Spawnables'] == 'Surface Treasure' else DistributedBuriedTreasureAI
 
         spawnNode = spawnClass(self.air)
-        spawnNode.setPos(self.getObjectTruePos(objKey, parentUid, objectData))
-        spawnNode.setHpr(objectData.get('Hpr', (0, 0, 0)))
+
+        pos, parentObj = self.getObjectTruePosAndParent(objKey, parentUid, objectData)
+        spawnNode.setPos(parentObj, pos)
+        spawnNode.setHpr(parentObj, objectData.get('Hpr', (0, 0, 0)))
         spawnNode.setScale(objectData.get('Scale', (1, 1, 1)))
         spawnNode.setStartingDepth(int(objectData.get('startingDepth', 10)))
         spawnNode.setCurrentDepth(spawnNode.getStartingDepth())
@@ -187,8 +197,10 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
 
     def __createRepairBench(self, parent, parentUid, objKey, objectData):
         bench = DistributedRepairBenchAI(self.air)
-        bench.setPos(self.getObjectTruePos(objKey, parentUid, objectData))
-        bench.setHpr(objectData.get('Hpr', (0, 0, 0)))
+
+        pos, parentObj = self.getObjectTruePosAndParent(objKey, parentUid, objectData)
+        bench.setPos(parentObj, pos)
+        bench.setHpr(parentObj, objectData.get('Hpr', (0, 0, 0)))
         bench.setScale(objectData.get('Scale', (1, 1, 1)))
         bench.setDifficulty(int(objectData.get('difficulty', '0')))
 

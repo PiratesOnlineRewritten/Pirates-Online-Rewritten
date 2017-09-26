@@ -37,42 +37,46 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         self.ignoreDoubleRandom = config.GetBool('ignore-double-random-bosses', False)
         self._enemies = {}
 
-    def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic):
+    def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic, zoneId):
         newObj = None
 
         if objType == 'Townsperson':
             if self.wantTownfolk:
-                newObj = self.__generateTownsperon(objType, objectData, parent, parentUid, objKey, dynamic)
+                newObj = self.__createTownsperon(objType, objectData, parent, parentUid, objKey, dynamic, zoneId)
         elif objType == 'Spawn Node':
             if self.wantEnemies:
-                newObj = self.__generateEnemy(objType, objectData, parent, parentUid, objKey, dynamic)
+                newObj = self.__createEnemy(objType, objectData, parent, parentUid, objKey, dynamic, zoneId)
         elif objType == 'Dormant NPC Spawn Node':
             if self.wantEnemies and self.wantDormantSpawns:
-                newObj = self.__generateEnemy(objType, objectData, parent, parentUid, objKey, dynamic)
+                newObj = self.__createEnemy(objType, objectData, parent, parentUid, objKey, dynamic, zoneId)
         elif objType == 'Animal':
             if self.wantAnimals:
-                newObj = self.__generateAnimal(objType, objectData, parent, parentUid, objKey, dynamic)
+                newObj = self.__createAnimal(objType, objectData, parent, parentUid, objKey, dynamic, zoneId)
         elif objType == 'Creature':
             if self.wantEnemies and self.wantNormalBosses:
                 self.notify.warning('Received unknown generate: %s' % objType)
         elif objType == 'Skeleton':
             if self.wantEnemies and self.wantNormalBosses:
-                newObj = self.__generateBossSkeleton(objType, objectData, parent, parentUid, objKey, dynamic)
+                newObj = self.__createBossSkeleton(objType, objectData, parent, parentUid, objKey, dynamic, zoneId)
         elif objType == 'NavySailor':
             if self.wantEnemies and self.wantNormalBosses:
-                newObj = self.__generateBossNavy(objType, objectData, parent, parentUid, objKey, dynamic)
+                newObj = self.__createBossNavy(objType, objectData, parent, parentUid, objKey, dynamic, zoneId)
         else:
             self.notify.warning('Received unknown generate: %s' % objType)
 
         return newObj
 
-    def __generateTownsperon(self, objType, objectData, parent, parentUid, objKey, dynamic):
+    def __setAvatarPosition(self, object, objectData, parent, parentUid, objKey):
+        pos, parentObj = parent.builder.getObjectTruePosAndParent(objKey, parentUid, objectData)
+        object.setPos(parentObj, pos)
+        object.setHpr(parentObj, objectData.get('Hpr', (0, 0, 0)))
+        object.setSpawnPosHpr(object.getPos(), object.getHpr())
+        return object
+
+    def __createTownsperon(self, objType, objectData, parent, parentUid, objKey, dynamic, zoneId):
         townfolk = DistributedNPCTownfolkAI(self.air)
 
-        pos = parent.builder.getObjectTruePos(objKey, parentUid, objectData)
-        townfolk.setPos(pos)
-        townfolk.setHpr(objectData.get('Hpr'))
-        townfolk.setSpawnPosHpr(townfolk.getPos(), townfolk.getHpr())
+        self.__setAvatarPosition(townfolk, objectData, parent, parentUid, objKey)
         townfolk.setScale(objectData.get('Scale'))
         townfolk.setUniqueId(objKey)
 
@@ -117,7 +121,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         if hasattr(PiratesGlobals, helpId):
             townfolk.setHelpId(getattr(PiratesGlobals, helpId, 0))
 
-        parent.generateChildWithRequired(townfolk, PiratesGlobals.IslandLocalZone)
+        parent.generateChildWithRequired(townfolk, zoneId)
 
         locationName = parent.getLocalizerName()
         townfolkName = townfolk.getName()
@@ -125,7 +129,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
 
         return townfolk
 
-    def __generateEnemy(self, objType, objectData, parent, parentUid, objKey, dynamic):
+    def __createEnemy(self, objType, objectData, parent, parentUid, objKey, dynamic, zoneId):
         
         spawnable = objectData.get('Spawnables', '')
         if spawnable not in AvatarTypes.NPC_SPAWNABLES:
@@ -169,11 +173,8 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
             self.notify.warning('No Enemy class defined for AvatarType: %s' % avatarType)
             return
 
-        pos = parent.builder.getObjectTruePos(objKey, parentUid, objectData)
         enemy = enemyCls(self.air)
-        enemy.setPos(pos)
-        enemy.setHpr(objectData.get('Hpr'))
-        enemy.setSpawnPosHpr(enemy.getPos(), enemy.getHpr())
+        self.__setAvatarPosition(enemy, objectData, parent, parentUid, objKey)
         enemy.setScale(objectData.get('Scale'))
 
         if avatarType.getBoss():
@@ -230,7 +231,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
 
         self._enemies[objKey] = enemy
 
-        parent.generateChildWithRequired(enemy, PiratesGlobals.IslandLocalZone)
+        parent.generateChildWithRequired(enemy, zoneId)
 
         locationName = parent.getLocalizerName()
         self.notify.debug('Generating %s (%s) under zone %d in %s at %s with doId %d' % (enemy.getName(), objKey, enemy.zoneId, locationName, enemy.getPos(), enemy.doId))
@@ -240,7 +241,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
 
         return enemy
 
-    def __generateAnimal(self, objType, objectData, parent, parentUid, objKey, dynamic):
+    def __createAnimal(self, objType, objectData, parent, parentUid, objKey, dynamic, zoneId):
         species = objectData.get('Species', None)
         if not species:
             self.notify.warning('Failed to generate Animal %s; Species was not defined' % objKey)
@@ -259,29 +260,23 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
 
         animal = animalClass(self.air)
 
-        pos = parent.builder.getObjectTruePos(objKey, parentUid, objectData)
-        animal.setPos(pos)
-        animal.setHpr(objectData.get('Hpr'))
-        animal.setSpawnPosHpr(animal.getPos(), animal.getHpr())
+        self.__setAvatarPosition(animal, objectData, parent, parentUid, objKey)
         animal.setScale(objectData.get('Scale'))
         animal.setUniqueId(objKey)
 
         animal.setAvatarType(avatarType)
 
-        parent.generateChildWithRequired(animal, PiratesGlobals.IslandLocalZone)
+        parent.generateChildWithRequired(animal, zoneId)
 
         locationName = parent.getLocalizerName()
         self.notify.debug('Generating %s (%s) under zone %d in %s at %s with doId %d' % (species, objKey, animal.zoneId, locationName, animal.getPos(), animal.doId))
 
         return animal
 
-    def __generateBossSkeleton(self, objType, objectData, parent, parentUid, objKey, dynamic):
+    def __createBossSkeleton(self, objType, objectData, parent, parentUid, objKey, dynamic, zoneId):
         skeleton = DistributedBossSkeletonAI(self.air)
 
-        pos = parent.builder.getObjectTruePos(objKey, parentUid, objectData)
-        skeleton.setPos(pos)
-        skeleton.setHpr(objectData.get('Hpr'))
-        skeleton.setSpawnPosHpr(skeleton.getPos(), skeleton.getHpr())
+        self.__setAvatarPosition(skeleton, objectData, parent, parentUid, objKey)
         skeleton.setScale(objectData.get('Scale'))
         skeleton.setUniqueId(objKey)
 
@@ -328,20 +323,17 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
 
         self._enemies[objKey] = skeleton
 
-        parent.generateChildWithRequired(skeleton, PiratesGlobals.IslandLocalZone)
+        parent.generateChildWithRequired(skeleton, zoneId)
 
         locationName = parent.getLocalizerName()
         self.notify.debug('Generating %s (%s) under zone %d in %s at %s with doId %d' % (skeleton.getName(), objKey, skeleton.zoneId, locationName, skeleton.getPos(), skeleton.doId))
 
         return skeleton
 
-    def __generateBossNavy(self, objType, objectData, parent, parentUid, objKey, dynamic):
+    def __createBossNavy(self, objType, objectData, parent, parentUid, objKey, dynamic, zoneId):
         navy = DistributedBossNavySailorAI(self.air)
 
-        pos = parent.builder.getObjectTruePos(objKey, parentUid, objectData)
-        navy.setPos(pos)
-        navy.setHpr(objectData.get('Hpr'))
-        navy.setSpawnPosHpr(navy.getPos(), navy.getHpr())
+        self.__setAvatarPosition(navy, objectData, parent, parentUid, objKey)
         navy.setScale(objectData.get('Scale'))
         navy.setUniqueId(objKey)
 
@@ -397,7 +389,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
 
         self._enemies[objKey] = navy
 
-        parent.generateChildWithRequired(navy, PiratesGlobals.IslandLocalZone)
+        parent.generateChildWithRequired(navy, zoneId)
 
         locationName = parent.getLocalizerName()
         self.notify.debug('Generating %s (%s) under zone %d in %s at %s with doId %d' % (navy.getName(), objKey, navy.zoneId, locationName, navy.getPos(), navy.doId))
