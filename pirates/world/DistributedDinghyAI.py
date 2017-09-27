@@ -3,6 +3,7 @@ from pirates.distributed.DistributedInteractiveAI import DistributedInteractiveA
 
 class DistributedDinghyAI(DistributedInteractiveAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedDinghyAI')
+    MULTIUSE = True
 
     def __init__(self, air):
         DistributedInteractiveAI.__init__(self, air)
