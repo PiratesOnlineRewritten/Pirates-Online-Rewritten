@@ -116,6 +116,8 @@ class PiratesAIRepository(PiratesInternalRepository):
 
         self.crewMatchManager = self.generateGlobalObject(OTP_DO_ID_PIRATES_CREW_MATCH_MANAGER, 'DistributedCrewMatchManager')
 
+        self.guildManager = self.generateGlobalObject(OTP_DO_ID_PIRATES_GUILD_MANAGER, 'PCGuildManager')
+
     def createZones(self):
         """
         Create "zone" objects, e.g. DistributedOceanGrid et al.

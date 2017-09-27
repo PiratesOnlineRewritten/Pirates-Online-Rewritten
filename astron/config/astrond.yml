@@ -47,6 +47,10 @@ uberdogs:
       id: 4706
       anonymous: false
 
+    - class: PCGuildManager
+      id: 4701
+      anonymous: false
+
 roles:
     - type: clientagent
       bind: 127.0.0.1:7198
