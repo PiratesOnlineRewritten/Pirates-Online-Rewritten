@@ -8,6 +8,8 @@ from pirates.makeapirate import ClothingGlobals
 from pirates.pirate import BodyDefs
 from pirates.inventory.ItemConstants import DYE_COLORS
 from otp.speedchat import ColorSpace
+from pirates.piratesbase import PiratesGlobals
+
 notify = directNotify.newCategory('HumanDNA')
 LAYER1_CLOTHES = 1
 LAYER2_CLOTHES = 2
@@ -843,6 +845,9 @@ class HumanDNA(AvatarDNA.AvatarDNA):
         return self.jewelryZone8
 
     def getTutorial(self):
+        if base.config.GetBool('ignore-teleport-requirements', False):
+            return PiratesGlobals.TUT_GOT_COMPASS
+
         return self.tutorial
 
     def getDNAName(self):

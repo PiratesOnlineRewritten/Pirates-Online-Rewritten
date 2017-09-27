@@ -576,16 +576,6 @@ class PiratesClientRepository(OTPClientRepository):
         self.__gotTimeSync = 1
         self.moveOnFromUberZone()
 
-    @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
-    def moveOnFromUberZone(self):
-        if not self.__gotTimeSync:
-            self.notify.info('Waiting for time sync.')
-            return
-
-        hoodId = self.handlerArgs['hoodId']
-        zoneId = self.handlerArgs['zoneId']
-        avId = self.handlerArgs['avId']
-
     def enterGameOff(self):
         pass
 

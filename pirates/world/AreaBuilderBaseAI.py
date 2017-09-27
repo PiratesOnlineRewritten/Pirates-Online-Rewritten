@@ -17,7 +17,6 @@ class AreaBuilderBaseAI(DirectObject):
     def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic, parentIsObj=False, fileName=None, actualParentObj=None):
         newObj = None
 
-
         if objType == ObjectList.AREA_TYPE_ISLAND:
             newObj = self.__createIsland(objectData, parent, parentUid, objKey, dynamic)
         else:
@@ -49,7 +48,6 @@ class AreaBuilderBaseAI(DirectObject):
 
         self.broadcastObjectPosition(object)
 
-
     def isChildObject(self, objKey, parentUid):
         return self.air.worldCreator.getObjectParentUid(objKey) != parentUid
 
@@ -57,7 +55,7 @@ class AreaBuilderBaseAI(DirectObject):
         if self.isChildObject(objKey, parentUid):
             parentUid = self.air.worldCreator.getObjectParentUid(objKey)
             parentData = self.air.worldCreator.getObjectDataByUid(parentUid)
-            
+
             if parentData['Type'] == 'Island':
                 return objectData.get('Pos'), NodePath()
 

@@ -28,11 +28,12 @@ class DistributedInstanceBase(NodePath, DistributedObject, StagedObject):
         self.type = PiratesGlobals.INSTANCE_GENERIC
         self.spawnInfo = None
         self.pendingJail = None
+        self._onOffState = False
         if hasattr(localAvatar, 'gameFSM') and localAvatar.gameFSM:
             localAvatar.gameFSM.setDefaultGameState('LandRoam')
+
         self.worldGrid = None
         self.fireworkShowMgr = None
-        return
 
     def disable(self):
         DistributedObject.disable(self)
@@ -77,21 +78,26 @@ class DistributedInstanceBase(NodePath, DistributedObject, StagedObject):
         if not self.isGenerated():
             self.notify.warning('Trying to get water for non-generated world')
             return None
+
         if not self.worldGrid:
             self.notify.warning('Trying to get water for world without worldGrid')
             return None
+
         return hasattr(self.worldGrid, 'water')
 
     def getWater(self):
         if not self.isGenerated():
             self.notify.warning('Trying to get water for non-generated world')
             return None
+
         if not self.worldGrid:
             self.notify.warning('Trying to get water for world without worldGrid')
             return None
+
         if not hasattr(self.worldGrid, 'water'):
             self.notify.warning('Trying to get water for worldGrid without water')
             return None
+
         return self.worldGrid.water
 
     def addCutsceneOriginNode(self, node, name):
@@ -135,7 +141,6 @@ class DistributedInstanceBase(NodePath, DistributedObject, StagedObject):
             return getPlayerSpawnPt(parentDoId, index=PiratesGlobals.ANY_LOCATION_SPAWN_INDEX)
         else:
             return spawnPt
-        return
 
     def getType(self):
         return self.type
@@ -201,8 +206,46 @@ class DistributedInstanceBase(NodePath, DistributedObject, StagedObject):
         if isinstance(child, DistributedOceanGrid):
             if child == self.worldGrid:
                 self.setWorldGrid(None)
+
         DistributedObject.handleChildLeave(self, child, zoneId)
-        return
+
+    @report(types=['frameCount', 'args'], dConfigParam=['want-connector-report', 'want-jail-report'])
+    def addWorldInterest(self, area=None):
+        self.cr.setActiveWorld(self)
+        self.turnOn(localAvatar)
+
+    @report(types=['frameCount', 'args'], dConfigParam=['want-connector-report', 'want-jail-report'])
+    def removeWorldInterest(self, area=None):
+        if area:
+            self.turnOff([area])
+        else:
+            self.turnOff()
+
+    @report(types=['frameCount', 'args'], dConfigParam=['want-connector-report', 'want-jail-report'])
+    def turnOff(self, cacheIslands=[]):
+        self._turnOffIslands(cacheIslands)
+        self.stash()
+        self._onOffState = False
+        if self.worldGrid:
+            self.worldGrid.turnOff()
+
+    @report(types=['frameCount', 'args'], dConfigParam=['want-connector-report', 'want-jail-report'])
+    def turnOn(self, av=None):
+        self.unstash()
+        self._onOffState = True
+        self.worldGrid.turnOn(av)
+
+    def _turnOffIslands(self, cacheIslands=[]):
+        for island in self.islands.values():
+            cache = island in cacheIslands
+            island.turnOff()
+
+    def _turnOnIslands(self):
+        for island in self.islands.values():
+            island.turnOn()
+
+    def isOn(self):
+        return self._onOffState
 
     @report(types=['frameCount', 'args'], dConfigParam=['connector', 'jail'])
     def handleOffStage(self, cacheAreas=[]):
@@ -220,6 +263,7 @@ class DistributedInstanceBase(NodePath, DistributedObject, StagedObject):
         self.unstash()
         if self.worldGrid:
             self.worldGrid.goOnStage()
+
         for island in self.islands.values():
             if island:
                 island.goOnStage()

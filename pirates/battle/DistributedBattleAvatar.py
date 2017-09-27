@@ -338,8 +338,10 @@ class DistributedBattleAvatar(DistributedReputationAvatar, WeaponBase, Teamable)
     def setLocation(self, parentId, zoneId):
         DistributedReputationAvatar.setLocation(self, parentId, zoneId)
 
-        if self.getParentObj():
+        try:
             self.wrtReparentTo(self.getParentObj())
+        except:
+            pass
 
     def disable(self):
         DistributedBattleAvatar.Count -= 1

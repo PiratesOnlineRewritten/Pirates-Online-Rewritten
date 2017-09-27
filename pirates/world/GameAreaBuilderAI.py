@@ -10,6 +10,7 @@ from pirates.world.DistributedBuildingDoorAI import DistributedBuildingDoorAI
 from pirates.world.DistributedDinghyAI import DistributedDinghyAI
 from pirates.treasuremap.DistributedBuriedTreasureAI import DistributedBuriedTreasureAI
 from pirates.treasuremap.DistributedSurfaceTreasureAI import DistributedSurfaceTreasureAI
+from pirates.instance.DistributedInstanceBaseAI import DistributedInstanceBaseAI
 
 class GameAreaBuilderAI(AreaBuilderBaseAI):
     notify = directNotify.newCategory('GameAreaBuilderAI')
@@ -30,7 +31,9 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
     def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic):
         newObj = None
 
-        if objType == 'Searchable Container' and self.wantSearchables:
+        if objType == 'Player Spawn Node':
+            newObj = self.__createPlayerSpawnNode(objectData, parent, parentUid, objKey, dynamic)
+        elif objType == 'Searchable Container' and self.wantSearchables:
             newObj = self.__createSearchableContainer(parent, parentUid, objKey, objectData)
         elif objType == 'FishingSpot' and self.wantFishing:
             newObj = self.__createFishingSpot(parent, parentUid, objKey, objectData)
@@ -52,6 +55,18 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
             newObj = self.__createIslandArea(parent, parentUid, objKey, objectData)
 
         return newObj
+
+    def __createPlayerSpawnNode(self, objectData, parent, parentUid, objKey, dynamic):
+        if not isinstance(self.parent.getParentObj(), DistributedInstanceBaseAI):
+            self.notify.debug('Cannot setup player spawn point for %r!' % self.parent)
+            return None
+
+        x, y, z = objectData.get('GridPos', objectData.get('Pos', (0, 0, 0)))
+        h, p, r = objectData.get('Hpr', (0, 0, 0))
+
+        self.parent.getParentObj().addSpawnPt(self.parent.getUniqueId(), (x, y, z, h))
+
+        return None
 
     def __createSearchableContainer(self, parent, parentUid, objKey, objectData):
         container = DistributedSearchableContainerAI(self.air)

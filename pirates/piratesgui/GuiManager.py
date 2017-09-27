@@ -1739,7 +1739,6 @@ class GuiManager(FSM.FSM):
         if self.crewHUDTurnedOff and (self.getTutorialStatus() >= PiratesGlobals.TUT_MET_JOLLY_ROGER or self.forceLookout or self.crewHUD.crew):
             self.crewHUD.setHUDOn()
             self.crewHUDTurnedOff = False
-        return
 
     def getTray(self, gearId):
         categoryType = InventoryId.getCategory(gearId)
@@ -2485,8 +2484,7 @@ class GuiManager(FSM.FSM):
     def exitPopup(self):
         pass
 
-    def enterInterface(self, extraArgs=[
- True, True]):
+    def enterInterface(self, extraArgs=[True, True]):
         allowChat = extraArgs[0]
         allowSeaChest = extraArgs[1] & (localAvatar.style.getTutorial() >= PiratesGlobals.TUT_GOT_SEACHEST)
         self.setChatAllowed(allowChat, close=not allowChat)
@@ -2498,8 +2496,7 @@ class GuiManager(FSM.FSM):
     def exitInterface(self):
         pass
 
-    def enterInteraction(self, extraArgs=[
- True, True]):
+    def enterInteraction(self, extraArgs=[True, True]):
         allowChat = extraArgs[0]
         allowSeaChest = extraArgs[1] & (localAvatar.style.getTutorial() >= PiratesGlobals.TUT_GOT_SEACHEST)
         self.setChatAllowed(allowChat, close=not allowChat)
