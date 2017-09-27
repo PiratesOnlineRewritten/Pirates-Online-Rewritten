@@ -1,6 +1,7 @@
 from pirates.ai.HolidayDates import *
 from pirates.holiday.FleetHolidayGlobals import Configs as FHConfigs
 from pirates.holiday.FleetHolidayGlobals import FleetHolidayConfigs
+from pirates.holiday.KrakenHolidayGlobals import ConfigIds as KHConfigs
 from pirates.holiday.KrakenHolidayGlobals import KrakenHolidayConfigs
 from pirates.holiday.CatalogHolidayGlobals import CatalogHolidayConfigs
 from pirates.holiday.MessageHolidayGlobals import MessageHolidayConfigs
@@ -93,8 +94,55 @@ def getHolidayConfigDatesDict(configDefs):
     return getHolidayConfigAttrDict(configDefs, attrName='dates', defaultValue=defaultDates)
 
 
-holidayNameDict = {DOUBLEGOLDHOLIDAY: 'DoubleGoldHolidayAll',DOUBLEGOLDHOLIDAYPAID: 'DoubleGoldHolidayPaid',DOUBLEXPHOLIDAY: 'DoubleXPHolidayAll',DOUBLEXPHOLIDAYPAID: 'DoubleXPHolidayPaid',FREEHATWEEK: 'FreeHatWeek',SAINTPATRICKSDAY: 'SaintPatricksDay',MOTHERSDAY: 'MothersDay',FATHERSDAY: 'FathersDay',FOURTHOFJULY: 'FourthOfJuly',HALFOFFCUSTOMIZATION: 'HalfOffCustomization',ALLACCESSWEEKEND: 'AllAccessWeekend',HALLOWEEN: 'Halloween',JOLLYROGERCURSE: 'JollyRogerCurse',FOUNDERSFEAST: 'FoundersFeast',FREEITEMTHANKSGIVING: 'FreeItemThanksgiving',CURSEDNIGHT: 'CursedNight',JOLLYCURSEAUTO: 'JollyCurseAuto',WINTERFESTIVAL: 'WinterFestival',NEWYEARS: 'NewYears',VALENTINESDAY: 'ValentinesDay',ZOMBIEEMOTE: 'ZombieEmote',INVASIONPORTROYAL: 'InvasionJollyRoger',WRECKEDGOVERNORSMANSION: 'WreckedGovernorsMansion',DOUBLECROSS: 'DoubleCross',INVASIONTORTUGA: 'InvasionTortuga',WRECKEDFAITHFULBRIDE: 'WreckedFaithfulBride',INVASIONDELFUEGO: 'InvasionDelFuego',WRECKEDDELFUEGOTOWN: 'WreckedDelFuegoTown',FLEETHOLIDAY: getHolidayConfigNameDict('FleetHoliday', FleetHolidayConfigs),MARDIGRAS: 'MardiGras',FEASTOFSTRENGTH: 'FeatsOfStrength',EITCMOBILIZATION: 'EITCMobilization',NAVYMOBILIZATION: 'NavyMobilization',SKELMOBILIZATION: 'SkeletonMobilization',KRAKENHOLIDAY: getHolidayConfigNameDict('KrakenHoliday', KrakenHolidayConfigs),CATALOGHOLIDAY: getHolidayConfigNameDict('CatalogHoliday', CatalogHolidayConfigs),MESSAGEHOLIDAY: getHolidayConfigNameDict('MessageHoliday', MessageHolidayConfigs),APRILFOOLS: 'AprilFools',QUEENANNES: 'QueenAnnesRevenge',GETCONNNECTED: 'GetConnected',DOUBLELOOTHOLIDAY: 'DoubleLoot'}
-holidayClassNameDict = {FLEETHOLIDAY: 'FleetHoliday',KRAKENHOLIDAY: 'KrakenHoliday',CATALOGHOLIDAY: 'CatalogHoliday',MESSAGEHOLIDAY: 'MessageHoliday'}
+holidayNameDict = {
+    DOUBLEGOLDHOLIDAY: 'DoubleGoldHolidayAll',
+    DOUBLEGOLDHOLIDAYPAID: 'DoubleGoldHolidayPaid',
+    DOUBLEXPHOLIDAY: 'DoubleXPHolidayAll',
+    DOUBLEXPHOLIDAYPAID: 'DoubleXPHolidayPaid',
+    FREEHATWEEK: 'FreeHatWeek',
+    SAINTPATRICKSDAY: 'SaintPatricksDay',
+    MOTHERSDAY: 'MothersDay',
+    FATHERSDAY: 'FathersDay',
+    FOURTHOFJULY: 'FourthOfJuly',
+    HALFOFFCUSTOMIZATION: 'HalfOffCustomization',
+    ALLACCESSWEEKEND: 'AllAccessWeekend',
+    HALLOWEEN: 'Halloween',
+    JOLLYROGERCURSE: 'JollyRogerCurse',
+    FOUNDERSFEAST: 'FoundersFeast',
+    FREEITEMTHANKSGIVING: 'FreeItemThanksgiving',
+    CURSEDNIGHT: 'CursedNight',
+    JOLLYCURSEAUTO: 'JollyCurseAuto',
+    WINTERFESTIVAL: 'WinterFestival',
+    NEWYEARS: 'NewYears',
+    VALENTINESDAY: 'ValentinesDay',
+    ZOMBIEEMOTE: 'ZombieEmote',
+    INVASIONPORTROYAL: 'InvasionJollyRoger',
+    WRECKEDGOVERNORSMANSION: 'WreckedGovernorsMansion',
+    DOUBLECROSS: 'DoubleCross',
+    INVASIONTORTUGA: 'InvasionTortuga',
+    WRECKEDFAITHFULBRIDE: 'WreckedFaithfulBride',
+    INVASIONDELFUEGO: 'InvasionDelFuego',
+    WRECKEDDELFUEGOTOWN: 'WreckedDelFuegoTown',
+    FLEETHOLIDAY: getHolidayConfigNameDict('FleetHoliday', FleetHolidayConfigs),
+    MARDIGRAS: 'MardiGras',
+    FEASTOFSTRENGTH: 'FeatsOfStrength',
+    EITCMOBILIZATION: 'EITCMobilization',
+    NAVYMOBILIZATION: 'NavyMobilization',
+    SKELMOBILIZATION: 'SkeletonMobilization',
+    KRAKENHOLIDAY: getHolidayConfigNameDict('KrakenHoliday', KrakenHolidayConfigs),
+    CATALOGHOLIDAY: getHolidayConfigNameDict('CatalogHoliday', CatalogHolidayConfigs),
+    MESSAGEHOLIDAY: getHolidayConfigNameDict('MessageHoliday', MessageHolidayConfigs),
+    APRILFOOLS: 'AprilFools',
+    QUEENANNES: 'QueenAnnesRevenge',
+    GETCONNNECTED: 'GetConnected',
+    DOUBLELOOTHOLIDAY: 'DoubleLoot'
+}
+holidayClassNameDict = {
+    FLEETHOLIDAY: 'FleetHoliday',
+    KRAKENHOLIDAY: 'KrakenHoliday',
+    CATALOGHOLIDAY: 'CatalogHoliday',
+    MESSAGEHOLIDAY: 'MessageHoliday'
+}
 
 def getAllHolidayIds():
     allHolidayIds = []
@@ -357,6 +405,17 @@ RandomizedSchedules = {
         'conflictingClasses': [],
         'conflictingRSIds': [],
         'daysPerMonth': (5, 8),
+        'numPerDay': 1,
+        'timeWindows': [RandomTimeWindows.E, RandomTimeWindows.F, RandomTimeWindows.G, RandomTimeWindows.H],
+        'duration': (1, 0)
+    },
+    'Kraken': {
+        'configs': [('want-random-kraken-spawns', 0)],
+        'holidayIds': [getHolidayId(KRAKENHOLIDAY, KHConfigs.Kraken_Normal)],
+        'conflictingIds': [CURSEDNIGHT],
+        'conflictingClasses': [],
+        'conflictingRSIds': [],
+        'daysPerMonth': (0, 1),
         'numPerDay': 1,
         'timeWindows': [RandomTimeWindows.E, RandomTimeWindows.F, RandomTimeWindows.G, RandomTimeWindows.H],
         'duration': (1, 0)

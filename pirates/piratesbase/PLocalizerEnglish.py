@@ -6512,6 +6512,7 @@ NavyMobilizationStart = 'Navy Sea Offensive:\nThe Navy has launched a Sea Offens
 NavyMobilizationStatus = 'Navy Sea Offensive:\nTime Remaining: %s Hours, %s Minutes'
 SkelMobilizationStart = 'Skeleton Sea Offensive:\nJolly Roger has launched a Sea Offensive! Many Skeleton Ships now roam the high seas, so get ready to face them when you set sail!'
 SkelMobilizationStatus = 'Skeleton Sea Offensive:\nTime Remaining: %s Hours, %s Minutes'
+KrakenStart = 'The Caribbean seas have turned a strange green color. Legend tells us this is an omen, that a large sea creature is headed toward these waters.'
 InvasionPortRoyalStart = makeHeadingString('Port Royal Invasion', 2) + "\nGet ready to defend Port Royal from Jolly Roger's army! Undead will arrive from the shores and attack the town's barricades. As the barricades fall, the skeletons get closer to the Governor's Mansion. Protect the barricades and don't let the Governor's Mansion be destroyed, or Jolly Roger will be victorious."
 InvasionTortugaStart = makeHeadingString('Tortuga Invasion', 2) + "\nGet ready to defend Tortuga from Jolly Roger's army! Undead will arrive from the shores and attack the town's barricades. As the barricades fall, the skeletons get closer to the Faithful Bride tavern. Protect the barricades and don't let Jolly Roger reach the Faithful Bride tavern, or Jolly Roger will find Jack Sparrow and have his revenge."
 InvasionDelFuegoStart = makeHeadingString('Padres Del Fuego Invasion', 2) + "\nGet ready to defend Padres Del Fuego from Jolly Roger's army! Undead will arrive from the shores and attack the town's barricades. As the barricades fall, the skeletons get closer to the center of town. Protect the barricades and don't let the town be destroyed, or Jolly Roger will be victorious!"
@@ -6556,11 +6557,30 @@ InvasionJollyRogerEndPlayerLose4 = 'What? Sparrow escaped? Curse his vile soul!'
 from pirates.holiday.FleetHolidayGlobals import Configs as FHConfigs
 from pirates.holiday.FleetHolidayGlobals import Msgs as FHMsgs
 FleetHolidayMsgs = {
-    FHMsgs.EF_EitcLaunch: "The East India Trading Company has deployed an Expedition Fleet led by a mighty Ship of the Line to Raven Cove!  The Trading Company is after El Patron's Lost Weapons!  Sink the Expedition Fleet to prevent the weapons from falling into the hands of the EITC!", FHMsgs.EF_EitcEscaped: "The East India Trading Company's Expedition Fleet has left the Caribbean and is sailing towards the island of Raven Cove.  It is too late to stop this fleet now!", FHMsgs.EF_EitcDefeated: "The East India Trading Company's Expedition Fleet has been sunk by the Pirates.  El Patron's Lost Weapons are safe for now...", FHMsgs.EF_NavyLaunch: "The Navy has deployed an Expedition Fleet led by a mighty Ship of the Line to Raven Cove!  The Navy is after El Patron's Lost Weapons!  Sink the Expedition Fleet to prevent the weapons from falling into the hands of the Navy!", FHMsgs.EF_NavyEscaped: "The Navy's Expedition Fleet has left the Caribbean and is sailing towards the island of Raven Cove.  It is too late to stop this fleet now!", FHMsgs.EF_NavyDefeated: "The Navy's Expedition Fleet has been sunk by the Pirates.  El Patron's Lost Weapons are safe for now...", FHMsgs.TF_EitcLaunch: "An East India Trading Company Treasure Fleet has set sail! This heavily armed Fleet is transporting part of El Patron's Lost Weapons. Sink the Treasure Fleet and plunder the Lost Weapons!", FHMsgs.TF_EitcEscaped: 'The EITC Treasure Fleet has reached its destination. It is too late to plunder this treasure now!', FHMsgs.TF_EitcDefeated: 'The EITC Treasure Fleet has been sunk, and the Treasure has been looted by the Pirates!', FHMsgs.TF_NavyLaunch: "A Navy Treasure Fleet has set sail! This heavily armed Fleet is transporting part of El Patron's Lost Weapons. Sink the Treasure Fleet and plunder the Lost Weapons!", FHMsgs.TF_NavyEscaped: 'The Navy Treasure Fleet has reached its destination. It is too late to plunder this treasure now!', FHMsgs.TF_NavyDefeated: 'The Navy Treasure Fleet has been sunk, and the Treasure has been looted by the Pirates!', FHMsgs.TF_EitcWarn10min: ['The EITC Treasure Fleets will weigh anchor in 10 minutes.', 'Prepare the sail!  EITC Treasure fleets leave port in 10 minutes.', 'Arm your cannons, mates.  EITC Treasure fleets set sail in 10 minutes.'], FHMsgs.TF_EitcWarn5min: ['The EITC Treasure Fleets are filled with loot and leaving in 5 minutes.', '5 minutes until the EITC Treasure Fleets embark from port.', 'Ready your cannons and sails, EITC Treasure Fleets sail in 5 Minutes.'], FHMsgs.TF_EitcWarn0min: ['Scouts have seen EITC Treasure Fleets leaving port - sink them now!', 'Get on the water, mates!  EITC Treasure fleets are under full sail!', 'Prepare to do battle mates!  The EITC Treasure Fleets are sailing now!'], FHMsgs.TF_NavyWarn10min: ['The Navy Treasure Fleets will weigh anchor in 10 minutes.', 'Prepare the sail!  Navy Treasure fleets leave port in 10 minutes.', 'Arm your cannons, mates.  Navy Treasure fleets set sail in 10 minutes.'], FHMsgs.TF_NavyWarn5min: ['The Navy Treasure Fleets are filled with loot and leaving in 5 minutes.', '5 minutes until the Navy Treasure Fleets embark from port.', 'Ready your cannons and sails, Navy Treasure Fleets sail in 5 Minutes.'], FHMsgs.TF_NavyWarn0min: ['Scouts have seen Navy Treasure Fleets leaving port - sink them now!', 'Get on the water, mates!  Navy Treasure fleets are under full sail!', 'Prepare to do battle mates!  The Navy Treasure Fleets are sailing now!']
+    FHMsgs.EF_EitcLaunch: "The East India Trading Company has deployed an Expedition Fleet led by a mighty Ship of the Line to Raven Cove!  The Trading Company is after El Patron's Lost Weapons!  Sink the Expedition Fleet to prevent the weapons from falling into the hands of the EITC!", 
+    FHMsgs.EF_EitcEscaped: "The East India Trading Company's Expedition Fleet has left the Caribbean and is sailing towards the island of Raven Cove.  It is too late to stop this fleet now!", 
+    FHMsgs.EF_EitcDefeated: "The East India Trading Company's Expedition Fleet has been sunk by the Pirates.  El Patron's Lost Weapons are safe for now...", 
+    FHMsgs.EF_NavyLaunch: "The Navy has deployed an Expedition Fleet led by a mighty Ship of the Line to Raven Cove!  The Navy is after El Patron's Lost Weapons!  Sink the Expedition Fleet to prevent the weapons from falling into the hands of the Navy!", 
+    FHMsgs.EF_NavyEscaped: "The Navy's Expedition Fleet has left the Caribbean and is sailing towards the island of Raven Cove.  It is too late to stop this fleet now!", 
+    FHMsgs.EF_NavyDefeated: "The Navy's Expedition Fleet has been sunk by the Pirates.  El Patron's Lost Weapons are safe for now...", 
+    FHMsgs.TF_EitcLaunch: "An East India Trading Company Treasure Fleet has set sail! This heavily armed Fleet is transporting part of El Patron's Lost Weapons. Sink the Treasure Fleet and plunder the Lost Weapons!", 
+    FHMsgs.TF_EitcEscaped: 'The EITC Treasure Fleet has reached its destination. It is too late to plunder this treasure now!', 
+    FHMsgs.TF_EitcDefeated: 'The EITC Treasure Fleet has been sunk, and the Treasure has been looted by the Pirates!', 
+    FHMsgs.TF_NavyLaunch: "A Navy Treasure Fleet has set sail! This heavily armed Fleet is transporting part of El Patron's Lost Weapons. Sink the Treasure Fleet and plunder the Lost Weapons!", 
+    FHMsgs.TF_NavyEscaped: 'The Navy Treasure Fleet has reached its destination. It is too late to plunder this treasure now!', 
+    FHMsgs.TF_NavyDefeated: 'The Navy Treasure Fleet has been sunk, and the Treasure has been looted by the Pirates!', 
+    FHMsgs.TF_EitcWarn10min: ['The EITC Treasure Fleets will weigh anchor in 10 minutes.', 'Prepare the sail!  EITC Treasure fleets leave port in 10 minutes.', 'Arm your cannons, mates.  EITC Treasure fleets set sail in 10 minutes.'], 
+    FHMsgs.TF_EitcWarn5min: ['The EITC Treasure Fleets are filled with loot and leaving in 5 minutes.', '5 minutes until the EITC Treasure Fleets embark from port.', 'Ready your cannons and sails, EITC Treasure Fleets sail in 5 Minutes.'], 
+    FHMsgs.TF_EitcWarn0min: ['Scouts have seen EITC Treasure Fleets leaving port - sink them now!', 'Get on the water, mates!  EITC Treasure fleets are under full sail!', 'Prepare to do battle mates!  The EITC Treasure Fleets are sailing now!'], 
+    FHMsgs.TF_NavyWarn10min: ['The Navy Treasure Fleets will weigh anchor in 10 minutes.', 'Prepare the sail!  Navy Treasure fleets leave port in 10 minutes.', 'Arm your cannons, mates.  Navy Treasure fleets set sail in 10 minutes.'], 
+    FHMsgs.TF_NavyWarn5min: ['The Navy Treasure Fleets are filled with loot and leaving in 5 minutes.', '5 minutes until the Navy Treasure Fleets embark from port.', 'Ready your cannons and sails, Navy Treasure Fleets sail in 5 Minutes.'], 
+    FHMsgs.TF_NavyWarn0min: ['Scouts have seen Navy Treasure Fleets leaving port - sink them now!', 'Get on the water, mates!  Navy Treasure fleets are under full sail!', 'Prepare to do battle mates!  The Navy Treasure Fleets are sailing now!']
 }
 from pirates.holiday.KrakenHolidayGlobals import Msgs as KHMsgs
 KrakenHolidayMsgs = {
-    KHMsgs.Launch: ['Let no joyful voice be heard! Let no man look up to the sky with hope! And let this day be cursed by we who ready to wake... the Kraken!', 'RAWR! is Kraken for I love you...', 'Every day and in every way, Kraken is getting better and better...'], KHMsgs.Escaped: ["That's one slippery squid", 'Pesky jellyfish swam away!'], KHMsgs.Defeated: ['Why do I suddenly have the hankering for fried calamari???']
+    KHMsgs.Launch: ['Let no joyful voice be heard! Let no man look up to the sky with hope! And let this day be cursed by we who ready to wake... the Kraken!'], 
+    KHMsgs.Escaped: ["That's one slippery squid", 'Pesky jellyfish swam away!'], 
+    KHMsgs.Defeated: ['Why do I suddenly have the hankering for fried calamari???']
 }
 QueenAnnesHolidayMsgs = {
     60: ["The Queen Anne's Revenge has been seen in the Caribbean under the command of a vile and mutinous crew. Keep an ear open for rumors of her whereabouts."],
@@ -6798,9 +6818,9 @@ holidayMessages = {
         MSG_CHAT_STATUS: SkelMobilizationStatus,
         MSG_ICON: 'admin'
     }, HolidayGlobals.KRAKENHOLIDAY: {
-        None: {
-            MSG_ICON: 'ship'
-        }
+        MSG_START_ALL: (KrakenStart, KrakenStart),
+        MSG_CHAT_STATUS: KrakenStart,
+        MSG_ICON: 'ship'
     }, HolidayGlobals.CATALOGHOLIDAY: {
         None: {
             MSG_ICON: 'loot'

@@ -120,6 +120,9 @@ class HolidayManagerUD(DistributedObjectGlobalUD):
             if date is None:
                 continue
             
+            if isinstance(date, dict):
+                continue
+
             for index in range(len(date.startDates)):
                 start = date.getStartTime(index)
                 end = date.getEndTime(index)
