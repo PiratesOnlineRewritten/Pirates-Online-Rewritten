@@ -67,6 +67,7 @@ class AreaBuilderBaseAI(DirectObject):
 
             objectPos = objectData.get('GridPos', objectData.get('Pos', Point3(0, 0, 0)))
             return objectPos, parentObject
+
         return objectData.get('Pos'), NodePath()
 
     def __createIsland(self, objectData, parent, parentUid, objKey, dynamic):

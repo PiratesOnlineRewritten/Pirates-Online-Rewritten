@@ -57,14 +57,21 @@ class GameAreaBuilderAI(AreaBuilderBaseAI):
         return newObj
 
     def __createPlayerSpawnNode(self, objectData, parent, parentUid, objKey, dynamic):
-        if not isinstance(self.parent.getParentObj(), DistributedInstanceBaseAI):
-            self.notify.debug('Cannot setup player spawn point for %r!' % self.parent)
+        from pirates.world.DistributedIslandAI import DistributedIslandAI
+
+        parent = self.parent.getParentObj()
+
+        if isinstance(parent, DistributedIslandAI):
+            parent = parent.getParentObj()
+
+        if not parent or not isinstance(parent, DistributedInstanceBaseAI):
+            self.notify.warning('Cannot setup player spawn point for %r!' % parent)
             return None
 
-        x, y, z = objectData.get('GridPos', objectData.get('Pos', (0, 0, 0)))
+        (x, y, z), objectParent = self.getObjectTruePosAndParent(objKey, parentUid, objectData)
         h, p, r = objectData.get('Hpr', (0, 0, 0))
 
-        self.parent.getParentObj().addSpawnPt(self.parent.getUniqueId(), (x, y, z, h))
+        parent.addSpawnPt(self.parent.getUniqueId(), (x, y, z, h))
 
         return None
 
