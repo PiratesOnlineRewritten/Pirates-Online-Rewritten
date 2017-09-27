@@ -400,6 +400,7 @@ class DistributedBattleAvatarAI(DistributedReputationAvatarAI, Teamable):
             for prereq in prereqs:
                 if not prereq.avIsReadyAI(self):
                     fault = True
+                    break
 
             if fault:
 
