@@ -84,9 +84,17 @@ class DistributedTeleportMgrAI(DistributedObjectAI):
 
         self.__initiateTeleport(avatar, islandUid=islandUid)
 
-    def __initiateTeleport(self, avatar, instanceType=None, instanceName=None, islandUid=None, spawnPt=None):
+    def __initiateTeleport(self, avatar, instanceType=None, instanceName=None, islandUid=LocationIds.PORT_ROYAL_ISLAND, spawnPt=None):
         if avatar.doId in self.avatar2fsm:
             self.notify.warning('Cannot initiate teleport for %d, already teleporting!' % avatar.doId)
+            self.d_failTeleportRequest(avatar.doId, PiratesGlobals.TFInTeleport)
+            return
+
+        instance = avatar.getParentObj()
+
+        if instance and instance.getUniqueId() == islandUid:
+            self.notify.warning('Cannot initiate teleport for %d, already there!' % avatar.doId)
+            self.d_failTeleportRequest(avatar.doId, PiratesGlobals.TFSameArea)
             return
 
         if instanceType is None and instanceName is None:
@@ -100,7 +108,7 @@ class DistributedTeleportMgrAI(DistributedObjectAI):
 
             return
 
-        instance = world.uidMgr.justGetMeMeObject(islandUid or LocationIds.PORT_ROYAL_ISLAND)
+        instance = world.uidMgr.justGetMeMeObject(islandUid)
 
         if not instance or not isinstance(instance, DistributedIslandAI):
             self.notify.warning('Cannot initiate teleport for %d unknown instance!' % avatar.doId)
@@ -111,3 +119,6 @@ class DistributedTeleportMgrAI(DistributedObjectAI):
 
         self.avatar2fsm[avatar.doId] = TeleportFSM(self, avatar, world, instance, spawnPt)
         self.avatar2fsm[avatar.doId].request('Start')
+
+    def d_failTeleportRequest(self, avatarId, reasonBit):
+        self.sendUpdateToAvatarId(avatarId, 'failTeleportRequest', [reasonBit.getHighestOnBit()])

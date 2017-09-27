@@ -112,7 +112,6 @@ class DistributedTeleportMgr(DistributedObject.DistributedObject):
             self.popupDialog.destroy()
             del self.popupDialog
             self.popupDialog = None
-        return
 
     def __createDialog(self, message):
         if message:
