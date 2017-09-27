@@ -1,6 +1,7 @@
 from direct.distributed.DistributedObjectAI import DistributedObjectAI
 from direct.directnotify import DirectNotifyGlobal
 from otp.uberdog.RejectCode import RejectCode
+from pirates.uberdog.UberDogGlobals import InventoryType
 from pirates.economy import EconomyGlobals
 
 class DistributedShopKeeperAI(DistributedObjectAI):
@@ -19,6 +20,15 @@ class DistributedShopKeeperAI(DistributedObjectAI):
 
         if not inventory:
             self.notify.warning('Failed to get inventory for avatar %d!' % avatar.doId)
+            return
+
+        foundSong = inventory.getStack(music)
+        if not foundSong and not (self.air.holidayMgr.isHolidayActive(21) and music in InventoryType.WinterHolidaySongs):
+            self.air.logPotentialHacker(
+                message='Attempted to play a song they dont have',
+                accountId=self.air.getAccountIdFromSender(),
+                musicId=music)
+
             return
 
         if inventory.getGoldInPocket() < 5:

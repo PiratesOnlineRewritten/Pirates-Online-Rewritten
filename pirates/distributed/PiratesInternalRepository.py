@@ -60,10 +60,10 @@ class PiratesInternalRepository(AstronInternalRepository):
         dg.addString(message)
         self.send(dg)      
 
-    def logPotentialHacker(self, message, kickChannel=False, **kwargs):
+    def logPotentialHacker(self, message, kickChannel=False, *args, **kwargs):
         self.notify.warning(message)
 
-        self.air.writeServerEvent('suspicious-event', message=message, **kwargs)
+        self.writeServerEvent('suspicious-event', *args, message=message, **kwargs)
 
         if kickChannel:
             self.kickChannel(kickChannel)     
