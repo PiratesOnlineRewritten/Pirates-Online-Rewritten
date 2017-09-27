@@ -9,13 +9,6 @@ class DistributedShopKeeperAI(DistributedObjectAI):
     def __init__(self, air):
         DistributedObjectAI.__init__(self, air)
 
-    def __logShopTransaction(self, type, avatar, **kwargs):
-        self.notify.debug('ShopTransaction: transactionType: %s avatarId: %s args: %s' % (type, avatar.doId, str(kwargs)))
-        self.air.writeServerEvent('shop-transaction',
-            transactionType=type,
-            avatarId=avatar.doId,
-            **kwargs)
-
     def requestMusic(self, music):
         avatar = self.air.doId2do.get(self.air.getAvatarIdFromSender())
 
@@ -38,7 +31,11 @@ class DistributedShopKeeperAI(DistributedObjectAI):
 
             return
 
-        self.__logShopTransaction(type='music', avatar=avatar.doId, musicId=music)
+        self.air.writeServerEvent('shop-transaction',
+            transactionType='music',
+            avatarId=avatar.doId,
+            musicId=music)
+
         inventory.setGoldInPocket(inventory.getGoldInPocket() - 5)
         self.sendUpdate('playMusic', [music])
 
@@ -77,9 +74,18 @@ class DistributedShopKeeperAI(DistributedObjectAI):
         resultCode = 0
 
         #TODO check if there is an open slot
+        openSlot = False
+        if not openSlot:
+            resultCode = RejectCode.OVERFLOW
 
         if resultCode == 0:
-            self.__logShopTransaction(type='ship', avatar=avatar.doId, shipId=shipId, name=names)
+
+            self.air.writeServerEvent('shop-transaction',
+                transactionType='ship',
+                avatarId=avatar.doId,
+                shipId=shipId,
+                name=names)
+
             inventory.setGoldInPocket(inventory.getGoldInPocket() - requiredGold)
 
             #TODO issue ship
