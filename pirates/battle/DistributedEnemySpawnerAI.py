@@ -11,6 +11,7 @@ from pirates.npc.DistributedBossNavySailorAI import DistributedBossNavySailorAI
 from pirates.npc.DistributedBossGhostAI import DistributedBossGhostAI
 from pirates.npc import BossNPCList
 from pirates.creature.DistributedCreatureAI import DistributedCreatureAI
+from pirates.creature.DistributedBossCreatureAI import DistributedBossCreatureAI
 from pirates.creature.DistributedRavenAI import DistributedRavenAI
 from pirates.creature.DistributedSeagullAI import DistributedSeagullAI
 from pirates.piratesbase import PiratesGlobals
@@ -55,7 +56,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
                 newObj = self.__createAnimal(objType, objectData, parent, parentUid, objKey, dynamic, zoneId)
         elif objType == 'Creature':
             if self.wantEnemies and self.wantNormalBosses:
-                self.notify.warning('Received unknown generate: %s' % objType)
+                newObj = self.__createBossCreature(objType, objectData, parent, parentUid, objKey, dynamic, zoneId)
         elif objType == 'Skeleton':
             if self.wantEnemies and self.wantNormalBosses:
                 newObj = self.__createBossSkeleton(objType, objectData, parent, parentUid, objKey, dynamic, zoneId)
@@ -288,7 +289,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         avId = objectData.get('AvId', 1)
         avTrack = objectData.get('AvTrack', 0)
         avatarType = AvatarType(faction=AvatarTypes.Undead.faction, track=avTrack, id=avId)
-        avatarType.setBoss(objectData.get('Boss', True))
+        avatarType = avatarType.getBossType()
         skeleton.setAvatarType(avatarType)
         try:
             skeleton.loadBossData(objKey, avatarType)
@@ -350,7 +351,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         faction = getattr(AvatarTypes, factionName, AvatarTypes.Navy)
 
         avatarType = AvatarType(faction=faction.faction, track=avTrack, id=avId)
-        avatarType.setBoss(objectData.get('Boss', True))
+        avatarType = avatarType.getBossType()
         navy.setAvatarType(avatarType)
         try:
             navy.loadBossData(objKey, avatarType)
@@ -401,17 +402,9 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         return navy
 
     def __createBossGhost(self, objType, objectData, parent, parentUid, objKey, dynamic, zoneId):
-        ghost = DistributedBossNavySailorAI(self.air)
+        ghost = DistributedBossGhostAI(self.air)
 
-        #self.__setAvatarPosition(ghost, objectData, parent, parentUid, objKey)
-
-        pos, parentObj = parent.builder.getObjectTruePosAndParent(objKey, parentUid, objectData)
-        print pos
-        print parentObj.getPos()
-        ghost.setPos(parentObj, pos)
-        ghost.setHpr(parentObj, objectData.get('Hpr', (0, 0, 0)))
-        ghost.setSpawnPosHpr(ghost.getPos(), ghost.getHpr())
-
+        self.__setAvatarPosition(ghost, objectData, parent, parentUid, objKey)
         ghost.setScale(objectData.get('Scale'))
         ghost.setUniqueId(objKey)
 
@@ -424,7 +417,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         faction = getattr(AvatarTypes, factionName, AvatarTypes.Ghost)
 
         avatarType = AvatarType(faction=faction.faction, track=avTrack, id=avId)
-        avatarType.setBoss(objectData.get('Boss', True))
+        avatarType = avatarType.getBossType()
         ghost.setAvatarType(avatarType)
         try:
             ghost.loadBossData(objKey, avatarType)
@@ -470,6 +463,62 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         ghost.d_setGhostColor(13)
 
         locationName = parent.getLocalizerName()
-        print('Generating %s (%s) under zone %d in %s at %s with doId %d' % (ghost.getName(), objKey, ghost.zoneId, locationName, ghost.getPos(), ghost.doId))
+        self.notify.debug('Generating %s (%s) under zone %d in %s at %s with doId %d' % (ghost.getName(), objKey, ghost.zoneId, locationName, ghost.getPos(), ghost.doId))
 
         return ghost
+
+    def __createBossCreature(self, objType, objectData, parent, parentUid, objKey, dynamic, zoneId):
+        creature = DistributedBossCreatureAI(self.air)
+
+        self.__setAvatarPosition(creature, objectData, parent, parentUid, objKey)
+        creature.setScale(objectData.get('Scale'))
+        creature.setUniqueId(objKey)
+
+        species = objectData.get('Species', '')
+        if species not in AvatarTypes.NPC_SPAWNABLES:
+            self.notify.warning('Failed to spawn %s (%s); Not a valid species.' % (species, objKey))
+
+        avatarType = random.choice(AvatarTypes.NPC_SPAWNABLES[species])()
+        avatarType = avatarType.getBossType()
+        creature.setAvatarType(avatarType)
+        try:
+            creature.loadBossData(objKey, avatarType)
+        except:
+            self.notify.warning('Failed to load %s (%s); An error occured while loading boss data' % (objType, objKey))
+            return None
+
+        creature.setName(creature.bossData['Name'])
+        creature.setLevel(creature.bossData['Level'] or EnemyGlobals.getRandomEnemyLevel(avatarType))
+
+        animSet = objectData.get('AnimSet', 'default')
+        noticeAnim1 = objectData.get('Notice Animation 1', '')
+        noticeAnim2 = objectData.get('Notice Animation 2', '')
+        greetingAnim = objectData.get('Greeting Animation', '')
+        creature.setActorAnims(animSet, noticeAnim1, noticeAnim2, greetingAnim)
+
+        enemyHp, enemyMp = EnemyGlobals.getEnemyStats(avatarType, creature.getLevel())
+        enemyHp = enemyHp * creature.bossData.get('HpScale', 1)
+        enemyMp = enemyMp * creature.bossData.get('MpScale', 1)
+
+        creature.setMaxHp(enemyHp)
+        creature.setHp(creature.getMaxHp(), True)
+
+        creature.setMaxMojo(enemyMp)
+        creature.setMojo(enemyMp)
+
+        weapons = EnemyGlobals.getEnemyWeapons(avatarType, creature.getLevel()).keys()
+        creature.setCurrentWeapon(weapons[0], False)
+
+        if 'Start State' in objectData:
+            creature.setStartState(objectData['Start State'])
+
+        self._enemies[objKey] = creature
+
+        parent.generateChildWithRequired(creature, zoneId)
+
+        locationName = parent.getLocalizerName()
+        self.notify.debug('Generating %s (%s) under zone %d in %s at %s with doId %d' % (creature.getName(), objKey, creature.zoneId, locationName, creature.getPos(), creature.doId))
+
+        return creature
+
+
