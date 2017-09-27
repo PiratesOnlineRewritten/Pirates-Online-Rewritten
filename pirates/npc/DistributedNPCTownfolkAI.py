@@ -44,6 +44,13 @@ class DistributedNPCTownfolkAI(DistributedBattleNPCAI, DistributedShopKeeperAI):
 
         return self.DENY
 
+    def handleRequestExit(self, avatar):
+        return self.ACCEPT
+
+    def selectOption(self, optionId):
+        if optionId == 0:
+            self.requestExit()
+
     def setDNAId(self, dnaId):
         self.dnaId = dnaId
 
