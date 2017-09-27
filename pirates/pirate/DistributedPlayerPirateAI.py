@@ -15,6 +15,8 @@ class DistributedPlayerPirateAI(DistributedPlayerAI, HumanDNA, DistributedBattle
 
         self.inventoryId = 0
         self.founder = False
+        self.defaultShard = 0
+        self.defaultZone = 0
 
     def setInventoryId(self, inventoryId):
         self.inventoryId = inventoryId
@@ -28,11 +30,9 @@ class DistributedPlayerPirateAI(DistributedPlayerAI, HumanDNA, DistributedBattle
 
     def getInventoryId(self):
         return self.inventoryId
-        
+
     def getInventory(self):
-        if self.inventoryId in simbase.air.doId2do:
-            return simbase.air.doId2do[self.inventoryId]
-        return None
+        return self.air.doId2do.get(self.inventoryId)
 
     def d_relayTeleportLoc(self, shardId, zoneId, teleportMgrDoId):
         self.sendUpdateToAvatarId(self.doId, 'relayTeleportLoc', [shardId, zoneId, teleportMgrDoId])
@@ -49,6 +49,35 @@ class DistributedPlayerPirateAI(DistributedPlayerAI, HumanDNA, DistributedBattle
 
     def getFounder(self):
         return self.founder
+
+    def setDefaultShard(self, defaultShard):
+        self.defaultShard = defaultShard
+
+    def d_setDefaultShard(self, defaultShard):
+        self.sendUpdate('setDefaultShard', [defaultShard])
+
+    def b_setDefaultShard(self, defaultShard):
+        self.setDefaultShard(defaultShard)
+        self.d_setDefaultShard(defaultShard)
+
+    def getDefaultShard(self):
+        return self.defaultShard
+
+    def setDefaultZone(self, defaultZone):
+        self.defaultZone = defaultZone
+
+    def d_setDefaultZone(self, defaultZone):
+        self.sendUpdate('setDefaultZone', [defaultZone])
+
+    def b_setDefaultZone(self, defaultZone):
+        self.setDefaultZone(defaultZone)
+        self.d_setDefaultZone(defaultZone)
+
+    def getDefaultZone(self):
+        return self.defaultZone
+
+    def d_forceTeleportStart(self, instanceName, tzDoId, thDoId, worldGridDoId, tzParent, tzZone):
+        self.sendUpdateToAvatarId(self.doId, 'forceTeleportStart', [instanceName, tzDoId, thDoId, worldGridDoId, tzParent, tzZone])
 
     def destroy(self):
         self.d_setGameState('TeleportOut')

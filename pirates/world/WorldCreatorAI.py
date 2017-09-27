@@ -29,10 +29,10 @@ class WorldCreatorAI(WorldCreatorBase, DirectObject):
                 break
         return found
 
-    def getObjectFilenameByUid(self, objKey):
+    def getObjectFilenameByUid(self, objKey, getParentUid=True):
         file = None
         for fileName in self.fileDicts.keys():
-            found = self.getObjectDataFromFileByUid(objKey, fileName, getParentUid=True)
+            found = self.getObjectDataFromFileByUid(objKey, fileName, getParentUid=getParentUid)
             if found:
                 file = fileName
                 break
@@ -57,16 +57,16 @@ class WorldCreatorAI(WorldCreatorBase, DirectObject):
         objParent = None
 
         if objType == ObjectList.AREA_TYPE_WORLD_REGION:
-            objParent = self.__createWorldInstance(object, parent, parentUid, objKey, dynamic, fileName)
+            objParent = self.__createWorldInstance(object, parent, parentUid, objKey, dynamic)
         else:
             newObj = self.world.builder.createObject(objType, object, parent, parentUid, objKey, dynamic, parentIsObj, fileName, actualParentObj)
 
         return (newObj, objParent)
 
-    def __createWorldInstance(self, objectData, parent, parentUid, objKey, dynamic, fileName):
+    def __createWorldInstance(self, objectData, parent, parentUid, objKey, dynamic):
         self.world = DistributedMainWorldAI(self.air)
         self.world.setUniqueId(objKey)
-        self.world.setName(objectData.get('Name', 'region'))
+        self.world.setName(objectData.get('Name', 'default'))
         self.world.generateWithRequired(PiratesGlobals.InstanceUberZone)
 
         self.air.uidMgr.addUid(self.world.getUniqueId(), self.world.doId)

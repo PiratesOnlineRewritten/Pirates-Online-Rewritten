@@ -1,5 +1,6 @@
 from direct.distributed.DistributedObjectGlobalAI import DistributedObjectGlobalAI
 from direct.directnotify import DirectNotifyGlobal
+from pirates.piratesbase import PiratesGlobals
 
 class DistributedTravelAgentAI(DistributedObjectGlobalAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedTravelAgentAI')
@@ -11,7 +12,8 @@ class DistributedTravelAgentAI(DistributedObjectGlobalAI):
 
         def avatarGenerated(avatar):
             if not avatar:
-                return self.notify.warning('Failed to initiate teleport for non-existant avatar!')
+                self.notify.warning('Cannot initiate teleport for non-existant avatar!')
+                return
 
             avatar.d_relayTeleportLoc(self.air.districtId, 0, self.air.teleportMgr.doId)
 

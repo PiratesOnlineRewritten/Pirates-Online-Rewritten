@@ -326,6 +326,7 @@ sync-video #t
 # Tutorial:
 skip-tutorial #t
 force-tutorial #f
+ignore-teleport-requirements #t
 
 # World:
 default-world piratesWorld

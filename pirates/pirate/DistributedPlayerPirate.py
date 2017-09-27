@@ -89,6 +89,7 @@ from pirates.piratesgui.DialMeter import DialMeter
 from pirates.quest import QuestDB
 from pirates.piratesbase import Freebooter
 from pirates.inventory import ItemConstants
+from pirates.world import WorldGlobals
 
 class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, DistributedBattleAvatar, DistributedQuestAvatar, PAvatarHandle):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedPirate')
@@ -1459,7 +1460,7 @@ class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, Distribu
 
     @report(types=['deltaStamp', 'module'], dConfigParam='teleport')
     def readyToTeleport(self, teleportMgr):
-        teleportMgr.initiateTeleport(0, '', shardId=self.getDefaultShard(), locationUid=self.returnLocation)
+        teleportMgr.initiateTeleport(PiratesGlobals.INSTANCE_MAIN, WorldGlobals.PiratesWorldSceneFileBase, shardId=self.getDefaultShard(), locationUid=self.returnLocation)
 
     def requestActivityAccepted(self):
         self.guiMgr.lookoutPage.requestActivityAccepted()

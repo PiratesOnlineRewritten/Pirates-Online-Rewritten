@@ -1186,6 +1186,7 @@ class OTPClientRepository(ClientRepositoryBase):
         if self.music:
             self.music.stop()
             self.music = None
+
         self.garbageLeakLogger = GarbageLeakServerEventAggregator(self)
         self.handler = self.handlePlayGame
         self.accept(self.gameDoneEvent, self.handleGameDone)
@@ -1200,8 +1201,6 @@ class OTPClientRepository(ClientRepositoryBase):
 
         def checkScale(task):
             return Task.cont
-
-        return
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def handleGameDone(self):
@@ -1246,7 +1245,7 @@ class OTPClientRepository(ClientRepositoryBase):
         avId = self.handlerArgs['avId']
         if not self.SupportTutorial or base.localAvatar.tutorialAck:
             self.gameFSM.request('playGame', [hoodId, zoneId, avId])
-        elif base.config.GetBool('force-tutorial', 1):
+        elif base.config.GetBool('force-tutorial', False):
             if hasattr(self, 'skipTutorialRequest') and self.skipTutorialRequest:
                 self.gameFSM.request('playGame', [hoodId, zoneId, avId])
                 self.gameFSM.request('skipTutorialRequest', [hoodId, zoneId, avId])
