@@ -33,6 +33,7 @@ class PiratesAIRepository(PiratesInternalRepository):
         self.uidMgr = UniqueIdManager(self)
 
     def handleConnected(self):
+        PiratesInternalRepository.handleConnected(self)
         self.districtId = self.allocateChannel()
         self.distributedDistrict = PiratesDistrictAI(self)
         self.distributedDistrict.setName(self.districtName)

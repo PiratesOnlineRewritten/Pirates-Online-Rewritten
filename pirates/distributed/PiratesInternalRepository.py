@@ -14,6 +14,10 @@ class PiratesInternalRepository(AstronInternalRepository):
     def __init__(self, baseChannel, serverId=None, dcFileNames = None, dcSuffix='AI', connectMethod=None, threadedNet=None):
         AstronInternalRepository.__init__(self, baseChannel, serverId, dcFileNames, dcSuffix, connectMethod, threadedNet)
 
+    def handleConnected(self):
+        if config.GetBool('send-hacker-test-message', False):
+            self.logPotentialHacker('I am a test hacker message!', field='Test', thing='this')
+
     def getAvatarIdFromSender(self):
         return self.getMsgSender() & 0xFFFFFFFF
 
@@ -82,7 +86,7 @@ class PiratesInternalRepository(AstronInternalRepository):
                     districtName = self.distributedDistrict.getName()
 
                 header = 'Detected potential hacker on %s.' % districtName
-                webhookMessage = SlackWebhook(hackWebhookUrl, message='@everyone' if config.GetBool('discord-ping-everyone', not __dev__) else '')
+                webhookMessage = SlackWebhook(hackWebhookUrl, message='@everyone' if config.GetBool('discord-ping-everyone', not config.GetBool('want-dev', False)) else '')
 
                 attachment = SlackAttachment(pretext=message, title=header)
 
