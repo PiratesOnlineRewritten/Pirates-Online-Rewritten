@@ -8,6 +8,7 @@ from pirates.npc.DistributedGhostAI import DistributedGhostAI
 from pirates.npc.DistributedKillerGhostAI import DistributedKillerGhostAI
 from pirates.npc.DistributedBossSkeletonAI import DistributedBossSkeletonAI
 from pirates.npc.DistributedBossNavySailorAI import DistributedBossNavySailorAI
+from pirates.npc.DistributedBossGhostAI import DistributedBossGhostAI
 from pirates.npc import BossNPCList
 from pirates.creature.DistributedCreatureAI import DistributedCreatureAI
 from pirates.creature.DistributedRavenAI import DistributedRavenAI
@@ -61,6 +62,9 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         elif objType == 'NavySailor':
             if self.wantEnemies and self.wantNormalBosses:
                 newObj = self.__createBossNavy(objType, objectData, parent, parentUid, objKey, dynamic, zoneId)
+        elif objType == 'Ghost':
+            if self.wantEnemies and self.wantNormalBosses:
+                newObj = self.__createBossGhost(objType, objectData, parent, parentUid, objKey, dynamic, zoneId)
         else:
             self.notify.warning('Received unknown generate: %s' % objType)
 
@@ -395,3 +399,77 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         self.notify.debug('Generating %s (%s) under zone %d in %s at %s with doId %d' % (navy.getName(), objKey, navy.zoneId, locationName, navy.getPos(), navy.doId))
 
         return navy
+
+    def __createBossGhost(self, objType, objectData, parent, parentUid, objKey, dynamic, zoneId):
+        ghost = DistributedBossNavySailorAI(self.air)
+
+        #self.__setAvatarPosition(ghost, objectData, parent, parentUid, objKey)
+
+        pos, parentObj = parent.builder.getObjectTruePosAndParent(objKey, parentUid, objectData)
+        print pos
+        print parentObj.getPos()
+        ghost.setPos(parentObj, pos)
+        ghost.setHpr(parentObj, objectData.get('Hpr', (0, 0, 0)))
+        ghost.setSpawnPosHpr(ghost.getPos(), ghost.getHpr())
+
+        ghost.setScale(objectData.get('Scale'))
+        ghost.setUniqueId(objKey)
+
+        avId = objectData.get('AvId', 1)
+        avTrack = objectData.get('AvTrack', 0)
+        factionName = objectData.get('NavyFaction', 'Navy')
+        if not hasattr(AvatarTypes, factionName):
+            self.notify.warning('Failed to generate %s (%s); %s is not a valid faction' % (objType, objKey, factionName))
+            return
+        faction = getattr(AvatarTypes, factionName, AvatarTypes.Ghost)
+
+        avatarType = AvatarType(faction=faction.faction, track=avTrack, id=avId)
+        avatarType.setBoss(objectData.get('Boss', True))
+        ghost.setAvatarType(avatarType)
+        try:
+            ghost.loadBossData(objKey, avatarType)
+        except:
+            self.notify.warning('Failed to load %s (%s); An error occured while loading boss data' % (objType, objKey))
+            return None
+
+        ghost.setName(ghost.bossData['Name'])
+        ghost.setLevel(ghost.bossData['Level'] or EnemyGlobals.getRandomEnemyLevel(avatarType))
+
+        animSet = objectData.get('AnimSet', 'default')
+        noticeAnim1 = objectData.get('Notice Animation 1', '')
+        noticeAnim2 = objectData.get('Notice Animation 2', '')
+        greetingAnim = objectData.get('Greeting Animation', '')
+        ghost.setActorAnims(animSet, noticeAnim1, noticeAnim2, greetingAnim)
+
+        enemyHp, enemyMp = EnemyGlobals.getEnemyStats(avatarType, ghost.getLevel())
+        enemyHp = enemyHp * ghost.bossData.get('HpScale', 1)
+        enemyMp = enemyMp * ghost.bossData.get('MpScale', 1)
+
+        ghost.setMaxHp(enemyHp)
+        ghost.setHp(ghost.getMaxHp(), True)
+
+        ghost.setMaxMojo(enemyMp)
+        ghost.setMojo(enemyMp)
+
+        weapons = EnemyGlobals.getEnemyWeapons(avatarType, ghost.getLevel()).keys()
+        ghost.setCurrentWeapon(weapons[0], False)
+
+        ghost.setIsGhost(2)
+
+        dnaId = objectData.get('DNA', objKey)
+        if dnaId:
+            ghost.setDNAId(dnaId)
+
+        if 'Start State' in objectData:
+            ghost.setStartState(objectData['Start State'])
+
+        self._enemies[objKey] = ghost
+
+        parent.generateChildWithRequired(ghost, zoneId)
+
+        ghost.d_setGhostColor(13)
+
+        locationName = parent.getLocalizerName()
+        print('Generating %s (%s) under zone %d in %s at %s with doId %d' % (ghost.getName(), objKey, ghost.zoneId, locationName, ghost.getPos(), ghost.doId))
+
+        return ghost
