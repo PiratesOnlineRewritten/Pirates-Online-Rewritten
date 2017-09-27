@@ -114,6 +114,8 @@ class PiratesAIRepository(PiratesInternalRepository):
         self.tradeMgr = TradeManagerAI(self)
         self.tradeMgr.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
 
+        self.crewMatchManager = self.generateGlobalObject(OTP_DO_ID_PIRATES_CREW_MATCH_MANAGER, 'DistributedCrewMatchManager')
+
     def createZones(self):
         """
         Create "zone" objects, e.g. DistributedOceanGrid et al.

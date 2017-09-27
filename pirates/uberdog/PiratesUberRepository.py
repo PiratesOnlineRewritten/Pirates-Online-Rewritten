@@ -30,3 +30,4 @@ class PiratesUberRepository(PiratesInternalRepository):
         self.codeMgr = self.generateGlobalObject(OTP_DO_ID_PIRATES_CODE_REDEMPTION, 'CodeRedemption')
         self.chatManager = self.generateGlobalObject(OTP_DO_ID_CHAT_MANAGER, 'DistributedChatManager')
         self.speedChatRelay = self.generateGlobalObject(OTP_DO_ID_PIRATES_SPEEDCHAT_RELAY, 'PiratesSpeedchatRelay')
+        self.crewMatchManager = self.generateGlobalObject(OTP_DO_ID_PIRATES_CREW_MATCH_MANAGER, 'DistributedCrewMatchManager')

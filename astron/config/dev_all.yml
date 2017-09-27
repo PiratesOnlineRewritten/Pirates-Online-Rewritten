@@ -43,6 +43,10 @@ uberdogs:
       id: 4681
       anonymous: false
 
+    - class: DistributedCrewMatchManager
+      id: 4706
+      anonymous: false
+
 roles:
     - type: clientagent
       bind: 0.0.0.0:7198

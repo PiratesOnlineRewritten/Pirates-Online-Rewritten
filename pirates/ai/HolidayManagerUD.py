@@ -64,9 +64,8 @@ class HolidayManagerUD(DistributedObjectGlobalUD):
         self.notify.debug('Received registration for channel: %s!' % channel)
 
         if channel in self.districts:
-            self.notify.warning('Received register for already allocated channel!')
-            self.d_registrationConfirm(channel)
-            return
+            self.notify.warning('Received register for already allocated channel! Clearing exiting channel')
+            self.unregisterAI(channel)
 
         self.districts[channel] = {
             'localHolidays': {},
