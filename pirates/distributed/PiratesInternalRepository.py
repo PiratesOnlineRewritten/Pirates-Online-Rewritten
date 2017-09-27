@@ -3,6 +3,7 @@ from otp.distributed.OtpDoGlobals import *
 from direct.distributed.PyDatagram import PyDatagram
 from direct.distributed.MsgTypes import *
 from panda3d.core import *
+from pirates.uberdog.WebhooksUD import SlackWebhook, SlackAttachment, SlackField
 import traceback
 import sys
 
@@ -60,10 +61,50 @@ class PiratesInternalRepository(AstronInternalRepository):
         dg.addString(message)
         self.send(dg)      
 
-    def logPotentialHacker(self, message, kickChannel=False, *args, **kwargs):
+    def logPotentialHacker(self, message, kickChannel=False, **kwargs):
         self.notify.warning(message)
 
-        self.writeServerEvent('suspicious-event', *args, message=message, **kwargs)
+        avatarId = self.getAvatarIdFromSender() or 0
+        accountId = self.getAccountIdFromSender() or 0
+
+        self.writeServerEvent('suspicious-event',
+            message=message, 
+            avatarId=avatarId, 
+            accountId=accountId, 
+            **kwargs)
+
+        if config.GetBool('discord-log-hacks', False):
+            hackWebhookUrl = config.GetString('discord-log-hacks-url', '')
+
+            if hackWebhookUrl:
+                districtName = 'Unknown'
+                if hasattr(self, 'distributedDistrict'):
+                    districtName = self.distributedDistrict.getName()
+
+                header = 'Detected potential hacker on %s.' % districtName
+                webhookMessage = SlackWebhook(hackWebhookUrl, message='@everyone' if config.GetBool('discord-ping-everyone', not __dev__) else '')
+
+                attachment = SlackAttachment(pretext=message, title=header)
+
+                for kwarg in kwargs:
+                    attachment.addField(SlackField(title=kwarg, value=kwargs[kwarg]))
+
+                attachment.addField(SlackField())
+
+                avatar = self.doId2do.get(avatarId)
+                if avatar:
+                    attachment.addField(SlackField(title='Character Pos', value=str(avatar.getPos())))
+                    attachment.addField(SlackField(title='Character Name', value=avatar.getName()))
+                    attachment.addField(SlackField(title='Island', value=avatar.getParentObj().getLocalizerName()))
+
+                attachment.addField(SlackField())
+                attachment.addField(SlackField(title='Game Account Id', value=accountId))
+                account = self.doId2do.get(accountId)
+
+                webhookMessage.addAttachment(attachment)
+                webhookMessage.send()
+            else:
+                self.notify.warning('Discord Hacker Webhook url not defined!')
 
         if kickChannel:
             self.kickChannel(kickChannel)     
