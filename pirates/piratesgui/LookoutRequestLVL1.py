@@ -108,27 +108,25 @@ class LookoutRequestLVL1(InventoryPage, InventoryRequestGameType):
             self.hideRequestType()
         elif self.currMode == PiratesGuiGlobals.REQUEST_FOUND_MODE:
             self.hideRequestFound()
-        else:
-            if self.currMode == PiratesGuiGlobals.REQUEST_JOIN_MODE:
-                self.hideJoinMode()
-            elif self.currMode == PiratesGuiGlobals.REQUEST_TYPE_DIRECT_MODE:
-                self.disableSkipClick()
-                self.hideRequestType()
-            self.currMode = mode
-            if mode == PiratesGuiGlobals.SEARCH_MODE or mode == PiratesGuiGlobals.INVITE_MODE or mode == PiratesGuiGlobals.INVITE_ACCEPTED_MODE or mode == PiratesGuiGlobals.CHALLENGE_MODE:
-                self.showStatus()
-            elif mode == PiratesGuiGlobals.REQUEST_CAT_MODE:
-                self.showRequestCat()
-            else:
-                if mode == PiratesGuiGlobals.REQUEST_TYPE_MODE:
-                    self.showRequestType()
-                if mode == PiratesGuiGlobals.REQUEST_FOUND_MODE:
-                    self.showRequestFound()
-                if mode == PiratesGuiGlobals.REQUEST_JOIN_MODE:
-                    self.showJoinMode()
-                if mode == PiratesGuiGlobals.REQUEST_TYPE_DIRECT_MODE:
-                    self.showRequestType()
-                    self.enableSkipClick()
+        elif self.currMode == PiratesGuiGlobals.REQUEST_JOIN_MODE:
+            self.hideJoinMode()
+        elif self.currMode == PiratesGuiGlobals.REQUEST_TYPE_DIRECT_MODE:
+            self.disableSkipClick()
+            self.hideRequestType()
+        self.currMode = mode
+        if mode == PiratesGuiGlobals.SEARCH_MODE or mode == PiratesGuiGlobals.INVITE_MODE or mode == PiratesGuiGlobals.INVITE_ACCEPTED_MODE or mode == PiratesGuiGlobals.CHALLENGE_MODE:
+            self.showStatus()
+        elif mode == PiratesGuiGlobals.REQUEST_CAT_MODE:
+            self.showRequestCat()
+        elif mode == PiratesGuiGlobals.REQUEST_TYPE_MODE:
+            self.showRequestType()
+        elif mode == PiratesGuiGlobals.REQUEST_FOUND_MODE:
+            self.showRequestFound()
+        elif mode == PiratesGuiGlobals.REQUEST_JOIN_MODE:
+            self.showJoinMode()
+        elif mode == PiratesGuiGlobals.REQUEST_TYPE_DIRECT_MODE:
+            self.showRequestType()
+            self.enableSkipClick()
         self.updateTitle(mode)
 
     def matchTeleport(self):
