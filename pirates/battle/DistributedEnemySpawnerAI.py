@@ -166,7 +166,10 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
             else:
                 enemyCls = DistributedNPCNavySailorAI
         elif avatarType.isA(AvatarTypes.LandCreature) or avatarType.isA(AvatarTypes.AirCreature):
-            enemyCls = DistributedCreatureAI
+            if avatarType.getBoss():
+                enemyCls = DistributedBossCreatureAI
+            else:
+                enemyCls = DistributedCreatureAI
         elif avatarType.isA(AvatarTypes.RageGhost):
             enemyCls = DistributedKillerGhostAI
         elif avatarType.isA(AvatarTypes.Ghost):
