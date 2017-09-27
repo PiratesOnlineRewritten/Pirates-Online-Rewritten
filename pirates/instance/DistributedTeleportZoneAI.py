@@ -10,3 +10,8 @@ class DistributedTeleportZoneAI(DistributedInstanceWorldAI):
         DistributedInstanceWorldAI.__init__(self, air)
 
         self.type = PiratesGlobals.INSTANCE_NONE
+
+    def delete(self):
+        self.air.deallocateZone(self.zoneId)
+
+        DistributedInstanceWorldAI.delete(self)
