@@ -43,6 +43,7 @@ class DistributedBattleAvatarAI(DistributedReputationAvatarAI, Teamable):
         self.skillEffects = []
         self.ensaredTargetId = 0
         self.level = 0
+        self.visZone = ''
 
     def setAvatarType(self, avatarType):
         self.avatarType = avatarType
@@ -381,6 +382,16 @@ class DistributedBattleAvatarAI(DistributedReputationAvatarAI, Teamable):
 
     def getInInvasion(self):
         return self.inInvasion
+
+    def setVisZone(self, visZone):
+        self.visZone = visZone
+
+    def d_setVisZone(self, visZone):
+        self.sendUpdate('setVisZone', [visZone])
+
+    def b_setVisZone(self, visZone):
+        self.setVisZone(visZone)
+        self.d_setVisZone(visZone)
 
     def setEmote(self, emoteId):
         if emoteId not in EmoteGlobals.emotes:

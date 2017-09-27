@@ -127,6 +127,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
             townfolk.setHelpId(getattr(PiratesGlobals, helpId, 0))
 
         parent.generateChildWithRequired(townfolk, zoneId)
+        townfolk.b_setVisZone(objectData.get('VisZone', ''))
 
         locationName = parent.getLocalizerName()
         townfolkName = townfolk.getName()
@@ -237,6 +238,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         self._enemies[objKey] = enemy
 
         parent.generateChildWithRequired(enemy, zoneId)
+        enemy.b_setVisZone(objectData.get('VisZone', ''))
 
         locationName = parent.getLocalizerName()
         self.notify.debug('Generating %s (%s) under zone %d in %s at %s with doId %d' % (enemy.getName(), objKey, enemy.zoneId, locationName, enemy.getPos(), enemy.doId))
@@ -272,6 +274,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         animal.setAvatarType(avatarType)
 
         parent.generateChildWithRequired(animal, zoneId)
+        animal.b_setVisZone(objectData.get('VisZone', ''))
 
         locationName = parent.getLocalizerName()
         self.notify.debug('Generating %s (%s) under zone %d in %s at %s with doId %d' % (species, objKey, animal.zoneId, locationName, animal.getPos(), animal.doId))
@@ -329,6 +332,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         self._enemies[objKey] = skeleton
 
         parent.generateChildWithRequired(skeleton, zoneId)
+        skeleton.b_setVisZone(objectData.get('VisZone', ''))
 
         locationName = parent.getLocalizerName()
         self.notify.debug('Generating %s (%s) under zone %d in %s at %s with doId %d' % (skeleton.getName(), objKey, skeleton.zoneId, locationName, skeleton.getPos(), skeleton.doId))
@@ -395,6 +399,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         self._enemies[objKey] = navy
 
         parent.generateChildWithRequired(navy, zoneId)
+        navy.b_setVisZone(objectData.get('VisZone', ''))
 
         locationName = parent.getLocalizerName()
         self.notify.debug('Generating %s (%s) under zone %d in %s at %s with doId %d' % (navy.getName(), objKey, navy.zoneId, locationName, navy.getPos(), navy.doId))
@@ -459,8 +464,8 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         self._enemies[objKey] = ghost
 
         parent.generateChildWithRequired(ghost, zoneId)
-
-        ghost.d_setGhostColor(13)
+        ghost.b_setVisZone(objectData.get('VisZone', ''))
+        ghost.b_setGhostColor(13)
 
         locationName = parent.getLocalizerName()
         self.notify.debug('Generating %s (%s) under zone %d in %s at %s with doId %d' % (ghost.getName(), objKey, ghost.zoneId, locationName, ghost.getPos(), ghost.doId))
@@ -515,6 +520,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         self._enemies[objKey] = creature
 
         parent.generateChildWithRequired(creature, zoneId)
+        creature.b_setVisZone(objectData.get('VisZone', ''))
 
         locationName = parent.getLocalizerName()
         self.notify.debug('Generating %s (%s) under zone %d in %s at %s with doId %d' % (creature.getName(), objKey, creature.zoneId, locationName, creature.getPos(), creature.doId))
