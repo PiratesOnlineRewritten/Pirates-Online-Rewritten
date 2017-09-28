@@ -4,7 +4,6 @@ from pirates.coderedemption import CodeRedemptionGlobals
 
 class CodeRedemptionUD(DistributedObjectGlobalUD):
     notify = DirectNotifyGlobal.directNotify.newCategory('CodeRedemptionUD')
-    notify.setDebug(True)
 
     def __init__(self, air):
         DistributedObjectGlobalUD.__init__(self, air)
