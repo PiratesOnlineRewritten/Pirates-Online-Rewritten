@@ -410,18 +410,22 @@ WEATHER_RAIN = 3
 
 WEATHER_TYPES = {
     WEATHER_CLEAR: {
+        'configs': [],
         'clouds': NOCLOUDS,
         'rain': False
     },
     WEATHER_NORMAL: {
+        'configs': [],
         'clouds': LIGHTCLOUDS,
         'rain': False
     },
     WEATHER_OVERCAST: {
+        'configs': [],
         'clouds': MEDIUMCLOUDS,
         'rain': False
     },
     WEATHER_RAIN: {
+        'configs': [('want-weather-rain', False)],
         'clouds': HEAVYCLOUDS,
         'rain': True
     }

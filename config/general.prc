@@ -377,7 +377,7 @@ want-avatar-shadows #t
 # Movement:
 smooth-lag 1
 
-#Make-A-Pirate:
+# Make-A-Pirate:
 want-tattoos #t
 want-jewelry #t
 
@@ -395,7 +395,8 @@ crash-on-proactive-leak-detect #f
 disable-server-queueing #t
 
 # Weather:
-advanced-weather #f
+advanced-weather #t
+want-weather-rain #f
 
 # Culling:
 allow-portal-cull #t

@@ -216,8 +216,18 @@ class DistributedTimeOfDayManagerAI(DistributedObjectAI, TimeOfDayManagerBase):
             weatherId = random.choice(TODGlobals.WEATHER_TYPES.keys())
         speed = random.randint(10, 15)
 
-        self.notify.debug('Setting Weather to %d with a transition time of %d' % (weatherId, speed))
-        self.b_setWeather(weatherId, speed) 
+        valid = True
+        definitions = TODGlobals.WEATHER_TYPES[weatherId]
+        if 'configs' in definitions:
+            configs = definitions['configs']
+            for c in configs:
+                if not config.GetBool(*c):
+                    valid = False
+                    break
+
+        if valid:
+            self.notify.debug('Setting Weather to %d with a transition time of %d' % (weatherId, speed))
+            self.b_setWeather(weatherId, speed) 
 
         self.weatherTask = taskMgr.doMethodLater(random.randint(self.weatherTimeMin, self.weatherTimeMax) + speed, self.__processWeather, 'weatherTask')
 
