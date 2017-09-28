@@ -781,32 +781,6 @@ class OTPClientRepository(ClientRepositoryBase):
         pass
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
-    def sendCreateAvatarMsg(self, avDNA, avName, avPosition):
-        datagram = PyDatagram()
-        datagram.addUint16(CLIENT_CREATE_AVATAR)
-        datagram.addUint16(0)
-        datagram.addString(avDNA.makeNetString())
-        datagram.addUint8(avPosition)
-        self.newName = avName
-        self.newDNA = avDNA
-        self.newPosition = avPosition
-        self.send(datagram)
-
-    @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
-    def sendCreateAvatar2Msg(self, avClass, avDNA, avName, avPosition):
-        className = avClass.__name__
-        dclass = self.dclassesByName[className]
-        datagram = PyDatagram()
-        datagram.addUint16(CLIENT_CREATE_AVATAR2)
-        datagram.addUint16(0)
-        datagram.addUint8(avPosition)
-        datagram.addUint16(dclass.getNumber())
-        self.newName = avName
-        self.newDNA = avDNA
-        self.newPosition = avPosition
-        self.send(datagram)
-
-    @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterWaitForDeleteAvatarResponse(self, potAv):
         self.csm.sendDeleteAvatar(potAv.id)
         self.waitForDatabaseTimeout(requestName='WaitForDeleteAvatarResponse')
@@ -1656,19 +1630,22 @@ class OTPClientRepository(ClientRepositoryBase):
         if self.notify.getDebug():
             print 'ClientRepository received datagram:'
             di.getDatagram().dumpHex(ostream)
+
         msgType = self.getMsgType()
         if msgType == 65535:
             self.lostConnection()
             return
+
         if msgType == 6:
           self.handleSystemMessage(di)
           return
+
         if self.handler == None:
             self.handleMessageType(msgType, di)
         else:
             self.handler(msgType, di)
+
         self.considerHeartbeat()
-        return
 
     def askAvatarKnown(self, avId):
         return 0
@@ -1801,6 +1778,13 @@ class OTPClientRepository(ClientRepositoryBase):
         doId = di.getUint32()
         if not self.isLocalId(doId):
             self.disableDoId(doId, ownerView)
+
+        if doId == self.__currentAvId:
+            self.bootedIndex = 153
+            self.bootedText = ''
+            self.notify.warning('Avatar deleted! Closing connection...')
+            self.stopReaderPollTask()
+            self.lostConnection()
 
     def sendSetLocation(self, doId, parentId, zoneId):
         datagram = PyDatagram()

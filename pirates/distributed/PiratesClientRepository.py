@@ -354,7 +354,6 @@ class PiratesClientRepository(OTPClientRepository):
             self.avCreate.load()
             self.avCreate.enter()
             self.accept('makeAPirateComplete', self.__handleMakeAPirate)
-            self.accept('nameShopCreateAvatar', self.sendCreateAvatarMsg)
         else:
             self.tutorial = 1
             dna = HumanDNA.HumanDNA()
@@ -384,7 +383,6 @@ class PiratesClientRepository(OTPClientRepository):
         if self.skipTutorial:
             self.ignore('makeAPirateComplete')
             self.ignore('nameShopPost')
-            self.ignore('nameShopCreateAvatar')
             self.avCreate.exit()
             self.avCreate.unload()
             self.avCreate = None
@@ -511,7 +509,7 @@ class PiratesClientRepository(OTPClientRepository):
         camera.setHpr(0, 0, 0)
         base.transitions.noTransitions()
         OTPClientRepository.exitPlayingGame(self)
-        self.detectLeaks(okTasks=['physics-avatar', 'memory-monitor-task', 'multitexFlatten'], okEvents=['destroy-ToontownLoadingScreenTitle', 'destroy-ToontownLoadingScreenTip', 'destroy-ToontownLoadingScreenWaitBar', PiratesGlobals.LogoutHotkey, PiratesGlobals.HideGuiHotkey, PiratesGlobals.OptionsHotkey, 'close_main_window', 'open_main_window', 'texture_state_changed', 'connectionIssue', 'connectionRetrying', self.getConnectedEvent()])
+        #self.detectLeaks(okTasks=['physics-avatar', 'memory-monitor-task', 'multitexFlatten'], okEvents=['destroy-ToontownLoadingScreenTitle', 'destroy-ToontownLoadingScreenTip', 'destroy-ToontownLoadingScreenWaitBar', PiratesGlobals.LogoutHotkey, PiratesGlobals.HideGuiHotkey, PiratesGlobals.OptionsHotkey, 'close_main_window', 'open_main_window', 'texture_state_changed', 'connectionIssue', 'connectionRetrying', self.getConnectedEvent()])
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterTutorialQuestion(self, hoodId, zoneId, avId):

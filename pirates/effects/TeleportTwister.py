@@ -12,7 +12,7 @@ class TeleportTwister(PooledEffect, EffectController):
     def __init__(self):
         PooledEffect.__init__(self)
         EffectController.__init__(self)
-        model = loader.loadModel('phase_2/models/effects/particleMaps')
+        model = loader.loadModel('models/effects/particleMaps')
         self.card = model.find('**/particleVolcanoSmoke')
         self.setLightOff()
         self.setColorScaleOff()

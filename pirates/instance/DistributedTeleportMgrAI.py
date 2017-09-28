@@ -73,7 +73,7 @@ class DistributedTeleportMgrAI(DistributedObjectAI):
             self.notify.warning('Cannot teleport non-existant avatar to instance %d %s!' % (instanceType, instanceName))
             return
 
-        self.__initiateTeleport(avatar, instanceType=instanceType, instanceName=instanceName)
+        self.initiateTeleport(avatar, instanceType=instanceType, instanceName=instanceName)
 
     def requestIslandTeleport(self, islandUid):
         avatar = self.air.doId2do.get(self.air.getAvatarIdFromSender())
@@ -82,9 +82,9 @@ class DistributedTeleportMgrAI(DistributedObjectAI):
             self.notify.warning('Cannot teleport non-existant avatar to island %s!' % islandUid)
             return
 
-        self.__initiateTeleport(avatar, islandUid=islandUid)
+        self.initiateTeleport(avatar, islandUid=islandUid)
 
-    def __initiateTeleport(self, avatar, instanceType=None, instanceName=None, islandUid=LocationIds.PORT_ROYAL_ISLAND, spawnPt=None):
+    def initiateTeleport(self, avatar, instanceType=None, instanceName=None, islandUid=LocationIds.PORT_ROYAL_ISLAND, spawnPt=None):
         if avatar.doId in self.avatar2fsm:
             self.notify.warning('Cannot initiate teleport for %d, already teleporting!' % avatar.doId)
             self.d_failTeleportRequest(avatar.doId, PiratesGlobals.TFInTeleport)
@@ -98,7 +98,7 @@ class DistributedTeleportMgrAI(DistributedObjectAI):
             return
 
         if instanceType is None and instanceName is None:
-            world = avatar.getParentObj().getParentObj()
+            world = instance.getParentObj() if instance else None
         else:
             world = self.getWorld(instanceType, instanceName)
 
