@@ -3,6 +3,7 @@ from pirates.distributed.PiratesInternalRepository import PiratesInternalReposit
 from direct.distributed.PyDatagram import *
 from otp.distributed.DistributedDirectoryAI import DistributedDirectoryAI
 from otp.distributed.OtpDoGlobals import *
+from pirates.uberdog.PiratesRPCServerUD import PiratesRPCServerUD
 
 class PiratesUberRepository(PiratesInternalRepository):
     notify = directNotify.newCategory('PiratesUberRepository')
@@ -10,12 +11,20 @@ class PiratesUberRepository(PiratesInternalRepository):
 
     def __init__(self, baseChannel, serverId):
         PiratesInternalRepository.__init__(self, baseChannel, serverId, dcSuffix='UD')
+        self.rpc = None
+        self.districtTracker = None
 
     def handleConnected(self):
         rootObj = DistributedDirectoryAI(self)
         rootObj.generateWithRequiredAndId(self.getGameDoId(), 0, 0)
 
+        if config.GetBool('want-rpc-server', True):
+            self.rpc = PiratesRPCServerUD(self)
+            self.rpc.daemon = True
+            self.rpc.start()
+
         self.createGlobals()
+        self.notify.info('UberDOG ready!')
 
     def createGlobals(self):
         """
