@@ -2432,7 +2432,7 @@ dclass CodeRedemption : DistributedObject, CallbackObject {
 dclass HolidayManager : DistributedObjectGlobal {
   registerAI(uint32);
   unregisterAI(uint32);
-  registrationConfirm() airecv;
+  registrationConfirm(uint32) airecv;
   requestRegister() broadcast airecv;
   startHoliday(uint32, int8, uint32, bool) broadcast airecv;
   endHoliday(uint32) broadcast airecv;

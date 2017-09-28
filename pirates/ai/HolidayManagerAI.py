@@ -2,6 +2,7 @@ from panda3d.core import ConfigVariableList
 from direct.distributed.DistributedObjectAI import DistributedObjectAI
 from direct.directnotify import DirectNotifyGlobal
 from direct.task import Task
+from otp.distributed.OtpDoGlobals import *
 from pirates.piratesbase import PiratesGlobals
 from pirates.holiday import FleetHolidayGlobals
 from pirates.holiday.FleetManagerAI import FleetManagerAI
@@ -46,6 +47,7 @@ class HolidayManagerAI(DistributedObjectAI):
 
     def registerAI(self, task=None):
         self.notify.debug('Attempting to register channel.')
+
         self.sendUpdate('registerAI', [self.air.ourChannel])
         return Task.again
 
@@ -53,10 +55,15 @@ class HolidayManagerAI(DistributedObjectAI):
         self.notify.debug('Unregistering channel')
         self.sendUpdate('unregisterAI', [self.air.ourChannel])
 
-    def registrationConfirm(self):
+    def registrationConfirm(self, udChannel):
         self.notify.debug('Received registration Confirmation')
         if hasattr(self, 'retryRegisterTask'):
             taskMgr.remove(self.retryRegisterTask)
+
+        # Setup Cleanup
+        cleanupMessage = self.dclass.aiFormatUpdate('unregisterAI', OTP_DO_ID_PIRATES_HOLIDAY_MANAGER, udChannel, self.air.ourChannel, [self.air.ourChannel]) 
+        self.air.addPostRemove(cleanupMessage)
+
         self.d_requestHolidayList()
 
     def requestRegister(self):
