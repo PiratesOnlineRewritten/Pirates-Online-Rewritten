@@ -285,7 +285,7 @@ class DistributedTeleportMgr(DistributedObject.DistributedObject):
     def initiateTeleport(self, instanceType, instanceName, shardId=0, locationUid='', instanceDoId=0, doneCallback=None, startedCallback=None, gameType=-1, friendDoId=0, friendAreaDoId=0, doEffect=True, queue=False, stowawayEffect=False):
         if friendDoId:
             self.d_requestPlayerTeleport(friendDoId, shardId)
-        else:
+        elif instanceType and instanceName:
             self.d_requestInstanceTeleport(instanceType, instanceName)
 
         currInteractive = base.cr.interactionMgr.getCurrentInteractive()
