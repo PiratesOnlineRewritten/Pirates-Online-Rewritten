@@ -12,6 +12,13 @@ class DistributedPotionCraftingTableAI(DistributedInteractiveAI):
         self.potionZone = 0
         self.avatar2game = {}
 
+    def delete(self):
+        for game in avatar2game.values():
+            game.requestDelete()
+
+        self.ignoreAll()
+        DistributedInteractiveAI.delete(self)
+
     def handleRequestInteraction(self, avatar, interactType, instant):
         if avatar.doId in self.avatar2game:
             return self.DENY
@@ -21,6 +28,7 @@ class DistributedPotionCraftingTableAI(DistributedInteractiveAI):
         self.avatar2game[avatar.doId].setAvatar(avatar)
         self.avatar2game[avatar.doId].setColorSet(self.potionZone)
         self.avatar2game[avatar.doId].generateWithRequiredAndId(self.air.allocateChannel(), self.doId, avatar.doId)
+        self.acceptOnce(avatar.getDeleteEvent(), self.handleRequestExit, [avatar])
 
         return self.ACCEPT
 
