@@ -303,8 +303,8 @@ multisamples 2
 
 # LOD:
 default-lod-type fade
-make-grid-lod true
-verify-lods false
+make-grid-lod #t
+verify-lods #f
 
 # Sticky Keys:
 disable-sticky-keys 1
