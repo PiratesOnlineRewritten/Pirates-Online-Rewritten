@@ -30,7 +30,18 @@ SZ = 8
 AnimDict = {}
 AnimListDict = {'sf': Biped.DefaultAnimList,'ms': Biped.DefaultAnimList,'mi': Biped.DefaultAnimList,'tp': Biped.DefaultAnimList,'tm': Biped.DefaultAnimList}
 CustomAnimDict = {'msf': Biped.msfCustomAnimList,'mms': Biped.mmsCustomAnimList,'mmi': Biped.mmiCustomAnimList,'mtp': Biped.mtpCustomAnimList,'mtm': Biped.mtmCustomAnimList,'fsf': Biped.fsfCustomAnimList,'fms': Biped.fmsCustomAnimList,'fmi': Biped.fmiCustomAnimList,'ftp': Biped.ftpCustomAnimList,'ftm': Biped.ftmCustomAnimList}
-CastAnimDict = {'models/char/js': Biped.jsCustomAnimList,'models/char/wt': Biped.wtCustomAnimList,'models/char/es': Biped.esCustomAnimList,'models/char/td': Biped.tdCustomAnimList,'models/char/cb': Biped.cbCustomAnimList,'models/char/jg': Biped.jgCustomAnimList,'models/char/jr': Biped.jrCustomAnimList,'models/char/plf': Biped.plfCustomAnimList,'models/char/pls': Biped.plsCustomAnimList}
+CastAnimDict = {
+    'models/char/js': Biped.jsCustomAnimList,
+    'models/char/wt': Biped.wtCustomAnimList,
+    'models/char/es': Biped.esCustomAnimList,
+    'models/char/td': Biped.tdCustomAnimList,
+    'models/char/cb': Biped.cbCustomAnimList,
+    'models/char/jg': Biped.jgCustomAnimList,
+    'models/char/jr': Biped.jrCustomAnimList,
+    'models/char/plf': Biped.plfCustomAnimList,
+    'models/char/pls': Biped.plsCustomAnimList,
+    'models/char/dj': Biped.djCustomAnimList
+}
 NewModelDict = {'sf': 'sf','ms': 'ms','mi': 'mi','tp': 'tp','tm': 'tm'}
 PrebuiltAnimDict = {}
 HeadPositions = BodyDefs.HeadPositions
