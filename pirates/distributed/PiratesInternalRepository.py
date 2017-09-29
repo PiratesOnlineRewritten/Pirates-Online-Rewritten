@@ -24,6 +24,9 @@ class PiratesInternalRepository(AstronInternalRepository):
     def getAccountIdFromSender(self):
         return (self.getMsgSender() >> 32) & 0xFFFFFFFF
 
+    def isDevServer(self):
+        return 'dev' in config.GetString('server-version', '') or __dev__
+
     def setAllowClientSend(self, avId, distObj, fieldNameList=[]):
         dg = PyDatagram()
         dg.addServerHeader(distObj.GetPuppetConnectionChannel(avId), self.ourChannel, CLIENTAGENT_SET_FIELDS_SENDABLE)
@@ -103,7 +106,10 @@ class PiratesInternalRepository(AstronInternalRepository):
 
                 attachment.addField(SlackField())
                 attachment.addField(SlackField(title='Game Account Id', value=accountId))
-                account = self.doId2do.get(accountId)
+                #TODO account name?
+
+                attachment.addField(SlackField())
+                attachment.addField(SlackField(title='Dev Server', value=self.isDevServer()))
 
                 webhookMessage.addAttachment(attachment)
                 webhookMessage.send()
@@ -121,7 +127,9 @@ class PiratesInternalRepository(AstronInternalRepository):
         except Exception as e:
 
             if config.GetBool('boot-on-error', False):
-                if self.getAvatarIdFromSender() > 100000000:
+                avatar = self.doId2do.get(self.getAvatarIdFromSender(), None)
+
+                if avatar:
                     self.kickChannel(self.getMsgSender())
 
             self.writeServerEvent('internal-exception', 
