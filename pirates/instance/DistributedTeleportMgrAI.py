@@ -35,6 +35,8 @@ class TeleportFSM(FSM):
         self.avatar.d_forceTeleportStart(self.world.getFileName(), self.teleportZone.doId, self.teleportHandler.doId, 0,
             self.teleportZone.parentId, self.teleportZone.zoneId)
 
+        self.acceptOnce(self.avatar.getDeleteEvent(), lambda: self.request('Stop'))
+
     def exitStart(self):
         pass
 
@@ -43,6 +45,8 @@ class TeleportFSM(FSM):
         self.teleportHandler.requestDelete()
 
         del self.teleportMgr.avatar2fsm[self.avatar.doId]
+
+        self.ignoreAll()
         self.demand('Off')
 
     def exitStop(self):
