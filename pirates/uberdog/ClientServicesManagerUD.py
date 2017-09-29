@@ -878,7 +878,7 @@ class LoadAvatarFSM(AvatarOperationFSM):
             self.avId,
             self.csm.air.ourChannel,
             STATESERVER_OBJECT_SET_OWNER)
-        datagram.addChannel(self.target<<32 | self.avId)
+        datagram.addChannel(self.target << 32 | self.avId)
         self.csm.air.send(datagram)
 
         self.csm.air.writeServerEvent('avatarChosen', avId=self.avId, target=self.target)
@@ -931,7 +931,16 @@ class LoadAvatarFSM(AvatarOperationFSM):
             channel,
             self.csm.air.ourChannel,
             CLIENTAGENT_SET_CLIENT_ID)
-        datagram.addChannel(self.target<<32 | self.avId)
+        datagram.addChannel(self.target << 32 | self.avId)
+        self.csm.air.send(datagram)
+
+        # Claim ownership of the avatar's inventory
+        datagram = PyDatagram()
+        datagram.addServerHeader(
+            self.avId,
+            self.csm.air.ourChannel,
+            STATESERVER_OBJECT_SET_OWNER)
+        datagram.addChannel(inventoryId)
         self.csm.air.send(datagram)
 
         # Eliminate race conditions.
