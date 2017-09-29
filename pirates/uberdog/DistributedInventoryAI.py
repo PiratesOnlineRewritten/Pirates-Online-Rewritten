@@ -34,17 +34,38 @@ class DistributedInventoryAI(DistributedObjectAI):
     def setAccumulators(self, accumulators):
         self.accumulators = accumulators
 
+    def d_setAccumulators(self, accumulators):
+        self.sendUpdate('setAccumulators', [accumulators])
+
+    def b_setAccumulators(self, accumulators):
+        self.setAccumulators(accumulators)
+        self.d_setAccumulators(accumulators)
+
     def getAccumulators(self):
         return self.accumulators
 
     def setStackLimits(self, stackLimits):
         self.stackLimits = stackLimits
 
+    def d_setStackLimits(self, stackLimits):
+        self.sendUpdate('setStackLimits', [stackLimits])
+
+    def b_setStackLimits(self, stackLimits):
+        self.setStackLimits(stackLimits)
+        self.d_setStackLimits(stackLimits)
+
     def getStackLimits(self):
         return self.stackLimits
 
     def setStacks(self, stacks):
         self.stacks = stacks
+
+    def d_setStacks(self, stacks):
+        self.sendUpdate('setStacks', [stacks])
+
+    def b_setStacks(self, stacks):
+        self.setStacks(stacks)
+        self.d_setStacks(stacks)
 
     def getStacks(self):
         return self.stacks
@@ -57,7 +78,7 @@ class DistributedInventoryAI(DistributedObjectAI):
         else:
             self.accumulators.append([accumulatorType, quantity])
 
-        self.sendUpdate('setAccumulators', [self.accumulators])
+        self.d_setAccumulators(self.accumulators)
 
     def d_setAccumulator(self, accumulatorType, quantity):
         self.sendUpdateToAvatarId(self.ownerId, 'accumulator', [accumulatorType, quantity])
@@ -82,7 +103,7 @@ class DistributedInventoryAI(DistributedObjectAI):
         else:
             self.stackLimits.append([stackType, limit])
 
-        self.sendUpdate('setStackLimits', [self.stackLimits])
+        self.d_setStackLimits(self.stackLimits)
 
     def d_setStackLimit(self, stackType, limit):
         self.sendUpdateToAvatarId(self.ownerId, 'stackLimit', [stackType, limit])
@@ -107,7 +128,7 @@ class DistributedInventoryAI(DistributedObjectAI):
         else:
             self.stacks.append([stackType, quantity])
 
-        self.sendUpdate('setStacks', [self.stacks])
+        self.d_setStacks(self.stacks)
 
     def d_setStack(self, stackType, quantity):
         self.sendUpdateToAvatarId(self.ownerId, 'stack', [stackType, quantity])
