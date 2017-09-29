@@ -30,9 +30,6 @@ class HolidayManagerAI(DistributedObjectAI):
         self.fleetManager = None
         self.queenAnneManager = None
 
-        self.scheduleCounter = {}
-        self.monthlyCounter = {}
-
     def announceGenerate(self):
         DistributedObjectAI.announceGenerate(self)
         self.notify.info('HolidayManager going online')

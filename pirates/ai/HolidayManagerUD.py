@@ -2,6 +2,7 @@ from panda3d.core import ConfigVariableList
 from direct.distributed.DistributedObjectGlobalUD import DistributedObjectGlobalUD
 from direct.directnotify import DirectNotifyGlobal
 from direct.task import Task
+from otp.distributed.OtpDoGlobals import *
 from pirates.ai import HolidayGlobals
 from pirates.ai.HolidayDates import HolidayDates
 import datetime
@@ -65,6 +66,7 @@ class HolidayManagerUD(DistributedObjectGlobalUD):
 
         if channel in self.districts:
             self.notify.warning('Received register for already allocated channel!')
+            return
 
         self.districts[channel] = {
             'localHolidays': {},
@@ -72,6 +74,11 @@ class HolidayManagerUD(DistributedObjectGlobalUD):
             'monthCounters': {},
             'scheduledRunning': None
         }
+
+        #Offline Notice
+        reregisterMessage = self.dclass.aiFormatUpdate('requestRegister', OTP_DO_ID_PIRATES_HOLIDAY_MANAGER, channel, self.air.ourChannel, [])
+        self.air.addPostRemove(reregisterMessage)
+
         self.d_registrationConfirm(channel)
 
     def unregisterAI(self, channel):
