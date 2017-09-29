@@ -25,6 +25,7 @@ from pirates.inventory import InventorySellConfirm
 from pirates.inventory import DropGlobals
 from pirates.inventory import InventoryGlobals
 from pirates.world.DistributedIsland import DistributedIsland
+import cPickle
 
 class DistributedShopKeeper():
     notify = directNotify.newCategory('DistributedShopKeeper')
@@ -354,9 +355,16 @@ class DistributedShopKeeper():
                 if self.storeType in (InteractGlobals.ACCESSORIES_STORE, InteractGlobals.JEWELRY_STORE, InteractGlobals.TATTOO_STORE):
                     self.storeMenuGUI.changeMode(1, refresh=True)
 
+    def __prepareSwitchStatement(self, values):
+        ready = []
+        for value in values:
+            ready.append(cPickle.dumps(value))
+        return prepareSwitchField(ready)
+
     def sendRequestMakeSale(self, buying=[], selling=[]):
-        theBuying = prepareSwitchField(buying)
-        theSelling = prepareSwitchField(selling)
+        theBuying = self.__prepareSwitchStatement(buying)
+        theSelling = self.__prepareSwitchStatement(selling)
+
         self.sendUpdate('requestMakeSale', [theBuying, theSelling])
 
     def sendRequestMakeShipSale(self, buying=[], selling=[], names=[]):
