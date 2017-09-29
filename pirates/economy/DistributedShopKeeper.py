@@ -164,6 +164,8 @@ class DistributedShopKeeper():
                     tex = DistributedShopKeeper.fishingCoin.copyTo(self.nametag3d)
                 elif self.avatarType.isA(AvatarTypes.CatalogRep):
                     tex = DistributedShopKeeper.catalogrepCoin.copyTo(self.nametag3d)
+                elif self.avatarType.isA(AvatarTypes.ScrimmageMaster):
+                    tex = DistributedShopKeeper.blacksmithCoin.copyTo(self.nametag3d)
                 else:
                     tex = None
                 if tex:
