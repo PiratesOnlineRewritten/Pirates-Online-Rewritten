@@ -44,6 +44,7 @@ class DistributedTeleportHandlerAI(DistributedObjectAI):
 
         world.d_setSpawnInfo(self.avatar.doId, xPos, yPos, zPos, h, 0, [instance.doId, instance.parentId, instance.zoneId])
         self.sendUpdateToAvatarId(self.avatar.doId, 'teleportToInstanceCleanup', [])
+        self.avatar.b_setLocation(instance.doId, PiratesGlobals.IslandLocalZone)
 
     def teleportToInstanceFinal(self, avatarId):
         avatar = self.air.doId2do.get(self.air.getAvatarIdFromSender())
@@ -51,6 +52,4 @@ class DistributedTeleportHandlerAI(DistributedObjectAI):
         if not avatar:
             return
 
-        instance = self.teleportFsm.instance
-        self.avatar.b_setLocation(instance.doId, PiratesGlobals.IslandLocalZone)
         self.teleportFsm.request('Stop')

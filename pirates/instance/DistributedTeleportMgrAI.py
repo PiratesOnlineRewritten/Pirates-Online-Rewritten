@@ -4,7 +4,7 @@ from pirates.piratesbase import PiratesGlobals
 from pirates.world.LocationConstants import LocationIds
 from direct.fsm.FSM import FSM
 from pirates.instance.DistributedInstanceBaseAI import DistributedInstanceBaseAI
-from pirates.world.DistributedIslandAI import DistributedIslandAI
+from pirates.world.DistributedGameAreaAI import DistributedGameAreaAI
 from pirates.instance.DistributedTeleportZoneAI import DistributedTeleportZoneAI
 from pirates.instance.DistributedTeleportHandlerAI import DistributedTeleportHandlerAI
 
@@ -114,7 +114,7 @@ class DistributedTeleportMgrAI(DistributedObjectAI):
 
         instance = world.uidMgr.justGetMeMeObject(islandUid)
 
-        if not instance or not isinstance(instance, DistributedIslandAI):
+        if not instance or not isinstance(instance, DistributedGameAreaAI):
             self.notify.warning('Cannot initiate teleport for %d unknown instance!' % avatar.doId)
             return
 
