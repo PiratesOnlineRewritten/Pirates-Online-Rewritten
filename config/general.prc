@@ -396,7 +396,7 @@ crash-on-proactive-leak-detect #f
 disable-server-queueing #t
 
 # Weather:
-advanced-weather #t
+advanced-weather #f
 want-weather-rain #f
 
 # Culling:
