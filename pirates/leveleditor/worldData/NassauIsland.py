@@ -18798,26 +18798,6 @@ objectStruct = {
                     'Visual': {
                         'Model': 'models/misc/coll_plane_barrier'
                     }
-                },
-                '1219895971.52mtucker': {
-                    'Type': 'Townsperson',
-                    'Category': 'Commoner',
-                    'AnimSet': 'coin_flip',
-                    'CustomModel': 'None',
-                    'HelpID': 'NONE',
-                    'Hpr': VBase3(-143.946, 0.0, 0.0),
-                    'Patrol Radius': '12.0000',
-                    'Pos': Point3(-703.24, -1775.724, 24.558),
-                    'PoseAnim': '',
-                    'PoseFrame': '',
-                    'Private Status': 'All',
-                    'Respawns': True,
-                    'Scale': VBase3(1.0, 1.0, 1.0),
-                    'ShopID': 'PORT_ROYAL_DEFAULTS',
-                    'Start State': 'Idle',
-                    'StartFrame': '0',
-                    'Team': 'Villager',
-                    'TrailFX': 'None'
                 }
             },
             'Undockable': True,
@@ -20689,7 +20669,6 @@ objectStruct = {
         '1212681712.08kmuller': '["Objects"]["1150922126.828659a2"]["Objects"]["1155328772.65dzlu"]["Objects"]["1212681712.08kmuller"]',
         '1212681809.11kmuller': '["Objects"]["1150922126.828659a2"]["Objects"]["1155328772.65dzlu"]["Objects"]["1212681809.11kmuller"]',
         '1213146526.0akelts': '["Objects"]["1150922126.828659a2"]["Objects"]["1155774947.13fxlara"]["Objects"]["1213146526.0akelts"]',
-        '1219895971.52mtucker': '["Objects"]["1150922126.828659a2"]["Objects"]["1219895971.52mtucker"]'
     }
 }
 extraInfo = {
