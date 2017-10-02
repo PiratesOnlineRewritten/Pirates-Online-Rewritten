@@ -72,9 +72,7 @@ class DistributedEnemySpawnerAI(DistributedObjectAI):
         return newObj
 
     def __setAvatarPosition(self, object, objectData, parent, parentUid, objKey):
-        pos, parentObj = parent.builder.getObjectTruePosAndParent(objKey, parentUid, objectData)
-        object.setPos(parentObj, pos)
-        object.setHpr(parentObj, objectData.get('Hpr', (0, 0, 0)))
+        parent.builder.setObjectTruePosHpr(object, objKey, parentUid, objectData)
         object.setSpawnPosHpr(object.getPos(), object.getHpr())
         return object
 
