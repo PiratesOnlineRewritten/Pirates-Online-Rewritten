@@ -16,7 +16,49 @@ AvatarsDatabaseChannelId = 4021
 InventoryDatabaseChannelId = 4023
 DatabaseIdFromClassName = {'DistributedPlayerPirate': AvatarsDatabaseChannelId,'DistributedInventory': InventoryDatabaseChannelId,'PirateInventory': InventoryDatabaseChannelId,'DistributedGoldReceipt': InventoryDatabaseChannelId,'DistributedFlag': InventoryDatabaseChannelId,'DistributedQuest': InventoryDatabaseChannelId,'DistributedTreasureMap': InventoryDatabaseChannelId,'DistributedPlayerSimpleShip': ShipsDatabaseChannelId}
 preLoadSet = [
- 'models/char/fp_2000', 'models/char/fp_1000', 'models/char/fp_500', 'models/char/mp_2000', 'models/char/mp_1000', 'models/char/mp_500', 'models/misc/male_clothes.bam', 'models/misc/female_clothes.bam', 'models/misc/male_body.bam', 'models/misc/female_body.bam', 'models/misc/male_face.bam', 'models/misc/female_face.bam', 'models/char/fp_idle', 'models/char/mp_idle', 'models/char/fp_walk', 'models/char/mp_walk', 'models/char/crab_2000', 'models/char/crab_1000', 'models/char/crab_500', 'models/textureCards/shipTextures', 'models/char/fp_tread_water', 'models/char/mp_tread_water', 'models/char/rooster_hi', 'models/char/rooster_med', 'models/char/rooster_low', 'models/char/pig_hi', 'models/char/pig_med', 'models/char/pig_low', 'models/char/dog_hi', 'models/char/seagull_hi', 'models/sea/wake_zero', 'models/effects/compass_rose', 'models/vegetation/bush_a', 'models/vegetation/bush_b', 'models/vegetation/bush_c', 'models/vegetation/bush_d', 'models/vegetation/bush_e', 'models/vegetation/bush_f', 'models/vegetation/gen_tree_a', 'models/vegetation/gen_tree_b', 'models/vegetation/gen_tree_c', 'models/vegetation/gen_tree_d', 'models/vegetation/gen_tree_e']
+ 'models/char/fp_2000', 
+ 'models/char/fp_1000', 
+ 'models/char/fp_500', 
+ 'models/char/mp_2000', 
+ 'models/char/mp_1000', 
+ 'models/char/mp_500', 
+ 'models/misc/male_clothes.bam', 
+ 'models/misc/female_clothes.bam', 
+ 'models/misc/male_body.bam', 
+ 'models/misc/female_body.bam', 
+ 'models/misc/male_face.bam', 
+ 'models/misc/female_face.bam', 
+ 'models/char/fp_idle', 
+ 'models/char/mp_idle', 
+ 'models/char/fp_walk', 
+ 'models/char/mp_walk', 
+ 'models/char/crab_hi', 
+ 'models/char/crab_med', 
+ 'models/char/crab_low', 
+ 'models/textureCards/shipTextures', 
+ 'models/char/fp_tread_water', 
+ 'models/char/mp_tread_water', 
+ 'models/char/rooster_hi', 
+ 'models/char/rooster_med', 
+ 'models/char/rooster_low', 
+ 'models/char/pig_hi', 
+ 'models/char/pig_med', 
+ 'models/char/pig_low', 
+ 'models/char/dog_hi', 
+ 'models/char/seagull_hi', 
+ 'models/sea/wake_zero', 
+ 'models/vegetation/bush_a', 
+ 'models/vegetation/bush_b', 
+ 'models/vegetation/bush_c', 
+ 'models/vegetation/bush_d', 
+ 'models/vegetation/bush_e', 
+ 'models/vegetation/bush_f', 
+ 'models/vegetation/gen_tree_a', 
+ 'models/vegetation/gen_tree_b', 
+ 'models/vegetation/gen_tree_c', 
+ 'models/vegetation/gen_tree_d', 
+ 'models/vegetation/gen_tree_e'
+]
 INVALID_TEAM = -1
 PLAYER_TEAM = 0
 UNDEAD_TEAM = 1
