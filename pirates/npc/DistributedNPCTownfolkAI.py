@@ -22,7 +22,7 @@ class DistributedNPCTownfolkAI(DistributedBattleNPCAI, DistributedShopKeeperAI):
             if self.avatarType.isA(AvatarTypes.ScrimmageMaster):
                 return
 
-            self.sendUpdateToAvatarId(avatar.doId, 'triggerInteractShow', [self.doId])
+            self.sendUpdateToAvatarId(avatar.doId, 'triggerInteractShow', [0])
             self.sendUpdateToAvatarId(avatar.doId, 'offerOptions', [2])
 
             if self.avatarType.isA(AvatarTypes.Fishmaster):

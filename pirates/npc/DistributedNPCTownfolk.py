@@ -73,7 +73,6 @@ class DistributedNPCTownfolk(DistributedBattleNPC.DistributedBattleNPC, Distribu
         self.shipNamePanel = None
         self.classNameText = None
         self.shopId = PiratesGlobals.PORT_ROYAL_DEFAULTS
-        self.interactType = PiratesGlobals.INTERACT_TYPE_FRIENDLY #TODO?
         self.helpId = 0
         self.noticeSpeed = 0.75
         self.shouldGreetOnNotice = 0
@@ -998,51 +997,49 @@ class DistributedNPCTownfolk(DistributedBattleNPC.DistributedBattleNPC, Distribu
                 self.animIval.pause()
                 self.animIval = None
             chosenAnim = random.choice(availAnims)
-            self.interactCamPosHpr or self.pose(chosenAnim, 1, blendT=0)
-            self.waitPending()
-            if self.isInInvasion():
-                np = self.attachNewNode('interactCamNode')
-                np.setPos(self.headNode.getX(self) + 1, self.headNode.getY(self) + 6.5, self.headNode.getZ(self) + 1)
-            else:
-                if self.castDnaId:
-                    if self.castDnaId in ['models/char/js_2000', 'models/char/td_2000', 'models/char/es_2000']:
-                        np = self.attachNewNode('interactCamNode')
-                        np.setPos(self.headNode.getX(self), self.headNode.getY(self) + 4.5, self.headNode.getZ(self) + 1)
-                    else:
-                        np = self.headNode.attachNewNode('interactCamNode')
-                        np.setPos(1, 0, -4.5)
-                    np.wrtReparentTo(render)
-                    np.lookAt(self, self.headNode.getX(self), self.headNode.getY(self), self.headNode.getZ(self) * 0.95)
-                    if hasMenu:
-                        np.setH(np.getH() + 15)
-                    self.interactCamPosHpr = [
-                     np.getPos(render), np.getHpr(render)]
-                    np.removeNode()
-                if chosenAnim in self.getAnimNames():
-                    chosenAnimInto = None
-                    if availAnimsInto:
-                        chosenAnimInto = random.choice(availAnimsInto)
-                    if chosenAnimInto in self.getAnimNames():
-                        duration = self.getDuration(chosenAnimInto)
-                        self.lockFSM = True
-                        if duration is None:
-                            duration = 1.0
-                        if self.localAvatarHasBeenNoticed:
-                            self.abortNotice()
-                        if self.isMixing():
-                            if chosenAnimInto == chosenAnim:
-                                self.animIval = Sequence(Wait(0.2), Func(self.loop, chosenAnim))
-                            else:
-                                self.animIval = Sequence(Wait(0.2), Func(self.play, chosenAnimInto), Func(self.loop, chosenAnim))
-                        elif chosenAnimInto == chosenAnim:
-                            self.animIval = Sequence(Func(self.loop, chosenAnim))
+            if not self.interactCamPosHpr:
+                self.pose(chosenAnim, 1, blendT=0)
+                self.waitPending()
+                if self.isInInvasion():
+                    np = self.attachNewNode('interactCamNode')
+                    np.setPos(self.headNode.getX(self) + 1, self.headNode.getY(self) + 6.5, self.headNode.getZ(self) + 1)
+                elif self.castDnaId and self.castDnaId in ['models/char/js_2000', 'models/char/td_2000', 'models/char/es_2000']:
+                    np = self.attachNewNode('interactCamNode')
+                    np.setPos(self.headNode.getX(self), self.headNode.getY(self) + 4.5, self.headNode.getZ(self) + 1)
+                else:
+                    np = self.headNode.attachNewNode('interactCamNode')
+                    np.setPos(1, 0, -4.5)
+                np.wrtReparentTo(render)
+                np.lookAt(self, self.headNode.getX(self), self.headNode.getY(self), self.headNode.getZ(self) * 0.95)
+                if hasMenu:
+                    np.setH(np.getH() + 15)
+                self.interactCamPosHpr = [np.getPos(render), np.getHpr(render)]
+                np.removeNode()
+
+            if chosenAnim in self.getAnimNames():
+                chosenAnimInto = None
+                if availAnimsInto:
+                    chosenAnimInto = random.choice(availAnimsInto)
+                if chosenAnimInto in self.getAnimNames():
+                    duration = self.getDuration(chosenAnimInto)
+                    self.lockFSM = True
+                    if duration is None:
+                        duration = 1.0
+                    if self.localAvatarHasBeenNoticed:
+                        self.abortNotice()
+                    if self.isMixing():
+                        if chosenAnimInto == chosenAnim:
+                            self.animIval = Sequence(Wait(0.2), Func(self.loop, chosenAnim))
                         else:
-                            self.animIval = Sequence(Func(self.play, chosenAnimInto), Wait(duration), Func(self.loop, chosenAnim))
-                        self.animIval.start()
-                    if self.animIval == None:
-                        self.loop(chosenAnim)
-                    self.interactAnim = chosenAnim
-        return
+                            self.animIval = Sequence(Wait(0.2), Func(self.play, chosenAnimInto), Func(self.loop, chosenAnim))
+                    elif chosenAnimInto == chosenAnim:
+                        self.animIval = Sequence(Func(self.loop, chosenAnim))
+                    else:
+                        self.animIval = Sequence(Func(self.play, chosenAnimInto), Wait(duration), Func(self.loop, chosenAnim))
+                    self.animIval.start()
+                if self.animIval == None:
+                    self.loop(chosenAnim)
+                self.interactAnim = chosenAnim
 
     def endInteractMovie(self, interactType='default'):
         self.setSkipLocalSmooth(False)
