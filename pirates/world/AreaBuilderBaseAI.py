@@ -73,12 +73,12 @@ class AreaBuilderBaseAI(DirectObject):
         parentObject.setPos(parentData.get('Pos', Point3(0, 0, 0)))
         parentObject.setHpr(parentData.get('Hpr', Point3(0, 0, 0)))
 
-        if not 'GridPos' in objectData:
-            object.setPos(parentObject, objectPos)
-            object.setHpr(parentObject, objectHpr)
-        else:
-            object.setPos(objectData.get('GridPos', objectPos))
-            object.setHpr(parentObject, objectHpr)
+        #if not 'GridPos' in objectData or True:
+        object.setPos(parentObject, objectPos)
+        object.setHpr(parentObject, objectHpr)
+        #else:
+        #    object.setPos(objectData.get('GridPos', objectPos))
+        #    object.setHpr(parentObject, objectHpr)
 
         return object
 
