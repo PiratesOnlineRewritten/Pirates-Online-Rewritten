@@ -184,7 +184,6 @@ class DistributedBattleNPC(DistributedBattleAvatar):
             self.animSetSetup = True
             allAnims = CustomAnims.INTERACT_ANIMS.get(self.animSet)
             if allAnims == None:
-                print 'NOT FOUND!'
                 return
             allIdles = allAnims.get('idles')
             if type(allIdles) is dict:
