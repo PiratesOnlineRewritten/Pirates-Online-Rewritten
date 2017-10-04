@@ -143,3 +143,10 @@ editor-src/
 
 # Personal PRC
 **/personal.prc
+
+# Tools/
+tools/
+
+# Compiler
+PiratesStart.build/
+PiratesStart.dis/
