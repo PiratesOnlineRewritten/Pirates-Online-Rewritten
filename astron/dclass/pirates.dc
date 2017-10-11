@@ -618,7 +618,14 @@ dclass DistributedMovingObject : DistributedSmoothNode, DistributedTargetableObj
   setAggroMode(uint8) required broadcast ram;
 };
 
-dclass DistributedInteractive : DistributedNode {
+dclass DistributedLocatableObject {
+  requestRegionUpdate(string) clsend airecv;
+  enterAreaSphere(string, string) clsend airecv;
+  leaveAreaSphere(string, string) clsend airecv;
+  locationChange(string);
+};
+
+dclass DistributedInteractive : DistributedNode, DistributedLocatableObject {
   requestInteraction(uint32, uint8, bool) clsend airecv;
   requestExit() clsend airecv;
   demandExit() clsend airecv;
