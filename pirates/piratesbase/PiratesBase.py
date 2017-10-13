@@ -480,6 +480,7 @@ class PiratesBase(OTPBase):
             from pirates.creature import SeaSerpent
             SeaSerpent.SeaSerpent.setupAssets()
             self.loadingScreen.tick()
+        self.buildPhase6Ships()
 
     def buildAssets(self):
         pass
@@ -499,6 +500,12 @@ class PiratesBase(OTPBase):
         if not self.shipFactory:
             self.buildShips()
         self.shipFactory.handlePhase5()
+        self.loadingScreen.tick()
+
+    def buildPhase6Ships(self):
+        if not self.shipFactory:
+            self.buildShips()
+        self.shipFactory.handlePhase6()
         self.loadingScreen.tick()
 
     def openMainWindow(self, *args, **kw):
