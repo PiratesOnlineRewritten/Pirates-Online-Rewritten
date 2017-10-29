@@ -14,7 +14,6 @@ from pirates.instance.DistributedInstanceBaseAI import DistributedInstanceBaseAI
 
 class GameAreaBuilderAI(AreaBuilderBaseAI):
     notify = directNotify.newCategory('GameAreaBuilderAI')
-    AREAZONE = PiratesGlobals.IslandLocalZone
 
     def __init__(self, air, parent):
         AreaBuilderBaseAI.__init__(self, air, parent)

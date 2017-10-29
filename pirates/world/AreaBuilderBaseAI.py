@@ -7,7 +7,6 @@ from panda3d.core import Point3, NodePath
 
 class AreaBuilderBaseAI(DirectObject):
     notify = directNotify.newCategory('AreaBuilderBaseAI')
-    AREAZONE = 0
 
     def __init__(self, air, parent):
         self.air = air
