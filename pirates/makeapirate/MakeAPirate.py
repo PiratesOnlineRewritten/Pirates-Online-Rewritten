@@ -1180,8 +1180,10 @@ class MakeAPirate(DirectObject, StateData.StateData, FSM.FSM):
             base.transitions.fadeIn(1.0)
 
         def chooseAv(avId):
+            if not avId:
+                self.notify.error('An error occured when trying to create avatar!')
+
             self.avId = avId
-            base.cr.csm.sendChooseAvatar(avId)
             sendDone()
 
         def createAv():
