@@ -846,7 +846,7 @@ class HumanDNA(AvatarDNA.AvatarDNA):
 
     def getTutorial(self):
         if base.config.GetBool('ignore-teleport-requirements', False):
-            return PiratesGlobals.TUT_GOT_COMPASS
+            return PiratesGlobals.TUT_FINISHED
 
         return self.tutorial
 
