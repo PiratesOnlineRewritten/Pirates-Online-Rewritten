@@ -265,7 +265,7 @@ class FPSCamera(CameraMode.CameraMode, NodePath, ParamObj):
         cNormal = (0, -1, 0)
         collEntry = None
 
-        for i in xrange(self._cHandlerQueue.getNumEntries())
+        for i in xrange(self._cHandlerQueue.getNumEntries()):
             collEntry = self._cHandlerQueue.getEntry(i)
             cNormal = collEntry.getSurfaceNormal(self)
             if cNormal[1] < 0:
