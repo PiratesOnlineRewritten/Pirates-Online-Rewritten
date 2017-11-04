@@ -1,10 +1,5 @@
-7
 from direct.interval.IntervalGlobal import *
-if __name__ == '__main__':
-    from direct.directbase.DirectStart import *
-    from direct.showbase.DirectObject import DirectObject as DistributedObject
-else:
-    from direct.distributed.DistributedObject import DistributedObject
+from direct.distributed.DistributedObject import DistributedObject
 from direct.directnotify import DirectNotifyGlobal
 from direct.gui.DirectGui import *
 from pandac.PandaModules import *
@@ -17,7 +12,7 @@ from pirates.world.LocationConstants import LocationIds
 
 class DistributedPotionGame(DistributedObject):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedRepairGame')
-    IslandColorSets = {LocationIds.DEL_FUEGO_ISLAND: 1,LocationIds.TORTUGA_ISLAND: 2,LocationIds.CUBA_ISLAND: 3}
+    IslandColorSets = {LocationIds.DEL_FUEGO_ISLAND: 1, LocationIds.TORTUGA_ISLAND: 2, LocationIds.CUBA_ISLAND: 3}
 
     def __init__(self, cr):
         DistributedObject.__init__(self, cr)
@@ -25,7 +20,6 @@ class DistributedPotionGame(DistributedObject):
         self.fadeTime = 0.1
         self.fadeTask = None
         self.xpBonus = 0
-        return
 
     def setColorSet(self, colorSet):
         self.colorSet = colorSet
@@ -67,8 +61,8 @@ class DistributedPotionGame(DistributedObject):
         base.cr.loadingScreen.hide()
         base.transitions.fadeIn(self.fadeTime)
 
-    def done(self):
-        if base.transitions.fadeOutActive():
+    def done(self, forceFinish=False):
+        if base.transitions.fadeOutActive() and not forceFinish:
             self.loadingSequence = Sequence(Func(self.fadeOut), Wait(self.fadeTime), Func(self.d_finish))
             self.loadingSequence.start()
         else:
@@ -91,6 +85,11 @@ class DistributedPotionGame(DistributedObject):
 
     def d_reset(self):
         self.sendUpdate('reset')
+
+    def exit(self):
+        potionTable = self.getParentObj()
+        if potionTable:
+            potionTable.requestExit()
 
     def checkExit(self):
         if self.potionGame.gameFSM.getCurrentOrNextState() in ['Input', 'Anim', 'Hint', 'Idle', 'Welcome']:

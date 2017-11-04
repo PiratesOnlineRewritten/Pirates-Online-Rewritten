@@ -39,6 +39,7 @@ class DistributedPotionCraftingTable(DistributedInteractive):
         DistributedInteractive.disable(self)
         if self.effect:
             self.effect.cleanUpEffect()
+
         self.detachNode()
 
     def requestInteraction(self, avId, interactType=0):
@@ -56,6 +57,8 @@ class DistributedPotionCraftingTable(DistributedInteractive):
         if now - self.lastExitRequest > self._MIN_EXIT_DELAY:
             self.sendUpdate('checkExit')
             self.lastExitRequest = now
+
+        DistributedInteractive.requestExit(self)
 
     def enterWaiting(self):
         localAvatar.motionFSM.off()
@@ -77,7 +80,7 @@ class DistributedPotionCraftingTable(DistributedInteractive):
         if self.gameInterest:
             self.cr.removeInterest(self.gameInterest)
             self.gameInterest = None
+
         localAvatar.guiMgr.setIgnoreEscapeHotKey(False)
         localAvatar.b_setGameState('LandRoam')
         DistributedInteractive.exitUse(self)
-        return
