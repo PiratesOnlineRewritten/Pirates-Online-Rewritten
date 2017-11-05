@@ -121,6 +121,7 @@ ENV/
 
 # Darwin
 *.DS_Store
+Library/
 
 # Visual Studio
 .vs/
