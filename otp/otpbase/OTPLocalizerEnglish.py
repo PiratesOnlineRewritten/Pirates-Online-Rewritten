@@ -124,8 +124,7 @@ ActivateChatPrivacyPolicy_Button1A = 'Version 1'
 ActivateChatPrivacyPolicy_Button1K = 'Version 1'
 ActivateChatPrivacyPolicy_Button2A = 'Version 2'
 ActivateChatPrivacyPolicy_Button2K = 'Version 2'
-PrivacyPolicyText_1A = [
- ' ']
+PrivacyPolicyText_1A = [' ']
 PrivacyPolicyText_1K = [' ']
 PrivacyPolicyText_2A = [' ']
 PrivacyPolicyText_2K = [' ']
@@ -176,7 +175,19 @@ CRMissingGameRootObject = 'Missing some root game objects.  (May be a failed net
 CRNoDistrictsTryAgain = 'No Districts are available. Try again?'
 CRRejectRemoveAvatar = 'The avatar was not able to be deleted, try again another time.'
 CRLostConnection = 'Your internet connection to the servers has been unexpectedly broken.'
-CRBootedReasons = {1: 'An unexpected problem has occurred.  Your connection has been lost, but you should be able to connect again and go right back into the game.',100: 'You have been disconnected because someone else just logged in using your account on another computer.',120: 'You have been disconnected because of a problem with your authorization to use keyboard chat.',122: 'There has been an unexpected problem logging you in.  Please contact customer support.',125: 'Your installed files appear to be invalid.  Please use the Play button on the official website to run.',126: 'You are not authorized to use administrator privileges.',127: 'A problem has occurred with your Toon.  Please contact Member Services via phone, email or  live chat and reference Error Code 127.  Thank you.',151: 'You have been logged out by an administrator working on the servers.',152: "There has been a reported violation of our Terms of Use connected to '%(name)s'. For more details, please review the message sent to the e-mail address associated with '%(name)s'.",153: 'The district you were playing on has been reset.  Everyone who was playing on that district has been disconnected.  However, you should be able to connect again and go right back into the game.',288: 'Sorry, you have used up all of your available minutes this month.',349: 'Sorry, you have used up all of your available minutes this month.'}
+CRBootedReasons = {
+    1: 'An unexpected problem has occurred.  Your connection has been lost, but you should be able to connect again and go right back into the game.',
+    100: 'You have been disconnected because someone else is logged in using your account on another computer.',
+    120: 'You have been disconnected because of a problem with your authorization to use keyboard chat.',
+    122: 'There has been an unexpected problem logging you in.  Please contact customer support.',
+    125: 'Your installed files appear to be invalid.  Please use the Play button on the official website to run.',
+    126: 'You are not authorized to use administrator privileges.',
+    127: 'A problem has occurred with your Toon.  Please contact Member Services via phone, email or  live chat and reference Error Code 127.  Thank you.',
+    151: 'You have been logged out by an administrator working on the servers.',
+    152: "There has been a reported violation of our Terms of Use connected to '%(name)s'. For more details, please review the message sent to the e-mail address associated with '%(name)s'.",
+    153: 'The district you were playing on has been reset.  Everyone who was playing on that district has been disconnected.  However, you should be able to connect again and go right back into the game.',
+    288: 'Sorry, you have used up all of your available minutes this month.',
+    349: 'Sorry, you have used up all of your available minutes this month.'}
 CRBootedReasonUnknownCode = 'An unexpected problem has occurred (error code %s).  Your connection has been lost, but you should be able to connect again and go right back into the game.'
 CRTryConnectAgain = '\n\nTry to connect again?'
 CRToontownUnavailable = 'The server appears to be temporarily unavailable, still trying...'

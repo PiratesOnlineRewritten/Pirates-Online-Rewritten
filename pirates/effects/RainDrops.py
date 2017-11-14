@@ -48,4 +48,5 @@ class RainDrops(EffectController, NodePath):
         EffectController.cleanUpEffect(self)
 
     def destroy(self):
-        EffectController.destroy(self)
+        endingSequence = Sequence(self.endEffect, Wait(self.duration), Func(EffectController.destroy, self))
+        endingSequence.start()

@@ -81,6 +81,8 @@ class SectionAreaBuilder(AreaBuilderBase):
                     propNp.wrtReparentTo(self.largeObjectsRoot)
             return propNp
         model = self.getModel(objData)
+        if not model:
+            return None
         if objData.get('DisableCollision', False):
             collisionNodes = model.collisions.findAllMatches('**/+CollisionNode')
             for collisionNode in collisionNodes:

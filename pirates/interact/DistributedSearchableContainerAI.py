@@ -6,7 +6,7 @@ class DistributedSearchableContainerAI(DistributedInteractiveAI):
 
     def __init__(self, air):
         DistributedInteractiveAI.__init__(self, air)
-        self.color = [0, 0, 0, 0]
+        self.color = [1.0, 1.0, 1.0, 1.0]
 
     def handleRequestInteraction(self, avatar, interactType, instance):
         return self.DENY

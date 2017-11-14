@@ -16,6 +16,7 @@ from direct.interval.IntervalGlobal import *
 from direct.showbase.PythonUtil import quickProfile
 from otp.otpgui import OTPDialog
 from otp.otpbase import OTPGlobals
+from pirates.ai import HolidayGlobals
 from pirates.audio import SoundGlobals
 from pirates.piratesgui.GameOptions import GameOptions
 from pirates.piratesbase import PLocalizer
@@ -43,7 +44,7 @@ class AvatarChooser(DirectObject, StateData):
     notify = directNotify.newCategory('AvatarChooser')
     notify.setInfo(True)
 
-    def __init__(self, parentFSM, doneEvent):
+    def __init__(self, parentFSM, doneEvent, chooserHolidays=None):
         StateData.__init__(self, doneEvent)
         self.choice = (0, 0)
         self.gameOptions = None
@@ -96,7 +97,7 @@ class AvatarChooser(DirectObject, StateData):
         self.forceQueueStr = ''
         self.finalizeConfirmDialog = None
         self.deniedConfirmDialog = None
-        return
+        self.chooserHolidays = chooserHolidays
 
     def enter(self):
         base.options.display.restrictToEmbedded(True)
@@ -203,11 +204,22 @@ class AvatarChooser(DirectObject, StateData):
         self.scene = NodePath('AvatarChooserScene')
         self.todManager = TimeOfDayManager.TimeOfDayManager()
         self.todManager.request('EnvironmentTOD')
-        self.todManager.setEnvironment(TODGlobals.ENV_AVATARCHOOSER, {})
+
+        environment = TODGlobals.ENV_AVATARCHOOSER
+        if self.chooserHolidays and HolidayGlobals.HALLOWEEN in self.chooserHolidays:
+            environment = TODGlobals.ENV_HALLOWEEN
+
+        self.todManager.setEnvironment(environment, {})
         self.todManager.doEndTimeOfDay()
         self.todManager.skyGroup.setSunTrueAngle(Vec3(260, 0, 15))
         self.todManager.skyGroup.setSunLock(1)
         self.todManager.skyGroup.dirLightSun.node().setColor(Vec4(0.9, 0.7, 0.8, 1))
+
+        if self.chooserHolidays and HolidayGlobals.HALLOWEEN in self.chooserHolidays:
+            self.todManager.skyGroup.moonOverlay.stash()
+            self.todManager.skyGroup.setMoonState(0.0)
+            self.todManager.dlight.setHpr(-120, -30, 0)
+
         pier = loader.loadModel('models/islands/pier_port_royal_2deck')
         pier.setPosHpr(-222.23, 360.08, 15.06, 251.57, 0.0, 0.0)
         pier.flattenStrong()
@@ -514,22 +526,23 @@ class AvatarChooser(DirectObject, StateData):
                         self.deniedConfirmDialog = PDialog.PDialog(text=PLocalizer.AvatarChooserPleaseRename, style=OTPDialog.Acknowledge, command=self.__handleDenied)
                     self.handleDialogOnScreen = 1
                 self.renameButton.show()
-            if not potAv.lastLogout or int(time.time() / 60) - potAv.lastLogout > 60:
-                potAv.defaultShard = 0
-                base.cr.avPlayedRecently = False
-            else:
-                base.cr.avPlayedRecently = True
-            if base.cr.defaultShard == 0:
-                self.shardPanel['preferredShard'] = potAv.defaultShard
-        return
+
+        if not potAv.lastLogout or int(time.time() / 60) - potAv.lastLogout > 60:
+            potAv.defaultShard = 0
+            base.cr.avPlayedRecently = False
+        else:
+            base.cr.avPlayedRecently = True
+
+        if base.cr.defaultShard == 0:
+            self.shardPanel['preferredShard'] = potAv.defaultShard
 
     def __hideHighlightedAvatar(self):
         if self.av:
             self.av.delete()
             self.av = None
+
         self.highlightFrame.hide()
         self.renameButton.hide()
-        return
 
     def __handleRename(self):
         self.enterNameMode()
@@ -578,7 +591,6 @@ class AvatarChooser(DirectObject, StateData):
 
         if self.subAvButtons[sub][slot]['state'] == DGG.NORMAL and initialSlot != slot:
             self.__handleHighlight(sub, slot)
-        return
 
     def __handleArrowDown(self):
         if self.gameOptions is not None and not self.gameOptions.isHidden():
@@ -619,14 +631,13 @@ class AvatarChooser(DirectObject, StateData):
             return
 
         self.choice = (subId, slot)
-
         base.funnel.add_to_event_queue(base.funnel.get_design_event('NEW_AVATAR', slot))
         self.ignore('rejectAvatarSlot')
         self.ignore('avatarSlotResponse')
         base.cr.cleanupWaitingForDatabase()
+        base.transitions.fadeOut()
         self.doneStatus = {'mode': 'create'}
         messenger.send(self.doneEvent, [self.doneStatus])
-        base.transitions.fadeOut()
 
     def __handleShare(self):
         if self.shareConfirmDialog:

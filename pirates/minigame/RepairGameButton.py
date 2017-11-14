@@ -68,12 +68,13 @@ class RepairGameButton(GuiButton):
         else:
             if not self.checkMark.isStashed():
                 self.checkMark.stash()
-            if self.pirateNameLabel == None and not self.inProgress:
-                self.skillGlow.unstash()
+
+        if self.pirateNameLabel == None and not self.inProgress:
+            self.skillGlow.unstash()
+
         self.skillRing.update(ratio, 1.0)
         self.skillRing.wrtReparentTo(self.getParent())
         self.reparentTo(self.getParent())
-        return
 
     def updatePirateNameBox(self, pirateName):
         if self.pirateNameLabel != None and self.pirateNameLabel['text'] != pirateName:

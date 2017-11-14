@@ -107,6 +107,7 @@ class PiratesClientRepository(OTPClientRepository):
         self.createAvatarClass = DistributedPlayerPirate.DistributedPlayerPirate
         self.tradeManager = None
         self.pvpManager = None
+        self.holidayMgr = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_PIRATES_HOLIDAY_MANAGER, 'HolidayManager')
         self.avatarManager = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_PIRATES_AVATAR_MANAGER, 'DistributedAvatarManager')
         self.chatManager = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_CHAT_MANAGER, 'DistributedChatManager')
         self.crewMatchManager = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_PIRATES_CREW_MATCH_MANAGER, 'DistributedCrewMatchManager')
@@ -125,11 +126,11 @@ class PiratesClientRepository(OTPClientRepository):
         self.statusDatabase = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_STATUS_DATABASE, 'StatusDatabase')
         self.csm = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_CLIENT_SERVICES_MANAGER, 'ClientServicesManager')
         self.inventoryManager = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_PIRATES_INVENTORY_MANAGER, 'DistributedInventoryManager')
-        self.wantSeapatch = base.config.GetBool('want-seapatch', 1)
-        self.wantSpecialEffects = base.config.GetBool('want-special-effects', 1)
-        self.wantMakeAPirate = base.config.GetBool('wantMakeAPirate', 0)
-        self.forceTutorial = base.config.GetBool('force-tutorial', 0)
-        self.skipTutorial = base.config.GetBool('skip-tutorial', 0)
+        self.wantSeapatch = base.config.GetBool('want-seapatch', True)
+        self.wantSpecialEffects = base.config.GetBool('want-special-effects', True)
+        self.wantMakeAPirate = base.config.GetBool('wantMakeAPirate', False)
+        self.forceTutorial = base.config.GetBool('force-tutorial', False)
+        self.skipTutorial = base.config.GetBool('skip-tutorial', False)
         self.tutorialObject = None
         self.avChoiceDoneEvent = None
         self.avChoice = None
@@ -152,6 +153,7 @@ class PiratesClientRepository(OTPClientRepository):
         self.questDependency = QuestLadderDependency()
         self.questChoiceSibsMap = QuestChoiceDynMap()
         self.accountDetailRecord = AccountDetailRecord()
+        self.avPlayedRecently = False
         base.loadingScreen.beginStep('MasterHumans', 52, 45)
         self.humanHigh = [MasterHuman.MasterHuman(), MasterHuman.MasterHuman()]
         self.humanHigh[0].billboardNode.removeNode()
@@ -274,9 +276,12 @@ class PiratesClientRepository(OTPClientRepository):
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterChooseAvatar(self, avList):
+        self.holidayMgr.requestChooserHoliday(self.onHolidayResponse)
         base.loadingScreen.beginStep('AvChooser', 14, 10)
         self.sendSetAvatarIdMsg(0)
         self.handler = self.handleMessageType
+
+    def onHolidayResponse(self, holidayIds):
         if __dev__:
             config_slot = base.config.GetInt('login-pirate-slot', -1)
             if config_slot >= 0 and len(avList) > 0:
@@ -293,7 +298,7 @@ class PiratesClientRepository(OTPClientRepository):
                         return
 
         self.avChoiceDoneEvent = 'avatarChooserDone'
-        self.avChoice = AvatarChooser(self.loginFSM, self.avChoiceDoneEvent)
+        self.avChoice = AvatarChooser(self.loginFSM, self.avChoiceDoneEvent, holidayIds)
         base.loadingScreen.tick()
         self.avChoice.load()
         base.loadingScreen.tick()
@@ -302,6 +307,7 @@ class PiratesClientRepository(OTPClientRepository):
         self.accept(self.avChoiceDoneEvent, self.__handleAvatarChooserDone)
         base.loadingScreen.endStep('AvChooser')
         base.cr.loadingScreen.hide()
+
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def __handleAvatarChooserDone(self, doneStatus):
@@ -348,10 +354,10 @@ class PiratesClientRepository(OTPClientRepository):
             self.avCreate.load()
             self.avCreate.enter()
             self.accept('makeAPirateComplete', self.__handleMakeAPirate)
-            self.accept('nameShopCreateAvatar', self.sendCreateAvatarMsg)
         else:
             self.tutorial = 1
             dna = HumanDNA.HumanDNA()
+            dna.makeMakeAPirate()
             newPotAv = PotentialAvatar(0, ['dbp', '', '', ''], dna, index, 0)
             self.csm.sendCreateAvatar(newPotAv.dna, '', newPotAv.position)
             self.accept('createdNewAvatar', self.handleAvatarCreated, [newPotAv])
@@ -377,7 +383,6 @@ class PiratesClientRepository(OTPClientRepository):
         if self.skipTutorial:
             self.ignore('makeAPirateComplete')
             self.ignore('nameShopPost')
-            self.ignore('nameShopCreateAvatar')
             self.avCreate.exit()
             self.avCreate.unload()
             self.avCreate = None
@@ -453,7 +458,9 @@ class PiratesClientRepository(OTPClientRepository):
         localAvatar.setLocation(parentId=None, zoneId=None)
         localAvatar.generateInit()
         localAvatar.generate()
-        localAvatar.updateAllRequiredFields(localAvatar.dclass, di)
+        localAvatar.dclass.receiveUpdateBroadcastRequiredOwner(localAvatar, di)
+        localAvatar.announceGenerate()
+        localAvatar.postGenerateMessage()
         self.loadingScreen.endStep('LocalAvatar')
         self.loginFSM.request('playingGame')
 
@@ -502,7 +509,7 @@ class PiratesClientRepository(OTPClientRepository):
         camera.setHpr(0, 0, 0)
         base.transitions.noTransitions()
         OTPClientRepository.exitPlayingGame(self)
-        self.detectLeaks(okTasks=['physics-avatar', 'memory-monitor-task', 'multitexFlatten'], okEvents=['destroy-ToontownLoadingScreenTitle', 'destroy-ToontownLoadingScreenTip', 'destroy-ToontownLoadingScreenWaitBar', PiratesGlobals.LogoutHotkey, PiratesGlobals.HideGuiHotkey, PiratesGlobals.OptionsHotkey, 'close_main_window', 'open_main_window', 'texture_state_changed', 'connectionIssue', 'connectionRetrying', self.getConnectedEvent()])
+        #self.detectLeaks(okTasks=['physics-avatar', 'memory-monitor-task', 'multitexFlatten'], okEvents=['destroy-ToontownLoadingScreenTitle', 'destroy-ToontownLoadingScreenTip', 'destroy-ToontownLoadingScreenWaitBar', PiratesGlobals.LogoutHotkey, PiratesGlobals.HideGuiHotkey, PiratesGlobals.OptionsHotkey, 'close_main_window', 'open_main_window', 'texture_state_changed', 'connectionIssue', 'connectionRetrying', self.getConnectedEvent()])
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterTutorialQuestion(self, hoodId, zoneId, avId):
@@ -566,16 +573,6 @@ class PiratesClientRepository(OTPClientRepository):
         self.ignore('gotTimeSync')
         self.__gotTimeSync = 1
         self.moveOnFromUberZone()
-
-    @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
-    def moveOnFromUberZone(self):
-        if not self.__gotTimeSync:
-            self.notify.info('Waiting for time sync.')
-            return
-
-        hoodId = self.handlerArgs['hoodId']
-        zoneId = self.handlerArgs['zoneId']
-        avId = self.handlerArgs['avId']
 
     def enterGameOff(self):
         pass

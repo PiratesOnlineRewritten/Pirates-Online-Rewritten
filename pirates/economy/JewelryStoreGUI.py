@@ -71,7 +71,7 @@ class JewelryStoreCartList(DirectScrolledFrame):
         self.listItemHeight = itemHeight
         self.listItemWidth = itemWidth
         self.height = height
-        self.parent = parent
+        self._parent = parent
         charGui = loader.loadModel('models/gui/char_gui')
         DirectScrolledFrame.__init__(self, relief=None, state=DGG.NORMAL, manageScrollBars=0, autoHideScrollBars=1, frameSize=(0, self.width, 0, self.height), canvasSize=(0, self.width - 0.05, 0.025, self.height - 0.025), verticalScroll_relief=None, verticalScroll_image=charGui.find('**/chargui_slider_small'), verticalScroll_frameSize=(0, PiratesGuiGlobals.ScrollbarSize, 0, self.height), verticalScroll_image_scale=(self.height + 0.05, 1, 0.75), verticalScroll_image_hpr=(0,
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            0,
@@ -117,14 +117,14 @@ class JewelryStoreCartList(DirectScrolledFrame):
         uid = data[1]
         itemCost = ItemGlobals.getGoldCost(uid)
         itemText = PLocalizer.getItemName(uid)
-        if self.parent.mode == 1:
+        if self._parent.mode == 1:
             itemCost = int(itemCost * ItemGlobals.GOLD_SALE_MULTIPLIER)
         maxLength = 25 - len(str(itemCost))
         isDisabled = 0
         panel = DirectButton(parent=self, relief=None, text=itemText[:maxLength], text_fg=self.itemColor, text_align=TextNode.ALeft, text_scale=PiratesGuiGlobals.TextScaleMed, text_shadow=PiratesGuiGlobals.TextShadow, text_pos=(0.06,
                                                                                                                                                                                                                                     0.0), command=self.removePanel, extraArgs=[data])
         panel.costLabel = DirectLabel(parent=panel, relief=None, text=str(itemCost), text_fg=self.itemColor, text_align=TextNode.ARight, text_scale=PiratesGuiGlobals.TextScaleMed, text_shadow=PiratesGuiGlobals.TextShadow, text_pos=(0.45,
-                                                                                                                                                                                                                                        0.0), image=self.parent.CoinImage, image_scale=0.15, image_pos=(0.48,
+                                                                                                                                                                                                                                        0.0), image=self._parent.CoinImage, image_scale=0.15, image_pos=(0.48,
                                                                                                                                                                                                                                                                                                         0.0,
                                                                                                                                                                                                                                                                                                         0.014))
         panel.bind(DGG.ENTER, self.highlightStart, extraArgs=[panel])
@@ -149,13 +149,13 @@ class JewelryStoreCartList(DirectScrolledFrame):
     def removePanel(self, data, repack=1):
         for panel in self.panels:
             if panel.data == data:
-                self.parent.updateButton(data, 1)
+                self._parent.updateButton(data, 1)
                 self.panels.remove(panel)
                 self.purchases.remove(data)
                 panel.destroy()
                 if repack:
                     self.repackPanels()
-                self.parent.updateBalance()
+                self._parent.updateBalance()
                 return
 
     def hasPanel(self, data):
@@ -595,10 +595,10 @@ class JewelryStoreGUI(DirectFrame):
             return
         inventory = base.localAvatar.getInventory()
         if inventory:
-            if inventory.getGoldInPocket() < self.balance:
+            if base.localAvatar.getMoney() < self.balance:
                 base.localAvatar.guiMgr.createWarning(PLocalizer.NotEnoughMoneyWarning, PiratesGuiGlobals.TextFG6)
                 return
-            if self.balance < 0 and inventory.getGoldInPocket() + self.balance > GOLD_CAP:
+            if self.balance < 0 and base.localAvatar.getMoney() + self.balance > GOLD_CAP:
                 base.localAvatar.guiMgr.createWarning(PLocalizer.CannotHoldGoldWarning, PiratesGuiGlobals.TextFG6)
                 return
         purchaseArgList = []
@@ -667,7 +667,7 @@ class JewelryStoreGUI(DirectFrame):
                 self.commitButton['state'] = DGG.NORMAL
             inventory = base.localAvatar.getInventory()
             if inventory:
-                if inventory.getGoldInPocket() < self.balance or self.purchaseInventory.panels == []:
+                if base.localAvatar.getMoney() < self.balance or self.purchaseInventory.panels == []:
                     self.commitButton['frameColor'] = PiratesGuiGlobals.ButtonColor3
                 else:
                     self.commitButton['frameColor'] = PiratesGuiGlobals.ButtonColor4

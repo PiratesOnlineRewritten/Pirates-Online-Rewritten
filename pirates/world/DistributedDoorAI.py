@@ -2,6 +2,7 @@ from direct.distributed.DistributedObjectAI import DistributedObjectAI
 from direct.directnotify import DirectNotifyGlobal
 from pirates.distributed.DistributedInteractiveAI import DistributedInteractiveAI
 from pirates.piratesbase import PiratesGlobals
+from direct.distributed.ClockDelta import globalClockDelta
 
 class DistributedDoorAI(DistributedInteractiveAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedDoorAI')
@@ -16,9 +17,13 @@ class DistributedDoorAI(DistributedInteractiveAI):
         self.questNeeded = ''
 
     def handleRequestInteraction(self, avatar, interactType, instant):
+        self.d_setMovie(PiratesGlobals.DOOR_OPEN, avatar.doId, globalClockDelta.getRealNetworkTime(bits=16))
+
         return self.ACCEPT
 
     def handleRequestExit(self, avatar):
+        self.d_setMovie(PiratesGlobals.DOOR_CLOSED, avatar.doId, globalClockDelta.getRealNetworkTime(bits=16))
+
         return self.ACCEPT
 
     def setDoorIndex(self, doorIndex):
@@ -47,8 +52,8 @@ class DistributedDoorAI(DistributedInteractiveAI):
     def getBuildingUid(self):
         return self.buildingUid
 
-    def setMovie(self, todo0, todo1, todo2):
-        self.sendUpdate('setMovie', [todo0, todo1, todo2])
+    def d_setMovie(self, mode, avId, timestamp):
+        self.sendUpdate('setMovie', [mode, avId, timestamp])
 
     def setLocked(self, locked):
         self.locked = locked

@@ -16,7 +16,7 @@ class Mouth(DirectObject.DirectObject):
 
     def __init__(self, main=None):
         self.main = main.main
-        self.parent = main.parent
+        self._parent = main._parent
         self.avatar = main.avatar
         self.mode = None
         self.load()
@@ -62,7 +62,7 @@ class Mouth(DirectObject.DirectObject):
     def unload(self):
         self.notify.debug('called Mouth unload')
         del self.main
-        del self.parent
+        del self._parent
         del self.avatar
 
     def loadExtraArgs(self):
@@ -91,26 +91,26 @@ class Mouth(DirectObject.DirectObject):
         self.saveDNA()
 
     def setupButtons(self):
-        self.jawFrame = DirectFrame(parent=self.parent, relief=None, text=PLocalizer.MouthJawFrameTitle, text_fg=(1,
+        self.jawFrame = DirectFrame(parent=self._parent, relief=None, text=PLocalizer.MouthJawFrameTitle, text_fg=(1,
                                                                                                                   1,
                                                                                                                   1,
                                                                                                                   1), text_scale=0.18, text_pos=(0, -0.05), pos=(0,
                                                                                                                                                                  0,
                                                                                                                                                                  0.4), scale=0.7)
         self.jawFrame.hide()
-        self.lipFrame = DirectFrame(parent=self.parent, relief=None, text=PLocalizer.MouthFrameTitle, text_fg=(1,
+        self.lipFrame = DirectFrame(parent=self._parent, relief=None, text=PLocalizer.MouthFrameTitle, text_fg=(1,
                                                                                                                1,
                                                                                                                1,
                                                                                                                1), text_scale=0.18, text_pos=(0, -0.05), pos=(0, 0, -0.55), scale=0.7)
         self.lipFrame.hide()
-        self.cheekFrame = DirectFrame(parent=self.parent, relief=None, text=PLocalizer.MouthCheekFrameTitle, text_fg=(1,
+        self.cheekFrame = DirectFrame(parent=self._parent, relief=None, text=PLocalizer.MouthCheekFrameTitle, text_fg=(1,
                                                                                                                       1,
                                                                                                                       1,
                                                                                                                       1), text_scale=0.18, text_pos=(0, -0.05), pos=(0,
                                                                                                                                                                      0,
                                                                                                                                                                      -1.4), scale=0.7)
         self.cheekFrame.hide()
-        self.teethPicker = CharGuiPicker(self.main, parent=self.parent, text=PLocalizer.MouthTeethFrame, nextCommand=self.handleNextTeeth, backCommand=self.handleLastTeeth)
+        self.teethPicker = CharGuiPicker(self.main, parent=self._parent, text=PLocalizer.MouthTeethFrame, nextCommand=self.handleNextTeeth, backCommand=self.handleLastTeeth)
         self.teethPicker.setPos(0, 0, -0.3)
         self.teethPicker.hide()
         return

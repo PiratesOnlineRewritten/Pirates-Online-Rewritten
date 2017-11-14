@@ -963,6 +963,8 @@ class AreaBuilderBase(DirectObject.DirectObject):
         base.loadingScreen.tick()
         if objData.get('Type') == 'Tree - Animated':
             obj = self.loadTree(objData)
+            if not obj:
+                return None
             color = objData['Visual'].get('Color')
             if color:
                 rs = RenderState.makeEmpty().addAttrib(ColorScaleAttrib.make(color))
@@ -972,35 +974,34 @@ class AreaBuilderBase(DirectObject.DirectObject):
                         node.setGeomState(i, node.getGeomState(i).compose(rs))
 
             return obj
+        elif objData['Type'] == 'Switch Prop':
+            model, subDefs = self.buildSwitchModel(objData)
+            if not objData.get('UseMayaLOD', False):
+                for subDef in subDefs:
+                    self.setupSwitchDistances(subDef.lod.node(), subDef.root)
+
         else:
-            if objData['Type'] == 'Switch Prop':
-                model, subDefs = self.buildSwitchModel(objData)
-                if not objData.get('UseMayaLOD', False):
-                    for subDef in subDefs:
-                        self.setupSwitchDistances(subDef.lod.node(), subDef.root)
+            modelName = objData['Visual']['Model']
+            model = self.modelCache.get(modelName)
+            if not model:
+                model = self.buildModel(modelName)
+            model = model.copy()
+            if not objData.get('UseMayaLOD', False):
+                self.setupSwitchDistances(model.lod.node(), model.root)
+        holiday = objData.get('Holiday')
+        if holiday:
+            self._applyTagToModel(objData, model, 'Holiday', holiday)
+            if objData['Type'] == 'Invasion Barricade' or objData['Type'] == 'Invasion Barrier':
+                self._applyTagToModel(objData, model, 'Zone', objData.get('Zone'))
+        color = objData['Visual'].get('Color')
+        if color:
+            rs = RenderState.makeEmpty().addAttrib(ColorScaleAttrib.make(color))
+            for np in model.root.findAllMatches('**/+GeomNode'):
+                node = np.node()
+                for i in range(node.getNumGeoms()):
+                    node.setGeomState(i, node.getGeomState(i).compose(rs))
 
-            else:
-                modelName = objData['Visual']['Model']
-                model = self.modelCache.get(modelName)
-                if not model:
-                    model = self.buildModel(modelName)
-                model = model.copy()
-                if not objData.get('UseMayaLOD', False):
-                    self.setupSwitchDistances(model.lod.node(), model.root)
-            holiday = objData.get('Holiday')
-            if holiday:
-                self._applyTagToModel(objData, model, 'Holiday', holiday)
-                if objData['Type'] == 'Invasion Barricade' or objData['Type'] == 'Invasion Barrier':
-                    self._applyTagToModel(objData, model, 'Zone', objData.get('Zone'))
-            color = objData['Visual'].get('Color')
-            if color:
-                rs = RenderState.makeEmpty().addAttrib(ColorScaleAttrib.make(color))
-                for np in model.root.findAllMatches('**/+GeomNode'):
-                    node = np.node()
-                    for i in range(node.getNumGeoms()):
-                        node.setGeomState(i, node.getGeomState(i).compose(rs))
-
-            return model
+        return model
 
     def processSmallObject(self, model):
         model.lod.detachNode()

@@ -1,0 +1,2 @@
+CARD_TABLE = 1
+DICE_TABLE = 2

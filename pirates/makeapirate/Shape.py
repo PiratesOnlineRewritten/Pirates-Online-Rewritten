@@ -16,7 +16,7 @@ class Shape(DirectObject.DirectObject):
 
     def __init__(self, main=None):
         self.main = main.main
-        self.parent = main.parent
+        self._parent = main._parent
         self.avatar = main.avatar
         self.mode = None
         self.once = False
@@ -62,7 +62,7 @@ class Shape(DirectObject.DirectObject):
     def unload(self):
         self.notify.debug('called Shape unload')
         del self.main
-        del self.parent
+        del self._parent
         del self.avatar
 
     def loadExtraArgs(self):
@@ -101,10 +101,10 @@ class Shape(DirectObject.DirectObject):
             self.once = True
 
     def setupButtons(self):
-        self.texturePicker = CharGuiPicker(self.main, parent=self.parent, text=PLocalizer.ShapeTextureFrameTitle, nextCommand=self.handleNextTexture, backCommand=self.handleLastTexture)
+        self.texturePicker = CharGuiPicker(self.main, parent=self._parent, text=PLocalizer.ShapeTextureFrameTitle, nextCommand=self.handleNextTexture, backCommand=self.handleLastTexture)
         self.texturePicker.setPos(0, 0, 0)
         self.texturePicker.hide()
-        self.headFrame = DirectFrame(parent=self.parent, relief=None, pos=(0, 0, -0.3), scale=0.7)
+        self.headFrame = DirectFrame(parent=self._parent, relief=None, pos=(0, 0, -0.3), scale=0.7)
         self.headFrame.hide()
         return
 

@@ -47,7 +47,6 @@ class PotionGame(DirectObject.DirectObject):
         self.gameFSM.request('Intro')
         self.accept('clientLogout', self.destroy)
         self.confirm = None
-        return
 
     def chestOpened(self):
         pass
@@ -89,7 +88,7 @@ class PotionGame(DirectObject.DirectObject):
 
         self.recipePicker = PotionRecipePicker(self)
         base.loadingScreen.tick()
-        (self.recipePicker.setPos(0.0, 0.0, 0.0),)
+        self.recipePicker.setPos(0.0, 0.0, 0.0)
         self.recipePicker.setEnabled(False)
         self.recipePicker.stash()
         self.resultsScreen = PotionResults(self)
@@ -106,13 +105,11 @@ class PotionGame(DirectObject.DirectObject):
         self.unlockList = []
         base.musicMgr.request(SoundGlobals.MUSIC_MINIGAME_POTION, priority=1, volume=0.4)
         base.loadingScreen.endStep('setupScene')
-        return
 
     def resetScene(self):
         self.gameBoard.resetBoard()
         if self.currentRecipe is not None:
             self.currentRecipe.stash()
-        return
 
     def _initGUI(self):
         base.loadingScreen.beginStep('init Gui', 4, 55)
@@ -160,29 +157,13 @@ class PotionGame(DirectObject.DirectObject):
         self.repMeter.update(inv.getAccumulator(InventoryType.PotionsRep))
         localAvatar.guiMgr.registerReputationHandler(self.updateRepMeter)
         base.loadingScreen.tick()
-        self.closeButton = GuiButton.GuiButton(image=(textureCard.find('**/pir_t_gui_pot_escape'), textureCard.find('**/pir_t_gui_pot_escapeOn'), textureCard.find('**/pir_t_gui_pot_escapeOn'), textureCard.find('**/pir_t_gui_pot_escape')), image_scale=(0.1,
-                                                                                                                                                                                                                                                            0.1,
-                                                                                                                                                                                                                                                            0.1), image_pos=(0.075,
-                                                                                                                                                                                                                                                                             0,
-                                                                                                                                                                                                                                                                             0.08), hotkeys=['Escape'], hotkeyLabel=PLocalizer.PotionGui['ExitButton'], pos=(-0.4, 0.0, 0.01), text0_fg=PotionGlobals.TextColor, text1_fg=PiratesGuiGlobals.TextFG0, text2_fg=PiratesGuiGlobals.TextFG15, text3_fg=PotionGlobals.TextColorDisabled, parent=self.buttonsBackground, command=self.confirmQuit)
-        self.returnButton = GuiButton.GuiButton(text=(PLocalizer.PotionGui['SwitchRecipe'], PLocalizer.PotionGui['SwitchRecipe'], PLocalizer.PotionGui['SwitchRecipe'], PLocalizer.PotionGui['SwitchRecipe']), pos=(-0.58, 0.0, -0.62), text_scale=PiratesGuiGlobals.TextScaleExtraLarge, text_shadow=None, image=(None,
-                                                                                                                                                                                                                                                                                                                   None,
-                                                                                                                                                                                                                                                                                                                   None,
-                                                                                                                                                                                                                                                                                                                   None), text0_fg=PotionGlobals.TextColor, text1_fg=PiratesGuiGlobals.TextFG0, text2_fg=PiratesGuiGlobals.TextFG15, text3_fg=PotionGlobals.TextColorDisabled, parent=self.background, command=self.confirmReturn)
+        self.closeButton = GuiButton.GuiButton(image=(textureCard.find('**/pir_t_gui_pot_escape'), textureCard.find('**/pir_t_gui_pot_escapeOn'), textureCard.find('**/pir_t_gui_pot_escapeOn'), textureCard.find('**/pir_t_gui_pot_escape')), image_scale=(0.1, 0.1, 0.1), image_pos=(0.075, 0, 0.08), hotkeys=['Escape'], hotkeyLabel=PLocalizer.PotionGui['ExitButton'], pos=(-0.4, 0.0, 0.01), text0_fg=PotionGlobals.TextColor, text1_fg=PiratesGuiGlobals.TextFG0, text2_fg=PiratesGuiGlobals.TextFG15, text3_fg=PotionGlobals.TextColorDisabled, parent=self.buttonsBackground, command=self.confirmQuit)
+        self.returnButton = GuiButton.GuiButton(text=(PLocalizer.PotionGui['SwitchRecipe'], PLocalizer.PotionGui['SwitchRecipe'], PLocalizer.PotionGui['SwitchRecipe'], PLocalizer.PotionGui['SwitchRecipe']), pos=(-0.58, 0.0, -0.62), text_scale=PiratesGuiGlobals.TextScaleExtraLarge, text_shadow=None, image=(None, None, None, None), text0_fg=PotionGlobals.TextColor, text1_fg=PiratesGuiGlobals.TextFG0, text2_fg=PiratesGuiGlobals.TextFG15, text3_fg=PotionGlobals.TextColorDisabled, parent=self.background, command=self.confirmReturn)
         self.returnButton.stash()
-        self.hintsButton = GuiButton.GuiButton(text=(PLocalizer.PotionGui['ShowTutorial'], PLocalizer.PotionGui['ShowTutorial'], PLocalizer.PotionGui['ShowTutorial'], PLocalizer.PotionGui['ShowTutorial']), text_scale=PiratesGuiGlobals.TextScaleSmall, image_scale=(0.25,
-                                                                                                                                                                                                                                                                        0.1,
-                                                                                                                                                                                                                                                                        0.18), image_pos=(0,
-                                                                                                                                                                                                                                                                                          0,
-                                                                                                                                                                                                                                                                                          0), pos=(-0.53, 0.0, 0.075), parent=self.buttonsBackground, command=self.showLastHint)
-        self.InfoButton = GuiButton.GuiButton(text=(PLocalizer.PotionGui['IngredientList'], PLocalizer.PotionGui['IngredientList'], PLocalizer.PotionGui['IngredientList'], PLocalizer.PotionGui['IngredientList']), text_scale=PiratesGuiGlobals.TextScaleSmall, image_scale=(0.3,
-                                                                                                                                                                                                                                                                               0.1,
-                                                                                                                                                                                                                                                                               0.18), image_pos=(0,
-                                                                                                                                                                                                                                                                                                 0,
-                                                                                                                                                                                                                                                                                                 0), pos=(-0.84, 0.0, 0.075), parent=self.buttonsBackground, command=self.showInfo)
+        self.hintsButton = GuiButton.GuiButton(text=(PLocalizer.PotionGui['ShowTutorial'], PLocalizer.PotionGui['ShowTutorial'], PLocalizer.PotionGui['ShowTutorial'], PLocalizer.PotionGui['ShowTutorial']), text_scale=PiratesGuiGlobals.TextScaleSmall, image_scale=(0.25, 0.1, 0.18), image_pos=(0, 0,  0), pos=(-0.53, 0.0, 0.075), parent=self.buttonsBackground, command=self.showLastHint)
+        self.InfoButton = GuiButton.GuiButton(text=(PLocalizer.PotionGui['IngredientList'], PLocalizer.PotionGui['IngredientList'], PLocalizer.PotionGui['IngredientList'], PLocalizer.PotionGui['IngredientList']), text_scale=PiratesGuiGlobals.TextScaleSmall, image_scale=(0.3,0.1, 0.18), image_pos=(0, 0, 0), pos=(-0.84, 0.0, 0.075), parent=self.buttonsBackground, command=self.showInfo)
         textureCard.removeNode()
         base.loadingScreen.endStep('init Gui')
-        return
 
     def updateRepMeter(self, catagory, value):
         if catagory == InventoryType.PotionsRep:
@@ -197,9 +178,11 @@ class PotionGame(DirectObject.DirectObject):
     def confirmQuit(self):
         if self.gameFSM.getCurrentOrNextState() in ['Intro', 'Exit']:
             return
+
         if self.gameFSM.getCurrentOrNextState() not in ['Anim']:
             if self.closeCurrentDialog is not None:
                 self.closeCurrentDialog()
+
             if self.gameFSM.gameStarted:
                 self.confirm = PiratesConfirm.PiratesConfirm(PLocalizer.PotionGui['ExitTitle'], PLocalizer.PotionGui['AbortAndExitText'], self.onCloseConfirmed)
                 self.confirm.bNo['command'] = self.onCloseDeclined
@@ -212,17 +195,19 @@ class PotionGame(DirectObject.DirectObject):
                 self.confirm.bNo['command'] = self.onQuitDeclined
                 self.closeCurrentDialog = self.cleanUpConfirm
                 self.gameFSM.demand('ExitRequest')
+
             self.confirm.setPos(0.35, 0, -0.17)
         else:
             self.askToExit = True
-        return
 
     def confirmReturn(self):
         if self.gameFSM.getCurrentOrNextState() in ['Intro', 'Exit']:
             return
+
         if self.gameFSM.getCurrentOrNextState() not in ['Anim']:
             if self.closeCurrentDialog is not None:
                 self.closeCurrentDialog()
+
             self.closeCurrentDialog = self.cleanUpConfirm
             self.confirm = PiratesConfirm.PiratesConfirm(PLocalizer.PotionGui['SwitchTitle'], PLocalizer.PotionGui['SwitchText'], self.onReturnConfirmed)
             self.confirm.setPos(0.35, 0, -0.17)
@@ -232,11 +217,11 @@ class PotionGame(DirectObject.DirectObject):
             self.gameFSM.demand('SwitchRequest')
         else:
             self.askToReturn = True
-        return
 
     def showLastHint(self):
         if self.gameFSM.getCurrentOrNextState() in ['Intro', 'Exit']:
             return
+
         if self.gameFSM.getCurrentOrNextState() not in ['Anim']:
             self.hintScreen.toggle()
         else:
@@ -245,6 +230,7 @@ class PotionGame(DirectObject.DirectObject):
     def showInfo(self):
         if self.gameFSM.getCurrentOrNextState() in ['Intro', 'Exit']:
             return
+
         if self.gameFSM.getCurrentOrNextState() not in ['Anim']:
             self.gameFSM.demand('Tutorial')
             self.infoScreen.toggle()
@@ -257,7 +243,6 @@ class PotionGame(DirectObject.DirectObject):
         if self.confirm:
             self.confirm.destroy()
             self.confirm = None
-        return
 
     def onQuitDeclined(self):
         self.cleanUpConfirm()
@@ -271,13 +256,11 @@ class PotionGame(DirectObject.DirectObject):
         self.enableButtons()
         self.closeCurrentDialog = None
         self.gameFSM.request('Exit')
-        return
 
     def onReturnConfirmed(self):
         self.enableButtons()
         self.closeCurrentDialog = None
         self.gameFSM.request('Reset')
-        return
 
     def onIntroComplete(self):
         if self.hintScreen.show('RecipeList'):
@@ -286,14 +269,8 @@ class PotionGame(DirectObject.DirectObject):
             self.gameFSM.request('RecipeSelect')
 
     def _initIntervals(self):
-        self.introSequence = Sequence(Wait(0.1), Func(self.recipePicker.unstash), LerpColorScaleInterval(self.fadeIn, colorScale=(1,
-                                                                                                                                  1,
-                                                                                                                                  1,
-                                                                                                                                  0), duration=2.0), Func(self.onIntroComplete), name='PotionsGame.introSequence')
-        self.outroSequence = Sequence(Wait(0.1), LerpColorScaleInterval(self.fadeIn, colorScale=(1,
-                                                                                                 1,
-                                                                                                 1,
-                                                                                                 1), duration=1.5), Func(base.transitions.fadeOut, 0), Func(self.destroy), name='PotionsGame.outroSequence')
+        self.introSequence = Sequence(Wait(0.1), Func(self.recipePicker.unstash), LerpColorScaleInterval(self.fadeIn, colorScale=(1, 1, 1,  0), duration=2.0), Func(self.onIntroComplete), name='PotionsGame.introSequence')
+        self.outroSequence = Sequence(Wait(0.1), LerpColorScaleInterval(self.fadeIn, colorScale=(1,1, 1, 1), duration=1.5), Func(base.transitions.fadeOut, 0), Func(self.destroy), name='PotionsGame.outroSequence')
         self.completeSequence = Sequence(Wait(0.1), Func(self.resultsScreen.show), name='PotionsGame.completeSequence')
         self.failSequence = Sequence(Wait(0.1), Func(self.failScreen.show), name='PotionsGame.failSequence')
         self.restartSequence = Sequence(Func(self.resetScene), Wait(0.1), Func(self.resetRecipes), Func(self.recipePicker.updateList), Func(self.recipePicker.unstash), Func(self.onIntroComplete), name='PotionsGame.restartSequence')
@@ -306,10 +283,12 @@ class PotionGame(DirectObject.DirectObject):
     def selectRecipe(self, recipe):
         if self.gameFSM.state != 'RecipeSelect':
             return
+
         itemId = PotionGlobals.potionBuffIdToInventoryTypeId(recipe.potionID)
         inv = localAvatar.getInventory()
         if not inv:
             return
+
         quantity = inv.getItemQuantity(InventoryType.ItemTypeConsumable, itemId)
         limit = inv.getItemLimit(InventoryType.ItemTypeConsumable, itemId)
         if quantity >= limit:
@@ -334,7 +313,6 @@ class PotionGame(DirectObject.DirectObject):
         self.closeCurrentDialog = None
         if self.gameFSM:
             self.gameFSM.request('StartGame', recipe)
-        return
 
     def testRecipe(self):
         for column in self.gameBoard.boardPieces:
@@ -351,6 +329,7 @@ class PotionGame(DirectObject.DirectObject):
             xpAmt = PotionGlobals.getPotionBuffXP(self.currentRecipe.potionID)
             if len(self.currentRecipe.ingredients) > 1:
                 xpAmt = int(math.ceil(float(xpAmt) / (2.0 * float(len(self.currentRecipe.ingredients) - 1))))
+
             xpLabel = DirectLabel(parent=aspect2d, relief=None, text='+ ' + str(xpAmt) + ' ' + PLocalizer.PotionGui['XPLabel'], text_scale=PiratesGuiGlobals.TextScaleTitleMed, text_font=PiratesGlobals.getPirateOutlineFont(), text_align=TextNode.ALeft, text_fg=PiratesGuiGlobals.TextFG1, text_shadow=PiratesGuiGlobals.TextShadow, text_wordwrap=37, pos=(ingredient.getX(aspect2d) + 0.1, 0, ingredient.getZ(aspect2d) - 0.05), textMayChange=0)
             xpLabel.setTransparency(True)
             xpLabel.stash()
@@ -360,7 +339,6 @@ class PotionGame(DirectObject.DirectObject):
                                                                                                                                                                                                                                                                 0), blendType='easeIn')), Func(xpLabel.removeNode))
         else:
             return Wait(0.1)
-        return
 
     def checkRecipe(self):
         self.ingredientsCompleted = 0
@@ -386,8 +364,6 @@ class PotionGame(DirectObject.DirectObject):
                                 self.animationList.append(Sequence(piece.moveToBoardVerySlow(ingredient.column, ingredient.row), Func(ingredient.updateDisplay), Func(piece.removeNode), Func(self.gameBoard.kill, piece)))
                                 self.postAnimationList.append(self.showIngredientXP(ingredient))
 
-        return
-
     def destroy(self):
         self.ignoreAll()
         self.gameFSM.ignoreAll()
@@ -396,15 +372,19 @@ class PotionGame(DirectObject.DirectObject):
         if self.introSequence:
             self.introSequence.pause()
             self.introSequence = None
+
         if self.outroSequence:
             self.outroSequence.pause()
             self.outroSequence = None
+
         if self.completeSequence:
             self.completeSequence.pause()
             self.completeSequence = None
+
         if self.restartSequence:
             self.restartSequence.pause()
             self.restartSequence = None
+
         self.cleanUpConfirm()
         self.closeButton.destroy()
         del self.closeButton
@@ -435,7 +415,7 @@ class PotionGame(DirectObject.DirectObject):
         self.gameBoard.destroy()
         del self.gameBoard
         base.musicMgr.stop(SoundGlobals.MUSIC_MINIGAME_POTION)
-        self.dist.done()
+        self.dist.done(True)
         self.gameFSM.destroy()
         del self.gameFSM
         self.gameFSM = None
@@ -444,7 +424,7 @@ class PotionGame(DirectObject.DirectObject):
             recipe.destroy()
 
         del self.recipes
-        return
+        self.dist.exit()
 
     def updateResultsScreen(self):
         if self.resultsScreen:

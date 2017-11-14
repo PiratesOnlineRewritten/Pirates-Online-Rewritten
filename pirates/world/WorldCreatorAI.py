@@ -13,14 +13,30 @@ class WorldCreatorAI(WorldCreatorBase, DirectObject):
         self.world = None
 
         WorldCreatorBase.__init__(self, air)
-        self.wantPrintout = config.GetBool('want-world-printout', False)
 
     @classmethod
     def isObjectInCurrentGamePhase(cls, object):
         return True
 
-    def loadObjectsFromFile(self, filename, parentIsObj=False):
-        return WorldCreatorBase.loadObjectsFromFile(self, filename, self.air, parentIsObj)
+    def loadObjectsFromFile(self, filename, parent=None, parentIsObj=False):
+        return WorldCreatorBase.loadObjectsFromFile(self, filename, parent or self.air, parentIsObj)
+
+    def getObjectParentUid(self, objKey):
+        found = None
+        for fileName in self.fileDicts.keys():
+            found = self.getObjectDataFromFileByUid(objKey, fileName, getParentUid=True)
+            if found:
+                break
+        return found
+
+    def getObjectFilenameByUid(self, objKey, getParentUid=True):
+        file = None
+        for fileName in self.fileDicts.keys():
+            found = self.getObjectDataFromFileByUid(objKey, fileName, getParentUid=getParentUid)
+            if found:
+                file = fileName
+                break
+        return file
 
     def getIslandWorldDataByUid(self, uid, world=None):
         if world is None:
@@ -40,24 +56,18 @@ class WorldCreatorAI(WorldCreatorBase, DirectObject):
         newObj = None
         objParent = None
 
-
         if objType == ObjectList.AREA_TYPE_WORLD_REGION:
-            self.world = self.__createWorldInstance(object, parent, parentUid, objKey, dynamic, fileName)
+            objParent = self.__createWorldInstance(object, parent, parentUid, objKey, dynamic)
         else:
             newObj = self.world.builder.createObject(objType, object, parent, parentUid, objKey, dynamic, parentIsObj, fileName, actualParentObj)
 
         return (newObj, objParent)
 
-    def __createWorldInstance(self, objectData, parent, parentUid, objKey, dynamic, fileName):
-        instance = DistributedMainWorldAI(self.air)
-        instance.setUniqueId(objKey)
-        instance.setName(objectData.get('Name', 'region'))
-        instance.generateWithRequired(PiratesGlobals.InstanceUberZone)
+    def __createWorldInstance(self, objectData, parent, parentUid, objKey, dynamic):
+        self.world = DistributedMainWorldAI(self.air)
+        self.world.setUniqueId(objKey)
+        self.world.setName(objectData.get('Name', 'default'))
+        self.world.generateWithRequired(PiratesGlobals.InstanceUberZone)
 
-        self.air.uidMgr.addUid(instance.getUniqueId(), instance.doId)
-
-        if self.wantPrintout:
-            print '-' * 100
-            print 'Generating region: %s from file: %s' % (instance.getName(), fileName)
-
-        return instance
+        self.air.uidMgr.addUid(self.world.getUniqueId(), self.world.doId)
+        return self.world

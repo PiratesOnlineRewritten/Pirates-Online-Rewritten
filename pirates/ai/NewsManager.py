@@ -51,7 +51,7 @@ class NewsManager(DistributedObject.DistributedObject):
         if not self.inNewsWorld():
             return
         message = None
-        icon = icon = ('admin', '')
+        icon = ('admin', '')
         if messageId < 30:
             message = messages.get(messageId)
             if isinstance(message, list):
@@ -85,7 +85,6 @@ class NewsManager(DistributedObject.DistributedObject):
             message = random.choice(message)
         base.localAvatar.guiMgr.messageStack.addModalTextMessage(message, seconds=45, priority=0, color=PiratesGuiGlobals.TextFG14, icon=icon, modelName='general_frame_f')
         base.talkAssistant.receiveGameMessage(message)
-        return
 
     def playMusic(self, musicInfo):
         if musicInfo[-1] and not base.cr.getDo(musicInfo[-1]):

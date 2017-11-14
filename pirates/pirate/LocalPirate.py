@@ -20,6 +20,7 @@ from otp.avatar import PositionExaminer
 from otp.otpbase import OTPGlobals
 from otp.speedchat import SCDecoders
 from otp.otpgui import OTPDialog
+from otp.nametag.NametagGlobals import CFSpeech, CFThought, CFTimeout, CFPageButton, CFNoQuitButton, CFQuitButton
 from pirates.audio import SoundGlobals
 from pirates.piratesgui import PDialog
 from pirates.battle import WeaponGlobals

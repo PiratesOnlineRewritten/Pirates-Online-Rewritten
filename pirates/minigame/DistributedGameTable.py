@@ -1,5 +1,5 @@
 import random
-from pandac.PandaModules import *
+from panda3d.core import NodePath, Vec3
 from direct.showbase import DirectObject
 from direct.interval.IntervalGlobal import *
 from pirates.piratesbase import PiratesGlobals
@@ -11,6 +11,7 @@ from pirates.pirate import HumanDNA
 from pirates.piratesbase import PLocalizer
 from pirates.piratesgui import PDialog
 from otp.otpgui import OTPDialog
+from pirates.minigame import TableGlobals
 from pirates.pirate import AvatarTypes
 
 class DistributedGameTable(DistributedInteractive.DistributedInteractive):
@@ -100,7 +101,7 @@ class DistributedGameTable(DistributedInteractive.DistributedInteractive):
         self.stackArray = []
         self.seatLocatorArray = []
         self.maximum_stacks = 5
-        if type == 1:
+        if type == TableGlobals.CARD_TABLE:
             self.tableModel = loader.loadModel('models/props/table_bar_round_parlor')
             self.tableModel.setH(11)
             self.tableModel.flattenStrong()
@@ -146,8 +147,7 @@ class DistributedGameTable(DistributedInteractive.DistributedInteractive):
 
             text = self.getInteractText()
             self.setInteractOptions(proximityText=text, sphereScale=9, diskRadius=12)
-            self.DealerPos = (
-             Vec3(0, 6.5, 0), Vec3(180, 0, 0))
+            self.DealerPos = (Vec3(0, 6.5, 0), Vec3(180, 0, 0))
             self.HandPos = (Vec3(0, 1, 0), Vec3(0, -1, 0))
             self.NumSeats = 7
             self.SeatInfo = []
@@ -195,6 +195,36 @@ class DistributedGameTable(DistributedInteractive.DistributedInteractive):
                 seat.reparentTo(self)
 
             self.displayStacks(self.getPotSeat(), 0)
+        elif type == TableGlobals.DICE_TABLE:
+            self.tableModel = loader.loadModel('models/props/table_dice')
+            self.tableModel.setH(90)
+            self.tableModel.flattenStrong()
+            self.tableModel.setScale(2.5, 2.5, 1)
+            self.sittingOffset = -2.75
+            self.actors = []
+            text = self.getInteractText()
+            self.setInteractOptions(proximityText = text, sphereScale = 12, diskRadius = 14)
+            seatPositions = [(Vec3(-4, 6.5, 0), Vec3(180, 0, 0)), (Vec3(-11, 0, 0), Vec3(-90, 0, 0)), (Vec3(-4, -6.5, 0), Vec3(0, 0, 0)), (Vec3(0, -6.5, 0), Vec3(0, 0, 0)), (Vec3(4, -6.5, 0), Vec3(0, 0, 0)), (Vec3(11, 0, 0), Vec3(90, 0, 0)), (Vec3(4, 6.5, 0), Vec3(180, 0, 0))]
+            self.SeatInfo = [None] * len(seatPositions)
+            self.NumSeats = len(seatPositions)
+            for i in range(0, len(seatPositions)):
+                pos, rot = seatPositions[i]
+                seatName = 'seatNode-%s-%s' % (self.doId, i)
+                seatNode = NodePath(seatName)
+                seatNode.reparentTo(self)
+                seatNode.setPos(pos)
+                seatNode.setHpr(rot)
+                self.SeatInfo[i] = seatNode
+                stool = loader.loadModel('models/props/stool_bar')
+                lod = stool.find('**/+LODNode')
+                if lod:
+                    node = lod.node()
+                    if node:
+                        self.seatLodNodeArray.append(node)
+                stool.setY(-0.9)
+                stool.setZ(0.050000)
+                stool.flattenStrong()
+                stool.reparentTo(seatNode)            
 
     def randomInteger(self, length):
         return int(random.random() * length)
@@ -246,17 +276,34 @@ class DistributedGameTable(DistributedInteractive.DistributedInteractive):
         self.dealer = self._getActor(self._getAvTeamFromVariation())
         name = 'Dealer'
         if self._getAvTeamFromVariation() == PiratesGlobals.VILLAGER_TEAM:
-            dna = HumanDNA.HumanDNA()
-            dna.makeNPCTownfolk(seed=self.doId)
-            dna.setName(name)
-            dna.clothes.coat = 0
-            dna.clothes.vest = 2
-            dna.clothes.vestTexture = 4
-            dna.clothes.vestColor = 13
-            dna.clothes.shirt = 10
-            self.dealer.setDNAString(dna)
-            self.dealer.generateHuman(dna.gender, self.cr.human)
-            self.setAiPlayerName(self.dealer, name)
+            if self.tableType == TableGlobals.CARD_TABLE:
+                dna = HumanDNA.HumanDNA()
+                dna.makeNPCDealer(seed=self.doId)
+                dna.setName(name)
+                dna.clothes.coat = 0
+                dna.clothes.vest = 2
+                dna.clothes.vestTexture = 4
+                dna.clothes.vestColor = 13
+                dna.clothes.shirt = 10
+                self.dealer.setDNAString(dna)
+                self.dealer.generateHuman(dna.gender, self.cr.human)
+                self.setAiPlayerName(self.dealer, name)
+            elif self.tableType == TableGlobals.DICE_TABLE:
+                dna = HumanDNA.HumanDNA()
+                dna.makeNPCTownfolk(seed = self.doId, gender = 'f')
+                dna.setName(name)
+                dna.setBodyHeight(0.57)
+                dna.setClothesShirt(1, 13)
+                dna.setClothesVest(3, 0)
+                dna.setClothesCoat(0, 0)
+                dna.setHat(0)
+                dna.setClothesPant(2, 0)
+                dna.setClothesBelt(0, 0)
+                dna.setClothesSock(0)
+                dna.setClothesShoe(3)
+                self.dealer.setDNAString(dna)
+                self.dealer.generateHuman(dna.gender, self.cr.human)
+                self.setAiPlayerName(self.dealer, name)      
         else:
             self.setAiPlayerName(self.dealer, name)
         self.dealer.reparentTo(self.SeatInfo[-1])
@@ -272,8 +319,7 @@ class DistributedGameTable(DistributedInteractive.DistributedInteractive):
         topCard.reparentTo(self.dealer.leftHandNode)
 
     def createAIPlayers(self, AIList):
-        self.AIPlayers = [
-         0] * self.NumSeats
+        self.AIPlayers = [0] * self.NumSeats
         for i in range(len(AIList)):
             if AIList[i] == 0:
                 pass

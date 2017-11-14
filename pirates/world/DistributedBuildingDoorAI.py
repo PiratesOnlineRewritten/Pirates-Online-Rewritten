@@ -11,7 +11,6 @@ class DistributedBuildingDoorAI(DistributedDoorAI):
         self.interiorUid = ''
         self.interiorWorldParentId = 0
         self.interiorWorldZoneId = 0
-        self.setBuildingDoorId = 0
 
     def setInteriorId(self, interiorDoId, interiorUid, interiorWorldParentId, interiorWorldZoneId):
         self.interiorDoId = interiorDoId
@@ -30,7 +29,10 @@ class DistributedBuildingDoorAI(DistributedDoorAI):
         return [self.interiorDoId, self.interiorUid, self.interiorWorldParentId, self.interiorWorldZoneId]
 
     def requestPrivateInteriorInstance(self):
-        pass
+        avatar = self.air.doId2do.get(self.air.getAvatarIdFromSender())
 
-    def d_setPrivateInteriorInstance(self, worldId, worldZoneId, interiorId, autoFadeIn=True):
-        self.sendUpdate('setPrivateInteriorInstance', [worldId, worldZoneId, interiorId, autoFadeIn])
+        if not avatar:
+            return
+
+        self.sendUpdateToAvatarId(avatar.doId, 'setPrivateInteriorInstance', [self.interiorWorldParentId, self.interiorWorldZoneId,
+            self.interiorDoId, True])

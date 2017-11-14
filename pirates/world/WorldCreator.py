@@ -403,75 +403,70 @@ class WorldCreator(WorldCreatorBase.WorldCreatorBase, DirectObject.DirectObject)
         if ObjectList.AVAIL_OBJ_LIST[objectCat][objType].has_key('Entity'):
             properties = ObjectList.AVAIL_OBJ_LIST[objectCat][objType]['Properties']
             newObj = gameArea.builder.addEntityNode(objectCat, objType, properties, levelObj)
-        else:
-            if objType == 'Cutscene Origin Node':
-                name = levelObj.data.get('CutsceneId')
-                node = gameArea.builder.areaGeometry.attachNewNode(ModelNode(name))
-                node.node().setPreserveTransform(ModelNode.PTLocal)
-                node.setTransform(levelObj.transform)
-                node.setTag('Object_Cutscene', '1')
-                newObj = node
-            else:
-                if objType == 'Light - Dynamic' or objType == 'Light - Modular':
-                    newObj = gameArea.builder.makeLight(levelObj)
-                else:
-                    if objType == 'Event Sphere':
-                        newObj = self.addEventSphere(levelObj, gameArea)
+        elif objType == 'Cutscene Origin Node':
+            name = levelObj.data.get('CutsceneId')
+            node = gameArea.builder.areaGeometry.attachNewNode(ModelNode(name))
+            node.node().setPreserveTransform(ModelNode.PTLocal)
+            node.setTransform(levelObj.transform)
+            node.setTag('Object_Cutscene', '1')
+            newObj = node
+        elif objType == 'Light - Dynamic' or objType == 'Light - Modular':
+            newObj = gameArea.builder.makeLight(levelObj)
+        elif objType == 'Event Sphere':
+            newObj = self.addEventSphere(levelObj, gameArea)
+        elif objType == 'Location Sphere':
+            newObj = self.addLocationSphere(levelObj, gameArea)
+        elif objType == 'Effect Node':
+            newObj = gameArea.builder.addEffectObject(levelObj)
+        elif objType == 'SFX Node':
+            newObj = gameArea.builder.addChildObj(levelObj)
+            base.theSFX = newObj
+            print "Before it's #*$ up %s" % newObj.getPos(render)
+        elif objType == 'Portal Node':
+            node = gameArea.builder.areaGeometry.attachNewNode(ModelNode(levelObj.data.get('Name', '')))
+            node.node().setPreserveTransform(ModelNode.PTLocal)
+            node.setTransform(levelObj.transform)
+            visZone = levelObj.get('VisZone')
+            if visZone:
+                node.setTag('PortalVis', visZone)
+        elif objectCat == 'PROP_OBJ' or objectCat == 'BUILDING_OBJ' or objType in ('Dinghy', 'Holiday Object') or objType == 'Cave_Pieces':
+            newObj = gameArea.builder.addChildObj(levelObj)
+        elif objType == 'RepairBench' and self.allowRepairGame:
+            newObj = gameArea.builder.addChildObj(levelObj)
+        elif objType == 'PotionTable' and self.allowPotionGame:
+            newObj = gameArea.builder.addChildObj(levelObj)
+        elif objType == 'FishingSpot' and self.allowFishingGame:
+            newObj = gameArea.builder.addChildObj(levelObj)
+        elif objType == 'Cannon Defense Game' and self.allowCannonGame:
+            newObj = gameArea.builder.addChildObj(levelObj)
+        elif objType == 'Switch Prop':
+            newObj = gameArea.builder.addChildObj(levelObj)
+        elif objType == 'Townsperson':
+            rolOffset = levelObj.data.get('rolOffset')
+            if rolOffset:
+                uid = levelObj.uniqueId
+                node = gameArea.builder.areaGeometry.find('npcData')
+                if not node:
+                    node = gameArea.builder.areaGeometry.attachNewNode(ModelNode('npcData'))
+                    currTag = node.getTag('npcData')
+                    if currTag:
+                        data = eval(currTag)
                     else:
-                        if objType == 'Location Sphere':
-                            newObj = self.addLocationSphere(levelObj, gameArea)
-                        elif objType == 'Effect Node':
-                            newObj = gameArea.builder.addEffectObject(levelObj)
-                        elif objType == 'SFX Node':
-                            newObj = gameArea.builder.addChildObj(levelObj)
-                            base.theSFX = newObj
-                            print "Before it's #*$ up %s" % newObj.getPos(render)
-                        elif objType == 'Portal Node':
-                            node = gameArea.builder.areaGeometry.attachNewNode(ModelNode(levelObj.data.get('Name', '')))
-                            node.node().setPreserveTransform(ModelNode.PTLocal)
-                            node.setTransform(levelObj.transform)
-                            visZone = levelObj.get('VisZone')
-                            if visZone:
-                                node.setTag('PortalVis', visZone)
-                        elif objectCat == 'PROP_OBJ' or objectCat == 'BUILDING_OBJ' or objType in ('Dinghy',
-                                                                                                   'Holiday Object') or objType == 'Cave_Pieces':
-                            newObj = gameArea.builder.addChildObj(levelObj)
-                        elif objType == 'RepairBench' and self.allowRepairGame:
-                            newObj = gameArea.builder.addChildObj(levelObj)
-                        elif objType == 'PotionTable' and self.allowPotionGame:
-                            newObj = gameArea.builder.addChildObj(levelObj)
-                        elif objType == 'FishingSpot' and self.allowFishingGame:
-                            newObj = gameArea.builder.addChildObj(levelObj)
-                        elif objType == 'Cannon Defense Game' and self.allowCannonGame:
-                            newObj = gameArea.builder.addChildObj(levelObj)
-                        elif objType == 'Switch Prop':
-                            newObj = gameArea.builder.addChildObj(levelObj)
-                        elif objType == 'Townsperson':
-                            rolOffset = levelObj.data.get('rolOffset')
-                            if rolOffset:
-                                uid = levelObj.uniqueId
-                                node = gameArea.builder.areaGeometry.find('npcData')
-                                if not node:
-                                    node = gameArea.builder.areaGeometry.attachNewNode(ModelNode('npcData'))
-                                currTag = node.getTag('npcData')
-                                if currTag:
-                                    data = eval(currTag)
-                                else:
-                                    data = {}
-                                data.setdefault(uid, {}).update({'rolOffset': rolOffset})
-                                node.setTag('npcData', str(data))
-                                newObj = node
-                        if objType == 'Building Exterior':
-                            gameArea.builder.registerMinimapObject(levelObj)
-                    peopleWithIcons = ('Shipwright', 'Stowaway', 'Gypsy', 'CatalogRep')
-                    if self.allowFishingGame:
-                        peopleWithIcons = peopleWithIcons + ('Fishmaster', )
-                if self.allowCannonGame:
-                    peopleWithIcons = peopleWithIcons + ('Cannonmaster', )
-            if objType == 'Townsperson' and levelObj.data['Category'] in peopleWithIcons:
-                gameArea.builder.registerMinimapObject(levelObj)
-            if objType == 'Invasion Barricade':
-                gameArea.builder.registerMinimapObject(levelObj)
+                        data = {}
+                    data.setdefault(uid, {}).update({'rolOffset': rolOffset})
+                    node.setTag('npcData', str(data))
+                    newObj = node
+        elif objType == 'Building Exterior':
+            gameArea.builder.registerMinimapObject(levelObj)
+        peopleWithIcons = ('Shipwright', 'Stowaway', 'Gypsy', 'CatalogRep')
+        if self.allowFishingGame:
+            peopleWithIcons = peopleWithIcons + ('Fishmaster', )
+        if self.allowCannonGame:
+            peopleWithIcons = peopleWithIcons + ('Cannonmaster', )
+        if objType == 'Townsperson' and levelObj.data['Category'] in peopleWithIcons:
+            gameArea.builder.registerMinimapObject(levelObj)
+        if objType == 'Invasion Barricade':
+            gameArea.builder.registerMinimapObject(levelObj)
         return newObj
 
     @report(types=['args'], dConfigParam='dteleport')

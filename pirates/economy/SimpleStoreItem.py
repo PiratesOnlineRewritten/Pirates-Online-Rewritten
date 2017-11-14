@@ -106,8 +106,8 @@ class SimpleLootItem(SimpleItem):
 
     def configureForPirate(self, pirate):
         gender = pirate.style.getGender()
-        getModelId = choice(gender == 'm', ItemGlobals.getMaleModelId, ItemGlobals.getFemaleModelId)
-        getTextureId = choice(gender == 'm', ItemGlobals.getMaleTextureId, ItemGlobals.getFemaleTextureId)
+        getModelId = ItemGlobals.getMaleModelId if gender == 'm' else ItemGlobals.getFemaleModelId
+        getTextureId = ItemGlobals.getMaleTextureId if gender == 'm' else ItemGlobals.getFemaleTextureId
         self.modelId = getModelId(self.uid)
         self.texId = getTextureId(self.uid)
 

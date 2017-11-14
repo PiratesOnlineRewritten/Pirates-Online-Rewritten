@@ -313,7 +313,7 @@ class LoginAccountFSM(OperationFSM):
 
     def __handleLookup(self, result):
         if not result.get('success'):
-            self.csm.air.writeServerEvent('tokenRejected', self.target, self.token)
+            self.csm.air.writeServerEvent('tokenRejected', target=self.target, token=self.token)
             self.demand('Kill', result.get('reason', 'The account server rejected your token.'))
             return
 
@@ -364,7 +364,7 @@ class LoginAccountFSM(OperationFSM):
             return
 
         self.accountId = accountId
-        self.csm.air.writeServerEvent('accountCreated', accountId)
+        self.csm.air.writeServerEvent('accountCreated', accountId=accountId)
         self.demand('StoreAccountID')
 
     def enterStoreAccountID(self):
@@ -438,7 +438,7 @@ class LoginAccountFSM(OperationFSM):
              'ACCOUNT_ID': str(self.userId)})
 
         # We're done.
-        self.csm.air.writeServerEvent('accountLogin', self.target, self.accountId, self.userId)
+        self.csm.air.writeServerEvent('accountLogin', target=self.target, accountId=self.accountId, userId=self.userId)
         self.csm.sendUpdateToChannel(self.target, 'acceptLogin', [])
         self.demand('Off')
 
@@ -525,7 +525,7 @@ class CreateAvatarFSM(OperationFSM):
             return
 
         # Otherwise, we're done!
-        self.csm.air.writeServerEvent('avatarCreated', self.avId, self.target, self.dna.encode('hex'), self.index)
+        self.csm.air.writeServerEvent('avatarCreated', avId=self.avId, target=self.target, dna=self.dna.encode('hex'), avatarSlot=self.index)
         self.csm.sendUpdateToAccountId(self.target, 'createAvatarResp', [self.avId])
         self.demand('Off')
 
@@ -673,7 +673,7 @@ class DeleteAvatarFSM(GetAvatarsFSM):
             self.demand('Kill', 'Database failed to mark the avatar as deleted!')
             return
 
-        self.csm.air.writeServerEvent('avatarDeleted', self.avId, self.target)
+        self.csm.air.writeServerEvent('avatarDeleted', avId=self.avId, target=self.target)
         self.demand('QueryAvatars')
 
 class SetNameTypedFSM(AvatarOperationFSM):
@@ -727,7 +727,7 @@ class SetNameTypedFSM(AvatarOperationFSM):
                      'WishName': (self.name,)})
 
         if self.avId:
-            self.csm.air.writeServerEvent('avatarWishname', self.avId, self.name)
+            self.csm.air.writeServerEvent('avatarWishname', avId=self.avId, name=self.name)
 
         self.csm.sendUpdateToAccountId(self.target, 'setNameTypedResp', [self.avId, status])
         self.demand('Off')
@@ -785,7 +785,7 @@ class SetNamePatternFSM(AvatarOperationFSM):
              'WishName': ('',),
              'setName': (name,)})
 
-        self.csm.air.writeServerEvent('avatarNamed', self.avId, name)
+        self.csm.air.writeServerEvent('avatarNamed', avId=self.avId, name=name)
         self.csm.sendUpdateToAccountId(self.target, 'setNamePatternResp', [self.avId, 1])
         self.demand('Off')
 
@@ -878,10 +878,10 @@ class LoadAvatarFSM(AvatarOperationFSM):
             self.avId,
             self.csm.air.ourChannel,
             STATESERVER_OBJECT_SET_OWNER)
-        datagram.addChannel(self.target<<32 | self.avId)
+        datagram.addChannel(self.target << 32 | self.avId)
         self.csm.air.send(datagram)
 
-        self.csm.air.writeServerEvent('avatarChosen', self.avId, self.target)
+        self.csm.air.writeServerEvent('avatarChosen', avId=self.avId, target=self.target)
         self.demand('Off')
         return task.done
 
@@ -895,6 +895,7 @@ class LoadAvatarFSM(AvatarOperationFSM):
             self.avId,
             channel,
             STATESERVER_OBJECT_DELETE_RAM)
+
         datagramCleanup.addUint32(self.avId)
         datagram = PyDatagram()
         datagram.addServerHeader(
@@ -904,9 +905,16 @@ class LoadAvatarFSM(AvatarOperationFSM):
         datagram.addString(datagramCleanup.getMessage())
         self.csm.air.send(datagram)
 
+        # setup the avatar's inventory.
+        self.csm.air.inventoryManager.initiateInventory(self.avId, self.inventorySetup)
+
+    def inventorySetup(self, inventoryId):
+        channel = self.csm.GetAccountConnectionChannel(self.target)
+
         # Activate the avatar on the DBSS:
         self.csm.air.sendActivate(
-            self.avId, 0, 0, self.csm.air.dclassesByName['DistributedPlayerPirateUD'], {})
+            self.avId, 0, 0, self.csm.air.dclassesByName['DistributedPlayerPirateUD'], {
+                'setInventoryId': (inventoryId,)})
 
         # Next, add them to the avatar channel:
         datagram = PyDatagram()
@@ -923,11 +931,17 @@ class LoadAvatarFSM(AvatarOperationFSM):
             channel,
             self.csm.air.ourChannel,
             CLIENTAGENT_SET_CLIENT_ID)
-        datagram.addChannel(self.target<<32 | self.avId)
+        datagram.addChannel(self.target << 32 | self.avId)
         self.csm.air.send(datagram)
 
-        # setup the avatar's inventory.
-        self.csm.air.inventoryManager.initiateInventory(self.avId)
+        # Claim ownership of the avatar's inventory
+        datagram = PyDatagram()
+        datagram.addServerHeader(
+            self.avId,
+            self.csm.air.ourChannel,
+            STATESERVER_OBJECT_SET_OWNER)
+        datagram.addChannel(inventoryId)
+        self.csm.air.send(datagram)
 
         # Eliminate race conditions.
         taskMgr.doMethodLater(0.2, self.enterSetAvatarTask,
@@ -982,9 +996,8 @@ class UnloadAvatarFSM(OperationFSM):
         self.csm.air.send(datagram)
 
         # Done!
-        self.csm.air.writeServerEvent('avatarUnload', self.avId)
+        self.csm.air.writeServerEvent('avatarUnload', avId=self.avId)
         self.demand('Off')
-
 
 # --- CLIENT SERVICES MANAGER UBERDOG ---
 class ClientServicesManagerUD(DistributedObjectGlobalUD):
@@ -1010,13 +1023,13 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
         else:
             self.notify.error('Invalid accountdb-type: ' + accountDBType)
 
-    def killConnection(self, connId, reason):
+    def killConnection(self, connId, reason, code=122):
         datagram = PyDatagram()
         datagram.addServerHeader(
             connId,
             self.air.ourChannel,
             CLIENTAGENT_EJECT)
-        datagram.addUint16(122)
+        datagram.addUint16(code)
         datagram.addString(reason)
         self.air.send(datagram)
 
@@ -1027,10 +1040,10 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
             self.notify.warning('Tried to kill connection %d for duplicate FSM, but none exists!' % connId)
             return
 
-        self.killConnection(connId, 'An operation is already underway: ' + fsm.name)
+        self.killConnection(connId, 'An operation is already underway: ' + fsm.__name__)
 
-    def killAccount(self, accountId, reason):
-        self.killConnection(self.GetAccountConnectionChannel(accountId), reason)
+    def killAccount(self, accountId, reason, code=122):
+        self.killConnection(self.GetAccountConnectionChannel(accountId), reason, code)
 
     def killAccountFSM(self, accountId):
         fsm = self.account2fsm.get(accountId)
@@ -1039,7 +1052,7 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
             self.notify.warning('Tried to kill account %d for duplicate FSM, but none exists!' % accountId)
             return
 
-        self.killAccount(accountId, 'An operation is already underway: ' + fsm.name)
+        self.killAccount(accountId, 'An operation is already underway: ' + fsm.__name__)
 
     def runAccountFSM(self, fsmtype, *args):
         sender = self.air.getAccountIdFromSender()
@@ -1060,7 +1073,7 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
         sender = self.air.getMsgSender()
 
         if sender >> 32:
-            self.killConnection(sender, 'Client is already logged in.')
+            self.killConnection(sender, 'Client is already logged in.', 100)
             return
 
         if sender in self.connection2fsm:

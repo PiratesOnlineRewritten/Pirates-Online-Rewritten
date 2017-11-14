@@ -821,175 +821,211 @@ class CombatTray(GuiTray):
     def trySkill(self, skillId, ammoSkillId, combo=0, charge=0):
         if localAvatar.hp <= 0:
             return 0
+
         if not skillId:
             return 0
+
         if not Freebooter.getPaidStatus(base.localAvatar.getDoId()):
             if not WeaponGlobals.canFreeUse(skillId):
                 base.localAvatar.guiMgr.showNonPayer('Restricted_Skill_' + WeaponGlobals.getSkillName(skillId), 5)
                 return 0
+
         if base.localAvatar.guiMgr.mainMenu:
             if not base.localAvatar.guiMgr.mainMenu.isHidden():
                 return 0
-            if localAvatar.getGameState() == 'Fishing':
-                self.currentSkill = skillId
-                self.activeName['text'] = PLocalizer.InventoryTypeNames[skillId]
-                messenger.send('fishing-skill-used')
-                rechargingTime = localAvatar.skillDiary.getTimeRemaining(skillId)
-                if rechargingTime <= 0:
-                    if skillId in range(InventoryType.begin_WeaponSkillFishingRod, InventoryType.end_WeaponSkillFishingRod):
-                        if localAvatar.fishingGameHook:
-                            if localAvatar.fishingGameHook.fsm.getCurrentOrNextState() in ['PlayerIdle']:
-                                localAvatar.guiMgr.createWarning(PLocalizer.FishingLureInWaterWarning, PiratesGuiGlobals.TextFG6)
-                                return 0
-                            if localAvatar.fishingGameHook.fsm.getCurrentOrNextState() in ['Offscreen', 'ChargeCast', 'Cast', 'QuickReel', 'Lose', 'Reward', 'PulledIn', 'Recap', 'LegendaryFish']:
+
+        if localAvatar.getGameState() == 'Fishing':
+            self.currentSkill = skillId
+            self.activeName['text'] = PLocalizer.InventoryTypeNames[skillId]
+            messenger.send('fishing-skill-used')
+            rechargingTime = localAvatar.skillDiary.getTimeRemaining(skillId)
+            if rechargingTime <= 0:
+                if skillId in range(InventoryType.begin_WeaponSkillFishingRod, InventoryType.end_WeaponSkillFishingRod):
+                    if localAvatar.fishingGameHook:
+                        if localAvatar.fishingGameHook.fsm.getCurrentOrNextState() in ['PlayerIdle']:
+                            localAvatar.guiMgr.createWarning(PLocalizer.FishingLureInWaterWarning, PiratesGuiGlobals.TextFG6)
+                            return 0
+
+                        if localAvatar.fishingGameHook.fsm.getCurrentOrNextState() in ['Offscreen', 'ChargeCast', 'Cast', 'QuickReel', 'Lose', 'Reward', 'PulledIn', 'Recap', 'LegendaryFish']:
+                            localAvatar.guiMgr.createWarning(PLocalizer.FishingAbilityWarning, PiratesGuiGlobals.TextFG6)
+                            return 0
+
+                        if localAvatar.fishingGameHook.fsm.getCurrentOrNextState() in ['FishOnHook', 'ReelingFish', 'FishFighting']:
+                            if skillId not in [InventoryType.FishingRodPull, InventoryType.FishingRodHeal, InventoryType.FishingRodTug]:
                                 localAvatar.guiMgr.createWarning(PLocalizer.FishingAbilityWarning, PiratesGuiGlobals.TextFG6)
                                 return 0
-                            if localAvatar.fishingGameHook.fsm.getCurrentOrNextState() in ['FishOnHook', 'ReelingFish', 'FishFighting']:
-                                if skillId not in [InventoryType.FishingRodPull, InventoryType.FishingRodHeal, InventoryType.FishingRodTug]:
-                                    localAvatar.guiMgr.createWarning(PLocalizer.FishingAbilityWarning, PiratesGuiGlobals.TextFG6)
-                                    return 0
-                            elif skillId in [InventoryType.FishingRodPull, InventoryType.FishingRodHeal, InventoryType.FishingRodTug]:
-                                localAvatar.guiMgr.createWarning(PLocalizer.FishingFightAbilityWarning, PiratesGuiGlobals.TextFG6)
-                                return 0
-                            localAvatar.fishingGameHook.useAbility(skillId)
-                            if self.skillTray.traySkillMap:
-                                if skillId in self.skillTray.traySkillMap:
-                                    for i in range(len(self.skillTray.traySkillMap)):
-                                        if self.skillTray.traySkillMap[i] == skillId:
-                                            if self.skillTray.tray[i + 1].skillStatus:
-                                                self.skillTray.tray[i + 1].startRecharge()
 
-                            self.__startSkillTimers()
-                            localAvatar.skillDiary.startRecharging(skillId, ammoSkillId)
-                        else:
-                            self.notify.debug('No Fishing game hook on localAvatar!')
+                        elif skillId in [InventoryType.FishingRodPull, InventoryType.FishingRodHeal, InventoryType.FishingRodTug]:
+                            localAvatar.guiMgr.createWarning(PLocalizer.FishingFightAbilityWarning, PiratesGuiGlobals.TextFG6)
                             return 0
+                        localAvatar.fishingGameHook.useAbility(skillId)
+                        if self.skillTray.traySkillMap:
+                            if skillId in self.skillTray.traySkillMap:
+                                for i in range(len(self.skillTray.traySkillMap)):
+                                    if self.skillTray.traySkillMap[i] == skillId:
+                                        if self.skillTray.tray[i + 1].skillStatus:
+                                            self.skillTray.tray[i + 1].startRecharge()
+
+                        self.__startSkillTimers()
+                        localAvatar.skillDiary.startRecharging(skillId, ammoSkillId)
                     else:
-                        localAvatar.guiMgr.createWarning(PLocalizer.NotWhileFishingWarning, PiratesGuiGlobals.TextFG6)
+                        self.notify.debug('No Fishing game hook on localAvatar!')
+                        return 0
                 else:
-                    localAvatar.guiMgr.createWarning(PLocalizer.SkillRechargingWarning, PiratesGuiGlobals.TextFG6)
-                if self.skillFrame:
-                    asset = RadialMenu.getSkillIconName(skillId, 0)
-                    tex = self.card.find('**/%s' % asset)
-                    self.skillFrame['image'] = tex
-                return 1
-            if WeaponGlobals.getSkillTrack(skillId) == WeaponGlobals.DEFENSE_SKILL_INDEX:
-                localAvatar.guiMgr.createWarning(PLocalizer.DefenseSkillWarning, PiratesGuiGlobals.TextFG6)
+                    localAvatar.guiMgr.createWarning(PLocalizer.NotWhileFishingWarning, PiratesGuiGlobals.TextFG6)
+            else:
+                localAvatar.guiMgr.createWarning(PLocalizer.SkillRechargingWarning, PiratesGuiGlobals.TextFG6)
+
+            if self.skillFrame:
+                asset = RadialMenu.getSkillIconName(skillId, 0)
+                tex = self.card.find('**/%s' % asset)
+                self.skillFrame['image'] = tex
+            return 1
+
+        if WeaponGlobals.getSkillTrack(skillId) == WeaponGlobals.DEFENSE_SKILL_INDEX:
+            localAvatar.guiMgr.createWarning(PLocalizer.DefenseSkillWarning, PiratesGuiGlobals.TextFG6)
+            return 0
+
+        if skillId in (InventoryType.UseItem, InventoryType.UsePotion):
+            if self.isPVP():
+                localAvatar.guiMgr.createWarning(PLocalizer.TonicPVPWarning, PiratesGuiGlobals.TextFG6)
                 return 0
-            if skillId in (InventoryType.UseItem, InventoryType.UsePotion):
-                if self.isPVP():
-                    localAvatar.guiMgr.createWarning(PLocalizer.TonicPVPWarning, PiratesGuiGlobals.TextFG6)
+
+        tonicIds = ItemGlobals.getAllHealthIds()
+        ammoItemId = WeaponGlobals.getSkillAmmoInventoryId(ammoSkillId)
+        if ammoItemId in tonicIds or skillId == EnemySkills.MISC_FIRST_AID:
+            if localAvatar.getHp() == localAvatar.getMaxHp() and localAvatar.getMojo() == localAvatar.getMaxMojo():
+                localAvatar.guiMgr.createWarning(PLocalizer.FullHealthWarning, PiratesGuiGlobals.TextFG6)
+                return 0
+
+            if localAvatar.getTutorialState() < PiratesGlobals.TUT_GOT_CUTLASS:
+                return 0
+
+            if self.weaponMode == WeaponGlobals.STAFF:
+                if self.chargeTime >= self.CHARGE_MODE_TIME_THRESHOLD:
+                    localAvatar.guiMgr.createWarning(PLocalizer.TonicChargingWarning, PiratesGuiGlobals.TextFG6)
                     return 0
-            tonicIds = ItemGlobals.getAllHealthIds()
-            ammoItemId = WeaponGlobals.getSkillAmmoInventoryId(ammoSkillId)
-            if ammoItemId in tonicIds or skillId == EnemySkills.MISC_FIRST_AID:
-                if localAvatar.getHp() == localAvatar.getMaxHp():
-                    if localAvatar.getMojo() == localAvatar.getMaxMojo():
-                        localAvatar.guiMgr.createWarning(PLocalizer.FullHealthWarning, PiratesGuiGlobals.TextFG6)
-                        return 0
-                    if localAvatar.getTutorialState() < PiratesGlobals.TUT_GOT_CUTLASS:
-                        return 0
-                    if self.weaponMode == WeaponGlobals.STAFF:
-                        if self.chargeTime >= self.CHARGE_MODE_TIME_THRESHOLD:
-                            localAvatar.guiMgr.createWarning(PLocalizer.TonicChargingWarning, PiratesGuiGlobals.TextFG6)
-                            return 0
-                    if localAvatar.getGameState() == 'Cannon':
-                        localAvatar.guiMgr.createWarning(PLocalizer.TonicCannonWarning, PiratesGuiGlobals.TextFG6)
-                        return 0
-                    if localAvatar.getGameState() == 'ParlorGame':
-                        localAvatar.guiMgr.createWarning(PLocalizer.TonicParlorGameWarning, PiratesGuiGlobals.TextFG6)
-                        return 0
-                if ammoSkillId in InventoryType.PotionMinigamePotions:
-                    buffId = PotionGlobals.potionInventoryTypeIdToBuffId(ammoItemId)
-                    blockedId = PotionGlobals.getIsPotionBlocked(localAvatar, buffId)
-                    if blockedId != 0:
-                        blockedInventoryTypeId = PotionGlobals.potionBuffIdToInventoryTypeId(blockedId)
-                        blockedSkillId = WeaponGlobals.getSkillIdForAmmoSkillId(blockedInventoryTypeId)
-                        potionName = WeaponGlobals.getWeaponName(blockedSkillId)
-                        localAvatar.guiMgr.createWarning(PLocalizer.TonicBuffActiveWarning % potionName, PiratesGuiGlobals.TextFG6)
-                        return 0
-                if ammoItemId in (InventoryType.ScorpionTransform, InventoryType.CrabTransform, InventoryType.AlligatorTransform):
-                    if localAvatar.gameFSM.getCurrentOrNextState() == 'WaterRoam':
-                        localAvatar.guiMgr.createWarning(PLocalizer.NoTransformInWaterWarning, PiratesGuiGlobals.TextFG6)
-                        return 0
-                if ammoItemId in (InventoryType.RemoveGroggy,):
-                    isGroggy = localAvatar.isDeathPenaltyActive()
-                    if not isGroggy:
-                        localAvatar.guiMgr.createWarning(PLocalizer.NotGroggyWarning, PiratesGuiGlobals.TextFG6)
-                        return 0
-                if ammoItemId in (InventoryType.ShipRepairKit,):
-                    if hasattr(localAvatar, 'ship') and localAvatar.ship:
-                        if localAvatar.ship.getHp() == localAvatar.ship.getMaxHp() and localAvatar.ship.getSp() == localAvatar.ship.getMaxSp():
-                            localAvatar.guiMgr.createWarning(PLocalizer.FullShipHealthWarning, PiratesGuiGlobals.TextFG6)
-                            return 0
-                    if WeaponGlobals.getIsShipSkill(skillId) and not WeaponGlobals.getIsShout(skillId) and not skillId == InventoryType.SailBroadsideLeft and not skillId == InventoryType.SailBroadsideRight:
-                        if localAvatar.ship:
-                            localAvatar.ship.sailsReady or localAvatar.guiMgr.createWarning(PLocalizer.SailsNotReadyWarning, PiratesGuiGlobals.TextFG6)
-                            return 0
-                    else:
-                        return 0
-                if WeaponGlobals.getIsShipSkill(skillId):
-                    if localAvatar.ship:
-                        if skillId == InventoryType.SailRammingSpeed and localAvatar.ship.queryGameState() in 'InBoardingPosition':
-                            localAvatar.guiMgr.createWarning(PLocalizer.RamWhileBoardingWarning, PiratesGuiGlobals.TextFG6)
-                            return 0
-                        if localAvatar.ship.isRamming() and skillId != InventoryType.SailBroadsideLeft and skillId != InventoryType.SailBroadsideRight:
-                            return 0
-                if skillId not in self.IGNORES_INPUT_LOCK and not WeaponGlobals.getIsShipSkill(skillId):
-                    if not self.isAcceptingInput:
-                        return 0
-                    if not localAvatar.currentWeapon or not self.weaponId:
-                        return 0
-                    if localAvatar.getGameState() != 'Battle':
-                        return 0
-                    if localAvatar.currentWeaponId in self.reloadList:
-                        self.reloadList.remove(localAvatar.currentWeaponId)
-                        self.reloadWeapon()
-                        return 0
-                    weaponVolley = WeaponGlobals.getWeaponVolley(localAvatar.currentWeaponId)
-                    if weaponVolley > 0 and self.volley >= weaponVolley:
-                        return 0
-                    skillRepCategory = WeaponGlobals.getSkillReputationCategoryId(skillId)
-                    if self.rep != skillRepCategory and skillRepCategory > 0:
-                        return 0
-                    if ammoSkillId:
-                        ammoRepCategory = WeaponGlobals.getSkillReputationCategoryId(ammoSkillId)
-                        if self.rep != ammoRepCategory and ammoRepCategory > 0:
-                            return 0
-                skillEffects = localAvatar.getSkillEffects()
-                if WeaponGlobals.C_STUN in skillEffects and (skillId == EnemySkills.PISTOL_RELOAD or skillId == EnemySkills.GRENADE_RELOAD):
-                    self.skillQueue = (skillId, ammoSkillId, combo)
-                else:
-                    localAvatar.guiMgr.createWarning(PLocalizer.StunWarning, PiratesGuiGlobals.TextFG6)
+
+            if localAvatar.getGameState() == 'Cannon':
+                localAvatar.guiMgr.createWarning(PLocalizer.TonicCannonWarning, PiratesGuiGlobals.TextFG6)
                 return 0
-            elif WeaponGlobals.C_KNOCKDOWN in skillEffects:
-                if skillId == EnemySkills.PISTOL_RELOAD or skillId == EnemySkills.GRENADE_RELOAD:
-                    self.skillQueue = (skillId, ammoSkillId, combo)
-                else:
-                    localAvatar.guiMgr.createWarning(PLocalizer.KnockdownWarning, PiratesGuiGlobals.TextFG6)
+
+            if localAvatar.getGameState() == 'ParlorGame':
+                localAvatar.guiMgr.createWarning(PLocalizer.TonicParlorGameWarning, PiratesGuiGlobals.TextFG6)
                 return 0
-            if not WeaponGlobals.getIsInstantSkill(skillId, ammoSkillId):
-                if self.isUsingSkill and skillId not in self.IGNORES_INPUT_LOCK:
-                    if (self.weaponMode == WeaponGlobals.COMBAT or self.weaponMode == WeaponGlobals.THROWING) and skillId != EnemySkills.DOLL_UNATTUNE:
-                        if not self.skillQueue and not self.weaponQueue:
-                            self.skillQueue = (
-                             skillId, ammoSkillId, combo)
+
+        if ammoSkillId in InventoryType.PotionMinigamePotions:
+            buffId = PotionGlobals.potionInventoryTypeIdToBuffId(ammoItemId)
+            blockedId = PotionGlobals.getIsPotionBlocked(localAvatar, buffId)
+            if blockedId != 0:
+                blockedInventoryTypeId = PotionGlobals.potionBuffIdToInventoryTypeId(blockedId)
+                blockedSkillId = WeaponGlobals.getSkillIdForAmmoSkillId(blockedInventoryTypeId)
+                potionName = WeaponGlobals.getWeaponName(blockedSkillId)
+                localAvatar.guiMgr.createWarning(PLocalizer.TonicBuffActiveWarning % potionName, PiratesGuiGlobals.TextFG6)
+                return 0
+
+        if ammoItemId in (InventoryType.ScorpionTransform, InventoryType.CrabTransform, InventoryType.AlligatorTransform):
+            if localAvatar.gameFSM.getCurrentOrNextState() == 'WaterRoam':
+                localAvatar.guiMgr.createWarning(PLocalizer.NoTransformInWaterWarning, PiratesGuiGlobals.TextFG6)
+                return 0
+
+        if ammoItemId in (InventoryType.RemoveGroggy,):
+            isGroggy = localAvatar.isDeathPenaltyActive()
+            if not isGroggy:
+                localAvatar.guiMgr.createWarning(PLocalizer.NotGroggyWarning, PiratesGuiGlobals.TextFG6)
+                return 0
+
+        if ammoItemId in (InventoryType.ShipRepairKit,):
+            if hasattr(localAvatar, 'ship') and localAvatar.ship:
+                if localAvatar.ship.getHp() == localAvatar.ship.getMaxHp() and localAvatar.ship.getSp() == localAvatar.ship.getMaxSp():
+                    localAvatar.guiMgr.createWarning(PLocalizer.FullShipHealthWarning, PiratesGuiGlobals.TextFG6)
                     return 0
-            if WeaponGlobals.getNeedSight(skillId, ammoSkillId):
-                inView = 0
-                target = 0
-                if self.aimAssistTarget:
-                    inView = localAvatar.checkViewingArc(self.aimAssistTarget)
+
+        if WeaponGlobals.getIsShipSkill(skillId) and not WeaponGlobals.getIsShout(skillId) and not skillId == InventoryType.SailBroadsideLeft and not skillId == InventoryType.SailBroadsideRight:
+            if localAvatar.ship:
+                localAvatar.ship.sailsReady or localAvatar.guiMgr.createWarning(PLocalizer.SailsNotReadyWarning, PiratesGuiGlobals.TextFG6)
+                return 0
+            else:
+                return 0
+
+        if WeaponGlobals.getIsShipSkill(skillId):
+            if localAvatar.ship:
+                if skillId == InventoryType.SailRammingSpeed and localAvatar.ship.queryGameState() in 'InBoardingPosition':
+                    localAvatar.guiMgr.createWarning(PLocalizer.RamWhileBoardingWarning, PiratesGuiGlobals.TextFG6)
+                    return 0
+
+                if localAvatar.ship.isRamming() and skillId != InventoryType.SailBroadsideLeft and skillId != InventoryType.SailBroadsideRight:
+                    return 0
+
+        if skillId not in self.IGNORES_INPUT_LOCK and not WeaponGlobals.getIsShipSkill(skillId):
+            if not self.isAcceptingInput:
+                return 0
+
+            if not localAvatar.currentWeapon or not self.weaponId:
+                return 0
+
+            if localAvatar.getGameState() != 'Battle':
+                return 0
+
+            if localAvatar.currentWeaponId in self.reloadList:
+                self.reloadList.remove(localAvatar.currentWeaponId)
+                self.reloadWeapon()
+                return 0
+
+            weaponVolley = WeaponGlobals.getWeaponVolley(localAvatar.currentWeaponId)
+            if weaponVolley > 0 and self.volley >= weaponVolley:
+                return 0
+
+            skillRepCategory = WeaponGlobals.getSkillReputationCategoryId(skillId)
+            if self.rep != skillRepCategory and skillRepCategory > 0:
+                return 0
+
+            if ammoSkillId:
+                ammoRepCategory = WeaponGlobals.getSkillReputationCategoryId(ammoSkillId)
+                if self.rep != ammoRepCategory and ammoRepCategory > 0:
+                    return 0
+
+        skillEffects = localAvatar.getSkillEffects()
+        if WeaponGlobals.C_STUN in skillEffects:
+            if (skillId == EnemySkills.PISTOL_RELOAD or skillId == EnemySkills.GRENADE_RELOAD):
+                self.skillQueue = (skillId, ammoSkillId, combo)
+            else:
+                localAvatar.guiMgr.createWarning(PLocalizer.StunWarning, PiratesGuiGlobals.TextFG6)
+            return 0
+
+        elif WeaponGlobals.C_KNOCKDOWN in skillEffects:
+            if skillId == EnemySkills.PISTOL_RELOAD or skillId == EnemySkills.GRENADE_RELOAD:
+                self.skillQueue = (skillId, ammoSkillId, combo)
+            else:
+                localAvatar.guiMgr.createWarning(PLocalizer.KnockdownWarning, PiratesGuiGlobals.TextFG6)
+            return 0
+
+        if not WeaponGlobals.getIsInstantSkill(skillId, ammoSkillId):
+            if self.isUsingSkill and skillId not in self.IGNORES_INPUT_LOCK:
+                if (self.weaponMode == WeaponGlobals.COMBAT or self.weaponMode == WeaponGlobals.THROWING) and skillId != EnemySkills.DOLL_UNATTUNE:
+                    if not self.skillQueue and not self.weaponQueue:
+                        self.skillQueue = (skillId, ammoSkillId, combo)
+                    return 0
+
+        if WeaponGlobals.getNeedSight(skillId, ammoSkillId):
+            inView = 0
+            target = 0
+            if self.aimAssistTarget:
+                inView = localAvatar.checkViewingArc(self.aimAssistTarget)
+            else:
                 target, distance = base.cr.targetMgr.takeAim(localAvatar, skillId, ammoSkillId)
                 if target:
-                    inView = target.hasNetPythonTag('MonstrousObject') or localAvatar.checkViewingArc(target)
+                    if target.hasNetPythonTag('MonstrousObject'):
+                        inView = localAvatar.checkViewingArc(target)
+                    else:
+                        inView = True
                 else:
-                    inView = True
-            else:
-                inView = False
+                    inView = False
+
             if not inView and (target or self.aimAssistTarget):
                 localAvatar.guiMgr.createWarning(PLocalizer.OutOfSightWarning, PiratesGuiGlobals.TextFG6)
                 return 0
+
         rechargingTime = localAvatar.skillDiary.getTimeRemaining(skillId)
         if rechargingTime > 0:
             if skillId == InventoryType.UseItem:
@@ -1000,6 +1036,7 @@ class CombatTray(GuiTray):
             elif skillId not in self.BASIC_ATTACKS:
                 localAvatar.guiMgr.createWarning(PLocalizer.SkillRechargingWarning, PiratesGuiGlobals.TextFG6)
             return 0
+
         if ammoSkillId:
             if not WeaponGlobals.isInfiniteAmmo(ammoSkillId) and not WeaponGlobals.canUseInfiniteAmmo(localAvatar.currentWeaponId, ammoSkillId) and not WeaponGlobals.canUseInfiniteAmmo(localAvatar.getCurrentCharm(), ammoSkillId):
                 inv = localAvatar.getInventory()
@@ -1015,6 +1052,7 @@ class CombatTray(GuiTray):
                     else:
                         localAvatar.guiMgr.createWarning(PLocalizer.OutOfItemWarning, PiratesGuiGlobals.TextFG6)
                     return 0
+
         if skillId:
             if not WeaponGlobals.isInfiniteAmmo(skillId) and not WeaponGlobals.canUseInfiniteAmmo(localAvatar.currentWeaponId, skillId) and not WeaponGlobals.canUseInfiniteAmmo(localAvatar.getCurrentCharm(), skillId):
                 ammoInvId = WeaponGlobals.getSkillAmmoInventoryId(skillId)
@@ -1028,27 +1066,33 @@ class CombatTray(GuiTray):
                     else:
                         localAvatar.guiMgr.createWarning(PLocalizer.OutOfItemWarning, PiratesGuiGlobals.TextFG6)
                     return 0
+
         cost = -1 * WeaponGlobals.getMojoCost(skillId)
         if localAvatar.mojo < cost and cost:
             localAvatar.guiMgr.createWarning(PLocalizer.NoManaWarning, PiratesGuiGlobals.TextFG6)
             return 0
+
         if localAvatar.isAirborne():
             if not WeaponGlobals.getUsableInAir(skillId, ammoSkillId):
                 localAvatar.guiMgr.createWarning(PLocalizer.NotUsableInAirWarning, PiratesGuiGlobals.TextFG6)
                 return 0
+
         if self.weaponMode == WeaponGlobals.STAFF and WeaponGlobals.getAttackMaxCharge(skillId):
             if self.chargeTime < self.maxCharge:
                 localAvatar.guiMgr.createWarning(PLocalizer.SpellFailedWarning, PiratesGuiGlobals.TextFG6)
                 return 0
+
         if skillId == InventoryType.SailBroadsideLeft or skillId == InventoryType.SailBroadsideRight:
             if localAvatar.ship and not localAvatar.ship.broadside:
                 localAvatar.guiMgr.createWarning(PLocalizer.NoBroadsidesWarning, PiratesGuiGlobals.TextFG6)
                 return 0
+
         self.currentSkill = skillId
         if ammoSkillId and skillId != EnemySkills.PISTOL_RELOAD and skillId != EnemySkills.GRENADE_RELOAD and WeaponGlobals.getSkillType(skillId) != WeaponGlobals.WEAPON_SKILL:
             visSkillId = ammoSkillId
         else:
             visSkillId = skillId
+
         prevSkillId = 0
         time = 0
         if self.lastAttack:
@@ -1061,189 +1105,211 @@ class CombatTray(GuiTray):
                 self.activeName['text'] = PLocalizer.Mistimed
             else:
                 self.activeName['text'] = PLocalizer.InventoryTypeNames[visSkillId]
+        elif combo == -1:
+            self.activeName['text'] = PLocalizer.InventoryTypeNames[visSkillId] + ' - ' + PLocalizer.Mistimed
+            localAvatar.mistimedAttack = 1
+        elif prevSkillId in self.L1_COMBO_ATTACKS and skillId == prevSkillId and time <= self.BUTTON_MASH_WINDOW:
+            self.activeName['text'] = PLocalizer.InventoryTypeNames[visSkillId] + ' - ' + PLocalizer.Mistimed
+            localAvatar.mistimedAttack = 1
+        elif visSkillId in self.COMBO_ATTACKS and visSkillId not in self.L1_COMBO_ATTACKS:
+            self.activeName['text'] = PLocalizer.InventoryTypeNames[visSkillId] + ' - ' + PLocalizer.Perfect
         else:
-            if combo == -1:
-                self.activeName['text'] = PLocalizer.InventoryTypeNames[visSkillId] + ' - ' + PLocalizer.Mistimed
-                localAvatar.mistimedAttack = 1
+            self.activeName['text'] = PLocalizer.InventoryTypeNames[visSkillId]
+
+        localAvatar.mistimedAttack = 0
+        if self.skillFrame:
+            asset = RadialMenu.getSkillIconName(visSkillId, 0)
+            tex = self.card.find('**/%s' % asset)
+            self.skillFrame['image'] = tex
+
+        allTargets = []
+        if WeaponGlobals.getIsShipSkill(skillId):
+            allTargets.append(localAvatar.ship)
+        elif localAvatar.currentTarget:
+            allTargets.append(localAvatar.currentTarget)
+
+        if WeaponGlobals.isAttackAreaSelfDamaging(skillId, ammoSkillId):
+            allTargets.append(localAvatar)
+
+        effectId = WeaponGlobals.getSkillEffectFlag(skillId)
+        newPriority = WeaponGlobals.getBuffPriority(effectId)
+        newCategory = WeaponGlobals.getBuffCategory(effectId)
+        if newPriority:
+            for target in allTargets:
+                if isinstance(target, int):
+                    continue
+
+                for buffId in target.skillEffects:
+                    priority = WeaponGlobals.getBuffPriority(buffId)
+                    category = WeaponGlobals.getBuffCategory(buffId)
+                    if newPriority < priority and category == newCategory:
+                        localAvatar.guiMgr.createWarning(PLocalizer.BuffPriorityWarning, PiratesGuiGlobals.TextFG6)
+                        return 0
+
+        if not hasattr(base.cr, 'targetMgr') or not base.cr.targetMgr:
+            return 0
+
+        if localAvatar.getPlundering():
+            return 0
+
+        distance = None
+        if localAvatar.hasStickyTargets() and skillId != InventoryType.DollAttune:
+            target = localAvatar.currentTarget
+        elif self.aimAssistTarget:
+            target = self.aimAssistTarget
+        else:
+            target, distance = base.cr.targetMgr.takeAim(localAvatar, skillId, ammoSkillId)
+
+        if target:
+            if distance is None:
+                distance = target.getDistance(localAvatar)
+
+            attackRange = base.cr.battleMgr.getModifiedAttackRange(localAvatar, skillId, ammoSkillId)
+            deadzone = base.cr.battleMgr.getModifiedAttackDeadzone(localAvatar, skillId, ammoSkillId)
+            if skillId not in self.NO_PRINT_RANGE and not WeaponGlobals.isSelfUseSkill(skillId):
+                if distance > attackRange * 1.333:
+                    localAvatar.guiMgr.createWarning(PLocalizer.OutOfRangeWarning, PiratesGuiGlobals.TextFG6)
+                    if ItemGlobals.getSpecialAttack(localAvatar.currentWeaponId) == skillId:
+                        return 0
+
+                if distance < deadzone and WeaponGlobals.getAttackClass(skillId) == WeaponGlobals.AC_MISSILE and not ItemGlobals.getSubtype(localAvatar.currentWeaponId) == ItemGlobals.BAYONET:
+                    localAvatar.guiMgr.createWarning(PLocalizer.TooCloseWarning, PiratesGuiGlobals.TextFG6)
+                    target = None
+                    ammoSkillId = 0
+
+        if target:
+            if distance < deadzone and ItemGlobals.getSubtype(localAvatar.currentWeaponId) == ItemGlobals.BAYONET and WeaponGlobals.getAttackClass(skillId) == WeaponGlobals.AC_MISSILE:
+                self.usedBayonetSkill = True
+                if WeaponGlobals.getAttackClass(skillId) == WeaponGlobals.AC_MISSILE:
+                    if skillId == InventoryType.PistolTakeAim:
+                        localAvatar.considerEnableMovement()
+
+                    skillId = EnemySkills.BAYONET_PLAYER_STAB
+
+                self.currentSkill = skillId
+                self.activeName['text'] = PLocalizer.InventoryTypeNames[skillId]
+                ammoSkillId = 0
+
+            if target != localAvatar.currentTarget:
+                if distance <= attackRange * 1.333:
+                    target.requestInteraction(localAvatar.doId, interactType=PiratesGlobals.INTERACT_TYPE_HOSTILE)
+                else:
+                    localAvatar.setCurrentTarget(0)
+
+            if localAvatar.currentTarget == target:
+                localAvatar.distanceToTarget = distance
+                localAvatar.monstrousTarget = target
+
+            if localAvatar.currentTarget and localAvatar.currentTarget.hasNetPythonTag('MonstrousObject'):
+                localAvatar.monstrousTarget = localAvatar.currentTarget
             else:
-                if prevSkillId in self.L1_COMBO_ATTACKS and skillId == prevSkillId and time <= self.BUTTON_MASH_WINDOW:
-                    self.activeName['text'] = PLocalizer.InventoryTypeNames[visSkillId] + ' - ' + PLocalizer.Mistimed
-                    localAvatar.mistimedAttack = 1
-                else:
-                    if visSkillId in self.COMBO_ATTACKS and visSkillId not in self.L1_COMBO_ATTACKS:
-                        self.activeName['text'] = PLocalizer.InventoryTypeNames[visSkillId] + ' - ' + PLocalizer.Perfect
-                    else:
-                        self.activeName['text'] = PLocalizer.InventoryTypeNames[visSkillId]
-                    localAvatar.mistimedAttack = 0
-                if self.skillFrame:
-                    asset = RadialMenu.getSkillIconName(visSkillId, 0)
-                    tex = self.card.find('**/%s' % asset)
-                    self.skillFrame['image'] = tex
-                allTargets = []
-                if WeaponGlobals.getIsShipSkill(skillId):
-                    allTargets.append(localAvatar.ship)
-                else:
-                    if localAvatar.currentTarget:
-                        allTargets.append(localAvatar.currentTarget)
-                    if WeaponGlobals.isAttackAreaSelfDamaging(skillId, ammoSkillId):
-                        allTargets.append(localAvatar)
-                effectId = WeaponGlobals.getSkillEffectFlag(skillId)
-                newPriority = WeaponGlobals.getBuffPriority(effectId)
-                newCategory = WeaponGlobals.getBuffCategory(effectId)
-                if newPriority:
-                    for target in allTargets:
-                        if isinstance(target, int):
-                            continue
-                        for buffId in target.skillEffects:
-                            priority = WeaponGlobals.getBuffPriority(buffId)
-                            category = WeaponGlobals.getBuffCategory(buffId)
-                            if newPriority < priority and category == newCategory:
-                                localAvatar.guiMgr.createWarning(PLocalizer.BuffPriorityWarning, PiratesGuiGlobals.TextFG6)
-                                return 0
+                localAvatar.monstrousTarget = None
 
-                if not hasattr(base.cr, 'targetMgr') or not base.cr.targetMgr:
-                    return 0
-                if localAvatar.getPlundering():
-                    return 0
-                distance = None
-                if localAvatar.hasStickyTargets() and skillId != InventoryType.DollAttune:
-                    target = localAvatar.currentTarget
+            if skillId == InventoryType.DollAttune:
+                if distance <= attackRange:
+                    pass
                 else:
-                    if self.aimAssistTarget:
-                        target = self.aimAssistTarget
-                    else:
-                        target, distance = base.cr.targetMgr.takeAim(localAvatar, skillId, ammoSkillId)
-                    if target:
-                        if distance is None:
-                            distance = target.getDistance(localAvatar)
-                        attackRange = base.cr.battleMgr.getModifiedAttackRange(localAvatar, skillId, ammoSkillId)
-                        deadzone = base.cr.battleMgr.getModifiedAttackDeadzone(localAvatar, skillId, ammoSkillId)
-                        if skillId not in self.NO_PRINT_RANGE and not WeaponGlobals.isSelfUseSkill(skillId):
-                            if distance > attackRange * 1.333:
-                                localAvatar.guiMgr.createWarning(PLocalizer.OutOfRangeWarning, PiratesGuiGlobals.TextFG6)
-                                if ItemGlobals.getSpecialAttack(localAvatar.currentWeaponId) == skillId:
-                                    return 0
-                            if distance < deadzone and WeaponGlobals.getAttackClass(skillId) == WeaponGlobals.AC_MISSILE and not ItemGlobals.getSubtype(localAvatar.currentWeaponId) == ItemGlobals.BAYONET:
-                                localAvatar.guiMgr.createWarning(PLocalizer.TooCloseWarning, PiratesGuiGlobals.TextFG6)
-                                target = None
-                                ammoSkillId = 0
-                    if target:
-                        if distance < deadzone and ItemGlobals.getSubtype(localAvatar.currentWeaponId) == ItemGlobals.BAYONET and WeaponGlobals.getAttackClass(skillId) == WeaponGlobals.AC_MISSILE:
-                            self.usedBayonetSkill = True
-                            if WeaponGlobals.getAttackClass(skillId) == WeaponGlobals.AC_MISSILE:
-                                if skillId == InventoryType.PistolTakeAim:
-                                    localAvatar.considerEnableMovement()
-                                skillId = EnemySkills.BAYONET_PLAYER_STAB
-                            self.currentSkill = skillId
-                            self.activeName['text'] = PLocalizer.InventoryTypeNames[skillId]
-                            ammoSkillId = 0
-                        if target != localAvatar.currentTarget:
-                            if distance <= attackRange * 1.333:
-                                target.requestInteraction(localAvatar.doId, interactType=PiratesGlobals.INTERACT_TYPE_HOSTILE)
-                            else:
-                                localAvatar.setCurrentTarget(0)
-                        if localAvatar.currentTarget == target:
-                            localAvatar.distanceToTarget = distance
-                            localAvatar.monstrousTarget = target
-                        if localAvatar.currentTarget and localAvatar.currentTarget.hasNetPythonTag('MonstrousObject'):
-                            localAvatar.monstrousTarget = localAvatar.currentTarget
-                        else:
-                            localAvatar.monstrousTarget = None
-                        if skillId == InventoryType.DollAttune:
-                            if distance <= attackRange:
-                                pass
-                            else:
-                                localAvatar.guiMgr.createWarning(PLocalizer.TooFarAttuneWarning, PiratesGuiGlobals.TextFG6)
-                                return 0
-                        if skillId == EnemySkills.DAGGER_BACKSTAB:
-                            angle1 = localAvatar.getH()
-                            angle2 = target.getH()
-                            diff = abs(angle2 - angle1)
-                            if diff > 180:
-                                diff = abs(diff - 360)
-                            if diff >= WeaponGlobals.BACKSTAB_ANGLE:
-                                localAvatar.guiMgr.createWarning(PLocalizer.WrongDirectionWarning, PiratesGuiGlobals.TextFG6)
-                                return 0
-                        if skillId == EnemySkills.CUTLASS_ROLLTHRUST and distance < WeaponGlobals.ROLLTHRUST_DEADZONE:
-                            localAvatar.guiMgr.createWarning(PLocalizer.TooCloseToAttackWarning, PiratesGuiGlobals.TextFG6)
-                            return 0
-                        backstab = 0
-                        if skillId in WeaponGlobals.BackstabSkills:
-                            angle1 = localAvatar.getH()
-                            angle2 = target.getH()
-                            diff = abs(angle2 - angle1)
-                            if diff > 180:
-                                diff = abs(diff - 360)
-                            if diff < WeaponGlobals.BACKSTAB_ANGLE:
-                                self.chargeTime = 1
-                                backstab = 1
-                            else:
-                                self.chargeTime = 0
-                        self.comboLevel += 1
-                        if combo == -1:
-                            if localAvatar.wantComboTiming:
-                                self.ignoreInput()
-                            else:
-                                self.acceptInput()
-                        else:
-                            self.acceptInput()
-                    elif localAvatar.currentTarget:
-                        localAvatar.setCurrentTarget(0)
-                    if self.weaponMode == WeaponGlobals.FIREARM or self.weaponMode == WeaponGlobals.GRENADE:
-                        if skillId not in self.NO_VOLLEY_PROJECTILES:
-                            self.volley += 1
-                    self.startSkillRecharge(skillId)
-                    if ammoItemId in tonicIds:
-                        self.tonicButton.startRecharge()
-                        inv = localAvatar.getInventory()
-                        if inv is None:
-                            return 0
-                        itemCat = 0
-                        if skillId == InventoryType.UseItem:
-                            itemCat = InventoryType.ItemTypeConsumable
-                        amt = inv.getItemQuantity(itemCat, ammoItemId)
-                        if localAvatar.guiMgr.weaponPage.tonicButtons.has_key(ammoItemId):
-                            localAvatar.guiMgr.weaponPage.tonicButtons[ammoItemId].updateQuantity(amt - 1)
-                        for skillButton in localAvatar.guiMgr.weaponPage.tonicButtons:
-                            if localAvatar.guiMgr.weaponPage.tonicButtons[skillButton].quantity > 0:
-                                localAvatar.guiMgr.weaponPage.tonicButtons[skillButton].startRecharge()
-                            else:
-                                localAvatar.guiMgr.weaponPage.tonicButtons[skillButton].checkAmount()
+                    localAvatar.guiMgr.createWarning(PLocalizer.TooFarAttuneWarning, PiratesGuiGlobals.TextFG6)
+                    return 0
 
-                    if ammoSkillId in (InventoryType.ShipRepairKit,):
-                        if self.shipRepairButton:
-                            self.shipRepairButton.startRecharge()
-                    if ammoSkillId:
-                        self.skillTray.decrementSkillTrayAmount(ammoSkillId)
-                    else:
-                        self.skillTray.decrementSkillTrayAmount(skillId)
-                    ammoSkillId = self.verifyAmmoSkillId(ammoSkillId, 'trySkill', debugStr='%s|%s|%s' % (str(skillId), str(combo), str(charge)))
-                    if skillId in (InventoryType.UseItem, InventoryType.UsePotion):
-                        messenger.send(WeaponGlobals.LocalAvatarUseItem, [
-                         skillId, ammoSkillId, combo, charge])
-                    elif WeaponGlobals.isProjectileSkill(skillId, ammoSkillId):
-                        posHpr = [
-                         0, 0, 0, 0, 0, 0]
-                        messenger.send(WeaponGlobals.LocalAvatarUseProjectileSkill, [
-                         skillId, ammoSkillId, posHpr, charge])
-                    elif WeaponGlobals.getIsShipSkill(skillId) and not WeaponGlobals.getIsShout(skillId):
-                        messenger.send(WeaponGlobals.LocalAvatarUseShipSkill, [
-                         skillId, ammoSkillId])
-                    elif skillId in WeaponGlobals.BackstabSkills:
-                        messenger.send(WeaponGlobals.LocalAvatarUseTargetedSkill, [
-                         skillId, ammoSkillId, combo, self.chargeTime])
-                    else:
-                        messenger.send(WeaponGlobals.LocalAvatarUseTargetedSkill, [
-                         skillId, ammoSkillId, combo, charge])
-                    if WeaponGlobals.getIsShipSkill(skillId):
-                        if localAvatar.ship:
-                            localAvatar.ship.requestShipSkill(skillId, ammoSkillId)
-                if skillId:
-                    if self.weaponMode in (WeaponGlobals.COMBAT, WeaponGlobals.MELEE, WeaponGlobals.VOODOO, WeaponGlobals.THROWING, WeaponGlobals.SAILING):
-                        skillTrack = WeaponGlobals.getSkillTrack(skillId)
-                        if skillTrack == WeaponGlobals.RADIAL_SKILL_INDEX:
-                            rechargeT = base.cr.battleMgr.getModifiedRechargeTime(localAvatar, skillId)
-                            taskMgr.doMethodLater(rechargeT, self.skillRechargeAlert, 'skillRechargePopup-' + str(skillId), extraArgs=[skillId])
+            if skillId == EnemySkills.DAGGER_BACKSTAB:
+                angle1 = localAvatar.getH()
+                angle2 = target.getH()
+                diff = abs(angle2 - angle1)
+                if diff > 180:
+                    diff = abs(diff - 360)
+
+                if diff >= WeaponGlobals.BACKSTAB_ANGLE:
+                    localAvatar.guiMgr.createWarning(PLocalizer.WrongDirectionWarning, PiratesGuiGlobals.TextFG6)
+                    return 0
+
+            if skillId == EnemySkills.CUTLASS_ROLLTHRUST and distance < WeaponGlobals.ROLLTHRUST_DEADZONE:
+                localAvatar.guiMgr.createWarning(PLocalizer.TooCloseToAttackWarning, PiratesGuiGlobals.TextFG6)
+                return 0
+
+            backstab = 0
+            if skillId in WeaponGlobals.BackstabSkills:
+                angle1 = localAvatar.getH()
+                angle2 = target.getH()
+                diff = abs(angle2 - angle1)
+                if diff > 180:
+                    diff = abs(diff - 360)
+                if diff < WeaponGlobals.BACKSTAB_ANGLE:
+                    self.chargeTime = 1
+                    backstab = 1
+            else:
+                self.chargeTime = 0
+
+            self.comboLevel += 1
+            if combo == -1:
+                if localAvatar.wantComboTiming:
+                    self.ignoreInput()
+                else:
+                    self.acceptInput()
+            else:
+                self.acceptInput()
+
+        elif localAvatar.currentTarget:
+            localAvatar.setCurrentTarget(0)
+
+        if self.weaponMode == WeaponGlobals.FIREARM or self.weaponMode == WeaponGlobals.GRENADE:
+            if skillId not in self.NO_VOLLEY_PROJECTILES:
+                self.volley += 1
+
+        self.startSkillRecharge(skillId)
+        if ammoItemId in tonicIds:
+            self.tonicButton.startRecharge()
+            inv = localAvatar.getInventory()
+            if inv is None:
+                return 0
+
+            itemCat = 0
+            if skillId == InventoryType.UseItem:
+                itemCat = InventoryType.ItemTypeConsumable
+
+            amt = inv.getItemQuantity(itemCat, ammoItemId)
+            if localAvatar.guiMgr.weaponPage.tonicButtons.has_key(ammoItemId):
+                localAvatar.guiMgr.weaponPage.tonicButtons[ammoItemId].updateQuantity(amt - 1)
+
+            for skillButton in localAvatar.guiMgr.weaponPage.tonicButtons:
+                if localAvatar.guiMgr.weaponPage.tonicButtons[skillButton].quantity > 0:
+                    localAvatar.guiMgr.weaponPage.tonicButtons[skillButton].startRecharge()
+                else:
+                    localAvatar.guiMgr.weaponPage.tonicButtons[skillButton].checkAmount()
+
+            if ammoSkillId in (InventoryType.ShipRepairKit,):
+                if self.shipRepairButton:
+                    self.shipRepairButton.startRecharge()
+
+            if ammoSkillId:
+                self.skillTray.decrementSkillTrayAmount(ammoSkillId)
+            else:
+                self.skillTray.decrementSkillTrayAmount(skillId)
+
+            ammoSkillId = self.verifyAmmoSkillId(ammoSkillId, 'trySkill', debugStr='%s|%s|%s' % (str(skillId), str(combo), str(charge)))
+            if skillId in (InventoryType.UseItem, InventoryType.UsePotion):
+                messenger.send(WeaponGlobals.LocalAvatarUseItem, [skillId, ammoSkillId, combo, charge])
+            elif WeaponGlobals.isProjectileSkill(skillId, ammoSkillId):
+                posHpr = [0, 0, 0, 0, 0, 0]
+                messenger.send(WeaponGlobals.LocalAvatarUseProjectileSkill, [skillId, ammoSkillId, posHpr, charge])
+            elif WeaponGlobals.getIsShipSkill(skillId) and not WeaponGlobals.getIsShout(skillId):
+                messenger.send(WeaponGlobals.LocalAvatarUseShipSkill, [skillId, ammoSkillId])
+            elif skillId in WeaponGlobals.BackstabSkills:
+                messenger.send(WeaponGlobals.LocalAvatarUseTargetedSkill, [skillId, ammoSkillId, combo, self.chargeTime])
+            else:
+                messenger.send(WeaponGlobals.LocalAvatarUseTargetedSkill, [skillId, ammoSkillId, combo, charge])
+
+            if WeaponGlobals.getIsShipSkill(skillId):
+                if localAvatar.ship:
+                    localAvatar.ship.requestShipSkill(skillId, ammoSkillId)
+
+            if skillId:
+                if self.weaponMode in (WeaponGlobals.COMBAT, WeaponGlobals.MELEE, WeaponGlobals.VOODOO, WeaponGlobals.THROWING, WeaponGlobals.SAILING):
+                    skillTrack = WeaponGlobals.getSkillTrack(skillId)
+                    if skillTrack == WeaponGlobals.RADIAL_SKILL_INDEX:
+                        rechargeT = base.cr.battleMgr.getModifiedRechargeTime(localAvatar, skillId)
+                        taskMgr.doMethodLater(rechargeT, self.skillRechargeAlert, 'skillRechargePopup-' + str(skillId), extraArgs=[skillId])
+
             self.__startSkillTimers()
             if combo == -1:
                 if localAvatar.wantComboTiming:
@@ -1254,12 +1320,14 @@ class CombatTray(GuiTray):
                     messenger.send('tooFast')
                 else:
                     messenger.send('tooFast')
+
         timestamp = globalClockDelta.getFrameNetworkTime(bits=32)
         self.lastAttack = (skillId, timestamp)
         if skillId not in (EnemySkills.PISTOL_CHARGE, EnemySkills.STAFF_WITHER_CHARGE, EnemySkills.STAFF_SOULFLAY_CHARGE, EnemySkills.STAFF_PESTILENCE_CHARGE, EnemySkills.STAFF_HELLFIRE_CHARGE, EnemySkills.STAFF_BANISH_CHARGE, EnemySkills.STAFF_DESOLATION_CHARGE, EnemySkills.GRENADE_CHARGE) and skillId not in WeaponGlobals.BackstabSkills:
             self.chargeTime = 0
             if skillId not in self.IGNORES_INPUT_LOCK:
                 self.triggerInputLock()
+        
         return 1
 
     def verifyAmmoSkillId(self, ammoSkillId, debugStrTitle, debugStr=''):

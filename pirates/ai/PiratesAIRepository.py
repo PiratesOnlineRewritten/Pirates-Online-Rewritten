@@ -7,14 +7,17 @@ from otp.distributed.OtpDoGlobals import *
 from pirates.piratesbase import PiratesGlobals
 from pirates.distributed.PiratesDistrictAI import PiratesDistrictAI
 from pirates.world import WorldGlobals
+from pirates.ai.NewsManagerAI import NewsManagerAI
 from pirates.piratesbase.UniqueIdManager import UniqueIdManager
 from pirates.distributed.DistributedPopulationTrackerAI import DistributedPopulationTrackerAI
+from pirates.ai.PiratesMagicWordManagerAI import PiratesMagicWordManagerAI
 from pirates.ai.PiratesTimeManagerAI import PiratesTimeManagerAI
 from pirates.instance.DistributedTeleportMgrAI import DistributedTeleportMgrAI
 from pirates.piratesbase.DistributedTimeOfDayManagerAI import DistributedTimeOfDayManagerAI
 from pirates.piratesbase.DistributedGameStatManagerAI import DistributedGameStatManagerAI
 from pirates.distributed.TargetManagerAI import TargetManagerAI
 from pirates.battle.DistributedEnemySpawnerAI import DistributedEnemySpawnerAI
+from pirates.trades.TradeManagerAI import TradeManagerAI
 from pirates.world.WorldCreatorAI import WorldCreatorAI
 
 class PiratesAIRepository(PiratesInternalRepository):
@@ -30,6 +33,7 @@ class PiratesAIRepository(PiratesInternalRepository):
         self.uidMgr = UniqueIdManager(self)
 
     def handleConnected(self):
+        PiratesInternalRepository.handleConnected(self)
         self.districtId = self.allocateChannel()
         self.distributedDistrict = PiratesDistrictAI(self)
         self.distributedDistrict.setName(self.districtName)
@@ -41,13 +45,14 @@ class PiratesAIRepository(PiratesInternalRepository):
         self.createZones()
 
         self.distributedDistrict.b_setAvailable(1)
-        self.notify.info('District is now ready.')
+        self.notify.info('District (%s) is now ready.' % self.districtName)
+        messenger.send('district-ready')
 
     def incrementPopulation(self):
-        pass
+        self.populationTracker.b_setPopulation(self.populationTracker.getPopulation() + 1)
 
     def decrementPopulation(self):
-        pass
+        self.populationTracker.b_setPopulation(self.populationTracker.getPopulation() - 1)
 
     def allocateZone(self, owner=None):
         zoneId = self.zoneAllocator.allocate()
@@ -70,6 +75,8 @@ class PiratesAIRepository(PiratesInternalRepository):
         Create "global" objects, e.g. TimeManager et al.
         """
 
+        self.centralLogger = self.generateGlobalObject(OTP_DO_ID_CENTRAL_LOGGER, 'CentralLogger')
+
         self.populationTracker = DistributedPopulationTrackerAI(self)
         self.populationTracker.setShardId(self.districtId)
         self.populationTracker.setPopLimits(config.GetInt('shard-pop-limit-low', 100), config.GetInt('shard-pop-limit-high', 300))
@@ -86,6 +93,11 @@ class PiratesAIRepository(PiratesInternalRepository):
         self.timeOfDayMgr = DistributedTimeOfDayManagerAI(self)
         self.timeOfDayMgr.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
 
+        self.newsManager = NewsManagerAI(self)
+        self.newsManager.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
+
+        self.holidayMgr = self.generateGlobalObject(OTP_DO_ID_PIRATES_HOLIDAY_MANAGER, 'HolidayManager')
+
         self.gameStatManager = DistributedGameStatManagerAI(self)
         self.gameStatManager.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
 
@@ -96,6 +108,16 @@ class PiratesAIRepository(PiratesInternalRepository):
         self.spawner.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
 
         self.inventoryManager = self.generateGlobalObject(OTP_DO_ID_PIRATES_INVENTORY_MANAGER, 'DistributedInventoryManager')
+
+        self.magicWords = PiratesMagicWordManagerAI(self)
+        self.magicWords.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
+
+        self.tradeMgr = TradeManagerAI(self)
+        self.tradeMgr.generateWithRequired(OTP_ZONE_ID_MANAGEMENT)
+
+        self.crewMatchManager = self.generateGlobalObject(OTP_DO_ID_PIRATES_CREW_MATCH_MANAGER, 'DistributedCrewMatchManager')
+
+        self.guildManager = self.generateGlobalObject(OTP_DO_ID_PIRATES_GUILD_MANAGER, 'PCGuildManager')
 
     def createZones(self):
         """

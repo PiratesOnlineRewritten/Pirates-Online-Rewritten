@@ -3,6 +3,7 @@ from pirates.distributed.DistributedInteractiveAI import DistributedInteractiveA
 
 class DistributedDinghyAI(DistributedInteractiveAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedDinghyAI')
+    MULTIUSE = True
 
     def __init__(self, air):
         DistributedInteractiveAI.__init__(self, air)
@@ -10,6 +11,12 @@ class DistributedDinghyAI(DistributedInteractiveAI):
         self.interactRadius = 0
         self.locationId = 0
         self.siegeTeam = 0
+
+    def handleRequestInteraction(self, avatar, interactType, instant):
+        return self.ACCEPT
+
+    def handleRequestExit(self, avatar):
+        return self.ACCEPT
 
     def setInteractRadius(self, interactRadius):
         self.interactRadius = interactRadius

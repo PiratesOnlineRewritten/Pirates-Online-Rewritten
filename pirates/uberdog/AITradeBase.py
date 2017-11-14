@@ -174,7 +174,6 @@ class AITradeBase(AsyncRequest):
             self._sendTrade()
             return
         AsyncRequest.finish(self)
-        return
 
     def isTradeSent(self):
         return self.neededObjects.has_key(self.responseKey)
@@ -191,7 +190,6 @@ class AITradeBase(AsyncRequest):
             apply(failureInfo[0], failureInfo[1] + [self] + [reasonId])
 
         AsyncRequest.finish(self)
-        return
 
     def approvedTradeResponse(self, context):
         self.ignore(self.rejectTradeMsg(context))

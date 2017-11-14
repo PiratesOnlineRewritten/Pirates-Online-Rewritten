@@ -76,7 +76,6 @@ class Avatar(Actor, ShadowCaster):
         self.__chatLocal = 0
         self.__currentDialogue = None
         self.whitelistChatFlags = 0
-        return
 
     def delete(self):
         try:
@@ -270,7 +269,6 @@ class Avatar(Actor, ShadowCaster):
             self.playDialogueForString(self.nametag.getChat())
             if self.soundChatBubble != None:
                 base.playSfx(self.soundChatBubble, node=self)
-        return
 
     def playDialogueForString(self, chatString):
         searchString = chatString.lower()
@@ -285,14 +283,14 @@ class Avatar(Actor, ShadowCaster):
                 type = 'statementA'
             else:
                 type = 'statementB'
-            stringLength = len(chatString)
-            if stringLength <= OTPLocalizer.DialogLength1:
-                length = 1
-            if stringLength <= OTPLocalizer.DialogLength2:
-                length = 2
-            if stringLength <= OTPLocalizer.DialogLength3:
-                length = 3
-            length = 4
+        stringLength = len(chatString)
+        if stringLength <= OTPLocalizer.DialogLength1:
+            length = 1
+        if stringLength <= OTPLocalizer.DialogLength2:
+            length = 2
+        if stringLength <= OTPLocalizer.DialogLength3:
+            length = 3
+        length = 4
         self.playDialogue(type, length)
 
     def playDialogue(self, type, length):
@@ -369,11 +367,12 @@ class Avatar(Actor, ShadowCaster):
     def getNameVisible(self):
         return self.__nameVisible
 
-    def setNameVisible(self, bool):
-        self.__nameVisible = bool
-        if bool:
+    def setNameVisible(self, nameVisible):
+        self.__nameVisible = nameVisible
+
+        if nameVisible:
             self.showName()
-        if not bool:
+        else:
             self.hideName()
 
     def hideName(self):
@@ -540,7 +539,6 @@ class Avatar(Actor, ShadowCaster):
         if self.nametagNodePath:
             self.nametagNodePath.removeNode()
             self.nametagNodePath = None
-        return
 
     def initializeBodyCollisions(self, collIdStr):
         self.collTube = CollisionTube(0, 0, 0.5, 0, 0, self.height - self.getRadius(), self.getRadius())

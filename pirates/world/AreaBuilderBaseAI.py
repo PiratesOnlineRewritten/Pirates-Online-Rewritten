@@ -1,7 +1,9 @@
 from direct.showbase.DirectObject import DirectObject
 from direct.directnotify.DirectNotifyGlobal import directNotify
+from direct.distributed.GridParent import GridParent
 from pirates.leveleditor import ObjectList
 from direct.distributed.GridParent import GridParent
+from panda3d.core import Point3, NodePath
 
 class AreaBuilderBaseAI(DirectObject):
     notify = directNotify.newCategory('AreaBuilderBaseAI')
@@ -10,18 +12,6 @@ class AreaBuilderBaseAI(DirectObject):
         self.air = air
         self.parent = parent
         self.objectList = {}
-        self.wantObjectPrintout = config.GetBool('want-object-printout', False)
-
-    def parentToCellOrigin(self, parent, instance):
-        if not instance:
-            return self.notify.warning('Cannot parent invalid instance type to %r!' % parent)
-
-        instance.reparentTo(parent)
-
-        instance.d_setPos(*instance.getPos())
-        instance.d_setHpr(*instance.getHpr())
-
-        return instance
 
     def createObject(self, objType, objectData, parent, parentUid, objKey, dynamic, parentIsObj=False, fileName=None, actualParentObj=None):
         newObj = None
@@ -29,20 +19,86 @@ class AreaBuilderBaseAI(DirectObject):
         if objType == ObjectList.AREA_TYPE_ISLAND:
             newObj = self.__createIsland(objectData, parent, parentUid, objKey, dynamic)
         else:
-            parent = self.air.worldCreator.world.uidMgr.justGetMeMeObject(parentUid)
+            if not parent or not hasattr(parent, 'builder'):
+                areaParent = self.air.worldCreator.world.uidMgr.justGetMeMeObject(parentUid)
 
-            if not parent:
-                return newObj
+                if not areaParent:
+                    return newObj
+            else:
+                areaParent = parent
 
-            newObj = parent.builder.createObject(objType, objectData, parent, parentUid, objKey, dynamic)
-
-        if newObj is not None and objType != 'Building Exterior' and objType != ObjectList.AREA_TYPE_ISLAND and self.wantObjectPrintout:
-            indent = '- '
-            if 'Island' not in fileName:
-                indent = '-- '
-            print('%sGenerated %s (%s) in zone %s with doId %d' % (indent, newObj.__class__.__name__, objKey, newObj.zoneId, newObj.doId))
+            newObj = areaParent.builder.createObject(objType, objectData, parent, parentUid, objKey, dynamic)
 
         return newObj
+
+    def parentObjectToCell(self, object, zoneId=None):
+        if not object:
+            self.notify.warning('Failed to parent to cell for non-existant object!')
+            return
+
+        if zoneId is None:
+            zoneId = self.parent.getZoneFromXYZ(object.getPos())
+
+        cell = GridParent.getCellOrigin(self, zoneId)
+        originalPos = object.getPos()
+
+        object.reparentTo(cell)
+        object.setPos(self.parent, originalPos)
+
+        self.broadcastObjectPosition(object)
+
+    def isChildObject(self, objKey, parentUid):
+        return self.air.worldCreator.getObjectParentUid(objKey) != parentUid
+
+    def setObjectTruePosHpr(self, object, objKey, parentUid, objectData):
+
+        objectPos = objectData.get('Pos', Point3(0, 0, 0))
+        objectHpr = objectData.get('Hpr', Point3(0, 0, 0))
+
+        if not self.isChildObject(objKey, parentUid):
+            object.setPos(objectPos)
+            object.setHpr(objectHpr)
+            return object
+
+        parentUid = self.air.worldCreator.getObjectParentUid(objKey)
+        parentData = self.air.worldCreator.getObjectDataByUid(parentUid)
+
+        if parentData['Type'] == 'Island':
+            object.setPos(objectPos)
+            object.setHpr(objectHpr)
+            return object
+
+        parentObject = NodePath('psuedo-%s' % parentUid)
+        parentObject.setPos(parentData.get('Pos', Point3(0, 0, 0)))
+        parentObject.setHpr(parentData.get('Hpr', Point3(0, 0, 0)))
+
+        #if not 'GridPos' in objectData or True:
+        object.setPos(parentObject, objectPos)
+        object.setHpr(parentObject, objectHpr)
+        #else:
+        #    object.setPos(objectData.get('GridPos', objectPos))
+        #    object.setHpr(parentObject, objectHpr)
+
+        return object
+
+    def getObjectTruePosAndParent(self, objKey, parentUid, objectData):
+        if self.isChildObject(objKey, parentUid):
+            parentUid = self.air.worldCreator.getObjectParentUid(objKey)
+            parentData = self.air.worldCreator.getObjectDataByUid(parentUid)
+
+            if parentData['Type'] == 'Island':
+                return objectData.get('Pos'), NodePath()
+
+            parentObject = NodePath('psuedo-%s' % parentUid)
+
+            if not 'GridPos' in objectData:
+                parentObject.setPos(parentData.get('Pos', Point3(0, 0, 0)))
+            parentObject.setHpr(parentData.get('Hpr', Point3(0, 0, 0)))
+
+            objectPos = objectData.get('GridPos', objectData.get('Pos', Point3(0, 0, 0)))
+            return objectPos, parentObject
+
+        return objectData.get('Pos'), NodePath()
 
     def __createIsland(self, objectData, parent, parentUid, objKey, dynamic):
         from pirates.world.DistributedIslandAI import DistributedIslandAI
@@ -51,7 +107,7 @@ class AreaBuilderBaseAI(DirectObject):
 
         island = DistributedIslandAI(self.air)
         island.setUniqueId(objKey)
-        island.setName(worldIsland.get('Name', 'island'))
+        island.setName(worldIsland.get('Name', ''))
         island.setModelPath(worldIsland['Visual']['Model'])
         island.setPos(worldIsland.get('Pos', (0, 0, 0)))
         island.setHpr(worldIsland.get('Hpr', (0, 0, 0)))
@@ -66,13 +122,9 @@ class AreaBuilderBaseAI(DirectObject):
         self.parent.generateChildWithRequired(island, island.startingZone)
         self.addObject(island)
 
-        if self.air.worldCreator.wantPrintout:
-            print '-' * 100
-            print 'Generated Island %s (%s) in zone %d with doId %d' % (island.getLocalizerName(), objKey, island.zoneId, island.doId)
-
         return island
 
-    def addObject(self, object):
+    def addObject(self, object, uniqueId=None):
         if not object:
             self.notify.warning('Cannot add an invalid object!')
             return
@@ -81,10 +133,10 @@ class AreaBuilderBaseAI(DirectObject):
             self.notify.warning('Cannot add an already existing object %d!' % object.doId)
             return
 
-        self.parent.uidMgr.addUid(object.getUniqueId(), object.doId)
+        self.parent.uidMgr.addUid(uniqueId or object.getUniqueId(), object.doId)
         self.objectList[object.doId] = object
 
-    def removeObject(self, object):
+    def removeObject(self, object, uniqueId=None):
         if not object:
             self.notify.warning('Cannot remove an invalid object!')
             return
@@ -93,15 +145,30 @@ class AreaBuilderBaseAI(DirectObject):
             self.notify.warning('Cannot remove a non-existant object %d!' % object.doId)
             return
 
-        self.parent.uidMgr.removeUid(object.getUniqueId())
+        self.parent.uidMgr.removeUid(uniqueId or object.getUniqueId())
         del self.objectList[object.doId]
+
+    def getObject(self, doId=None, uniqueId=None):
+        for object in self.objectList:
+            if object.doId == doId or object.getUniqueId() == uniqueId:
+                return object
+
+        return None
 
     def deleteObject(self, doId):
         object = self.objectList.get(doId)
 
-        if not doId:
+        if not object:
             self.notify.warning('Cannot delete an invalid object!')
             return
 
         object.requestDelete()
         self.removeObject(object)
+
+    def broadcastObjectPosition(self, object):
+        if not object:
+            self.notify.warning('Failed to broadcast position for non-existant object!')
+            return
+
+        object.d_setPos(*object.getPos())
+        object.d_setHpr(*object.getHpr())

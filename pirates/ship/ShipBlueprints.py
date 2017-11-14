@@ -9,7 +9,7 @@ wheel = None
 MastData = {ShipGlobals.Masts.Main_Tri: {'maxHeight': 2,'prefix': 'main_tri'},ShipGlobals.Masts.Main_Square: {'maxHeight': 3,'prefix': 'main_square'},ShipGlobals.Masts.Fore_Tri: {'maxHeight': 1,'prefix': 'fore_tri'},ShipGlobals.Masts.Fore_Multi: {'maxHeight': 3,'prefix': 'fore_multi'},ShipGlobals.Masts.Aft_Tri: {'maxHeight': 1,'prefix': 'aft_tri'},ShipGlobals.Masts.Skel_Main_A: {'maxHeight': 3,'prefix': 'main_square_skeletonA'},ShipGlobals.Masts.Skel_Main_B: {'maxHeight': 3,'prefix': 'main_square_skeletonB'},ShipGlobals.Masts.Skel_Tri: {'maxHeight': 2,'prefix': 'main_tri_skeleton'},ShipGlobals.Masts.Skel_Fore: {'maxHeight': 2,'prefix': 'fore_skeleton'},ShipGlobals.Masts.Skel_Aft: {'maxHeight': 2,'prefix': 'aft_skeleton'}}
 metaAnims = [
  'rolldown', 'rollup', 'idle', 'tiedup']
-HullDict = {ShipGlobals.WARSHIPL1: 'frg_light',ShipGlobals.WARSHIPL2: 'frg_regular',ShipGlobals.WARSHIPL3: 'frg_war',ShipGlobals.MERCHANTL1: 'gal_light',ShipGlobals.MERCHANTL2: 'gal_regular',ShipGlobals.MERCHANTL3: 'gal_war',ShipGlobals.INTERCEPTORL1: 'slp_light',ShipGlobals.INTERCEPTORL2: 'slp_regular',ShipGlobals.INTERCEPTORL3: 'slp_war',ShipGlobals.BRIGL1: 'brig_light',ShipGlobals.BRIGL2: 'brig_regular',ShipGlobals.BRIGL3: 'brig_war',ShipGlobals.BLACK_PEARL: 'cas_blackPearl',ShipGlobals.GOLIATH: 'cas_goliath',ShipGlobals.QUEEN_ANNES_REVENGE: 'cas_queenAnnesRevenge',ShipGlobals.SHIP_OF_THE_LINE: 'lin_treasure',ShipGlobals.SKEL_WARSHIPL3: 'skl_frigate',ShipGlobals.SKEL_INTERCEPTORL3: 'skl_sloop',ShipGlobals.EL_PATRONS_SHIP: 'gal_carrack'}
+HullDict = {ShipGlobals.WARSHIPL1: 'frg_light',ShipGlobals.WARSHIPL2: 'frg_regular',ShipGlobals.WARSHIPL3: 'frg_war',ShipGlobals.MERCHANTL1: 'gal_light',ShipGlobals.MERCHANTL2: 'gal_regular',ShipGlobals.MERCHANTL3: 'gal_war',ShipGlobals.INTERCEPTORL1: 'slp_light',ShipGlobals.INTERCEPTORL2: 'slp_regular',ShipGlobals.INTERCEPTORL3: 'slp_war',ShipGlobals.BRIGL1: 'brig_light',ShipGlobals.BRIGL2: 'brig_regular',ShipGlobals.BRIGL3: 'brig_war', ShipGlobals.CARRACKL1: 'car_light', ShipGlobals.CARRACKL2: 'gal_carrack', ShipGlobals.CARRACKL3: 'car_war', ShipGlobals.BLACK_PEARL: 'cas_blackPearl',ShipGlobals.GOLIATH: 'cas_goliath',ShipGlobals.QUEEN_ANNES_REVENGE: 'cas_queenAnnesRevenge',ShipGlobals.SHIP_OF_THE_LINE: 'lin_treasure',ShipGlobals.SKEL_WARSHIPL3: 'skl_frigate',ShipGlobals.SKEL_INTERCEPTORL3: 'skl_sloop',ShipGlobals.EL_PATRONS_SHIP: 'gal_carrack'}
 if config.GetBool('want-kraken', 0):
     HullDict[23] = 'frg_war_kraken'
 
@@ -46,20 +46,20 @@ class MastCache():
             for lod in self.genericGeomSets[index]:
                 lod.reparentTo(NodePath(self.charRoot))
 
-            data.charRoot = NodePath(self.charRoot).copyTo(NodePath()).node()
-            data.collisions = NodePath(data.charRoot).find('**/collisions')
-            if index == 0:
-                data.collisions.findAllMatches('**/*_1*').detach()
-                data.collisions.findAllMatches('**/*_2*').detach()
-            elif index == 1:
-                data.collisions.findAllMatches('**/*_2*').detach()
-            if custom:
-                for lod in self.customGeomSets[index]:
-                    lod.detachNode()
+        data.charRoot = NodePath(self.charRoot).copyTo(NodePath()).node()
+        data.collisions = NodePath(data.charRoot).find('**/collisions')
+        if index == 0:
+            data.collisions.findAllMatches('**/*_1*').detach()
+            data.collisions.findAllMatches('**/*_2*').detach()
+        elif index == 1:
+            data.collisions.findAllMatches('**/*_2*').detach()
+        if custom:
+            for lod in self.customGeomSets[index]:
+                lod.detachNode()
 
-            else:
-                for lod in self.genericGeomSets[index]:
-                    lod.detachNode()
+        else:
+            for lod in self.genericGeomSets[index]:
+                lod.detachNode()
 
         data.breakAnim = self.breakAnim
         data.metaAnims = self.metaAnims
@@ -177,9 +177,11 @@ def generateHullCache(modelClass):
         bad = locators.find('**/location_ropeLadder_0_%s' % side)
         if bad:
             bad.setName('location_ropeLadder_%s_0' % side)
+
         bad = locators.find('**/location_ropeLadder_1_%s' % side)
         if bad:
             bad.setName('location_ropeLadder_%s_1' % side)
+
         bad = locators.find('**/location_ropeLadder_1_%s1' % side)
         if bad:
             bad.setName('location_ropeLadder_%s_2' % side)
@@ -196,11 +198,13 @@ def generateHullCache(modelClass):
         walls.setTag('Hull Code', '255')
     else:
         collisions.attachNewNode('collision_walls')
+
     shipToShipCollide = collisions.find('**/collision_shiptoship')
     shipToShipCollide.setCollideMask(PiratesGlobals.ShipCollideBitmask)
     deck = collisions.find('**/collision_deck')
     if not deck:
         deck = collisions.attachNewNode('deck')
+
     mask = deck.getCollideMask()
     mask ^= PiratesGlobals.FloorBitmask
     mask |= PiratesGlobals.ShipFloorBitmask
@@ -208,6 +212,7 @@ def generateHullCache(modelClass):
     floors = collisions.find('**/collision_floors')
     if not floors:
         floors = collisions.find('**/collision_floor')
+
     mask = floors.getCollideMask()
     mask ^= PiratesGlobals.FloorBitmask
     mask |= PiratesGlobals.ShipFloorBitmask
@@ -241,6 +246,7 @@ def generateHullCache(modelClass):
         spikeMed.copyTo(geomMed)
         spikeLow.copyTo(geomLow)
         spikeLow.copyTo(geomSuperLow)
+
     flipRoot = NodePath('root')
     collisions.reparentTo(flipRoot)
     locators.reparentTo(flipRoot)
@@ -269,8 +275,8 @@ def generateHullCache(modelClass):
     geomSuperLow.detachNode()
     locators.detachNode()
     collisions.detachNode()
-    genericGeoms = [
-     geomHigh, geomMed, geomLow, geomSuperLow]
+    genericGeoms = [geomHigh, geomMed, geomLow, geomSuperLow]
+    
     customGeoms = [ x.copyTo(NodePath()) for x in genericGeoms ]
     for np in genericGeoms:
         trans = np.find('**/transparent')

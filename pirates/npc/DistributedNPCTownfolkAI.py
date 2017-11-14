@@ -1,6 +1,11 @@
 from direct.directnotify import DirectNotifyGlobal
 from pirates.battle.DistributedBattleNPCAI import DistributedBattleNPCAI
 from pirates.economy.DistributedShopKeeperAI import DistributedShopKeeperAI
+from pirates.piratesbase import PiratesGlobals
+from pirates.pirate import AvatarTypes
+from pirates.uberdog.UberDogGlobals import InventoryType
+
+
 class DistributedNPCTownfolkAI(DistributedBattleNPCAI, DistributedShopKeeperAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedNPCTownfolkAI')
 
@@ -10,6 +15,41 @@ class DistributedNPCTownfolkAI(DistributedBattleNPCAI, DistributedShopKeeperAI):
         self.dnaId = ''
         self.shopId = 0
         self.helpId = 0
+
+    def handleRequestInteraction(self, avatar, interactType, instant):
+        if interactType == PiratesGlobals.INTERACT_TYPE_FRIENDLY:
+
+            if self.avatarType.isA(AvatarTypes.ScrimmageMaster):
+                return
+
+            self.sendUpdateToAvatarId(avatar.doId, 'triggerInteractShow', [0])
+            self.sendUpdateToAvatarId(avatar.doId, 'offerOptions', [2])
+
+            if self.avatarType.isA(AvatarTypes.Fishmaster):
+
+                inventory = self.air.inventoryManager.getInventory(avatar.doId)
+
+                if not inventory:
+                    self.notify.warning('Failed to get inventory avatar %d!' % avatar.doId)
+                    return self.DENY
+
+                currentFishingRod = inventory.getStack(InventoryType.FishingRod) or 0
+                if currentFishingRod <= 0:
+                    self.notify.debug('Rewarding avatar %d with a starter fishing pole and lures' % avatar.doId)
+
+                    inventory.b_setStack(InventoryType.FishingRod, 1)
+                    inventory.b_setStack(InventoryType.RegularLure, 10)
+
+            return self.ACCEPT
+
+        return self.DENY
+
+    def handleRequestExit(self, avatar):
+        return self.ACCEPT
+
+    def selectOption(self, optionId):
+        if optionId == 0:
+            self.requestExit()
 
     def setDNAId(self, dnaId):
         self.dnaId = dnaId
@@ -23,22 +63,6 @@ class DistributedNPCTownfolkAI(DistributedBattleNPCAI, DistributedShopKeeperAI):
 
     def getDNAId(self):
         return self.dnaId
-
-    def setMovie(self, movie):
-        self.movie = movie
-
-    def d_setMovie(self, movie):
-        self.sendUpdate('setMovie', [movie])
-
-    def b_setMovie(self, movie):
-        self.setMovie(movie)
-        self.d_setMovie(movie)
-
-    def d_triggerInteractShow(self, interactObj):
-        self.sendUpdate('triggerInteractShow', [interactObj])
-
-    def d_offerOptions(self, dialogFlag):
-        self.sendUpdate('offerOptions', [dialogFlag])
 
     def d_startTutorial(self, todo):
         self.sendUpdate('startTutorial', [todo])
@@ -77,9 +101,6 @@ class DistributedNPCTownfolkAI(DistributedBattleNPCAI, DistributedShopKeeperAI):
 
     def getHelpId(self):
         return self.helpId
-
-    def requestMusic(self, songId):
-        pass
 
     def d_playMusic(self, songId):
         self.sendUpdate('playMusic', [songId])

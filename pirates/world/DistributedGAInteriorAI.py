@@ -1,6 +1,7 @@
 from direct.distributed.DistributedCartesianGridAI import DistributedCartesianGridAI
 from direct.directnotify import DirectNotifyGlobal
 from pirates.world.DistributedGameAreaAI import DistributedGameAreaAI
+from pirates.world.InteriorAreaBuilderAI import InteriorAreaBuilderAI
 from pirates.world.WorldGlobals import *
 
 class DistributedGAInteriorAI(DistributedCartesianGridAI, DistributedGameAreaAI):
@@ -11,15 +12,11 @@ class DistributedGAInteriorAI(DistributedCartesianGridAI, DistributedGameAreaAI)
             GAME_AREA_INTERIOR_GRID_RADIUS, GAME_AREA_INTERIOR_CELL_SIZE)
 
         DistributedGameAreaAI.__init__(self, air)
+
         self.connectorId = 0
-
-    def delete(self):
-        # since our current zone was allocated, we need to free the zone
-        # so it can be used for another building interior instance.
-        self.air.deallocateZone(self.zoneId)
-
-        DistributedCartesianGridAI.delete(self)
-        DistributedGameAreaAI.delete(self)
+        self.interiorDoor = None
+        self.exteriorDoor = None
+        self.builder = InteriorAreaBuilderAI(air, self)
 
     def setConnectorId(self, connectorId):
         self.connectorId = connectorId
@@ -33,3 +30,21 @@ class DistributedGAInteriorAI(DistributedCartesianGridAI, DistributedGameAreaAI)
 
     def getConnectorId(self):
         return self.connectorId
+
+    def setInteriorDoor(self, interiorDoor):
+        self.interiorDoor = interiorDoor
+
+    def getInteriorDoor(self):
+        return self.interiorDoor
+
+    def setExteriorDoor(self, exteriorDoor):
+        self.exteriorDoor = exteriorDoor
+
+    def getExteriorDoor(self):
+        return self.exteriorDoor
+
+    def delete(self):
+        self.air.deallocateZone(self.zoneId)
+
+        DistributedCartesianGridAI.delete(self)
+        DistributedGameAreaAI.delete(self)

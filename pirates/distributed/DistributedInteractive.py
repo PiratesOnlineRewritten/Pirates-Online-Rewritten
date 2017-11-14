@@ -18,7 +18,6 @@ class DistributedInteractive(DistributedNode, InteractiveBase, DistributedLocata
         self.hideHpMeterFlag = 0
         self.userId = 0
         self.uniqueId = None
-        return
 
     def delete(self):
         DistributedNode.delete(self)
@@ -52,7 +51,9 @@ class DistributedInteractive(DistributedNode, InteractiveBase, DistributedLocata
 
     def setLocation(self, parentId, zoneId):
         DistributedNode.setLocation(self, parentId, zoneId)
-        self.reparentTo(self.getParentObj())
+
+        if self.parentId:
+            self.reparentTo(self.getParentObj())
 
     def requestExit(self):
         self.sendUpdate('requestExit')
@@ -89,10 +90,10 @@ class DistributedInteractive(DistributedNode, InteractiveBase, DistributedLocata
             self.notify.warning('offerOptions: old interact GUI still around')
             self.interactGUI.destroy()
             self.interactGUI = None
+
         self.interactGUI = InteractGUI.InteractGUI()
         title = self.getMenuTitle()
         self.interactGUI.setOptions(title, optionIds, statusCodes, self.b_selectOption)
-        return
 
     def b_selectOption(self, optionId):
         self.d_selectOption(optionId)
@@ -105,7 +106,6 @@ class DistributedInteractive(DistributedNode, InteractiveBase, DistributedLocata
         if self.interactGUI:
             self.interactGUI.destroy()
             self.interactGUI = None
-        return
 
     def getMenuTitle(self):
         return ''
@@ -119,6 +119,7 @@ class DistributedInteractive(DistributedNode, InteractiveBase, DistributedLocata
     def setUniqueId(self, uid):
         if self.uniqueId != '' and uid != self.uniqueId:
             base.cr.uidMgr.removeUid(self.uniqueId)
+
         self.uniqueId = uid
         base.cr.uidMgr.addUid(self.uniqueId, self.getDoId())
 

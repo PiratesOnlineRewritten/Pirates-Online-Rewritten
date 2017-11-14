@@ -12,7 +12,7 @@ class HeadGUI(DirectObject.DirectObject):
 
     def __init__(self, main=None):
         self.main = main
-        self.parent = main.bookModel
+        self._parent = main.bookModel
         self.avatar = main.avatar
         self.mode = None
         self.load()
@@ -37,7 +37,7 @@ class HeadGUI(DirectObject.DirectObject):
         del self.nose
         del self.ear
         del self.main
-        del self.parent
+        del self._parent
         del self.avatar
 
     def assignAvatar(self, avatar):

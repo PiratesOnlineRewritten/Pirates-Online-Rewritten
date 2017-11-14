@@ -6,79 +6,95 @@ class DistributedInteractiveAI(DistributedNodeAI):
 
     ACCEPT = 1
     DENY = 0
+    MULTIUSE = False
 
     def __init__(self, air):
         DistributedNodeAI.__init__(self, air)
 
-        self.userId = 0
         self.uniqueId = ''
 
     def requestInteraction(self, doId, interactType, instant):
         avatar = self.air.doId2do.get(self.air.getAvatarIdFromSender())
 
-        if not avatar or self.userId:
-            self.d_rejectInteraction(avatar)
+        if not avatar:
+            self.notify.warning('Failed to request interact for non-existant avatar!')
+
+            self.air.logPotentialHacker( 
+                message='Received requestInteraction from non-existant avatar',
+                targetAvId=avatar.doId, 
+                doId=doId,
+                interactType=interactType,
+                instant=instant)            
             return
 
         handle = self.handleRequestInteraction(avatar, interactType, instant)
 
         if not handle:
-            self.d_rejectInteraction(avatar)
+            self.d_rejectInteraction(avatar.doId)
             return
 
-        self.b_setUserId(avatar.doId)
+        if not self.MULTIUSE:
+            self.d_setUserId(avatar.doId)
+        else:
+            self.sendUpdateToAvatarId(avatar.doId, 'setUserId', [avatar.doId])
+
         self.sendUpdateToAvatarId(avatar.doId, 'acceptInteraction', [])
 
     def handleRequestInteraction(self, avatar, interactType, instant):
+        self.notify.warning('handleRequestInteraction not overriden by %s; Defaulting to DENY' % self.__class__.__name__)
         return self.DENY
 
     def requestExit(self):
         avatar = self.air.doId2do.get(self.air.getAvatarIdFromSender())
 
-        if not avatar or not self.userId:
-            self.d_rejectExit(avatar)
+        if not avatar:
+            self.notify.warning('Failed to request exit for non-existant avatar!')
+
+            self.air.logPotentialHacker(
+                message='Received requestExit from non-existant avatar',
+                targetAvId=avatar.doId, 
+                doId=doId,
+                interactType=interactType,
+                instant=instant)   
             return
 
         handle = self.handleRequestExit(avatar)
 
         if not handle:
-            self.d_rejectExit(avatar)
+            self.d_rejectExit(avatar.doId)
             return
 
-        self.b_setUserId(0)
+        if not self.MULTIUSE:
+            self.d_setUserId(0)
+        else:
+            self.sendUpdateToAvatarId(avatar.doId, 'setUserId', [0])
 
     def demandExit(self):
         avatar = self.air.doId2do.get(self.air.getAvatarIdFromSender())
 
-        if not avatar or not self.userID:
+        if not avatar:
+            self.notify.warning('Failed to demand exit for non-existant avatar!')
             return
 
-        self.b_setUserId(0)
+        self.d_setUserId(0)
 
     def handleRequestExit(self, avatar):
         return self.DENY
 
-    def d_rejectInteraction(self, avatar):
-        self.sendUpdateToAvatarId(avatar.doId, 'rejectInteraction', [])
+    def d_rejectInteraction(self, doId):
+        self.sendUpdateToAvatarId(doId, 'rejectInteraction', [])
 
-    def d_rejectExit(self, avatar):
-        self.sendUpdateToAvatarId(avatar.doId, 'rejectExit', [])
+    def d_rejectExit(self, doId):
+        self.sendUpdateToAvatarId(doId, 'rejectExit', [])
 
-    def d_offerOptions(self, avatar, optionIds, statusCodes):
-        self.sendUpdateToAvatarId(avatar, 'offerOptions', [optionIds, statusCodes])
+    def d_offerOptions(self, doId, optionIds, statusCodes):
+        self.sendUpdateToAvatarId(doId, 'offerOptions', [optionIds, statusCodes])
 
     def selectOption(self, optionId):
         pass
 
-    def setUserId(self, userId):
-        self.userId = userId
-
     def d_setUserId(self, userId):
         self.sendUpdate('setUserId', [userId])
-
-    def b_setUserId(self, userId):
-        self.setUserId(userId)
-        self.d_setUserId(userId)
 
     def setUniqueId(self, uniqueId):
         self.uniqueId = uniqueId

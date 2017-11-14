@@ -114,12 +114,14 @@ class DistributedIsland(DistributedGameArea, DistributedCartesianGrid, ZoneLOD, 
             elif detailLevel == 2:
                 sailingLOD.addSwitch(20000, 0)
                 sailingLOD.addSwitch(100000, 20000)
-            self.sailingLOD = self.attachNewNode(sailingLOD)
-            if self.dockingLOD:
-                self.dockingLOD.reparentTo(self.sailingLOD)
-                self.islandLowLod.reparentTo(self.sailingLOD)
+
+        self.sailingLOD = self.attachNewNode(sailingLOD)
+        if self.dockingLOD:
+            self.dockingLOD.reparentTo(self.sailingLOD)
             self.islandLowLod.reparentTo(self.sailingLOD)
-            self.islandLowLod.copyTo(self.sailingLOD)
+
+        self.islandLowLod.reparentTo(self.sailingLOD)
+        self.islandLowLod.copyTo(self.sailingLOD)
         self.loadWaterRing()
         gridSphereName = self.uniqueName('GridSphere')
         self.gridSphereEnterEvent = 'enter' + gridSphereName

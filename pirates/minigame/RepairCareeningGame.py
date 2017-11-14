@@ -191,49 +191,52 @@ class RepairCareeningGame(RepairMincroGame):
             elif self.scrubMeterBar.getSz() != 1.0:
                 self.scrubMeterBar.setSz(1.0)
                 self.powerFullSound.play()
-            completeCount = 0
-            barnacleHitThisRound = False
-            for b in self.currentBarnacles:
-                b.heat = max(0.0, b.heat - dt * 1.0)
-                b.barnacleGeom.setColor(1.0, 1 - b.heat, 1 - b.heat, 1.0)
-                if b.checkCollision(mousePosition):
-                    if mouseChange.length() > 0.0:
-                        barnacleHitThisRound = True
-                    b.reduceHP(mouseChange, powerScale)
-                if b.getCurrentOrNextState() in ['Clean', 'Falling']:
-                    completeCount += 1
 
-            if barnacleHitThisRound:
-                powerScrubOn = self.scrubMeterBar.getSz() > 0 and self.isMouseDown
-                self.playScrubBarnacleSound(powerScrubOn)
-            if self.lastCompleteCount != completeCount:
-                percent = int((completeCount + 0.0) / self.barnacleCount * 100)
-                self.repairGame.d_reportMincroGameProgress(percent)
-                self.lastCompleteCount = completeCount
-            if base.mouseWatcherNode.hasMouse():
-                mpos = base.mouseWatcherNode.getMouse()
-                mpos = Point3(mpos.getX(), mpos.getY(), 0.0)
-                mpos = aspect2d.getRelativePoint(render2d, mpos)
-                if self.brush.isStashed():
-                    self.brush.unstash()
-                if self.isMouseDown and self.scrubMeterBar.getSz() > 0:
-                    randomR = random.random() * 40.0 - 20.0
-                    randomScale = random.random() * 0.3
-                    self.brush.setScale(1.2 + randomScale)
-                    self.brush.setHpr(0, 0, randomR)
-                    self.brush.setPos(mpos.getX(), 0.0, mpos.getY())
-                else:
-                    self.brush.setScale(1.0)
-                    self.brush.setHpr(0, 0, 0)
-                    self.brush.setPos(mpos.getX(), 0.0, mpos.getY())
-            if completeCount == self.barnacleCount:
-                self.request('Outro')
-        return Task.cont
+        completeCount = 0
+        barnacleHitThisRound = False
+        for b in self.currentBarnacles:
+            b.heat = max(0.0, b.heat - dt * 1.0)
+            b.barnacleGeom.setColor(1.0, 1 - b.heat, 1 - b.heat, 1.0)
+            if b.checkCollision(mousePosition):
+                if mouseChange.length() > 0.0:
+                    barnacleHitThisRound = True
+                b.reduceHP(mouseChange, powerScale)
+            if b.getCurrentOrNextState() in ['Clean', 'Falling']:
+                completeCount += 1
+
+        if barnacleHitThisRound:
+            powerScrubOn = self.scrubMeterBar.getSz() > 0 and self.isMouseDown
+            self.playScrubBarnacleSound(powerScrubOn)
+        if self.lastCompleteCount != completeCount:
+            percent = int((completeCount + 0.0) / self.barnacleCount * 100)
+            self.repairGame.d_reportMincroGameProgress(percent)
+            self.lastCompleteCount = completeCount
+        if base.mouseWatcherNode.hasMouse():
+            mpos = base.mouseWatcherNode.getMouse()
+            mpos = Point3(mpos.getX(), mpos.getY(), 0.0)
+            mpos = aspect2d.getRelativePoint(render2d, mpos)
+            if self.brush.isStashed():
+                self.brush.unstash()
+            if self.isMouseDown and self.scrubMeterBar.getSz() > 0:
+                randomR = random.random() * 40.0 - 20.0
+                randomScale = random.random() * 0.3
+                self.brush.setScale(1.2 + randomScale)
+                self.brush.setHpr(0, 0, randomR)
+                self.brush.setPos(mpos.getX(), 0.0, mpos.getY())
+            else:
+                self.brush.setScale(1.0)
+                self.brush.setHpr(0, 0, 0)
+                self.brush.setPos(mpos.getX(), 0.0, mpos.getY())
+
+        if completeCount == self.barnacleCount:
+            self.request('Outro')
+
+        return task.cont
 
     def enterGame(self):
         RepairMincroGame.enterGame(self)
         self.lastCompleteCount = 0
-        taskMgr.add(self.updateTask, 'RepairCareeningGame.updateTask')
+        taskMgr.add(self.updateTask, 'RepairCareeningGame.updateTask-%d' % id(self))
         self.accept('mouse1', self.onMouseDown)
         self.accept('mouse1-up', self.onMouseUp)
         if base.mouseWatcherNode.hasMouse() and base.mouseWatcherNode.isButtonDown(MouseButton.one()):
@@ -241,7 +244,7 @@ class RepairCareeningGame(RepairMincroGame):
 
     def exitGame(self):
         RepairMincroGame.exitGame(self)
-        taskMgr.remove('RepairCareeningGame.updateTask')
+        taskMgr.remove('RepairCareeningGame.updateTask-%d' % id(self))
         self.ignore('mouse1')
         self.ignore('mouse1-up')
         self.brush.stash()

@@ -174,34 +174,37 @@ class PotionRecipe(DirectFrame):
                 self.levelColor = PotionGlobals.TextColorDisabled
             else:
                 self.levelColor = PotionGlobals.TextColor
-            if not self.available:
-                self.islandColor = PiratesGuiGlobals.TextOV6
+        if not self.available:
+            self.islandColor = PiratesGuiGlobals.TextOV6
+        else:
+            if not self.enabled:
+                self.islandColor = PotionGlobals.TextColorDisabled
             else:
-                if not self.enabled:
-                    self.islandColor = PotionGlobals.TextColorDisabled
-                else:
-                    self.islandColor = PotionGlobals.TextColor
-                if self.available and self.enabled:
-                    self.titleColor = PotionGlobals.TextColor
-                else:
-                    self.titleColor = PotionGlobals.TextColorDisabled
-                if self.title is not None:
-                    self.title.removeNode()
-                self.title = DirectLabel(parent=self.background, relief=None, text=self.nameText, text_scale=PiratesGuiGlobals.TextScaleTitleSmall, text_align=TextNode.ACenter, text_fg=self.titleColor, text_wordwrap=30, pos=(0.37,
-                                                                                                                                                                                                                                 0,
-                                                                                                                                                                                                                                 1.23), textMayChange=0)
-                if self.subtitle1 is not None:
-                    self.subtitle1.removeNode()
-                self.subtitle1 = DirectLabel(parent=self.background, relief=None, text=self.leveltext, text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ARight, text_fg=self.levelColor, text_wordwrap=30, pos=(0.35,
-                                                                                                                                                                                                                                0,
-                                                                                                                                                                                                                                1.18), textMayChange=0)
-                if self.subtitle2 is not None:
-                    self.subtitle2.removeNode()
-            self.subtitle2 = DirectLabel(parent=self.background, relief=None, text=self.islandtext, text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ALeft, text_fg=self.islandColor, text_wordwrap=30, pos=(0.39,
-                                                                                                                                                                                                                             0,
-                                                                                                                                                                                                                             1.18), textMayChange=0)
-            if self.subtitle3 is not None:
-                self.subtitle3.removeNode()
+                self.islandColor = PotionGlobals.TextColor
+
+        if self.available and self.enabled:
+            self.titleColor = PotionGlobals.TextColor
+        else:
+            self.titleColor = PotionGlobals.TextColorDisabled
+        if self.title is not None:
+            self.title.removeNode()
+
+        self.title = DirectLabel(parent=self.background, relief=None, text=self.nameText, text_scale=PiratesGuiGlobals.TextScaleTitleSmall, text_align=TextNode.ACenter, text_fg=self.titleColor, text_wordwrap=30, pos=(0.37,
+                                                                                                                                                                                                                         0,
+                                                                                                                                                                                                                         1.23), textMayChange=0)
+        if self.subtitle1 is not None:
+            self.subtitle1.removeNode()
+
+        self.subtitle1 = DirectLabel(parent=self.background, relief=None, text=self.leveltext, text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ARight, text_fg=self.levelColor, text_wordwrap=30, pos=(0.35,
+                                                                                                                                                                                                                        0,
+                                                                                                                                                                                                                        1.18), textMayChange=0)
+        if self.subtitle2 is not None:
+            self.subtitle2.removeNode()
+        self.subtitle2 = DirectLabel(parent=self.background, relief=None, text=self.islandtext, text_scale=PiratesGuiGlobals.TextScaleLarge, text_align=TextNode.ALeft, text_fg=self.islandColor, text_wordwrap=30, pos=(0.39,
+                                                                                                                                                                                                                         0,
+                                                                                                                                                                                                                         1.18), textMayChange=0)
+        if self.subtitle3 is not None:
+            self.subtitle3.removeNode()
         self.subtitle3 = DirectLabel(parent=self.background, relief=None, text=self.descText, text_scale=PiratesGuiGlobals.TextScaleMed, text_align=TextNode.ACenter, text_fg=self.titleColor, text_wordwrap=30, pos=(0.37,
                                                                                                                                                                                                                       0,
                                                                                                                                                                                                                       1.13), textMayChange=0)

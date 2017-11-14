@@ -20,6 +20,8 @@
 **/c/
 .idea/
 
+**/libpanda.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -119,14 +121,15 @@ ENV/
 
 # Darwin
 *.DS_Store
+Library/
 
 # Visual Studio
 .vs/
 
 # Game logs
 *.log
-
 logs/
+**/pirates-dev-log.txt
 
 # Screenshots
 *.jpeg
@@ -141,3 +144,10 @@ editor-src/
 
 # Personal PRC
 **/personal.prc
+
+# Tools/
+tools/
+
+# Compiler
+PiratesStart.build/
+PiratesStart.dis/

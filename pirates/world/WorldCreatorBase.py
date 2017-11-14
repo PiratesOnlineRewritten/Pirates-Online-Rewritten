@@ -245,7 +245,7 @@ class WorldCreatorBase():
 
                             else:
                                 fileList.add(model + '.bam')
-    
+
             objects = fileData.get('Objects')
             if objects:
                 for obj in objects.values():

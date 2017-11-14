@@ -62,8 +62,7 @@ class DistributedInteriorDoor(DistributedDoor):
 
     def loadOtherSide(self):
         return
-        localAvatar.setInterest(self.exteriorWorldParentId, self.exteriorWorldZoneId, [
-         'instanceInterest-Door'])
+        localAvatar.setInterest(self.exteriorWorldParentId, self.exteriorWorldZoneId, ['instanceInterest-Door'])
 
         def extFinishedCallback(ext):
             self.islandRequest = None

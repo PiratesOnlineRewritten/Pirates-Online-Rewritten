@@ -21,34 +21,14 @@ class RedeemCodeGUI(DirectFrame):
         topImage = gui_main.find('**/game_options_panel/top')
         topImage.setPos(0.52, 0, -0.15)
         gui_main.removeNode()
-        self.artFrame = DirectFrame(parent=aspect2dp, relief=None, image=topImage, image_scale=(0.24,
-                                                                                                0.24,
-                                                                                                0.24), pos=(0.1, 0.0, -0.2))
+        self.artFrame = DirectFrame(parent=aspect2dp, relief=None, image=topImage, image_scale=(0.24, 0.24, 0.24), pos=(0.1, 0.0, -0.2))
         self.artFrame.setBin('gui-fixed', 2)
-        self.blackout = DirectFrame(parent=aspect2dp, state=DGG.NORMAL, frameSize=(-5,
-                                                                                   5,
-                                                                                   -5,
-                                                                                   5), frameColor=(0.0,
-                                                                                                   0.0,
-                                                                                                   0.0,
-                                                                                                   0.4), pos=(0.0,
-                                                                                                              0.0,
-                                                                                                              0.0))
+        self.blackout = DirectFrame(parent=aspect2dp, state=DGG.NORMAL, frameSize=(-5, 5, -5, 5), frameColor=(0.0, 0.0, 0.0, 0.4), pos=(0.0, 0.0, 0.0))
         self.enterCode = GuiButton.GuiButton(parent=self.artFrame, text=PLocalizer.lConfirm, pos=(0.385, 0.0, -0.025), command=self.confirmCode)
         self.cancelCode = GuiButton.GuiButton(parent=self.artFrame, text=PLocalizer.lCancel, pos=(0.65, 0.0, -0.025), command=self.hideCode)
-        DirectLabel(parent=self.artFrame, relief=None, text=PLocalizer.ShopEnterCode, text_align=TextNode.ACenter, text_scale=PiratesGuiGlobals.TextScaleTitleSmall * 0.9, text_pos=(0.51,
-                                                                                                                                                                                     0.335), text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_font=PiratesGlobals.getInterfaceOutlineFont(), textMayChange=0)
-        DirectLabel(parent=self.artFrame, relief=None, text=PLocalizer.ShopCodeInst, text_align=TextNode.ACenter, text_scale=PiratesGuiGlobals.TextScaleLarge * 1.1, text_pos=(0.51,
-                                                                                                                                                                               0.25), text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_font=PiratesGlobals.getInterfaceOutlineFont(), textMayChange=0, text_wordwrap=12)
-        self.codeInput = DirectEntry(parent=self.artFrame, relief=DGG.GROOVE, scale=PiratesGuiGlobals.TextScaleExtraLarge, pos=(0.52,
-                                                                                                                                0,
-                                                                                                                                0.06), borderWidth=PiratesGuiGlobals.BorderWidth, frameColor=(0.0,
-                                                                                                                                                                                              0.0,
-                                                                                                                                                                                              0.0,
-                                                                                                                                                                                              1.0), text_align=TextNode.ACenter, width=15, numLines=1, focus=1, cursorKeys=1, text_fg=(1,
-                                                                                                                                                                                                                                                                                       1,
-                                                                                                                                                                                                                                                                                       1,
-                                                                                                                                                                                                                                                                                       1), suppressKeys=1, suppressMouse=1, autoCapitalize=0, command=self.confirmCode)
+        DirectLabel(parent=self.artFrame, relief=None, text=PLocalizer.ShopEnterCode, text_align=TextNode.ACenter, text_scale=PiratesGuiGlobals.TextScaleTitleSmall * 0.9, text_pos=(0.51, 0.335), text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_font=PiratesGlobals.getInterfaceOutlineFont(), textMayChange=0)
+        DirectLabel(parent=self.artFrame, relief=None, text=PLocalizer.ShopCodeInst, text_align=TextNode.ACenter, text_scale=PiratesGuiGlobals.TextScaleLarge * 1.1, text_pos=(0.51, 0.25), text_fg=PiratesGuiGlobals.TextFG2, text_shadow=PiratesGuiGlobals.TextShadow, text_font=PiratesGlobals.getInterfaceOutlineFont(), textMayChange=0, text_wordwrap=12)
+        self.codeInput = DirectEntry(parent=self.artFrame, relief=DGG.GROOVE, scale=PiratesGuiGlobals.TextScaleExtraLarge, pos=(0.52, 0, 0.06), borderWidth=PiratesGuiGlobals.BorderWidth, frameColor=(0.0, 0.0, 0.0, 1.0), text_align=TextNode.ACenter, width=15, numLines=1, focus=1, cursorKeys=1, text_fg=(1, 1, 1, 1), suppressKeys=1, suppressMouse=1, autoCapitalize=0, command=self.confirmCode)
         self.alertDialog = None
         self.accept('codeRedeemed', self.__handleCodeRedeem)
         return

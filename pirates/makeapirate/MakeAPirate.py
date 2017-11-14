@@ -78,84 +78,83 @@ class MakeAPirate(DirectObject, StateData.StateData, FSM.FSM):
         self.index = index
         self.subId = subId
         self.genderIdx = 0
-        self.wantNPCViewer = base.config.GetBool('want-npc-viewer', 0)
-        self.wantPicButtons = base.config.GetBool('want-gen-pics-buttons', 0)
-        self.wantIdleCentered = base.config.GetBool('want-idle-centered', 0)
+        self.wantNPCViewer = base.config.GetBool('want-npc-viewer', False)
+        self.wantPicButtons = base.config.GetBool('want-gen-pics-buttons', False)
+        self.wantIdleCentered = base.config.GetBool('want-idle-centered', False)
         if self.wantPicButtons:
             if not self.wantNPCViewer:
                 self.wantNPCViewer = True
                 self.notify.warning('Warning! want-gen-pics-buttons needs want-npc-viewer. wantNPCViewer overridden and set to TRUE')
-            self.wantMarketingViewer = base.config.GetBool('want-marketing-viewer', 0)
-            if isNPCEditor:
-                self.wantNPCViewer = 1
-            self.loadJackDialogs()
-            self.skipTutorial = base.config.GetBool('skip-tutorial', 0)
-            self.chooseFemale = base.config.GetBool('choose-female', 0)
-            self.noJailLight = base.config.GetBool('no-jail-light', 0)
-            if hasattr(base, 'pe') and base.pe:
-                self.noJailLight = True
-            if self.skipTutorial or isNPCEditor or self.avList[self.index] == None or self.avList[self.index] == OTPGlobals.AvatarSlotAvailable:
-                self.isTutorial = 0
-            else:
-                self.isTutorial = 1
-            self.isPaid = isPaid
-            self.lowestPage = 0
-            StateData.StateData.__init__(self, doneEvent)
-            self.phase = 3
-            self.isNPCEditor = isNPCEditor
-            for key in PiratesGlobals.ScreenshotHotkeyList:
-                self.accept(key, self.takeScreenShot)
-
-            self.accept('f12', self.toggleGUI)
-            self.accept('exitPlayPirates', self.handleCancel)
-            self.newPotAv = None
-            self.pirate = None
-            self.skeleton = None
-            self.cast = None
-            self.skeletonType = 0
-            self.confirmTempName = None
-            self.pageNames = []
-            self.pageTabs = []
-            self.currPageTabIndex = None
-            self.currPageIndex = None
-            self.names = [
-             '', '', '', '']
-            self.dnastring = None
-            self.entered = 0
-            if not self.isTutorial and not self.isNPCEditor:
-                self.initH = 180
-            else:
-                self.initH = 0
-            self.lastRot = self.initH
-            self.pirateHpr = Point3(self.initH, 0, 0)
-            self.piratePos = Point3(0, 0, 0)
-            self.leftTime = 1.6
-            self.rightTime = 1
-            self.slide = 0
-            self.lastLOD = 0
-            self.npcViewerLOD = -1
-            self.lastAnim = 0
-            self.aPos = None
-            self.avatarType = 0
-            if self.isNPCEditor:
-                self.editorAvatar = self.avList[self.index]
-                self.piratesEditor = piratesEditor
-                self.loadNPC = True
-                self.camAdjusted = False
-                self.avatarDummyNode = render.attachNewNode('Avatar Dummy Node')
-                self.avatarDummyNode.setPos(self.avList[self.index].getPos(render))
-                rot = self.avList[self.index].getHpr()
-                self.avatarDummyNode.setScale(self.avList[self.index].getScale())
-                self.avatarDummyNode.setHpr(rot[0], rot[1], rot[2])
-                camera.wrtReparentTo(self.avatarDummyNode)
-            self.nameList = []
-            self.shop = BODYSHOP
-            self.shopsVisited = []
-            self.music = None
-            self.soundBack = None
-            self.wantJewelry = hasattr(base, 'wantJewelry') or base.config.GetBool('want-jewelry', 0)
+        self.wantMarketingViewer = base.config.GetBool('want-marketing-viewer', False)
+        if isNPCEditor:
+            self.wantNPCViewer = 1
+        self.loadJackDialogs()
+        self.skipTutorial = base.config.GetBool('skip-tutorial', False)
+        self.chooseFemale = base.config.GetBool('choose-female', False)
+        self.noJailLight = base.config.GetBool('no-jail-light', False)
+        if hasattr(base, 'pe') and base.pe:
+            self.noJailLight = True
+        if self.skipTutorial or isNPCEditor or self.avList[self.index] == None or self.avList[self.index] == OTPGlobals.AvatarSlotAvailable:
+            self.isTutorial = 0
         else:
-            self.wantJewelry = base.wantJewelry
+            self.isTutorial = 1
+        self.isPaid = isPaid
+        self.lowestPage = 0
+        StateData.StateData.__init__(self, doneEvent)
+        self.phase = 3
+        self.isNPCEditor = isNPCEditor
+        for key in PiratesGlobals.ScreenshotHotkeyList:
+            self.accept(key, self.takeScreenShot)
+
+        self.accept('f12', self.toggleGUI)
+        self.accept('exitPlayPirates', self.handleCancel)
+        self.newPotAv = None
+        self.pirate = None
+        self.skeleton = None
+        self.cast = None
+        self.skeletonType = 0
+        self.confirmTempName = None
+        self.pageNames = []
+        self.pageTabs = []
+        self.currPageTabIndex = None
+        self.currPageIndex = None
+        self.names = [
+         '', '', '', '']
+        self.dnastring = None
+        self.entered = 0
+        if not self.isTutorial and not self.isNPCEditor:
+            self.initH = 180
+        else:
+            self.initH = 0
+        self.lastRot = self.initH
+        self.pirateHpr = Point3(self.initH, 0, 0)
+        self.piratePos = Point3(0, 0, 0)
+        self.leftTime = 1.6
+        self.rightTime = 1
+        self.slide = 0
+        self.lastLOD = 0
+        self.npcViewerLOD = -1
+        self.lastAnim = 0
+        self.aPos = None
+        self.avatarType = 0
+        if self.isNPCEditor:
+            self.editorAvatar = self.avList[self.index]
+            self.piratesEditor = piratesEditor
+            self.loadNPC = True
+            self.camAdjusted = False
+            self.avatarDummyNode = render.attachNewNode('Avatar Dummy Node')
+            self.avatarDummyNode.setPos(self.avList[self.index].getPos(render))
+            rot = self.avList[self.index].getHpr()
+            self.avatarDummyNode.setScale(self.avList[self.index].getScale())
+            self.avatarDummyNode.setHpr(rot[0], rot[1], rot[2])
+            camera.wrtReparentTo(self.avatarDummyNode)
+        self.nameList = []
+        self.shop = BODYSHOP
+        self.shopsVisited = []
+        self.music = None
+        self.soundBack = None
+
+        self.wantJewelry = hasattr(base, 'wantJewelry') or base.config.GetBool('want-jewelry', False) or base.wantJewelry
         if self.wantNPCViewer:
             self.numShops = len(ShopNames)
 
@@ -165,6 +164,7 @@ class MakeAPirate(DirectObject, StateData.StateData, FSM.FSM):
             __builtins__['yieldThread'] = yieldThread
         else:
             self.numShops = ShopNames.index('NameShop') + 1
+
         self.inRandomAll = False
         self.idleFSM = ClassicFSM('idleFSM', [
          State('default', self.enterIdleFSMDefault, self.exitIdleFSMDefault, [
@@ -176,7 +176,6 @@ class MakeAPirate(DirectObject, StateData.StateData, FSM.FSM):
         self.idleFSM.enterInitialState()
         self.superLowPirate = None
         self.guiConfirmDoneBox = None
-        return
 
     def getPirate(self):
         return self.pirate
@@ -196,7 +195,9 @@ class MakeAPirate(DirectObject, StateData.StateData, FSM.FSM):
                 self.jail.flattenMedium()
                 self.jail.reparentTo(render)
                 self.jail.setLightOff()
-            self.noJailLight or self.pirate.setH(self.initH)
+
+        if not self.noJailLight:
+            self.pirate.setH(self.initH)
             self.pirate.setZ(-1.5)
             light = DynamicLight.DynamicLight(type=DynamicLight.DYN_LIGHT_AMBIENT, parent=render, pos=VBase3(37.912, 12.061, 0.944), hpr=VBase3(176.273, 5.678, -0.212))
             self.ambientLight = light
@@ -275,7 +276,6 @@ class MakeAPirate(DirectObject, StateData.StateData, FSM.FSM):
                 self.offsetZoomHpr = camera.getHpr(self.avatarDummyNode)
             self.offsetZoomHpr = camera.getHpr(render)
         base.transitions.fadeIn()
-        return
 
     def exit(self):
         taskMgr.remove('avCreate-ZoomTask')
@@ -327,7 +327,6 @@ class MakeAPirate(DirectObject, StateData.StateData, FSM.FSM):
         if not self.isNPCEditor:
             base.cr.centralLogger.writeClientEvent('CUTSCENE_ONE_START')
         self.idleFSM = None
-        return
 
     def loadJackDialogs(self):
         self.jsd_anytime_1 = loadSfx(SoundGlobals.JSD_ANYTIME_01)
@@ -356,7 +355,6 @@ class MakeAPirate(DirectObject, StateData.StateData, FSM.FSM):
         self.jsd_shoe_barbossa = loadSfx(SoundGlobals.JSD_SHOE_BARB)
         self.jsd_shoe_good = loadSfx(SoundGlobals.JSD_SHOE_01)
         self.lastDialog = None
-        return
 
     def setupJackDialogs(self):
         self.JSD_ANYTIME = [
@@ -1099,8 +1097,9 @@ class MakeAPirate(DirectObject, StateData.StateData, FSM.FSM):
         self.shopsVisited = []
         if self.isNPCEditor:
             self.piratesEditor.updateNPC('Cancel')
-        self.acceptOnce(base.transitions.FadeOutEvent, lambda : messenger.send(self.doneEvent))
+
         base.transitions.fadeOut()
+        messenger.send(self.doneEvent)
 
     def handleDone(self):
         if self.guiConfirmDoneBox:
@@ -1159,57 +1158,55 @@ class MakeAPirate(DirectObject, StateData.StateData, FSM.FSM):
         if self.wantNPCViewer:
             self.tattooGui.save()
             self.jewelryGui.save()
+
         if self.skipTutorial:
-            newPotAv = PotentialAvatar.PotentialAvatar(0, [
-             'dbp', '', '', ''], self.pirate.style, self.index, 0)
+            newPotAv = PotentialAvatar.PotentialAvatar(0, ['dbp', '', '', ''], self.pirate.style, self.index, 0)
             self.newPotAv = newPotAv
+
         if self.isNPCEditor:
             if saveNPC:
                 self.editorAvatar.setDNAString(self.pirate.style)
                 self.piratesEditor.updateNPC('Save')
             else:
                 self.piratesEditor.updateNPC('Cancel')
+
             self.exit()
             self.unload()
 
-        def sendDone(value=1):
+        def sendDone():
             if not (self.isNPCEditor or self.wantNPCViewer):
-                messenger.send(self.doneEvent, [self.pirate.model.currentClothing])
+                messenger.send(self.doneEvent, [])
+
             base.transitions.fadeIn(1.0)
 
-        def populateAv(avId, subId):
+        def chooseAv(avId):
+            if not avId:
+                self.notify.error('An error occured when trying to create avatar!')
+
             self.avId = avId
-            self.acceptOnce('avatarPopulated', sendDone)
-            if self.nameGui.customName:
-                base.cr.sendWishName(avId, self.pirate.style.name)
-                base.cr.avatarManager.sendRequestPopulateAvatar(avId, self.pirate.style, 0, 0, 0, 0, 0)
-            else:
-                name = self.nameGui.getNumericName()
-                base.cr.avatarManager.sendRequestPopulateAvatar(avId, self.pirate.style, 1, name[0], name[1], name[2], name[3])
+            sendDone()
 
         def createAv():
-            self.ignore(base.transitions.FadeOutEvent)
-            self.acceptOnce('createdNewAvatar', populateAv)
-            base.cr.avatarManager.sendRequestCreateAvatar(self.subId)
+            self.acceptOnce('createdNewAvatar', chooseAv)
+            base.cr.csm.sendCreateAvatar(self.pirate.style, '', self.index)
 
         def acknowledgeTempName(value):
             self.confirmTempName.destroy()
             self.confirmTempName = None
-            if self.isTutorial or self.isNPCEditor or self.wantNPCViewer:
-                self.acceptOnce(base.transitions.FadeOutEvent, sendDone)
-            else:
-                self.acceptOnce(base.transitions.FadeOutEvent, createAv)
             base.transitions.fadeOut()
-            return
+            if self.isTutorial or self.isNPCEditor or self.wantNPCViewer:
+                sendDone()
+            else:
+                createAv()
 
         if self.nameGui.customName and not self.isNPCEditor and not self.confirmTempName:
             self.confirmTempName = PDialog.PDialog(text=PLocalizer.TempNameIssued, style=OTPDialog.Acknowledge, command=acknowledgeTempName)
         else:
-            if self.isTutorial or self.isNPCEditor or self.wantNPCViewer:
-                self.acceptOnce(base.transitions.FadeOutEvent, sendDone)
-            else:
-                self.acceptOnce(base.transitions.FadeOutEvent, createAv)
             base.transitions.fadeOut()
+            if self.isTutorial or self.isNPCEditor or self.wantNPCViewer:
+                sendDone()
+            else:
+                createAv()
 
     def toggleSlide(self):
         self.slide = 1 - self.slide

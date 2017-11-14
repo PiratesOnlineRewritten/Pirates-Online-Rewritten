@@ -79,7 +79,7 @@ class SkyGroup(NodePath):
         self.top.setTexture(self.tsSides[3], self.texTransparent)
         self.clouds.setTexture(self.tsSides[3], self.texTransparent)
         self.cloudIval = None
-        self.setCloudLevel(1)
+        self.setCloudLevel(TODGlobals.LIGHTCLOUDS)
         self.sunTrack = self.relativeCompass.attachNewNode('sunTrack')
         self.sunTrack.setHpr(0, 0, 0)
         self.sunWheelHeading = self.sunTrack.attachNewNode('sunWheelHeading')

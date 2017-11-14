@@ -5,6 +5,10 @@ from direct.directnotify import DirectNotifyGlobal
 from direct.distributed.ClockDelta import globalClockDelta
 from direct.interval.IntervalGlobal import *
 from pirates.ai import HolidayGlobals
+from pirates.effects.RainMist import RainMist
+from pirates.effects.RainDrops import RainDrops
+from pirates.effects.RainSplashes import RainSplashes
+from pirates.effects.RainSplashes2 import RainSplashes2
 from pirates.piratesbase import AvatarShadowCaster
 from pirates.piratesbase import PiratesGlobals
 from pirates.piratesbase import TODGlobals
@@ -21,10 +25,7 @@ class TimeOfDayManager(FSM.FSM, TimeOfDayManagerBase.TimeOfDayManagerBase):
     def __init__(self):
         FSM.FSM.__init__(self, 'TimeOfDayManager')
         TimeOfDayManagerBase.TimeOfDayManagerBase.__init__(self)
-        self.lightSwitch = [
-            0,
-            0,
-            0]
+        self.lightSwitch = [0, 0, 0]
         self.cycleType = TODGlobals.TOD_REGULAR_CYCLE
         self.cycleDuration = 0
         self.currentState = -1
@@ -40,8 +41,7 @@ class TimeOfDayManager(FSM.FSM, TimeOfDayManagerBase.TimeOfDayManagerBase):
         self.timeOffset = 0
         tempTime = globalClockDelta.getFrameNetworkTime(bits=32)
         self.startingServerTime = globalClockDelta.networkToLocalTime(tempTime)
-        self.startTodTime = globalClockDelta.networkToLocalTime(
-            globalClockDelta.getFrameNetworkTime(bits=32))
+        self.startTodTime = globalClockDelta.networkToLocalTime(globalClockDelta.getFrameNetworkTime(bits=32))
         self.lastWaterColor = Vec4(0, 0, 0, 0)
         self.lastWaterColorFactor = Vec4(0, 0, 0, 0)
         self.frontLightColor = Vec4(0, 0, 0, 0)
@@ -64,13 +64,13 @@ class TimeOfDayManager(FSM.FSM, TimeOfDayManagerBase.TimeOfDayManagerBase):
         self.targetMoonPhase = None
         self.moonJolly = 0
         self.moonJollyIval = None
-        self.softTOD = 1
-        if base.config.GetBool('want-soft-tod-changes', 0):
-            self.softTOD = 1
-
-        if base.config.GetBool('advanced-weather', 1):
-            pass
-
+        self.softTOD = base.config.GetBool('want-soft-tod-changes', True)
+        self.wantAdvancedWeather = base.config.GetBool('advanced-weather', True)
+        self.rainDrops = None
+        self.rainMist = None
+        self.rainSplashes = None
+        self.rainSplashes2 = None
+        self.rain = False
         self.skyGroup = SkyGroup.SkyGroup()
         self.skyGroup.reparentTo(camera)
         self.fixedSky = False
@@ -801,6 +801,41 @@ class TimeOfDayManager(FSM.FSM, TimeOfDayManagerBase.TimeOfDayManagerBase):
 
         self.moonJolly = jolly
 
+    def switchRain(self, rain):
+        if not self.rain and rain:
+            self.rainDrops = RainDrops(base.camera)
+            self.rainDrops.reparentTo(render)
+            self.rainDrops.startLoop()
+
+            self.rainMist = RainMist(base.camera)
+            self.rainMist.reparentTo(render)
+            self.rainMist.startLoop()
+
+            self.rainSplashes = RainSplashes(base.camera)
+            self.rainSplashes.reparentTo(render)
+            self.rainSplashes.startLoop()
+
+            self.rainSplashes2 = RainSplashes2(base.camera)
+            self.rainSplashes2.reparentTo(render)
+            self.rainSplashes2.startLoop()
+        elif self.rain and not rain:
+            self.rainDrops.stopLoop()
+            self.rainMist.stopLoop()
+            self.rainSplashes.stopLoop()
+            self.rainSplashes2.stopLoop()
+
+            self.rainDrops.destroy()
+            self.rainMist.destroy()
+            self.rainSplashes.destroy()
+            self.rainSplashes2.destroy()
+
+            self.rainDrops = None
+            self.rainMist = None
+            self.rainSplashes = None
+            self.rainSplashes2 = None 
+
+        self.rain = rain
+
     def _prepareState(self, stateId, environment=None):
         self.notify.debug('_prepareState %s' % stateId)
         if self.forcedStateEnabled:
@@ -898,6 +933,29 @@ class TimeOfDayManager(FSM.FSM, TimeOfDayManagerBase.TimeOfDayManagerBase):
 
         if self.avatarShadowCaster:
             self.avatarShadowCaster.setLightSrc(self.dlight)
+
+    def setWeatherId(self, weatherId, transitionTime=5.0):
+        if not self.wantAdvancedWeather:
+            return
+
+        if weatherId not in TODGlobals.WEATHER_TYPES:
+            self.notify.warning('Received invalid weather id: %d' % weatherId)
+            return
+
+        self.notify.debug('Setting weather to %d!' % weatherId)
+        weatherData = TODGlobals.WEATHER_TYPES[weatherId]
+        self.setCloudsType(weatherData['clouds'], transitionTime)
+
+        rainSequence = Sequence(
+            Wait(transitionTime),
+            Func(self.switchRain, weatherData['rain']))
+        rainSequence.start()
+
+    def setCloudsType(self, cloudType, duration=5.0):
+        if cloudType not in TODGlobals.CLOUD_TRANSITIONS:
+            return 
+        self.skyGroup.transitionClouds(cloudType, duration).start()
+        self.skyGroup.setSky(self.skyGroup.lastSky)
 
     def setSkyType(self, skyType):
         if skyType == TODGlobals.SKY_OFF:

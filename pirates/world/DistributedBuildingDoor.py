@@ -70,6 +70,7 @@ class DistributedBuildingDoor(DistributedDoor):
             self.privateInteriorId = 0
         else:
             self.privateInteriorId = interiorId
+
         self.loadInstanceWorld(worldId, worldZoneId, interiorId, autoFadeIn)
 
     def loadInstanceWorld(self, worldId, worldZoneId, interiorId, autoFadeIn):
@@ -80,27 +81,29 @@ class DistributedBuildingDoor(DistributedDoor):
             return
 
         self.areaRequest = self.cr.relatedObjectMgr.requestObjects([interiorId], eachCallback=areaFinishedCallback)
-        localAvatar.setInterest(worldId, worldZoneId, [
-         'instanceInterest-Door'])
+        localAvatar.setInterest(worldId, worldZoneId, ['instanceInterest-Door'])
 
     def loadInteriorAreaFinished(self, interior, autoFadeIn):
         oldParent = self.getParentObj()
         oldWorld = oldParent.getParentObj()
-        oldWorld.removeWorldInterest(oldParent)
+        oldWorld.goOffStage()
         localAvatar.clearInterestNamed(None, ['instanceInterest'])
+        localAvatar.clearInterestNamed(None, ['areaInterest'])
         localAvatar.replaceInterestTag('instanceInterest-Door', 'instanceInterest')
         world = interior.getParentObj()
-        world.addWorldInterest(interior)
+        interior.turnOn(localAvatar)
         self.setupOtherSideDoors()
         interior.reparentTo(render)
         interior.setAutoFadeInOnEnter(autoFadeIn)
         interior.enterInteriorFromDoor(self.doorIndex)
-        return
+        localAvatar.setInterest(interior.doId, PiratesGlobals.InteriorDoorZone, ['areaInterest'])
+        localAvatar.b_setLocation(interior.doId, PiratesGlobals.InteriorDoorZone)
 
     def requestInteraction(self, avId, interactType=0):
         if avId == localAvatar.doId and localAvatar.zombie and self.buildingUid != LocationConstants.LocationIds.KINGSHEAD_OUTER_DOOR:
             localAvatar.guiMgr.createWarning(PLocalizer.ZombieNoDoors, PiratesGuiGlobals.TextFG6)
             return
+
         DistributedDoor.requestInteraction(self, avId, interactType)
 
     def getDoorInfo(self):

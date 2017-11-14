@@ -89,6 +89,7 @@ from pirates.piratesgui.DialMeter import DialMeter
 from pirates.quest import QuestDB
 from pirates.piratesbase import Freebooter
 from pirates.inventory import ItemConstants
+from pirates.world import WorldGlobals
 
 class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, DistributedBattleAvatar, DistributedQuestAvatar, PAvatarHandle):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedPirate')
@@ -1107,11 +1108,13 @@ class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, Distribu
 
     def refreshName(self):
         if not hasattr(base, 'localAvatar') or localAvatar.isDeleted():
-            return
+            return None
+
         self.refreshStatusTray()
         if hasattr(self, 'nametag'):
             self.nametag.setName(self.getName())
             self.nametag.setDisplayName('        ')
+
         if self.guildName == '0' or self.guildName == '':
             guildName = PLocalizer.GuildDefaultName % self.guildId
         else:
@@ -1119,28 +1122,37 @@ class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, Distribu
         nameText = self.getNameText()
         if nameText:
             level = self.getLevel()
-            if self.inPvp:
-                if self != localAvatar:
-                    levelColor = self.cr.battleMgr.getExperienceColor(base.localAvatar, self)
-                else:
-                    levelColor = '\x01white\x01'
-                x2XPTempAwardIndicator = ''
-                if self.tempDoubleXPStatus:
-                    x2XPTempAwardIndicator = '\x05x2XPAwardIcon\x05'
-                if self.guildName == PLocalizer.GuildNoGuild:
-                    text = '%s%s  \x01smallCaps\x01%s%s%s%s\x02\x02' % (self.title, self.name, levelColor, PLocalizer.Lv, level, x2XPTempAwardIndicator)
-                else:
-                    text = '%s%s  \x01smallCaps\x01%s%s%s%s\x02\x02\n\x01guildName\x01%s\x02' % (self.title, self.name, levelColor, PLocalizer.Lv, level, x2XPTempAwardIndicator, guildName)
-                nameText['text'] = text
-                if Freebooter.getPaidStatus(self.doId):
-                    if self.getFounder():
-                        nameText['fg'] = (1, 1, 1, 1)
-                        nameText['font'] = PiratesGlobals.getPirateOutlineFont()
-                        nameText['text'] = base.config.GetBool('want-land-infamy', 0) or base.config.GetBool('want-sea-infamy', 0) or '\x05goldFounderIcon\x05 \x01goldFounder\x01%s\x02' % text
+            if self.inPvp and self != localAvatar:
+                levelColor = self.cr.battleMgr.getExperienceColor(
+                    base.localAvatar, self)
+            else:
+                levelColor = '\x01white\x01'
+            x2XPTempAwardIndicator = ''
+            if self.tempDoubleXPStatus:
+                x2XPTempAwardIndicator = '\x05x2XPAwardIcon\x05'
+
+            if self.guildName == PLocalizer.GuildNoGuild:
+                text = '%s%s  \x01smallCaps\x01%s%s%s%s\x02\x02' % (
+                    self.title, self.name, levelColor, PLocalizer.Lv, level, x2XPTempAwardIndicator)
+            else:
+                text = '%s%s  \x01smallCaps\x01%s%s%s%s\x02\x02\n\x01guildName\x01%s\x02' % (
+                    self.title, self.name, levelColor, PLocalizer.Lv, level, x2XPTempAwardIndicator, guildName)
+            nameText['text'] = text
+            if Freebooter.getPaidStatus(self.doId):
+                if self.getFounder():
+                    nameText['fg'] = (1, 1, 1, 1)
+                    nameText['font'] = PiratesGlobals.getPirateOutlineFont()
+                    if not base.config.GetBool(
+                            'want-land-infamy', 0) or base.config.GetBool('want-sea-infamy', 0):
+                        nameText['text'] = '\x05goldFounderIcon\x05 \x01goldFounder\x01%s\x02' % text
                     else:
                         nameText['text'] = '\x01goldFounder\x01%s\x02' % text
                 else:
-                    nameText['fg'] = (0.4, 0.3, 0.95, 1)
+                    nameText['fg'] = (
+                        0.40000000000000002,
+                        0.29999999999999999,
+                        0.94999999999999996,
+                        1)
                     nameText['font'] = PiratesGlobals.getPirateOutlineFont()
             else:
                 nameText['fg'] = (0.5, 0.5, 0.5, 1)
@@ -1150,45 +1162,57 @@ class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, Distribu
                     prefix = '\x01injuredRedTimer\x01%s\x02\x01injuredRed\x01\n%s\x02\n' % PLocalizer.InjuredFlag
                 else:
                     prefix = '\x01injuredRed\x01%s\x02\n' % PLocalizer.InjuredFlag
-            else:
-                if base.cr.avatarFriendsManager.checkIgnored(self.doId):
-                    prefix = '\x01ignoredPink\x01%s\x02\n' % PLocalizer.IngoredFlag
-                else:
-                    if self.isAFK:
-                        prefix = '\x01afkGray\x01%s\x02\n' % PLocalizer.AFKFlag
-                    elif self.getLookingForCrew():
-                        prefix = '\x01crewPurple\x01%s\x02\n' % PLocalizer.CrewLookingForAd
-                    badges = ''
-                    if self.isConfused:
-                        prefix = '\x05confusedIcon\x05\n'
-                    if self.badge and Freebooter.getPaidStatus(self.doId) and (base.config.GetBool('want-land-infamy', 0) or base.config.GetBool('want-sea-infamy', 0)):
-                        if self.badge[0]:
-                            textProp = TitleGlobals.Title2nametagTextProp[self.badge[0]]
-                            if textProp == 'goldFounder':
-                                if not Freebooter.getFounderStatus(self.doId):
-                                    pass
-                                else:
-                                    badges += '\x01white\x01\x05badge-%s-%s\x05\x02 ' % (self.badge[0], 1)
-                                    nameText['text'] = '\x01%s\x01%s\x02' % (textProp, nameText['text'])
-                            elif textProp:
-                                badges += '\x01white\x01\x05badge-%s-%s\x05\x02 ' % (self.badge[0], self.badge[1])
-                                nameText['text'] = '\x01%s\x01%s\x02' % (textProp, nameText['text'])
+            elif base.cr.avatarFriendsManager.checkIgnored(self.doId):
+                prefix = '\x01ignoredPink\x01%s\x02\n' % PLocalizer.IngoredFlag
+            elif self.isAFK:
+                prefix = '\x01afkGray\x01%s\x02\n' % PLocalizer.AFKFlag
+            elif self.getLookingForCrew():
+                prefix = '\x01crewPurple\x01%s\x02\n' % PLocalizer.CrewLookingForAd
+
+            badges = ''
+            if self.isConfused:
+                prefix = '\x05confusedIcon\x05\n'
+            elif self.badge and Freebooter.getPaidStatus(self.doId):
+                if base.config.GetBool(
+                        'want-land-infamy', 0) or base.config.GetBool('want-sea-infamy', 0):
+                    if self.badge[0]:
+                        textProp = TitleGlobals.Title2nametagTextProp[self.badge[0]]
+                        if textProp == 'goldFounder':
+                            if not Freebooter.getFounderStatus(self.doId):
+                                pass
                             else:
-                                badges += '\x01white\x01\x05badge-%s-%s\x05\x02 ' % (self.badge[0], self.badge[1])
-                nameText['text'] = prefix + badges + nameText['text']
-                if self.isInvisibleGhost() or self.isInvisible():
-                    nameText['text'] = ''
-                    if not self.isLocal():
-                        return
-            if self.getCrewIcon() and not self.gmNameTagEnabled:
+                                badges += '\x01white\x01\x05badge-%s-%s\x05\x02 ' % (
+                                    self.badge[0], 1)
+                                nameText['text'] = '\x01%s\x01%s\x02' % (
+                                    textProp, nameText['text'])
+                        elif textProp:
+                            badges += '\x01white\x01\x05badge-%s-%s\x05\x02 ' % (
+                                self.badge[0], self.badge[1])
+                            nameText['text'] = '\x01%s\x01%s\x02' % (
+                                textProp, nameText['text'])
+                        else:
+                            badges += '\x01white\x01\x05badge-%s-%s\x05\x02 ' % (
+                                self.badge[0], self.badge[1])
+
+            nameText['text'] = prefix + badges + nameText['text']
+            if self.isInvisibleGhost() or self.isInvisible():
+                nameText['text'] = ''
+                if not self.isLocal():
+                    return None
+
+            if self.getCrewIcon() and not (self.gmNameTagEnabled):
                 if self.getCrewIcon() != 2:
                     oldLabelText = nameText['text']
-                    nameText['text'] = '\x01white\x01\x05crewIcon%s\x05\x02\n%s' % (self.hasCrewIcon, oldLabelText)
+                    nameText['text'] = '\x01white\x01\x05crewIcon%s\x05\x02\n%s' % (
+                        self.hasCrewIcon, oldLabelText)
+
             if self.gmNameTagEnabled and self.isGM():
                 if self.getCrewIcon():
-                    nameText['text'] = '\x05gmNameTagLogo\x05\x01white\x01\x05crewIcon%s\x05\x02\n\x01%s\x01%s\x02\n%s' % (self.hasCrewIcon, self.getGMNameTagColor(), self.gmNameTagString, nameText['text'])
+                    nameText['text'] = '\x05gmNameTagLogo\x05\x01white\x01\x05crewIcon%s\x05\x02\n\x01%s\x01%s\x02\n%s' % (
+                        self.hasCrewIcon, self.getGMNameTagColor(), self.gmNameTagString, nameText['text'])
                 else:
-                    nameText['text'] = '\x05gmNameTagLogo\x05\n\x01%s\x01%s\x02\n%s' % (self.getGMNameTagColor(), self.gmNameTagString, nameText['text'])
+                    nameText['text'] = '\x05gmNameTagLogo\x05\n\x01%s\x01%s\x02\n%s' % (
+                        self.getGMNameTagColor(), self.gmNameTagString, nameText['text'])
 
     def setTutorialAck(self, tutorialAck):
         self.tutorialAck = tutorialAck
@@ -1275,10 +1299,11 @@ class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, Distribu
         return self.title + self.name
 
     def setGuildName(self, newname):
-        if newname == 'Null':
+        if not newname:
             self.guildName = PLocalizer.GuildNoGuild
         else:
             self.guildName = newname
+
         self.refreshName()
 
     def getGuildName(self):
@@ -1435,7 +1460,7 @@ class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, Distribu
 
     @report(types=['deltaStamp', 'module'], dConfigParam='teleport')
     def readyToTeleport(self, teleportMgr):
-        teleportMgr.initiateTeleport(0, '', shardId=self.getDefaultShard(), locationUid=self.returnLocation)
+        teleportMgr.initiateTeleport(PiratesGlobals.INSTANCE_MAIN, WorldGlobals.PiratesWorldSceneFileBase, shardId=self.getDefaultShard(), locationUid=self.returnLocation)
 
     def requestActivityAccepted(self):
         self.guiMgr.lookoutPage.requestActivityAccepted()
@@ -2482,10 +2507,10 @@ class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, Distribu
         self.cr.sendWishName(self.doId, self.style.name)
 
     def canTeleport(self):
-        return (self.teleportFlags & PiratesGlobals.TFNoTeleportOut).isZero()
+        return config.GetBool('ignore-teleport-requirements', (self.teleportFlags & PiratesGlobals.TFNoTeleportOut).isZero())
 
     def canTeleportTo(self):
-        return (self.teleportFlags & PiratesGlobals.TFNoTeleportTo).isZero()
+        return config.GetBool('ignore-teleport-requirements', (self.teleportFlags & PiratesGlobals.TFNoTeleportTo).isZero())
 
     def testTeleportFlag(self, flag):
         return not (self.teleportFlags & flag).isZero()
@@ -3252,6 +3277,8 @@ class DistributedPlayerPirate(DistributedPirateBase, DistributedPlayer, Distribu
         return None
 
     def getTutorialState(self):
+        if config.GetBool('force-tutorial-complete', False):
+            return PiratesGlobals.TUT_MET_JOLLY_ROGER
         return self.tutorialState
 
     def updateClientTutorialStatus(self, val):

@@ -110,28 +110,24 @@ class OTPClientRepository(ClientRepositoryBase):
         self.requiredLogin = config.GetString('required-login', 'auto')
         if self.requiredLogin == 'auto':
             self.notify.info('required-login auto.')
+        elif self.requiredLogin == 'green':
+            self.notify.error('The green code is out of date')
+        elif self.requiredLogin == 'blue':
+            if not self.blue:
+                self.notify.error('The tcr does not have the required blue login')
+        elif self.requiredLogin == 'playToken':
+            if not self.playToken:
+              self.notify.error('The tcr does not have the required playToken login')
+        elif self.requiredLogin == 'DISLToken':
+            if not self.DISLToken:
+              self.notify.error('The tcr does not have the required DISL token login')
+        elif self.requiredLogin == 'gameServer':
+            self.notify.info('Using game server name/password.')
+            self.DISLToken = None
         else:
-            if self.requiredLogin == 'green':
-                self.notify.error('The green code is out of date')
-            else:
-                if self.requiredLogin == 'blue':
-                    if not self.blue:
-                        self.notify.error('The tcr does not have the required blue login')
-                else:
-                    if self.requiredLogin == 'playToken':
-                        if not self.playToken:
-                            self.notify.error('The tcr does not have the required playToken login')
-                    elif self.requiredLogin == 'DISLToken':
-                        if not self.DISLToken:
-                            self.notify.error('The tcr does not have the required DISL token login')
-                    else:
-                        if self.requiredLogin == 'gameServer':
-                            self.notify.info('Using game server name/password.')
-                            self.DISLToken = None
-                        else:
-                            self.notify.error('The required-login was not recognized.')
+            self.notify.error('The required-login was not recognized.')
 
-        self.wantMagicWords = base.config.GetString('want-magic-words', '')
+        self.wantMagicWords = base.config.GetBool('want-magic-words', True)
         if self.launcher and hasattr(self.launcher, 'http'):
             self.http = self.launcher.http
         else:
@@ -150,15 +146,14 @@ class OTPClientRepository(ClientRepositoryBase):
         elif self.blue:
             self.loginInterface = LoginGoAccount.LoginGoAccount(self)
             self.notify.info('loginInterface: LoginGoAccount')
+        elif self.playToken:
+            self.loginInterface = LoginWebPlayTokenAccount(self)
+            self.notify.info('loginInterface: LoginWebPlayTokenAccount')
+
+        elif self.DISLToken:
+            self.loginInterface = LoginDISLTokenAccount(self)
+            self.notify.info('loginInterface: LoginDISLTokenAccount')
         else:
-            if self.playToken:
-                self.loginInterface = LoginWebPlayTokenAccount(self)
-                self.notify.info('loginInterface: LoginWebPlayTokenAccount')
-
-            if self.DISLToken:
-                self.loginInterface = LoginDISLTokenAccount(self)
-                self.notify.info('loginInterface: LoginDISLTokenAccount')
-
             self.loginInterface = LoginTTAccount.LoginTTAccount(self)
             self.notify.info('loginInterface: LoginTTAccount')
 
@@ -673,21 +668,20 @@ class OTPClientRepository(ClientRepositoryBase):
         self.stopReaderPollTask()
         if self.bootedIndex != None and OTPLocalizer.CRBootedReasons.has_key(self.bootedIndex):
             message = OTPLocalizer.CRBootedReasons[self.bootedIndex] % {'name': '???', 'dc_reason': self.bootedText}
+        elif self.bootedText != None:
+            message = OTPLocalizer.CRBootedReasonUnknownCode % self.bootedIndex
         else:
-            if self.bootedText != None:
-                message = OTPLocalizer.CRBootedReasonUnknownCode % self.bootedIndex
-            else:
-                message = OTPLocalizer.CRLostConnection
+            message = OTPLocalizer.CRLostConnection
 
         reconnect = 1
         if self.bootedIndex in (152, 127):
-            reconnect = 0
+          reconnect = 0
 
         self.launcher.setDisconnectDetails(self.bootedIndex, message)
         style = OTPDialog.Acknowledge
         if reconnect and self.loginInterface.supportsRelogin():
-            message += OTPLocalizer.CRTryConnectAgain
-            style = OTPDialog.TwoChoice
+          message += OTPLocalizer.CRTryConnectAgain
+          style = OTPDialog.TwoChoice
 
         dialogClass = OTPGlobals.getGlobalDialogClass()
         self.lostConnectionBox = dialogClass(doneEvent='lostConnectionAck', message=message, text_wordwrap=18, style=style)
@@ -785,32 +779,6 @@ class OTPClientRepository(ClientRepositoryBase):
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def exitCreateAvatar(self):
         pass
-
-    @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
-    def sendCreateAvatarMsg(self, avDNA, avName, avPosition):
-        datagram = PyDatagram()
-        datagram.addUint16(CLIENT_CREATE_AVATAR)
-        datagram.addUint16(0)
-        datagram.addString(avDNA.makeNetString())
-        datagram.addUint8(avPosition)
-        self.newName = avName
-        self.newDNA = avDNA
-        self.newPosition = avPosition
-        self.send(datagram)
-
-    @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
-    def sendCreateAvatar2Msg(self, avClass, avDNA, avName, avPosition):
-        className = avClass.__name__
-        dclass = self.dclassesByName[className]
-        datagram = PyDatagram()
-        datagram.addUint16(CLIENT_CREATE_AVATAR2)
-        datagram.addUint16(0)
-        datagram.addUint8(avPosition)
-        datagram.addUint16(dclass.getNumber())
-        self.newName = avName
-        self.newDNA = avDNA
-        self.newPosition = avPosition
-        self.send(datagram)
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def enterWaitForDeleteAvatarResponse(self, potAv):
@@ -1192,6 +1160,7 @@ class OTPClientRepository(ClientRepositoryBase):
         if self.music:
             self.music.stop()
             self.music = None
+
         self.garbageLeakLogger = GarbageLeakServerEventAggregator(self)
         self.handler = self.handlePlayGame
         self.accept(self.gameDoneEvent, self.handleGameDone)
@@ -1206,8 +1175,6 @@ class OTPClientRepository(ClientRepositoryBase):
 
         def checkScale(task):
             return Task.cont
-
-        return
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def handleGameDone(self):
@@ -1252,7 +1219,7 @@ class OTPClientRepository(ClientRepositoryBase):
         avId = self.handlerArgs['avId']
         if not self.SupportTutorial or base.localAvatar.tutorialAck:
             self.gameFSM.request('playGame', [hoodId, zoneId, avId])
-        elif base.config.GetBool('force-tutorial', 1):
+        elif base.config.GetBool('force-tutorial', False):
             if hasattr(self, 'skipTutorialRequest') and self.skipTutorialRequest:
                 self.gameFSM.request('playGame', [hoodId, zoneId, avId])
                 self.gameFSM.request('skipTutorialRequest', [hoodId, zoneId, avId])
@@ -1663,16 +1630,22 @@ class OTPClientRepository(ClientRepositoryBase):
         if self.notify.getDebug():
             print 'ClientRepository received datagram:'
             di.getDatagram().dumpHex(ostream)
+
         msgType = self.getMsgType()
         if msgType == 65535:
             self.lostConnection()
             return
+
+        if msgType == 6:
+          self.handleSystemMessage(di)
+          return
+
         if self.handler == None:
             self.handleMessageType(msgType, di)
         else:
             self.handler(msgType, di)
+
         self.considerHeartbeat()
-        return
 
     def askAvatarKnown(self, avId):
         return 0
@@ -1805,6 +1778,13 @@ class OTPClientRepository(ClientRepositoryBase):
         doId = di.getUint32()
         if not self.isLocalId(doId):
             self.disableDoId(doId, ownerView)
+
+        if doId == self.__currentAvId:
+            self.bootedIndex = 153
+            self.bootedText = ''
+            self.notify.warning('Avatar deleted! Closing connection...')
+            self.stopReaderPollTask()
+            self.lostConnection()
 
     def sendSetLocation(self, doId, parentId, zoneId):
         datagram = PyDatagram()

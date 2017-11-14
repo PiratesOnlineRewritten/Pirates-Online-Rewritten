@@ -19,7 +19,7 @@ from otp.friends import AvatarFriendInfo
 from otp.distributed import DistributedDistrict/AI/UD
 from otp.distributed import DistributedDirectory/AI
 from otp.uberdog import OtpAvatarManager/AI/UD
-from otp.uberdog import DistributedChatManager/AI/UD
+from otp.uberdog import DistributedChatManager/UD
 from otp.uberdog import SpeedchatRelay/UD
 from otp.distributed import CentralLogger/AI/UD
 from otp.web import SettingsMgr/AI/UD
@@ -252,34 +252,8 @@ dclass OtpAvatarManager : DistributedObject {
   shareAvatarResponse(uint32, uint32, uint8);
 };
 
-dclass DistributedChatManager : DistributedObject {
-  online();
-  adminChat(uint32, string);
-  setAvatarLocation(uint32, uint32, uint32);
-  setAvatarCrew(uint32, uint32);
-  setAvatarGuild(uint32, uint32);
-  chatParentId(uint32) airecv clsend;
-  chatZoneId(uint32) airecv clsend;
-  chatFace(uint32) airecv clsend;
-  chatEmote(uint16) airecv clsend;
-  chatEmoteTarget(uint32) airecv clsend;
-  chatIndex(uint16) airecv clsend;
-  chatString(string(0-256)) airecv clsend;
-  chatToAvatarIndex : chatZoneId, chatIndex;
-  chatParentZoneFaceEmoteWithTargetIndex : chatParentId, chatZoneId, chatFace, chatEmote, chatEmoteTarget, chatIndex;
-  chatToAvatarString : chatZoneId, chatString;
-  chatParentZoneFaceEmoteWithTargetString : chatParentId, chatZoneId, chatFace, chatEmote, chatEmoteTarget, chatString;
-  speedChatTo(uint16) airecv clsend;
-  speedChatFrom(uint32, uint16);
-  speedChatCustomTo(uint16) airecv clsend;
-  speedChatCustomFrom(uint32, uint16);
-  whisperSCTo(uint32, uint16) airecv clsend;
-  whisperSCFrom(uint32, uint16);
-  whisperSCCustomTo(uint32, uint16) airecv clsend;
-  whisperSCCustomFrom(uint32, uint16);
-  whisperSCEmoteTo(uint32, uint16) airecv clsend;
-  whisperSCEmoteFrom(uint32, uint16);
-  whisperIgnored(uint32);
+dclass DistributedChatManager : DistributedObjectGlobal {
+  chatMessage(string(0-256), uint8) clsend;
 };
 
 dclass FriendManager : DistributedObject {
@@ -453,7 +427,7 @@ dclass PlayerFriendsManager : DistributedObject, TalkPath_account {
   removePlayerFriend(uint32);
 };
 
-dclass SpeedchatRelay : DistributedObject, TalkPath_account {
+dclass SpeedchatRelay : DistributedObjectGlobal, TalkPath_account {
   forwardSpeedchat(uint32, uint8, uint32 [], uint32, string(0-256), uint8) clsend;
 };
 

@@ -1,9 +1,9 @@
-from pandac.PandaModules import *
+from panda3d.core import NodePath
 
 class LevelEntity(NodePath):
 
     def __init__(self):
-        NodePath.NodePath.__init__(self, 'LevelEntity')
+        NodePath.__init__(self, 'LevelEntity')
 
     def setProperty(self, propertyName, propertyValue):
         if propertyName == 'None':

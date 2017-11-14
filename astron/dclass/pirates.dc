@@ -61,8 +61,10 @@ from pirates.interact import DistributedSearchableContainer/AI
 from pirates.minigame import DistributedLock/AI
 from pirates.minigame import DistributedLockDoor/AI
 from pirates.creature import DistributedCreature/AI
+from pirates.creature import DistributedSeaSerpent/AI
 from pirates.creature import DistributedAnimal/AI
 from pirates.creature import DistributedRaven/AI
+from pirates.creature import DistributedSeagull/AI
 from pirates.kraken import Kraken/AI
 from pirates.kraken import GrabberTentacle/AI
 from pirates.kraken import HolderTentacle/AI
@@ -92,7 +94,7 @@ from pirates.instance import DistributedInstanceBase/AI
 from pirates.instance import DistributedMainWorld/AI
 from pirates.instance import DistributedWelcomeWorld/AI
 from pirates.instance import DistributedInstanceWorld/AI
-from pirates.instance import DistributedTeleportZone/AI/UD
+from pirates.instance import DistributedTeleportZone/AI
 from pirates.instance import DistributedTeleportMgr/AI
 from pirates.instance import DistributedTravelAgent/AI/UD
 from pirates.instance import DistributedMatchMaker/AI/UD
@@ -292,6 +294,7 @@ dclass DistributedTimeOfDayManager : DistributedObject {
   setEnvSubs(envSubEntry []) required broadcast ram;
   setMoonPhaseChange(int8, int16/100, int16/100, int32) required broadcast ram;
   setMoonJolly(int8) required broadcast ram;
+  setWeather(int16, int32) required broadcast ram;
 };
 
 dclass DistributedGameStatManager : DistributedObject {
@@ -615,7 +618,14 @@ dclass DistributedMovingObject : DistributedSmoothNode, DistributedTargetableObj
   setAggroMode(uint8) required broadcast ram;
 };
 
-dclass DistributedInteractive : DistributedNode {
+dclass DistributedLocatableObject {
+  requestRegionUpdate(string) clsend airecv;
+  enterAreaSphere(string, string) clsend airecv;
+  leaveAreaSphere(string, string) clsend airecv;
+  locationChange(string);
+};
+
+dclass DistributedInteractive : DistributedNode, DistributedLocatableObject {
   requestInteraction(uint32, uint8, bool) clsend airecv;
   requestExit() clsend airecv;
   demandExit() clsend airecv;
@@ -1001,7 +1011,7 @@ dclass DistributedBattleAvatar : DistributedReputationAvatar, WeaponBase, Teamab
   setSkillEffects(BuffList) required broadcast ram ownrecv;
   setEnsnaredTargetId(uint32) required broadcast ram;
   interrupted(uint8) airecv clsend;
-  setLevel(uint16=0) required broadcast ram ownrecv;
+  setLevel(uint16=0) required broadcast ram ownrecv db;
   battleRandomSync();
   setVisZone(string) broadcast ram ownsend;
   setInInvasion(bool) required broadcast ram;
@@ -1012,7 +1022,7 @@ dclass DistributedBattleAvatar : DistributedReputationAvatar, WeaponBase, Teamab
 
 dclass DistributedBattleNPC : DistributedBattleAvatar {
   setName(string) required broadcast ram;
-  setSpawnPos(int16/10, int16/10, int16/10) required broadcast ram;
+  setSpawnPosHpr(int16/10, int16/10, int16/10, int16%360/10, int16%360/10, int16%360/10) required broadcast ram;
   setAmbush(uint8) broadcast ram;
   ambushIntroDone() airecv clsend;
   boardVehicle(uint32) broadcast ram;
@@ -1069,6 +1079,9 @@ dclass DistributedAnimal : DistributedCreature {
 };
 
 dclass DistributedRaven : DistributedCreature {
+};
+
+dclass DistributedSeagull : DistributedCreature {
 };
 
 dclass DistributedBossCreature : DistributedCreature, Boss {
@@ -1263,7 +1276,7 @@ struct MAPClothes {
 dclass DistributedPlayerPirate : DistributedPlayer, DistributedBattleAvatar, HumanDNA, DistributedQuestAvatar {
   setParentingRules(string, string) broadcast ram;
   setAvatarType(AvatarType) required broadcast ram;
-  setDNAString(blob) required broadcast ram db;
+  setDNAString(blob) required broadcast ownrecv db;
   cueRegenerate() broadcast;
   submitErrorLog(string) airecv clsend;
   requestBodyShapeTranslation(uint8) ownsend airecv;
@@ -1305,8 +1318,8 @@ dclass DistributedPlayerPirate : DistributedPlayer, DistributedBattleAvatar, Hum
   setBandId(uint32=0, uint32=0) required broadcast ram ownrecv;
   requestLookoutInvite(uint32, string, uint32, uint32, resultPair []);
   unlimitedInviteNotice(uint32);
-  setGuildId(uint32=0) required airecv broadcast ram;
-  setGuildName(string="") required broadcast ram;
+  setGuildId(uint32=0) required broadcast db ownrecv;
+  setGuildName(string="") required broadcast db ownrecv;
   setMaxHp(int16=250) required broadcast db;
   setHp(int16=250, uint8=0) required broadcast db ownrecv;
   setBandPvp(bool) clsend airecv;
@@ -1359,7 +1372,7 @@ dclass DistributedPlayerPirate : DistributedPlayer, DistributedBattleAvatar, Hum
   sendFailedLootTradeMessage(bool) ownrecv;
   setLuck(int16) required broadcast;
   setMaxLuck(int16) required broadcast db;
-  setMojo(int16=50) required broadcast ownrecv;
+  setMojo(int16=50) required broadcast ownrecv db;
   setMaxMojo(int16=50) required broadcast db;
   setSwiftness(int16) required broadcast;
   setMaxSwiftness(int16) required broadcast db;
@@ -1437,11 +1450,39 @@ struct InterestLocations {
 };
 
 dclass DistributedTeleportMgr : DistributedObject {
+  setParentingRules(string, string) broadcast ram;
+  initiateTeleport(uint8, uint8, uint32, string, uint32, string, int32, uint32, uint32) airecv clsend;
+  initiateTeleportAI(uint8, string);
+  teleportHasBegun(uint8, uint8, string, int32);
+  beginTeleportPull(uint32 [], string, uint8, string, uint32, uint8, uint32, uint32, int32, resultPair [], shipList [], uint32, uint32);
+  beginDeployThenTeleportPull(uint32, string, uint32);
+  requestTargetsLocation(uint32) airecv clsend;
+  _localTeleportToIdResponse(uint32, uint32);
+  requestTeleportToIsland(string) airecv clsend;
+  teleportToIslandResponse(uint32, uint32);
+  stowawayTeleportResponse(uint32, uint32);
+  requestTeleportToFishingShip() airecv clsend;
+  teleportToFishingShipResponse(uint32);
+  requestClearPreventDamage() airecv clsend;
+  requestCrossShardDeploy(uint32, string, uint32) clsend airecv;
+  setWelcomeShardMin(uint16);
+  createShardTeleport(DoId);
+  createLoginTeleport(DoId);
+  createTutorialTeleport(DoId);
+  createWelcomeWorldTeleport(DoId);
+  createLeaveWelcomeWorldTeleport(DoId, DoId);
+  createPlayerTeleport(DoId, DoId);
+  createInstanceTeleport(DoId [], uint8, string, DoId);
+  requestShardTeleport(DoId) clsend airecv;
+  requestPlayerTeleport(DoId, DoId) clsend airecv;
+  requestIslandTeleport(string) clsend airecv;
   requestInstanceTeleport(uint8, string) clsend airecv;
-  confirmTeleport(bool, InterestLocations [], DoId, DoId);
-  teleportInitiated() clsend airecv;
-  teleportComplete() clsend airecv;
-  teleportCleanup();
+  requestLocalTeleport() clsend airecv;
+  teleportMutexAcquired(uint32) airecv;
+  teleportMutexAcquiredWithId(uint32, DoId) airecv;
+  teleportMutexDeclined(uint32) airecv;
+  failTeleportRequest(int8);
+  notifyFriendVisit(uint32);
 };
 
 dclass DistributedTravelAgent : DistributedObjectGlobal {
@@ -2395,17 +2436,17 @@ dclass CodeRedemption : DistributedObject, CallbackObject {
   notifyClientCodeRedeemStatus(uint8, int32, uint32);
 };
 
-dclass HolidayManager : DistributedObject {
-  online();
-  setHoliday(uint32, int32, uint8, bool);
-  manualSetHoliday(uint32, uint8) broadcast airecv;
-  disableHoliday(uint32, bool) broadcast airecv;
-  dropSchedule(uint32, int32) broadcast airecv;
-  requestHolidayBroadcast() broadcast airecv;
-  requestOverrides(uint32, uint32);
-  waitForHolidayStart(uint32, uint16, int32, uint16 [], uint16 []) broadcast airecv;
-  startHoliday(uint32, uint16, int32, uint16 [], uint16 []) broadcast airecv;
-  createHolidays(uint32, uint32);
+dclass HolidayManager : DistributedObjectGlobal {
+  registerAI(uint32);
+  unregisterAI(uint32);
+  registrationConfirm(uint32) airecv;
+  requestRegister() broadcast airecv;
+  startHoliday(uint32, int8, uint32, bool) broadcast airecv;
+  endHoliday(uint32) broadcast airecv;
+  requestHolidayRemoval(uint32);
+  requestHolidayList();
+  requestChooserHoliday() clsend;
+  requestChooserHolidayResponse(uint32[]);
 };
 
 dclass PiratesSettingsMgr : SettingsMgr {
@@ -2575,13 +2616,11 @@ dclass DistributedWreckedDelFuegoTown : DistributedPostInvasionObject {
 
 dclass DistributedPotionGame : DistributedObject {
   setColorSet(uint8(0-5)) required;
-  start(uint8(0-5));
   completeRecipe(uint8, bool) clsend airecv;
   claimXPBonus(uint8(0-17)) clsend airecv;
   completeSurvival(uint32, uint32) clsend airecv;
   setHintsActive(bool) clsend airecv;
   setXpBonus(uint32) broadcast;
-  stop();
   reset() clsend airecv;
   checkExit();
   finish() clsend airecv;

@@ -389,7 +389,7 @@ ChestTattoo = 'Chest Tattoo'
 ArmTattoo = 'Arm Tattoo'
 FaceTattoo = 'Face Tattoo'
 SimpleStoreClickPreview = 'Click on the item to preview'
-MerchantStore = 'Merchant Store'
+MerchantStore = 'Merchant'
 StowawayMenuTitle = 'Stowaway Destinations'
 TailorStore = 'Accessories Store'
 TailorPurchase = 'Purchases'
@@ -1751,7 +1751,111 @@ LegendaryFishingGui = {
     'CatchIt': ['Catch It!', 'Click on the handle!']
 }
 ShipClassNames = {
-    ShipGlobals.WARSHIPL1: 'Light Frigate', ShipGlobals.WARSHIPL2: 'Frigate', ShipGlobals.WARSHIPL3: 'War Frigate', ShipGlobals.MERCHANTL1: 'Light Galleon', ShipGlobals.MERCHANTL2: 'Galleon', ShipGlobals.MERCHANTL3: 'War Galleon', ShipGlobals.INTERCEPTORL1: 'Light Sloop', ShipGlobals.INTERCEPTORL2: 'Sloop', ShipGlobals.INTERCEPTORL3: 'War Sloop', ShipGlobals.BRIGL1: 'Light Brig', ShipGlobals.BRIGL2: 'Brig', ShipGlobals.BRIGL3: 'War Brig', ShipGlobals.SHIP_OF_THE_LINE: 'Ship of the Line', ShipGlobals.HMS_VICTORY: 'HMS Victory', ShipGlobals.HMS_NEWCASTLE: 'HMS Newcastle', ShipGlobals.HMS_INVINCIBLE: 'HMS Invincible', ShipGlobals.EITC_INTREPID: 'EITC Intrepid', ShipGlobals.EITC_CONQUERER: 'EITC Conqueror', ShipGlobals.EITC_LEVIATHAN: 'EITC Leviathan', ShipGlobals.GOLIATH: 'Goliath', ShipGlobals.HUNTER_VENGEANCE: 'Vengeance', ShipGlobals.HUNTER_CUTTER_SHARK: 'Cutter Shark', ShipGlobals.HUNTER_FLYING_STORM: 'Flying Storm', ShipGlobals.HUNTER_KILLYADED: 'Killyaded', ShipGlobals.HUNTER_RED_DERVISH: 'Red Dervish', ShipGlobals.HUNTER_CENTURY_HAWK: 'Century Hawk', ShipGlobals.HUNTER_SCORNED_SIREN: 'Scorned Siren', ShipGlobals.HUNTER_TALLYHO: 'Tally-ho', ShipGlobals.HUNTER_BATTLEROYALE: 'Battle-Royale', ShipGlobals.HUNTER_EN_GARDE: 'En-Garde', ShipGlobals.EL_PATRONS_SHIP: 'El Patrons Ship', ShipGlobals.P_SKEL_PHANTOM: 'Phantom', ShipGlobals.P_SKEL_REVENANT: 'Revenant', ShipGlobals.P_SKEL_CEREBUS: 'Cerberus', ShipGlobals.P_NAVY_KINGFISHER: 'Kingfisher', ShipGlobals.P_EITC_WARLORD: 'Warlord', ShipGlobals.NAVY_KRAKEN_HUNTER: 'Navy Kraken Hunter', 'AnyLargeShip': 'Galleon or Frigate', 'AnyWarShip': 'Frigate', 'AnyL7PlusShip': 'Level 7+ ship', 'AnyL7PlusNavyShip': 'Level 7+ Navy ship', 'AnyL9PlusShip': 'Level 9+ ship', 'AnyL9PlusNavyShip': 'Level 9+ Navy ship', 'AnyL13PlusShip': 'Level 13+ ship', 'AnyL13PlusNavyShip': 'Level 13+ Navy ship', 'AnyEITCSeaViper': 'Sea Viper', 'AnyEITCMarauder': 'Marauder', 'AnyEITCBarracuda': 'Barracuda', 'AnyEITCCorvette': 'Corvette', 'AnyFrenchShadowCrow': 'French Shadow Crow', 'AnyFrenchHellhound': 'French Cerberus', 'AnyFrenchBloodScourge': 'French Blood Scourge', 'AnySpanishShadowCrow': 'Spanish Shadow Crow', 'AnySpanishHellhound': 'Spanish Cerberus', 'AnySpanishBloodScourge': 'Spanish Blood Scourge', 'AnyCerberus': 'French or Spanish Cerberus', ShipGlobals.SKEL_WARSHIPL3: 'War Frigate', ShipGlobals.SKEL_INTERCEPTORL3: 'War Sloop', ShipGlobals.QUEEN_ANNES_REVENGE: 'Legendary Ship', ShipGlobals.BLACK_PEARL: 'Legendary Ship', ShipGlobals.FLYING_DUTCHMAN: 'Legendary Ship', ShipGlobals.STUMPY_SHIP: 'Light Sloop', ShipGlobals.GOLIATH: 'The Goliath', ShipGlobals.JOLLY_ROGER: 'Legendary Ship', ShipGlobals.NAVY_FERRET: 'Navy Ferret', ShipGlobals.NAVY_GREYHOUND: 'Navy Greyhound', ShipGlobals.NAVY_KINGFISHER: 'Navy Kingfisher', ShipGlobals.NAVY_PREDATOR: 'Navy Predator', ShipGlobals.NAVY_BULWARK: 'Navy Bulwark', ShipGlobals.NAVY_VANGUARD: 'Navy Vanguard', ShipGlobals.NAVY_MONARCH: 'Navy Monarch', ShipGlobals.NAVY_COLOSSUS: 'Navy Colossus', ShipGlobals.NAVY_PANTHER: 'Navy Panther', ShipGlobals.NAVY_CENTURION: 'Navy Centurion', ShipGlobals.NAVY_MAN_O_WAR: 'Navy Man-O-War', ShipGlobals.NAVY_DREADNOUGHT: 'Navy Dreadnought', ShipGlobals.NAVY_BASTION: 'Navy Bastion', ShipGlobals.NAVY_ELITE: 'Navy Elite', ShipGlobals.EITC_SEA_VIPER: 'EITC Sea Viper', ShipGlobals.EITC_BLOODHOUND: 'EITC Bloodhound', ShipGlobals.EITC_BARRACUDA: 'EITC Barracuda', ShipGlobals.EITC_CORSAIR: 'EITC Corsair', ShipGlobals.EITC_SENTINEL: 'EITC Sentinel', ShipGlobals.EITC_IRONWALL: 'EITC Ironwall', ShipGlobals.EITC_OGRE: 'EITC Ogre', ShipGlobals.EITC_BEHEMOTH: 'EITC Behemoth', ShipGlobals.EITC_CORVETTE: 'EITC Corvette', ShipGlobals.EITC_MARAUDER: 'EITC Marauder', ShipGlobals.EITC_WARLORD: 'EITC Warlord', ShipGlobals.EITC_JUGGERNAUT: 'EITC Juggernaut', ShipGlobals.EITC_TYRANT: 'EITC Tyrant', ShipGlobals.SKEL_PHANTOM: 'Phantom', ShipGlobals.SKEL_REVENANT: 'Revenant', ShipGlobals.SKEL_STORM_REAPER: 'Storm Reaper', ShipGlobals.SKEL_BLACK_HARBINGER: 'Black Harbinger', ShipGlobals.SKEL_DEATH_OMEN: 'Death Omen', ShipGlobals.SKEL_SHADOW_CROW_FR: 'French Shadow Crow', ShipGlobals.SKEL_HELLHOUND_FR: 'French Cerberus', ShipGlobals.SKEL_BLOOD_SCOURGE_FR: 'French Blood Scourge', ShipGlobals.SKEL_SHADOW_CROW_SP: 'Spanish Shadow Crow', ShipGlobals.SKEL_HELLHOUND_SP: 'Spanish Cerberus', ShipGlobals.SKEL_BLOOD_SCOURGE_SP: 'Spanish Blood Scourge'
+    ShipGlobals.WARSHIPL1: 'Light Frigate', 
+    ShipGlobals.WARSHIPL2: 'Frigate', 
+    ShipGlobals.WARSHIPL3: 'War Frigate', 
+    ShipGlobals.MERCHANTL1: 'Light Galleon', 
+    ShipGlobals.MERCHANTL2: 'Galleon', 
+    ShipGlobals.MERCHANTL3: 'War Galleon', 
+    ShipGlobals.INTERCEPTORL1: 'Light Sloop', 
+    ShipGlobals.INTERCEPTORL2: 'Sloop', 
+    ShipGlobals.INTERCEPTORL3: 'War Sloop', 
+    ShipGlobals.BRIGL1: 'Light Brig', 
+    ShipGlobals.BRIGL2: 'Brig', 
+    ShipGlobals.BRIGL3: 'War Brig', 
+    ShipGlobals.CARRACKL1: 'Light Carrack',
+    ShipGlobals.CARRACKL2: 'Carrack',
+    ShipGlobals.CARRACKL3: 'War Carrack',
+    ShipGlobals.SHIP_OF_THE_LINE: 'Ship of the Line', 
+    ShipGlobals.HMS_VICTORY: 'HMS Victory', 
+    ShipGlobals.HMS_NEWCASTLE: 'HMS Newcastle', 
+    ShipGlobals.HMS_INVINCIBLE: 'HMS Invincible', 
+    ShipGlobals.EITC_INTREPID: 'EITC Intrepid', 
+    ShipGlobals.EITC_CONQUERER: 'EITC Conqueror', 
+    ShipGlobals.EITC_LEVIATHAN: 'EITC Leviathan', 
+    ShipGlobals.GOLIATH: 'Goliath', 
+    ShipGlobals.HUNTER_VENGEANCE: 'Vengeance', 
+    ShipGlobals.HUNTER_CUTTER_SHARK: 'Cutter Shark', 
+    ShipGlobals.HUNTER_FLYING_STORM: 'Flying Storm', 
+    ShipGlobals.HUNTER_KILLYADED: 'Killyaded', 
+    ShipGlobals.HUNTER_RED_DERVISH: 'Red Dervish', 
+    ShipGlobals.HUNTER_CENTURY_HAWK: 'Century Hawk', 
+    ShipGlobals.HUNTER_SCORNED_SIREN: 'Scorned Siren', 
+    ShipGlobals.HUNTER_TALLYHO: 'Tally-ho', 
+    ShipGlobals.HUNTER_BATTLEROYALE: 'Battle-Royale', 
+    ShipGlobals.HUNTER_EN_GARDE: 'En-Garde', 
+    ShipGlobals.EL_PATRONS_SHIP: 'El Patrons Ship', 
+    ShipGlobals.P_SKEL_PHANTOM: 'Phantom', 
+    ShipGlobals.P_SKEL_REVENANT: 'Revenant', 
+    ShipGlobals.P_SKEL_CEREBUS: 'Cerberus', 
+    ShipGlobals.P_NAVY_KINGFISHER: 'Kingfisher', 
+    ShipGlobals.P_EITC_WARLORD: 'Warlord', 
+    ShipGlobals.NAVY_KRAKEN_HUNTER: 'Navy Kraken Hunter', 
+    'AnyLargeShip': 'Galleon or Frigate', 
+    'AnyWarShip': 'Frigate', 'AnyL7PlusShip': 
+    'Level 7+ ship', 
+    'AnyL7PlusNavyShip': 'Level 7+ Navy ship', 
+    'AnyL9PlusShip': 'Level 9+ ship', 
+    'AnyL9PlusNavyShip': 'Level 9+ Navy ship', 
+    'AnyL13PlusShip': 'Level 13+ ship', 
+    'AnyL13PlusNavyShip': 'Level 13+ Navy ship', 
+    'AnyEITCSeaViper': 'Sea Viper', 
+    'AnyEITCMarauder': 'Marauder', 
+    'AnyEITCBarracuda': 'Barracuda', 
+    'AnyEITCCorvette': 'Corvette', 
+    'AnyFrenchShadowCrow': 'French Shadow Crow', 
+    'AnyFrenchHellhound': 'French Cerberus', 
+    'AnyFrenchBloodScourge': 'French Blood Scourge', 
+    'AnySpanishShadowCrow': 'Spanish Shadow Crow', 
+    'AnySpanishHellhound': 'Spanish Cerberus', 
+    'AnySpanishBloodScourge': 'Spanish Blood Scourge', 
+    'AnyCerberus': 'French or Spanish Cerberus', 
+    ShipGlobals.SKEL_WARSHIPL3: 'War Frigate', 
+    ShipGlobals.SKEL_INTERCEPTORL3: 'War Sloop', 
+    ShipGlobals.QUEEN_ANNES_REVENGE: 'Legendary Ship', 
+    ShipGlobals.BLACK_PEARL: 'Legendary Ship', 
+    ShipGlobals.FLYING_DUTCHMAN: 'Legendary Ship', 
+    ShipGlobals.STUMPY_SHIP: 'Light Sloop', 
+    ShipGlobals.GOLIATH: 'The Goliath', 
+    ShipGlobals.JOLLY_ROGER: 'Legendary Ship', 
+    ShipGlobals.NAVY_FERRET: 'Navy Ferret', 
+    ShipGlobals.NAVY_GREYHOUND: 'Navy Greyhound', 
+    ShipGlobals.NAVY_KINGFISHER: 'Navy Kingfisher', 
+    ShipGlobals.NAVY_PREDATOR: 'Navy Predator', 
+    ShipGlobals.NAVY_BULWARK: 'Navy Bulwark', 
+    ShipGlobals.NAVY_VANGUARD: 'Navy Vanguard', 
+    ShipGlobals.NAVY_MONARCH: 'Navy Monarch', 
+    ShipGlobals.NAVY_COLOSSUS: 'Navy Colossus', 
+    ShipGlobals.NAVY_PANTHER: 'Navy Panther', 
+    ShipGlobals.NAVY_CENTURION: 'Navy Centurion', 
+    ShipGlobals.NAVY_MAN_O_WAR: 'Navy Man-O-War', 
+    ShipGlobals.NAVY_DREADNOUGHT: 'Navy Dreadnought', 
+    ShipGlobals.NAVY_BASTION: 'Navy Bastion', 
+    ShipGlobals.NAVY_ELITE: 'Navy Elite', 
+    ShipGlobals.EITC_SEA_VIPER: 'EITC Sea Viper', 
+    ShipGlobals.EITC_BLOODHOUND: 'EITC Bloodhound', 
+    ShipGlobals.EITC_BARRACUDA: 'EITC Barracuda', 
+    ShipGlobals.EITC_CORSAIR: 'EITC Corsair', 
+    ShipGlobals.EITC_SENTINEL: 'EITC Sentinel', 
+    ShipGlobals.EITC_IRONWALL: 'EITC Ironwall', 
+    ShipGlobals.EITC_OGRE: 'EITC Ogre', 
+    ShipGlobals.EITC_BEHEMOTH: 'EITC Behemoth', 
+    ShipGlobals.EITC_CORVETTE: 'EITC Corvette', 
+    ShipGlobals.EITC_MARAUDER: 'EITC Marauder', 
+    ShipGlobals.EITC_WARLORD: 'EITC Warlord', 
+    ShipGlobals.EITC_JUGGERNAUT: 'EITC Juggernaut', 
+    ShipGlobals.EITC_TYRANT: 'EITC Tyrant', 
+    ShipGlobals.SKEL_PHANTOM: 'Phantom', 
+    ShipGlobals.SKEL_REVENANT: 'Revenant', 
+    ShipGlobals.SKEL_STORM_REAPER: 'Storm Reaper', 
+    ShipGlobals.SKEL_BLACK_HARBINGER: 'Black Harbinger', 
+    ShipGlobals.SKEL_DEATH_OMEN: 'Death Omen', 
+    ShipGlobals.SKEL_SHADOW_CROW_FR: 'French Shadow Crow', 
+    ShipGlobals.SKEL_HELLHOUND_FR: 'French Cerberus', 
+    ShipGlobals.SKEL_BLOOD_SCOURGE_FR: 'French Blood Scourge', 
+    ShipGlobals.SKEL_SHADOW_CROW_SP: 'Spanish Shadow Crow', 
+    ShipGlobals.SKEL_HELLHOUND_SP: 'Spanish Cerberus', 
+    ShipGlobals.SKEL_BLOOD_SCOURGE_SP: 'Spanish Blood Scourge'
 }
 WeaponTypeNames = {
     InventoryType.PistolRep: 'Gun'
@@ -5850,7 +5954,9 @@ LocationUids = {
     'tormenta': LocationIds.ISLA_TORMENTA,
     'tortuga': LocationIds.TORTUGA_ISLAND,
     'antigua': LocationIds.ANTIGUA_ISLAND,
-    'nassau': LocationIds.NASSAU_ISLAND 
+    'nassau': LocationIds.NASSAU_ISLAND,
+    'coldwater': LocationIds.COLDWATER_ISLAND,
+    'coldwater isle' : LocationIds.COLDWATER_ISLAND,
 }
 LocationNames = {
     LocationIds.PORT_ROYAL_ISLAND: 'Port Royal',
@@ -6018,7 +6124,8 @@ LocationNames = {
     LocationIds.NASSAU_JAIL: 'Nassau Jail',
     LocationIds.NASSAU_MANSION: 'Nassau Mansion',
     LocationIds.OLD_EITC_WAREHOUSE: 'Old EITC Warehouse',
-    LocationIds.MADRE_DEL_FUEGO_ISLAND: 'Madre Del Fuego'
+    LocationIds.MADRE_DEL_FUEGO_ISLAND: 'Madre Del Fuego',
+    LocationIds.COLDWATER_ISLAND: 'Coldwater Isle'
 }
 LocationNamesNotIsland = {
     LocationIds.PORT_ROYAL_ISLAND: 'Port Royal Town', LocationIds.TORTUGA_ISLAND: 'Tortuga Town', LocationIds.DEL_FUEGO_ISLAND: 'Padres Del Fuego Town', LocationIds.ANVIL_ISLAND: 'Anvil Island Beach', LocationIds.CUBA_ISLAND: 'Cuba Beach'
@@ -6509,6 +6616,7 @@ NavyMobilizationStart = 'Navy Sea Offensive:\nThe Navy has launched a Sea Offens
 NavyMobilizationStatus = 'Navy Sea Offensive:\nTime Remaining: %s Hours, %s Minutes'
 SkelMobilizationStart = 'Skeleton Sea Offensive:\nJolly Roger has launched a Sea Offensive! Many Skeleton Ships now roam the high seas, so get ready to face them when you set sail!'
 SkelMobilizationStatus = 'Skeleton Sea Offensive:\nTime Remaining: %s Hours, %s Minutes'
+KrakenStart = 'The Caribbean seas have turned a strange green color. Legend tells us this is an omen, that a large sea creature is headed toward these waters.'
 InvasionPortRoyalStart = makeHeadingString('Port Royal Invasion', 2) + "\nGet ready to defend Port Royal from Jolly Roger's army! Undead will arrive from the shores and attack the town's barricades. As the barricades fall, the skeletons get closer to the Governor's Mansion. Protect the barricades and don't let the Governor's Mansion be destroyed, or Jolly Roger will be victorious."
 InvasionTortugaStart = makeHeadingString('Tortuga Invasion', 2) + "\nGet ready to defend Tortuga from Jolly Roger's army! Undead will arrive from the shores and attack the town's barricades. As the barricades fall, the skeletons get closer to the Faithful Bride tavern. Protect the barricades and don't let Jolly Roger reach the Faithful Bride tavern, or Jolly Roger will find Jack Sparrow and have his revenge."
 InvasionDelFuegoStart = makeHeadingString('Padres Del Fuego Invasion', 2) + "\nGet ready to defend Padres Del Fuego from Jolly Roger's army! Undead will arrive from the shores and attack the town's barricades. As the barricades fall, the skeletons get closer to the center of town. Protect the barricades and don't let the town be destroyed, or Jolly Roger will be victorious!"
@@ -6553,11 +6661,30 @@ InvasionJollyRogerEndPlayerLose4 = 'What? Sparrow escaped? Curse his vile soul!'
 from pirates.holiday.FleetHolidayGlobals import Configs as FHConfigs
 from pirates.holiday.FleetHolidayGlobals import Msgs as FHMsgs
 FleetHolidayMsgs = {
-    FHMsgs.EF_EitcLaunch: "The East India Trading Company has deployed an Expedition Fleet led by a mighty Ship of the Line to Raven Cove!  The Trading Company is after El Patron's Lost Weapons!  Sink the Expedition Fleet to prevent the weapons from falling into the hands of the EITC!", FHMsgs.EF_EitcEscaped: "The East India Trading Company's Expedition Fleet has left the Caribbean and is sailing towards the island of Raven Cove.  It is too late to stop this fleet now!", FHMsgs.EF_EitcDefeated: "The East India Trading Company's Expedition Fleet has been sunk by the Pirates.  El Patron's Lost Weapons are safe for now...", FHMsgs.EF_NavyLaunch: "The Navy has deployed an Expedition Fleet led by a mighty Ship of the Line to Raven Cove!  The Navy is after El Patron's Lost Weapons!  Sink the Expedition Fleet to prevent the weapons from falling into the hands of the Navy!", FHMsgs.EF_NavyEscaped: "The Navy's Expedition Fleet has left the Caribbean and is sailing towards the island of Raven Cove.  It is too late to stop this fleet now!", FHMsgs.EF_NavyDefeated: "The Navy's Expedition Fleet has been sunk by the Pirates.  El Patron's Lost Weapons are safe for now...", FHMsgs.TF_EitcLaunch: "An East India Trading Company Treasure Fleet has set sail! This heavily armed Fleet is transporting part of El Patron's Lost Weapons. Sink the Treasure Fleet and plunder the Lost Weapons!", FHMsgs.TF_EitcEscaped: 'The EITC Treasure Fleet has reached its destination. It is too late to plunder this treasure now!', FHMsgs.TF_EitcDefeated: 'The EITC Treasure Fleet has been sunk, and the Treasure has been looted by the Pirates!', FHMsgs.TF_NavyLaunch: "A Navy Treasure Fleet has set sail! This heavily armed Fleet is transporting part of El Patron's Lost Weapons. Sink the Treasure Fleet and plunder the Lost Weapons!", FHMsgs.TF_NavyEscaped: 'The Navy Treasure Fleet has reached its destination. It is too late to plunder this treasure now!', FHMsgs.TF_NavyDefeated: 'The Navy Treasure Fleet has been sunk, and the Treasure has been looted by the Pirates!', FHMsgs.TF_EitcWarn10min: ['The EITC Treasure Fleets will weigh anchor in 10 minutes.', 'Prepare the sail!  EITC Treasure fleets leave port in 10 minutes.', 'Arm your cannons, mates.  EITC Treasure fleets set sail in 10 minutes.'], FHMsgs.TF_EitcWarn5min: ['The EITC Treasure Fleets are filled with loot and leaving in 5 minutes.', '5 minutes until the EITC Treasure Fleets embark from port.', 'Ready your cannons and sails, EITC Treasure Fleets sail in 5 Minutes.'], FHMsgs.TF_EitcWarn0min: ['Scouts have seen EITC Treasure Fleets leaving port - sink them now!', 'Get on the water, mates!  EITC Treasure fleets are under full sail!', 'Prepare to do battle mates!  The EITC Treasure Fleets are sailing now!'], FHMsgs.TF_NavyWarn10min: ['The Navy Treasure Fleets will weigh anchor in 10 minutes.', 'Prepare the sail!  Navy Treasure fleets leave port in 10 minutes.', 'Arm your cannons, mates.  Navy Treasure fleets set sail in 10 minutes.'], FHMsgs.TF_NavyWarn5min: ['The Navy Treasure Fleets are filled with loot and leaving in 5 minutes.', '5 minutes until the Navy Treasure Fleets embark from port.', 'Ready your cannons and sails, Navy Treasure Fleets sail in 5 Minutes.'], FHMsgs.TF_NavyWarn0min: ['Scouts have seen Navy Treasure Fleets leaving port - sink them now!', 'Get on the water, mates!  Navy Treasure fleets are under full sail!', 'Prepare to do battle mates!  The Navy Treasure Fleets are sailing now!']
+    FHMsgs.EF_EitcLaunch: "The East India Trading Company has deployed an Expedition Fleet led by a mighty Ship of the Line to Raven Cove!  The Trading Company is after El Patron's Lost Weapons!  Sink the Expedition Fleet to prevent the weapons from falling into the hands of the EITC!", 
+    FHMsgs.EF_EitcEscaped: "The East India Trading Company's Expedition Fleet has left the Caribbean and is sailing towards the island of Raven Cove.  It is too late to stop this fleet now!", 
+    FHMsgs.EF_EitcDefeated: "The East India Trading Company's Expedition Fleet has been sunk by the Pirates.  El Patron's Lost Weapons are safe for now...", 
+    FHMsgs.EF_NavyLaunch: "The Navy has deployed an Expedition Fleet led by a mighty Ship of the Line to Raven Cove!  The Navy is after El Patron's Lost Weapons!  Sink the Expedition Fleet to prevent the weapons from falling into the hands of the Navy!", 
+    FHMsgs.EF_NavyEscaped: "The Navy's Expedition Fleet has left the Caribbean and is sailing towards the island of Raven Cove.  It is too late to stop this fleet now!", 
+    FHMsgs.EF_NavyDefeated: "The Navy's Expedition Fleet has been sunk by the Pirates.  El Patron's Lost Weapons are safe for now...", 
+    FHMsgs.TF_EitcLaunch: "An East India Trading Company Treasure Fleet has set sail! This heavily armed Fleet is transporting part of El Patron's Lost Weapons. Sink the Treasure Fleet and plunder the Lost Weapons!", 
+    FHMsgs.TF_EitcEscaped: 'The EITC Treasure Fleet has reached its destination. It is too late to plunder this treasure now!', 
+    FHMsgs.TF_EitcDefeated: 'The EITC Treasure Fleet has been sunk, and the Treasure has been looted by the Pirates!', 
+    FHMsgs.TF_NavyLaunch: "A Navy Treasure Fleet has set sail! This heavily armed Fleet is transporting part of El Patron's Lost Weapons. Sink the Treasure Fleet and plunder the Lost Weapons!", 
+    FHMsgs.TF_NavyEscaped: 'The Navy Treasure Fleet has reached its destination. It is too late to plunder this treasure now!', 
+    FHMsgs.TF_NavyDefeated: 'The Navy Treasure Fleet has been sunk, and the Treasure has been looted by the Pirates!', 
+    FHMsgs.TF_EitcWarn10min: ['The EITC Treasure Fleets will weigh anchor in 10 minutes.', 'Prepare the sail!  EITC Treasure fleets leave port in 10 minutes.', 'Arm your cannons, mates.  EITC Treasure fleets set sail in 10 minutes.'], 
+    FHMsgs.TF_EitcWarn5min: ['The EITC Treasure Fleets are filled with loot and leaving in 5 minutes.', '5 minutes until the EITC Treasure Fleets embark from port.', 'Ready your cannons and sails, EITC Treasure Fleets sail in 5 Minutes.'], 
+    FHMsgs.TF_EitcWarn0min: ['Scouts have seen EITC Treasure Fleets leaving port - sink them now!', 'Get on the water, mates!  EITC Treasure fleets are under full sail!', 'Prepare to do battle mates!  The EITC Treasure Fleets are sailing now!'], 
+    FHMsgs.TF_NavyWarn10min: ['The Navy Treasure Fleets will weigh anchor in 10 minutes.', 'Prepare the sail!  Navy Treasure fleets leave port in 10 minutes.', 'Arm your cannons, mates.  Navy Treasure fleets set sail in 10 minutes.'], 
+    FHMsgs.TF_NavyWarn5min: ['The Navy Treasure Fleets are filled with loot and leaving in 5 minutes.', '5 minutes until the Navy Treasure Fleets embark from port.', 'Ready your cannons and sails, Navy Treasure Fleets sail in 5 Minutes.'], 
+    FHMsgs.TF_NavyWarn0min: ['Scouts have seen Navy Treasure Fleets leaving port - sink them now!', 'Get on the water, mates!  Navy Treasure fleets are under full sail!', 'Prepare to do battle mates!  The Navy Treasure Fleets are sailing now!']
 }
 from pirates.holiday.KrakenHolidayGlobals import Msgs as KHMsgs
 KrakenHolidayMsgs = {
-    KHMsgs.Launch: ['Let no joyful voice be heard! Let no man look up to the sky with hope! And let this day be cursed by we who ready to wake... the Kraken!', 'RAWR! is Kraken for I love you...', 'Every day and in every way, Kraken is getting better and better...'], KHMsgs.Escaped: ["That's one slippery squid", 'Pesky jellyfish swam away!'], KHMsgs.Defeated: ['Why do I suddenly have the hankering for fried calamari???']
+    KHMsgs.Launch: ['Let no joyful voice be heard! Let no man look up to the sky with hope! And let this day be cursed by we who ready to wake... the Kraken!'], 
+    KHMsgs.Escaped: ["That's one slippery squid", 'Pesky jellyfish swam away!'], 
+    KHMsgs.Defeated: ['Why do I suddenly have the hankering for fried calamari???']
 }
 QueenAnnesHolidayMsgs = {
     60: ["The Queen Anne's Revenge has been seen in the Caribbean under the command of a vile and mutinous crew. Keep an ear open for rumors of her whereabouts."],
@@ -6795,9 +6922,9 @@ holidayMessages = {
         MSG_CHAT_STATUS: SkelMobilizationStatus,
         MSG_ICON: 'admin'
     }, HolidayGlobals.KRAKENHOLIDAY: {
-        None: {
-            MSG_ICON: 'ship'
-        }
+        MSG_START_ALL: (KrakenStart, KrakenStart),
+        MSG_CHAT_STATUS: KrakenStart,
+        MSG_ICON: 'ship'
     }, HolidayGlobals.CATALOGHOLIDAY: {
         None: {
             MSG_ICON: 'loot'

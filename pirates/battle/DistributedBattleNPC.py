@@ -1,4 +1,4 @@
-from panda3d.core import NodePath
+from panda3d.core import *
 from direct.interval.IntervalGlobal import *
 from direct.directnotify import DirectNotifyGlobal
 from direct.distributed.ClockDelta import *
@@ -211,7 +211,6 @@ class DistributedBattleNPC(DistributedBattleAvatar):
             if self.canMove == False:
                 self.canCheckFloors = False
             yieldThread('hold anim prop')
-        return
 
     def announceGenerate(self):
         self.checkQuestObjMod()
@@ -369,8 +368,8 @@ class DistributedBattleNPC(DistributedBattleAvatar):
     def requestGameState(self, *args):
         self.gameFSM.request(*args)
 
-    def setSpawnPos(self, x, y, z):
-        pass
+    def setSpawnPosHpr(self, x, y, z, h, p, r):
+        self.setPosHpr(self.getParentObj(), x, y, z, h, p, r)
 
     def lookAtTarget(self, task=None):
         if self.currentTarget:
@@ -1125,7 +1124,7 @@ class DistributedBattleNPC(DistributedBattleAvatar):
         self.noticeAnim1 = notice1
         self.noticeAnim2 = notice2
         self.greetingAnim = greet
-        if self.isGenerated():
+        if self.isGenerated() or True:
             self.setupActorAnims()
 
     def requestAnimSet(self, animSet):

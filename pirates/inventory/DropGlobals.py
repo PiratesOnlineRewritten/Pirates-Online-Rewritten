@@ -72,14 +72,13 @@ for heading, value in __shipMaterialDropInfo.items():
     entryValue = 0
     if value == 2:
         entryValue = 2
+    elif value == 1:
+        entryValue = 1
     else:
-        if value == 1:
-            entryValue = 1
-        else:
-            entryValue = 0
-        if hasattr(ShipGlobals, heading):
-            newHeading = string.replace(heading, '\r', '')
-            exec '__shipMaterialDropList[ShipGlobals.%s] = %s' % (newHeading, entryValue) in globals()
+        entryValue = 0
+    if hasattr(ShipGlobals, heading):
+        newHeading = string.replace(heading, '\r', '')
+        exec '__shipMaterialDropList[ShipGlobals.%s] = %s' % (newHeading, entryValue) in globals()
 
 del searchPath
 del __columnHeadings

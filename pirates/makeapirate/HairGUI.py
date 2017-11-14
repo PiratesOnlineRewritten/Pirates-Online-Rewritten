@@ -16,7 +16,7 @@ class HairGUI(DirectFrame, StateData.StateData):
 
     def __init__(self, main=None):
         self.main = main
-        self.parent = main.bookModel
+        self._parent = main.bookModel
         self.avatar = main.avatar
         self.mode = None
         self.load()
@@ -49,13 +49,13 @@ class HairGUI(DirectFrame, StateData.StateData):
         self.loadColorGUI()
 
     def loadGUI(self):
-        self.hairPicker = CharGuiPicker(self.main, parent=self.parent, text=PLocalizer.MakeAPirateHairHair, nextCommand=self.handleNextHair, backCommand=self.handleLastHair)
+        self.hairPicker = CharGuiPicker(self.main, parent=self._parent, text=PLocalizer.MakeAPirateHairHair, nextCommand=self.handleNextHair, backCommand=self.handleLastHair)
         self.hairPicker.setPos(0, 0, 0.1)
-        self.beardPicker = CharGuiPicker(self.main, parent=self.parent, text=PLocalizer.MakeAPirateHairBeard, nextCommand=self.handleNextBeard, backCommand=self.handleLastBeard)
+        self.beardPicker = CharGuiPicker(self.main, parent=self._parent, text=PLocalizer.MakeAPirateHairBeard, nextCommand=self.handleNextBeard, backCommand=self.handleLastBeard)
         self.beardPicker.setPos(0, 0, -0.1)
-        self.mustachePicker = CharGuiPicker(self.main, parent=self.parent, text=PLocalizer.MakeAPirateHairMustache, nextCommand=self.handleNextMustache, backCommand=self.handleLastMustache)
+        self.mustachePicker = CharGuiPicker(self.main, parent=self._parent, text=PLocalizer.MakeAPirateHairMustache, nextCommand=self.handleNextMustache, backCommand=self.handleLastMustache)
         self.mustachePicker.setPos(0, 0, -0.3)
-        self.eyeBrowPicker = CharGuiPicker(self.main, parent=self.parent, text=PLocalizer.MakeAPirateHairEyeBrow, nextCommand=self.handleNextEyeBrow, backCommand=self.handleLastEyeBrow)
+        self.eyeBrowPicker = CharGuiPicker(self.main, parent=self._parent, text=PLocalizer.MakeAPirateHairEyeBrow, nextCommand=self.handleNextEyeBrow, backCommand=self.handleLastEyeBrow)
         self.eyeBrowPicker.setPos(0, 0, -0.5)
         self.hairPicker.hide()
         self.beardPicker.hide()
@@ -63,7 +63,7 @@ class HairGUI(DirectFrame, StateData.StateData):
         self.eyeBrowPicker.hide()
 
     def loadColorGUI(self):
-        self.baseColorFrameTitle = DirectFrame(parent=self.parent, relief=None, image=self.main.charGui.find('**/chargui_frame01'), image_pos=(0, 0, -0.3), image_scale=(2.13,
+        self.baseColorFrameTitle = DirectFrame(parent=self._parent, relief=None, image=self.main.charGui.find('**/chargui_frame01'), image_pos=(0, 0, -0.3), image_scale=(2.13,
                                                                                                                                                                          1.6,
                                                                                                                                                                          1.6), text=PLocalizer.HairColorFrameTitle, text_fg=(1,
                                                                                                                                                                                                                              1,
@@ -88,7 +88,7 @@ class HairGUI(DirectFrame, StateData.StateData):
     def unload(self):
         self.notify.debug('called HairGui unload')
         del self.main
-        del self.parent
+        del self._parent
         del self.avatar
 
     def showHairCollections(self):

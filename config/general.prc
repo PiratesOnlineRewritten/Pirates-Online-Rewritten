@@ -18,6 +18,9 @@ text-magfilter linear
 text-page-size 512 512
 text-rwap-mode WM_border_clor
 
+# Preload:
+preload-textures #f
+
 # Models:
 model-path ../resources
 model-path ../resources/phase_2
@@ -39,12 +42,13 @@ audio-preload-threshold 1024
 audio-library-name p3fmod_audio
 
 # Graphics:
-allow-live-flatten 1
-framebuffer-alpha 1
+allow-live-flatten #t
+framebuffer-alpha #t
 alpha-bits 8
-prefer-parasite-buffer 1
-force-parasite-buffer 1
-retransform-sprites 1
+prefer-parasite-buffer #t
+force-parasite-buffer #t
+retransform-sprites #t
+matrix-palette #t
 
 # Stenciles:
 stencil-bits 8
@@ -64,18 +68,19 @@ restore-initial-pose #f
 
 # Cache:
 model-cache-max-kbytes 262144
+want-preloader #t
 want-disk-cache #t
 state-cache #t
 transform-cache #t
 model-cache-textures #f
 
 # Textures:
-textures-power-2 none
-#textures-power-2 down
+textures-power-2 down
 texture-anisotropic-degree 16
 texture-magfilter linear
 texture-minfilter linear
 texture-quality-level fastest
+driver-compress-textures #t
 
 # Texture Scales:
 exclude-texture-scale BardiT*
@@ -269,6 +274,8 @@ gl-force-no-error #t
 gl-check-errors #f
 gl-force-no-flush #t
 gl-force-no-scissor #t
+gl-immutable-texture-storage #t
+gl-use-bindless-texture #t
 
 uniquify-matrix #t
 uniquify-transforms #t
@@ -284,7 +291,6 @@ text-default-font models/fonts/BardiT_outline.bam
 
 # Server:
 server-version pirates-dev
-game-server 127.0.0.1
 
 # SSL:
 want-ssl-scheme #f
@@ -298,15 +304,14 @@ multisamples 2
 
 # LOD:
 default-lod-type fade
-make-grid-lod true
-verify-lods false
+make-grid-lod #t
+verify-lods #f
 
 # Sticky Keys:
 disable-sticky-keys 1
 
 # Other:
 want-logout #f
-skip-tutorial #f
 
 # Clock:
 clock-mode limited
@@ -329,9 +334,11 @@ sync-video #f
 # Tutorial:
 skip-tutorial #t
 force-tutorial #f
+ignore-teleport-requirements #t
 
 # World:
-#default-world PortRoyalWorld
+default-world piratesWorld
+want-map-flavor-anims #t
 
 # Analytics:
 analytics-game-key 28f391f68f5e07f7713d044ea81f92ca
@@ -339,10 +346,63 @@ analytics-secret-key 9de82d4da112aa45ac0ee63f570c45d4e340812f
 
 # Developer:
 want-dev #t
-#dev-branch-flavor development
+force-tutorial-complete #t
 
 # Minigames:
 want-fishing-game #t
 want-repair-game #t
 want-potion-game #t
 want-cannondefense-game #t
+
+# AI:
+use-path-finding #t
+
+# SeaMonsters:
+want-seamonsters #f
+
+# EventLogger:
+eventlog-host 127.0.0.1:7197
+
+# Holidays:
+want-random-invasions #t
+want-random-treasurefleets #t
+want-random-queen-annes #f
+
+# Paid Access:
+force-paid-status FULL
+unlimited-free-time #t
+
+# Shadows:
+want-avatar-shadows #t
+
+# Movement:
+smooth-lag 1
+
+# Make-A-Pirate:
+want-tattoos #t
+want-jewelry #t
+
+# Looting:
+want-loot-system #t
+
+# PVP:
+want-land-infamy #t
+want-sea-infamy #t
+
+# Leaks:
+crash-on-proactive-leak-detect #f
+
+# Server Queue:
+disable-server-queueing #t
+
+# Weather:
+advanced-weather #f
+want-weather-rain #f
+
+# Culling:
+allow-portal-cull #t
+clip-plane-cull #f
+
+# Networking:
+collect-tcp 1
+collect-tcp-interval 0.1

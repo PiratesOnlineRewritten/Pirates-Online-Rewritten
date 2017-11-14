@@ -108,8 +108,8 @@ class ChatBar(DirectFrame, FSM):
         DirectFrame.__init__(self, parent, *args, **kw)
         self.initialiseoptions(ChatBar)
         FSM.__init__(self, 'ChatBar')
-        self.whiteListEnabled = base.config.GetBool('whitelist-chat-enabled', 1) and base.cr.accountDetailRecord.WLChatEnabled
-        self.openChatEnabled = base.cr.accountDetailRecord.canOpenChatAndNotGetBooted()
+        self.whiteListEnabled = base.config.GetBool('whitelist-chat-enabled', True)
+        self.openChatEnabled = base.config.GetBool('open-chat-enabled', True)
         self.noChat = not (self.whiteListEnabled or self.openChatEnabled)
         self.chatTabs = None
         self.whisperTabs = None
@@ -122,7 +122,6 @@ class ChatBar(DirectFrame, FSM):
         self.myTextScale = PiratesGuiGlobals.TextScaleLarge * 1.1
         self.setupGui(whiteListEntry)
         self.request('Hidden')
-        return
 
     def destroy(self):
         self.cleanup()
@@ -130,7 +129,6 @@ class ChatBar(DirectFrame, FSM):
         DirectFrame.destroy(self)
         self.cleanupGui()
         self.chatMgr = None
-        return
 
     def setBoxWidth(self, percentage):
         iPercentage = 1.0 / percentage

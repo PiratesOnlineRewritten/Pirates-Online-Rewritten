@@ -55,10 +55,10 @@ class NameGUI(DirectFrame, StateData.StateData):
             self.mainFrame.setScale(0.42)
             self.mainFrame.setX(-0.76)
             self.mainFrame.setZ(1.2)
-            self.parent = self.bookModel
+            self._parent = self.bookModel
             self.avatar = main
         else:
-            self.parent = main.bookModel
+            self._parent = main.bookModel
             self.avatar = main.avatar
         self.mode = self.__MODE_INIT
         self.wantTypeAName = True
@@ -268,7 +268,7 @@ class NameGUI(DirectFrame, StateData.StateData):
             self.avatar.dna.setName(self._getName())
 
     def loadPickAName(self):
-        self.nameFrameTitle = DirectFrame(parent=self.parent, relief=None, frameColor=(0.5,
+        self.nameFrameTitle = DirectFrame(parent=self._parent, relief=None, frameColor=(0.5,
                                                                                        0.5,
                                                                                        0.5,
                                                                                        0.3), text=PL.NameFrameTitle, text_fg=(1,
@@ -278,7 +278,7 @@ class NameGUI(DirectFrame, StateData.StateData):
                                                                                                                                                              0), pos=(0,
                                                                                                                                                                       0,
                                                                                                                                                                       0.3), scale=0.7)
-        self.pirateName = DirectLabel(parent=self.parent, relief=None, image=self.charGui.find('**/chargui_frame02'), image_scale=(15,
+        self.pirateName = DirectLabel(parent=self._parent, relief=None, image=self.charGui.find('**/chargui_frame02'), image_scale=(15,
                                                                                                                                    10,
                                                                                                                                    10), text=PL.NameGUI_EmptyNameText, text_align=TextNode.ACenter, text_fg=(1,
                                                                                                                                                                                                              1,
@@ -333,7 +333,7 @@ class NameGUI(DirectFrame, StateData.StateData):
         return
 
     def loadTypeAName(self):
-        self.nameEntry = DirectEntry(parent=self.parent, relief=DGG.FLAT, scale=0.16, width=MAX_NAME_WIDTH, numLines=2, focus=0, cursorKeys=1, autoCapitalize=1, frameColor=(0.0,
+        self.nameEntry = DirectEntry(parent=self._parent, relief=DGG.FLAT, scale=0.16, width=MAX_NAME_WIDTH, numLines=2, focus=0, cursorKeys=1, autoCapitalize=1, frameColor=(0.0,
                                                                                                                                                                              0.0,
                                                                                                                                                                              0.0,
                                                                                                                                                                              0.0), text=PL.NameGUI_EmptyNameText, text_fg=(1.0,
@@ -342,12 +342,12 @@ class NameGUI(DirectFrame, StateData.StateData):
                                                                                                                                                                                                                            1.0), pos=(-0.65, 0.0, -0.05), suppressKeys=1, suppressMouse=1, image=self.charGui.find('**/chargui_frame02'), image_scale=(15,
                                                                                                                                                                                                                                                                                                                                                        0.0,
                                                                                                                                                                                                                                                                                                                                                        8.5), image_pos=(4.39, 0.0, -0.2))
-        self.nameEntryGuidelines = DirectLabel(parent=self.parent, relief=None, text=PL.NameGUI_Guidelines, text_align=TextNode.ALeft, text_fg=PiratesGuiGlobals.TextFG3, text_pos=(0,
+        self.nameEntryGuidelines = DirectLabel(parent=self._parent, relief=None, text=PL.NameGUI_Guidelines, text_align=TextNode.ALeft, text_fg=PiratesGuiGlobals.TextFG3, text_pos=(0,
                                                                                                                                                                                     0.25), text_wordwrap=18, scale=0.1, pos=(-0.7,
                                                                                                                                                                                                                              0,
                                                                                                                                                                                                                              -0.5))
         if self.cr:
-            self.nameEntryGuidelinesURL = DirectButton(parent=self.parent, relief=None, pos=(0,
+            self.nameEntryGuidelinesURL = DirectButton(parent=self._parent, relief=None, pos=(0,
                                                                                              0,
                                                                                              -0.55), command=base.popupBrowser, extraArgs=[launcher.getValue('GAME_INGAME_NAMING')], text=PL.NameGUI_URLText, text0_fg=PiratesGuiGlobals.TextFG2, text1_fg=PiratesGuiGlobals.TextFG2, text2_fg=PiratesGuiGlobals.TextFG1, text_font=PiratesGlobals.getInterfaceFont(), text_shadow=PiratesGuiGlobals.TextShadow, text_scale=0.09, text_pos=(0, -0.635))
         func = lambda param=self: param.fsm.request('PickAName')
@@ -391,7 +391,7 @@ class NameGUI(DirectFrame, StateData.StateData):
 
     def _makeScrolledList(self, items, pos, makeExtraArgs, extraArgs):
         lst = items[:]
-        dsl = DirectScrolledList(parent=self.parent, relief=None, items=lst, itemMakeFunction=self._makeItemLabel, itemMakeExtraArgs=makeExtraArgs, extraArgs=extraArgs, command=self._listsChanged, pos=pos, scale=0.08, incButton_pos=(1.5,
+        dsl = DirectScrolledList(parent=self._parent, relief=None, items=lst, itemMakeFunction=self._makeItemLabel, itemMakeExtraArgs=makeExtraArgs, extraArgs=extraArgs, command=self._listsChanged, pos=pos, scale=0.08, incButton_pos=(1.5,
                                                                                                                                                                                                                                          0,
                                                                                                                                                                                                                                          -6), incButton_relief=None, incButton_image=(self.triangleGui.find('**/triangle'), self.triangleGui.find('**/triangle_down'), self.triangleGui.find('**/triangle_over')), incButton_image_scale=1.8, incButton_image_hpr=(0,
                                                                                                                                                                                                                                                                                                                                                                                                                                                                    0,
@@ -412,7 +412,7 @@ class NameGUI(DirectFrame, StateData.StateData):
         return dsl
 
     def _makeHighlight(self, pos):
-        return DirectFrame(parent=self.parent, relief=DGG.FLAT, frameColor=(1, 1, 1,
+        return DirectFrame(parent=self._parent, relief=DGG.FLAT, frameColor=(1, 1, 1,
                                                                             0.4), frameSize=(-1.1,
                                                                                              4,
                                                                                              -2.2,
@@ -430,14 +430,14 @@ class NameGUI(DirectFrame, StateData.StateData):
         return f
 
     def _makeButton(self, text, command, pos):
-        b = DirectButton(parent=self.parent, relief=None, image=(self.charGui.find('**/chargui_frame02'), self.charGui.find('**/chargui_frame02_down'), self.charGui.find('**/chargui_frame02_over')), text=text, text_fg=(1,
+        b = DirectButton(parent=self._parent, relief=None, image=(self.charGui.find('**/chargui_frame02'), self.charGui.find('**/chargui_frame02_down'), self.charGui.find('**/chargui_frame02_over')), text=text, text_fg=(1,
                                                                                                                                                                                                                            1,
                                                                                                                                                                                                                            1,
                                                                                                                                                                                                                            1), text_align=TextNode.ACenter, text_scale=0.1, command=command, pos=pos)
         return b
 
     def _makeCheckbox(self, text, command, pos):
-        c = DirectCheckButton(parent=self.parent, relief=None, scale=0.1, boxBorder=0.08, boxRelief=None, pos=pos, text=text, text_fg=(1,
+        c = DirectCheckButton(parent=self._parent, relief=None, scale=0.1, boxBorder=0.08, boxRelief=None, pos=pos, text=text, text_fg=(1,
                                                                                                                                        1,
                                                                                                                                        1,
                                                                                                                                        1), text_scale=0.8, text_pos=(0.4,
@@ -568,7 +568,7 @@ class NameGUI(DirectFrame, StateData.StateData):
             if self.cr:
                 self.nameEntryGuidelinesURL.destroy()
         del self.main
-        del self.parent
+        del self._parent
         del self.avatar
         del self.fsm
 

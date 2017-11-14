@@ -8,6 +8,8 @@ from pirates.makeapirate import ClothingGlobals
 from pirates.pirate import BodyDefs
 from pirates.inventory.ItemConstants import DYE_COLORS
 from otp.speedchat import ColorSpace
+from pirates.piratesbase import PiratesGlobals
+
 notify = directNotify.newCategory('HumanDNA')
 LAYER1_CLOTHES = 1
 LAYER2_CLOTHES = 2
@@ -843,6 +845,9 @@ class HumanDNA(AvatarDNA.AvatarDNA):
         return self.jewelryZone8
 
     def getTutorial(self):
+        if base.config.GetBool('ignore-teleport-requirements', False):
+            return PiratesGlobals.TUT_FINISHED
+
         return self.tutorial
 
     def getDNAName(self):
@@ -1325,19 +1330,74 @@ class HumanDNA(AvatarDNA.AvatarDNA):
             randomGen.seed(seed)
         else:
             randomGen = random
-        self.gender = 'm'
-        self.body.shape = 3
-        self.body.color = 7
-        self.clothes.shirt = 6
-        self.clothes.vest = 0
-        self.clothes.pant = 1
-        self.clothes.sock = 0
-        self.clothes.shoe = 2
-        self.clothes.belt = 1
-        self.head.hair.hair = 5
-        self.head.hair.beard = 5
-        self.head.hair.mustache = 1
-        self.head.hair.color = 2
+        colors = range(len(DYE_COLORS))
+        self.gender = gender
+        if self.gender == 'm':
+            self.body.shape = randomGen.choice(BodyDefs.BodyChoicesMale)
+            self.body.color = 0
+            self.clothes.shirt = 6
+            self.clothes.shirtColor = randomGen.choice(colors)
+            self.clothes.pant = 1
+            self.clothes.pantColor = randomGen.choice(colors)
+            self.clothes.sock = 0
+            self.clothes.shoe = 1
+            self.clothes.belt = 0
+            self.clothes.coat = randomGen.choice(range(3))
+            self.clothes.coatColor = randomGen.choice(colors)
+            self.head.texture = 0
+            self.clothes.hat = randomGen.choice([15, 17, 18])
+            self.head.hair.hair = randomGen.choice([1, 2, 3, 4, 5, 6])
+            self.head.hair.beard = randomGen.choice(range(11))
+            self.head.hair.mustache = randomGen.choice([0, 1, 2, 4])
+            self.head.hair.color = randomGen.choice(range(5))
+        else:
+            self.body.shape = randomGen.choice(BodyDefs.BodyChoicesFemale)
+            self.body.color = 0
+            self.clothes.shirt = randomGen.choice([3, 4, 5])
+            self.clothes.shirtColor = randomGen.choice(colors)
+            self.clothes.pant = randomGen.choice([0, 2])
+            self.clothes.pantColor = randomGen.choice(colors)
+            self.clothes.sock = 0
+            self.clothes.shoe = randomGen.choice([1, 2, 3, 4])
+            self.clothes.belt = 0
+            self.clothes.coat = randomGen.choice(range(3))
+            self.clothes.coatColor = randomGen.choice(colors)
+            self.clothes.hat = randomGen.choice([12, 14, 15])
+            self.head.hair.hair = randomGen.choice(range(16))
+            self.head.hair.color = randomGen.choice(range(5))
+
+    def makeNPCDealer(self, seed=None, gender='m'):
+        if seed:
+            randomGen = random.Random()
+            randomGen.seed(seed)
+        else:
+            randomGen = random
+        self.gender = gender
+        if self.gender == 'm':
+            self.body.shape = randomGen.choice(BodyDefs.BodyChoicesMale)
+            self.body.color = randomGen.choice([0, 7])
+            self.clothes.shirt = 6
+            self.clothes.vest = 0
+            self.clothes.pant = 1
+            self.clothes.sock = 0
+            self.clothes.shoe = 2
+            self.clothes.belt = 1
+            self.head.texture = 0
+            self.head.hair.hair = randomGen.choice([1, 2, 3, 4, 5, 6])
+            self.head.hair.beard = randomGen.choice(range(11))
+            self.head.hair.mustache = randomGen.choice([0, 1, 2, 4])
+            self.head.hair.color = randomGen.choice(range(5))
+        else:
+            self.body.shape = randomGen.choice(BodyDefs.BodyChoicesFemale)
+            self.body.color = randomGen.choice([0, 7])
+            self.clothes.shirt = 6
+            self.clothes.vest = 0
+            self.clothes.pant = 1
+            self.clothes.sock = 0
+            self.clothes.shoe = 2
+            self.clothes.belt = 1
+            self.head.hair.hair = randomGen.choice(range(16))
+            self.head.hair.color = randomGen.choice(range(5))
 
     def makeNPCNavySailor(self, seed=None, gender='m'):
         if seed:

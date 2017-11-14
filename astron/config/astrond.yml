@@ -31,6 +31,26 @@ uberdogs:
       id: 4677
       anonymous: false
 
+    - class: HolidayManager
+      id: 4705
+      anonymous: false
+
+    - class: CodeRedemption
+      id: 4703
+      anonymous: false
+
+    - class: DistributedChatManager
+      id: 4681
+      anonymous: false
+
+    - class: DistributedCrewMatchManager
+      id: 4706
+      anonymous: false
+
+    - class: PCGuildManager
+      id: 4701
+      anonymous: false
+
 roles:
     - type: clientagent
       bind: 127.0.0.1:7198

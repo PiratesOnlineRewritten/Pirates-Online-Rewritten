@@ -38,6 +38,9 @@ class SeaPatchRoot(object):
     def addFlatWell(self, todo1, todo2, todo3, todo4, todo5, todo6):
         pass
 
+    def removeFlatWell(self, uniqueName):
+        pass
+
     def resetEnvironment(self):
         pass
 
@@ -71,7 +74,7 @@ class SeaPatchRoot(object):
         pass
 
     def calcHeight(self, x, y, dist):
-        return dist / (x * x - y * y)
+        return 0
 
     def calcFilteredHeight(self, apX, apY, minWaveLength, dist2):
         pass
@@ -80,7 +83,7 @@ class SeaPatchRoot(object):
         pass
 
     def calcNormal(self, height, ax, ay, dist):
-        return height + self.calcHeight(ax, ay, dist)
+        return 0
 
     def calcNormalForMass(self, height, ax, ay, dist2, mass, area):
         return 0
@@ -92,10 +95,10 @@ class SeaPatchRoot(object):
         pass
 
     def calcColor(self, color, height, x, y):
-        print 'calcColor: color: %s height: %s x: %s y: %s' % (color, height, x, y)
+        pass
 
     def calcReflection(self, todo1, todo2):
-        print '1: %s 2: %s' % (todo1, todo2)
+        pass
 
     def setSeaLevel(self, seaLevel):
         self.seaLevel = seaLevel
@@ -171,8 +174,8 @@ class SeaPatchRoot(object):
     def getNormalDamper(self):
         pass
 
-    def enableWave(self, bool):
-        self.waveEnabled = bool
+    def enableWave(self, waveEnabled):
+        self.waveEnabled = waveEnabled
 
     def setWaveTarget(self, layer, waveTarget):
         pass

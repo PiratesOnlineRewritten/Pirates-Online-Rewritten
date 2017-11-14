@@ -183,6 +183,33 @@ objectStruct = {
                         'Model': 'models/islands/pir_m_are_isl_kingshead'
                     }
                 },
+                '1264619508.828659a2': {
+                    'Type': 'Island',
+                    'Name': 'Coldwater Isle',
+                    'File': 'ColdwaterIsland',
+                    'Environment': 'Interior',
+                    'Hpr': Point3(0.0, 0.0, 0.0),
+                    'Minimap': False,
+                    'Objects': {
+                        '1162600600.828659a2': {
+                            'Type': 'LOD Sphere',
+                            'Hpr': Point3(0.0, 0.0, 0.0),
+                            'Pos': Point3(-96.153, -25.37, 136.443),
+                            'Radi': [1550.0, 2100.0, 6000.0],
+                            'Scale': VBase3(1.0, 1.0, 1.0),
+                            'VisSize': ''
+                        }
+                    },
+                    'Phase': 1,
+                    'Pos': Point3(30048.535, -6029.463, 0.0),
+                    'Scale': VBase3(1.0, 1.0, 1.0),
+                    'Undockable': False,
+                    'VisSize': '',
+                    'Visibility': 'Grid',
+                    'Visual': {
+                        'Model': 'models/islands/pir_m_are_isl_coldwater'
+                    }
+                },
                 '1160614528.73sdnaik': {
                     'Type': 'Island',
                     'Name': 'Cuba',
@@ -1651,6 +1678,7 @@ objectStruct = {
                 },
                 '1156207188.828659a2': {
                     'Type': 'Island',
+                    'Name': 'Antigua',
                     'File': 'antiguaIsland',
                     'Hpr': Point3(0.0 , 0.0, 0.0),
                     'Objects': {
@@ -1665,7 +1693,7 @@ objectStruct = {
                         }
                     },
                     'Undockable': True,
-                    'Pos': Point3(-18670.057, 25398.319, 0.0),
+                    'Pos': Point3(-27670.057, 28398.319, 0.0),
                     'Scale': VBase3(1.0, 1.0, 1.0),
                     'Visual': {
                         'Model': 'models/islands/pir_m_are_isl_antigua'
@@ -2078,6 +2106,8 @@ objectStruct = {
         '1158214327.11sdnaik': '["Objects"]["1141410776.53sdnaik"]["Objects"]["1156207188.95dzlu"]["Objects"]["1158214327.11sdnaik"]',
         '1158296490.13sdnaik': '["Objects"]["1141410776.53sdnaik"]["Objects"]["1156359855.24bbathen"]["Objects"]["1158296490.13sdnaik"]',
         '1159933206.48sdnaik': '["Objects"]["1141410776.53sdnaik"]["Objects"]["1159933206.48sdnaik"]',
+        '1264619508.828659a2': '["Objects"]["1141410776.53sdnaik"]["Objects"]["1264619508.828659a2"]',
+        '1162600600.828659a2': '["Objects"]["1141410776.53sdnaik"]["Objects"]["1264619508.828659a2"]["Objects"]["1162600600.828659a2"]',
         '1160614528.73sdnaik': '["Objects"]["1141410776.53sdnaik"]["Objects"]["1160614528.73sdnaik"]',
         '1161282725.84kmuller': '["Objects"]["1141410776.53sdnaik"]["Objects"]["1161282725.84kmuller"]',
         '1161664293.39sdnaik': '["Objects"]["1141410776.53sdnaik"]["Objects"]["1161282725.84kmuller"]["Objects"]["1161664293.39sdnaik"]',

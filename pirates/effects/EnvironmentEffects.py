@@ -122,13 +122,12 @@ class EnvironmentEffects(DirectObject):
         for effectEntry in self.effectDict:
             locators = self.parent.findAllMatches('**/' + effectEntry + '*;+s')
             for locator in locators:
-                if not locator.isEmpty():
-                    if locator.getNetTag('Holiday') != '':
-                        self.holidayLocators[effectEntry] = self.holidayLocators.has_key(effectEntry) or [
-                         locator]
+                if not locator.isEmpty() and locator.getNetTag('Holiday') != '':
+                    if not effectEntry in self.holidayLocators:
+                        self.holidayLocators[effectEntry] = self.holidayLocators.has_key(effectEntry) or [locator]
                     else:
                         list = self.holidayLocators.get(effectEntry)
-                        #list.append(locator)
+                        list.append(locator)
                         self.holidayLocators[effectEntry] = list
                 elif not locator.isEmpty():
                     effectParent = locator

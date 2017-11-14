@@ -1,6 +1,8 @@
 from direct.directnotify import DirectNotifyGlobal
 from pirates.reputation. DistributedReputationAvatarAI import  DistributedReputationAvatarAI
 from Teamable import Teamable
+from direct.distributed.ClockDelta import globalClockDelta
+from pirates.piratesbase import EmoteGlobals
 
 class DistributedBattleAvatarAI(DistributedReputationAvatarAI, Teamable):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedBattleAvatarAI')
@@ -41,12 +43,16 @@ class DistributedBattleAvatarAI(DistributedReputationAvatarAI, Teamable):
         self.skillEffects = []
         self.ensaredTargetId = 0
         self.level = 0
+        self.visZone = ''
 
     def setAvatarType(self, avatarType):
         self.avatarType = avatarType
 
     def getAvatarType(self):
         return self.avatarType
+
+    def d_setGameState(self, gameState):
+        self.sendUpdate('setGameState', [gameState, globalClockDelta.getRealNetworkTime(bits=16)])
 
     def setIsGhost(self, isGhost):
         self.isGhost = isGhost
@@ -376,3 +382,45 @@ class DistributedBattleAvatarAI(DistributedReputationAvatarAI, Teamable):
 
     def getInInvasion(self):
         return self.inInvasion
+
+    def setVisZone(self, visZone):
+        self.visZone = visZone
+
+    def d_setVisZone(self, visZone):
+        self.sendUpdate('setVisZone', [visZone])
+
+    def b_setVisZone(self, visZone):
+        self.setVisZone(visZone)
+        self.d_setVisZone(visZone)
+
+    def setEmote(self, emoteId):
+        if emoteId not in EmoteGlobals.emotes:
+
+            # Log potential hacking
+            self.air.logPotentialHacker(
+                message='Avatar attempted to use invalid emote',
+                accountId=self.air.getAccountIdFromSender(),
+                emoteId=emoteId)
+
+            return
+
+        prereqs = EmoteGlobals.getEmotePrereqs(emoteId)
+        if prereqs:
+
+            fault = False
+            for prereq in prereqs:
+                if not prereq.avIsReadyAI(self):
+                    fault = True
+                    break
+
+            if fault:
+
+                # Log potential hacking
+                self.air.logPotentialHacker(
+                    message='Avatar attempted to use emote that does not meet requirements',
+                    accountId=self.air.getAccountIdFromSender(),
+                    emoteId=emoteId)
+
+                return
+
+        self.sendUpdate('playEmote', [emoteId])

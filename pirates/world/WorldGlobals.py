@@ -70,9 +70,29 @@ PUERTO_NUEVO_T = 2009
 BLACKSMITH = 2001
 HALL_OF_CARDS = 2002
 HOLLOWED_WOODS = 3001
-__locationNames = {'PortRoyal': PORT_ROYAL,'Bilgewater': BILGEWATER,'TheRock': THE_ROCK}
-__islandNametagHeight = {'Padres Del Fuego': 1200,'Port Royal': 1300,'Tortuga': 800,'Isla Cangrejos': 400,'Kingshead': 500,'Cuba': 400,"Rumrunner's Isle": 200,"Devil's Anvil": 700,'Outcast Isle': 200,'Isla Perdida': 800,'Driftwood Island': 200,'Isla Tormenta': 200,'Cutthroat Isle': 500,"Raven's Cove": 700}
-
+__locationNames = {
+    'PortRoyal': PORT_ROYAL,
+    'Bilgewater': BILGEWATER,
+    'TheRock': THE_ROCK
+}
+__islandNametagHeight = {
+    'Padres Del Fuego': 1200,
+    'Port Royal': 1300,
+    'Tortuga': 800,
+    'Isla Cangrejos': 400,
+    'Kingshead': 500,
+    'Cuba': 400,
+    "Rumrunner's Isle": 200,
+    "Devil's Anvil": 700,
+    'Outcast Isle': 200,
+    'Isla Perdida': 800,
+    'Driftwood Island': 200,
+    'Isla Tormenta': 200,
+    'Cutthroat Isle': 500,
+    "Raven's Cove": 700,
+    'Nassau': 1300,
+    'Antigua': 800
+}
 def getNametagHeight(name):
     return __islandNametagHeight.get(name, 200)
 

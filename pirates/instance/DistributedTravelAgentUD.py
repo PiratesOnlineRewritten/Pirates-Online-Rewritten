@@ -17,6 +17,10 @@ class DistributedTravelAgentUD(DistributedObjectGlobalUD):
         self.d_initiateTeleport(self.air.getAvatarIdFromSender(), shardId=shardId)
 
     def d_initiateTeleport(self, avatarId, isTutorial=False, shardId=None):
+        if not avatarId:
+            self.notify.warning('Cannot initiate teleport for a non-existant avatar from %d!' % self.air.getMsgSender())
+            return
+ 
         if not shardId:
             self.sendUpdate('initiateTeleport', [avatarId, isTutorial])
         else:

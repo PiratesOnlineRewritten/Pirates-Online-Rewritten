@@ -16,7 +16,7 @@ class Ear(DirectObject.DirectObject):
 
     def __init__(self, main=None):
         self.main = main.main
-        self.parent = main.parent
+        self._parent = main._parent
         self.avatar = main.avatar
         self.mode = None
         self.load()
@@ -56,7 +56,7 @@ class Ear(DirectObject.DirectObject):
     def unload(self):
         self.notify.debug('called ear unload')
         del self.main
-        del self.parent
+        del self._parent
         del self.avatar
 
     def loadExtraArgs(self):
@@ -76,7 +76,7 @@ class Ear(DirectObject.DirectObject):
         self.saveDNA()
 
     def setupButtons(self):
-        self.earFrame = DirectFrame(parent=self.parent, relief=None, text=PLocalizer.EarFrameTitle, text_fg=(1,
+        self.earFrame = DirectFrame(parent=self._parent, relief=None, text=PLocalizer.EarFrameTitle, text_fg=(1,
                                                                                                              1,
                                                                                                              1,
                                                                                                              1), text_scale=0.18, text_pos=(0, -0.05), pos=(0,

@@ -256,6 +256,7 @@ class PiratesBase(OTPBase):
         launcher.addPhasePostProcess(3, self.phase3Post, taskChain='phasePost')
         launcher.addPhasePostProcess(4, self.phase4Post, taskChain='phasePost')
         launcher.addPhasePostProcess(5, self.phase5Post, taskChain='phasePost')
+        launcher.addPhasePostProcess(6, self.phase6Post, taskChain='phasePost')
         self.whiteList = PWhiteList()
         tpMgr = TextPropertiesManager.getGlobalPtr()
         WLDisplay = TextProperties()
@@ -419,14 +420,6 @@ class PiratesBase(OTPBase):
         from pirates.battle import WeaponGlobals
         from pirates.battle import Pistol, Sword, Dagger, Doll, Wand, Grenade, Bayonet, Melee, DualCutlass, Foil, Gun, FishingRod, Torch, PowderKeg
         from pirates.creature import Alligator, Bat, Chicken, Crab, Dog, FlyTrap, Monkey, Pig, Rooster, Scorpion, Seagull, Stump, Wasp
-        if config.GetBool('want-kraken', 0):
-            from pirates.kraken import Holder
-            Holder.Holder.setupAssets()
-            self.loadingScreen.tick()
-        if self.config.GetBool('want-seamonsters', 0):
-            from pirates.creature import SeaSerpent
-            SeaSerpent.SeaSerpent.setupAssets()
-            self.loadingScreen.tick()
         PowderKeg.PowderKeg.setupAssets()
         self.loadingScreen.tick()
         Torch.Torch.setupAssets()
@@ -478,6 +471,17 @@ class PiratesBase(OTPBase):
         Wasp.Wasp.setupAssets()
         self.loadingScreen.tick()
 
+    def phase6Post(self):
+        if config.GetBool('want-kraken', 0):
+            from pirates.kraken import Holder
+            Holder.Holder.setupAssets()
+            self.loadingScreen.tick()
+        if self.config.GetBool('want-seamonsters', 0):
+            from pirates.creature import SeaSerpent
+            SeaSerpent.SeaSerpent.setupAssets()
+            self.loadingScreen.tick()
+        self.buildPhase6Ships()
+
     def buildAssets(self):
         pass
 
@@ -496,6 +500,12 @@ class PiratesBase(OTPBase):
         if not self.shipFactory:
             self.buildShips()
         self.shipFactory.handlePhase5()
+        self.loadingScreen.tick()
+
+    def buildPhase6Ships(self):
+        if not self.shipFactory:
+            self.buildShips()
+        self.shipFactory.handlePhase6()
         self.loadingScreen.tick()
 
     def openMainWindow(self, *args, **kw):
@@ -556,6 +566,9 @@ class PiratesBase(OTPBase):
                 return self.hideEmbeddedFrame()
 
     def popupBrowser(self, url, demandFocus=False):
+        if not url:
+            self.notify.warning('Failed to open browser; url can not be NoneType')
+            return
         import sys
         if sys.platform == 'darwin':
             import os
@@ -568,15 +581,8 @@ class PiratesBase(OTPBase):
                 import webbrowser
                 webbrowser.open(url, new=2, autoraise=True)
             except WindowsError, e:
-                if base.appRunner:
-                    demandFocus = False
-                    if demandFocus:
-                        base.appRunner.dom.location = url
-                    else:
-                        base.appRunner.evalScript('window.open("%s")' % (url,), needsResponse=False)
-                else:
-                    import os
-                    os.system('explorer "%s"' % url)
+                import os
+                os.system('explorer "%s"' % url)
 
     def refreshAds(self):
         self.notify.debug('Refresh Ads')
@@ -697,6 +703,8 @@ class PiratesBase(OTPBase):
         taskMgr.doMethodLater(3.0, clearScreenshotMsg, 'clearScreenshot')
 
     def showScreenshots(self):
+        if not os.path.exists(os.curdir + '/' + PLocalizer.ScreenshotDir):
+            return
         filenames = os.listdir(os.curdir + '/' + PLocalizer.ScreenshotDir)
         for f in filenames:
             if 'jpg' in f:
@@ -732,13 +740,12 @@ class PiratesBase(OTPBase):
         gameServer = self.config.GetString('game-server', '')
         if gameServer:
             self.notify.info('Using game-server from Configrc: %s ' % gameServer)
+        elif launcher.getGameServer():
+            gameServer = launcher.getGameServer()
+            self.notify.info('Using gameServer from launcher: %s ' % gameServer)
         else:
-            if launcher.getGameServer():
-                gameServer = launcher.getGameServer()
-                self.notify.info('Using gameServer from launcher: %s ' % gameServer)
-            else:
-                gameServer = 'localhost'
-                self.notify.info('Using gameServer localhost')
+            gameServer = '127.0.0.1'
+            self.notify.info('Using gameServer localhost')
 
         serverPort = self.config.GetInt('server-port', 7198)
         debugQuests = self.config.GetBool('debug-quests', True)
@@ -816,8 +823,9 @@ class PiratesBase(OTPBase):
             return
         self.__alreadyExiting = True
         requestResult = False
-        self.funnel.end_session()
-        self.funnel.submit_events()
+        if hasattr(self, 'funnel'):
+            self.funnel.end_session()
+            self.funnel.submit_events()
         if hasattr(base, 'cr'):
             if self.cr.timeManager:
                 self.cr.timeManager.setDisconnectReason(PiratesGlobals.DisconnectCloseWindow)
@@ -846,9 +854,9 @@ class PiratesBase(OTPBase):
     def initNametagGlobals(self):
         arrow = loader.loadModel('models/gui/arrow')
         card = NodePath('card')
-        speech3d = ChatBalloon(loader.loadModel('models/gui/chatbox').node())
-        thought3d = ChatBalloon(loader.loadModel('models/gui/chatbox_thought_cutout').node())
-        speech2d = ChatBalloon(loader.loadModel('models/gui/chatbox_noarrow').node())
+        speech3d = ChatBalloon(loader.loadModel('models/gui/chatbox'))
+        thought3d = ChatBalloon(loader.loadModel('models/gui/chatbox_thought_cutout'))
+        speech2d = ChatBalloon(loader.loadModel('models/gui/chatbox_noarrow'))
         chatButtonGui = loader.loadModel('models/gui/triangle')
         chatButtonGui.setScale(0.1)
         chatButtonGui.flattenStrong()
@@ -878,18 +886,22 @@ class PiratesBase(OTPBase):
         self.marginManager = MarginManager()
         self.margins = self.aspect2d.attachNewNode(self.marginManager, DirectGuiGlobals.MIDGROUND_SORT_INDEX + 1)
         mm = self.marginManager
-        self.leftCells = [mm.addGridCell(0, 1.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop), mm.addGridCell(0, 2.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop), mm.addGridCell(0, 3.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop)]
-        self.bottomCells = [
-         mm.addGridCell(0.5, 0.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop), mm.addGridCell(1.5, 0.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop), mm.addGridCell(2.5, 0.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop), mm.addGridCell(3.5, 0.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop), mm.addGridCell(4.5, 0.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop)]
-        self.rightCells = [
-         mm.addGridCell(5, 2.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop), mm.addGridCell(5, 1.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop)]
+        self.leftCells = [mm.addGridCell(0, 1.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop),
+            mm.addGridCell(0, 2.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop),
+            mm.addGridCell(0, 3.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop)]
+        self.bottomCells = [mm.addGridCell(0.5, 0.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop),
+            mm.addGridCell(1.5, 0.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop),
+            mm.addGridCell(2.5, 0.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop),
+            mm.addGridCell(3.5, 0.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop),
+            mm.addGridCell(4.5, 0.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop)]
+        self.rightCells = [mm.addGridCell(5, 2.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop),
+            mm.addGridCell(5, 1.5, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop)]
 
     def getShardPopLimits(self):
         low = self.config.GetInt('shard-pop-limit-low', 100)
         mid = self.config.GetInt('shard-pop-limit-mid', 200)
         high = self.config.GetInt('shard-pop-limit-high', 300)
-        return (
-         low, mid, high)
+        return (low, mid, high)
 
     def toggleMarketingViewer(self):
         if not self.marketingViewerOn:
