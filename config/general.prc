@@ -67,7 +67,6 @@ restore-initial-pose #f
 
 # Cache:
 model-cache-max-kbytes 262144
-want-preloader #f
 want-disk-cache #f
 state-cache #t
 transform-cache #t
