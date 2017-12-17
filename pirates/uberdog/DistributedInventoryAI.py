@@ -1,6 +1,5 @@
 from direct.distributed.DistributedObjectAI import DistributedObjectAI
 from direct.directnotify import DirectNotifyGlobal
-from pirates.uberdog.UberDogGlobals import InventoryId, InventoryType
 
 class DistributedInventoryAI(DistributedObjectAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedInventoryAI')
@@ -144,6 +143,14 @@ class DistributedInventoryAI(DistributedObjectAI):
                 return stack
 
         return None
+
+    def getItem(self, itemGetter, itemType):
+        item = itemGetter(itemType)
+
+        if not item:
+            return 0
+
+        return item[1]
 
     def d_setTemporaryInventory(self, temporaryInventory):
         self.sendUpdateToAvatarId(self.ownerId, 'setTemporaryInventory', [temporaryInventory])
