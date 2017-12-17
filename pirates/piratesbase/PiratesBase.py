@@ -609,12 +609,12 @@ class PiratesBase(OTPBase):
     def setLowMemory(self, lowMemory):
         self.lowMemory = lowMemory
         if lowMemory:
-            GeomVertexArrayData.getIndependentLru().setMaxSize(5242880)
-            VertexDataPage.getGlobalLru(VertexDataPage.RCResident).setMaxSize(5242880)
+            GeomVertexArrayData.getIndependentLru().setMaxSize(sys.maxint / 2)
+            VertexDataPage.getGlobalLru(VertexDataPage.RCResident).setMaxSize(sys.maxint / 2)
             taskMgr.setupTaskChain('background', numThreads=0)
         else:
-            GeomVertexArrayData.getIndependentLru().setMaxSize(2147483647L)
-            VertexDataPage.getGlobalLru(VertexDataPage.RCResident).setMaxSize(2147483647L)
+            GeomVertexArrayData.getIndependentLru().setMaxSize(sys.maxint)
+            VertexDataPage.getGlobalLru(VertexDataPage.RCResident).setMaxSize(sys.maxint)
             taskMgr.setupTaskChain('background', numThreads=1)
 
     def setupRender2d(self):
