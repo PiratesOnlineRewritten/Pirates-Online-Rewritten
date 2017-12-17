@@ -613,9 +613,10 @@ class PiratesBase(OTPBase):
             VertexDataPage.getGlobalLru(VertexDataPage.RCResident).setMaxSize(5242880)
             taskMgr.setupTaskChain('background', numThreads=0)
         else:
-            GeomVertexArrayData.getIndependentLru().setMaxSize(4294967295L)
-            VertexDataPage.getGlobalLru(VertexDataPage.RCResident).setMaxSize(4294967295L)
+            GeomVertexArrayData.getIndependentLru().setMaxSize(10485760)
+            VertexDataPage.getGlobalLru(VertexDataPage.RCResident).setMaxSize(10485760)
             taskMgr.setupTaskChain('background', numThreads=1)
+
         for filename in ['models/misc/male_face.bam', 'models/misc/female_face.bam']:
             self._setKeepRamImage(filename)
 
