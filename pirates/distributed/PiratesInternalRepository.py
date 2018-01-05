@@ -4,6 +4,7 @@ from direct.distributed.PyDatagram import PyDatagram
 from direct.distributed.MsgTypes import *
 from panda3d.core import *
 from pirates.uberdog.WebhooksUD import SlackWebhook, SlackAttachment, SlackField
+from parse_rest import config as parseConfig
 import traceback
 import sys
 
@@ -13,6 +14,13 @@ class PiratesInternalRepository(AstronInternalRepository):
 
     def __init__(self, baseChannel, serverId=None, dcFileNames = None, dcSuffix='AI', connectMethod=None, threadedNet=None):
         AstronInternalRepository.__init__(self, baseChannel, serverId, dcFileNames, dcSuffix, connectMethod, threadedNet)
+
+        # Configure Parse
+        from parse_rest.connection import register, API_ROOT
+        register(
+            config.GetString('parse-project-title', ''),
+            config.GetString('parse-restful-key', ''),
+            master_key=config.GetString('parse-master-key', ''))
 
     def handleConnected(self):
         if config.GetBool('send-hacker-test-message', False):
@@ -26,6 +34,12 @@ class PiratesInternalRepository(AstronInternalRepository):
 
     def isDevServer(self):
         return 'dev' in config.GetString('server-version', '') or __dev__
+
+    def getCloudConfig(self, name, default=None):
+        cloudConfig = parseConfig.Config.get()
+        if name not in cloudConfig:
+            return default
+        return cloudConfig[name]
 
     def setAllowClientSend(self, avId, distObj, fieldNameList=[]):
         dg = PyDatagram()

@@ -2787,7 +2787,7 @@ struct PotentialPirate {
 
 dclass ClientServicesManager : DistributedObjectGlobal {
   login(string cookie) clsend;
-  acceptLogin();
+  acceptLogin(string username);
   requestAvatars() clsend;
   setAvatars(PotentialPirate[]);
   createAvatar(blob dna, uint8 index) clsend;

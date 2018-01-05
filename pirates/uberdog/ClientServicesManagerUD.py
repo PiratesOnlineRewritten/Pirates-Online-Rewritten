@@ -12,37 +12,14 @@ from direct.fsm.FSM import FSM
 from pandac.PandaModules import *
 from otp.distributed import OtpDoGlobals
 from pirates.pirate.HumanDNA import HumanDNA
-
-# Import from PyCrypto only if we are using a database that requires it. This
-# allows local hosted and developer builds of the game to run without it:
-accountDBType = simbase.config.GetString('accountdb-type', 'developer')
-if accountDBType == 'remote':
-    from Crypto.Cipher import AES
+from parse_rest.connection import SessionToken
+from parse_rest.user import User
 
 # Sometimes we'll want to force a specific access level, such as on the
 # developer server:
 minAccessLevel = simbase.config.GetInt('min-access-level', 100)
-accountServerEndpoint = simbase.config.GetString('account-server-endpoint', 'https://toontowninfinite.com/api/')
-accountServerSecret = simbase.config.GetString('account-server-secret', '6163636f756e7473')
 
-http = HTTPClient()
-http.setVerifySsl(0)
-
-def executeHttpRequest(url, **extras):
-    timestamp = str(int(time.time()))
-    signature = hmac.new(accountServerSecret, timestamp, hashlib.sha256)
-    request = urllib2.Request(accountServerEndpoint + url)
-    request.add_header('User-Agent', 'TTI-CSM')
-    request.add_header('X-CSM-Timestamp', timestamp)
-    request.add_header('X-CSM-Signature', signature.hexdigest())
-    for k, v in extras.items():
-        request.add_header('X-CSM-' + k, v)
-    try:
-        return urllib2.urlopen(request).read()
-    except:
-        return None
-
-blacklist = executeHttpRequest('names/blacklist.json')
+blacklist = "{}" #executeHttpRequest('names/blacklist.json')
 if blacklist:
     blacklist = json.loads(blacklist)
 
@@ -61,219 +38,46 @@ def judgeName(name):
                     return False
     return True
 
-# --- ACCOUNT DATABASES ---
-# These classes make up the available account databases for Toontown Infinite.
-# Databases with login tokens use the PyCrypto module for decrypting them.
-# DeveloperAccountDB is a special database that accepts a username, and assigns
-# each user with 600 access automatically upon login.
+# --- ACCOUNT DATABASE ---
 
-class AccountDB:
+class AccountDB(object):
     notify = directNotify.newCategory('AccountDB')
 
     def __init__(self, csm):
         self.csm = csm
 
-        filename = simbase.config.GetString(
-            'account-bridge-filename', 'account-bridge')
-        self.dbm = semidbm.open(filename, 'c')
-
     def addNameRequest(self, avId, name):
-        return 'Success'
+        return {} #executeHttpRequest('names/append', ID=str(avId), Name=name)
 
     def getNameStatus(self, avId):
-        return 'APPROVED'
+        return {} #executeHttpRequest('names/status/?Id=' + str(avId))
 
     def removeNameRequest(self, avId):
-        return 'Success'
-
-    def lookup(self, username, callback):
-        pass  # Inheritors should override this.
-
-    def storeAccountID(self, userId, accountId, callback):
-        self.dbm[str(userId)] = str(accountId)  # semidbm only allows strings.
-        if getattr(self.dbm, 'sync', None):
-            self.dbm.sync()
-            callback(True)
-        else:
-            self.notify.warning('Unable to associate user %s with account %d!' % (userId, accountId))
-            callback(False)
-
-
-class DeveloperAccountDB(AccountDB):
-    notify = directNotify.newCategory('DeveloperAccountDB')
-
-    def lookup(self, username, callback):
-        # Let's check if this user's ID is in your account database bridge:
-        if str(username) not in self.dbm:
-
-            # Nope. Let's associate them with a brand new Account object! We
-            # will assign them with 600 access just because they are a
-            # developer:
-            response = {
-                'success': True,
-                'userId': username,
-                'accountId': 0,
-                'accessLevel': max(600, minAccessLevel)
-            }
-            callback(response)
-            return response
-
-        else:
-
-            # We have an account already, let's return what we've got:
-            response = {
-                'success': True,
-                'userId': username,
-                'accountId': int(self.dbm[str(username)]),
-            }
-            callback(response)
-            return response
-
-
-# This is the same as the DeveloperAccountDB, except it doesn't automatically
-# give the user an access level of 600. Instead, the first user that is created
-# gets 700 access, and every user created afterwards gets 100 access:
-
-class LocalAccountDB(AccountDB):
-    notify = directNotify.newCategory('LocalAccountDB')
-
-    def lookup(self, username, callback):
-        # Let's check if this user's ID is in your account database bridge:
-        if str(username) not in self.dbm:
-
-            # Nope. Let's associate them with a brand new Account object!
-            response = {
-                'success': True,
-                'userId': username,
-                'accountId': 0,
-                'accessLevel': max((700 if not self.dbm else 100), minAccessLevel)
-            }
-            callback(response)
-            return response
-
-        else:
-
-            # We have an account already, let's return what we've got:
-            response = {
-                'success': True,
-                'userId': username,
-                'accountId': int(self.dbm[str(username)])
-            }
-            callback(response)
-            return response
-
-
-class RemoteAccountDB(AccountDB):
-    notify = directNotify.newCategory('RemoteAccountDB')
-
-    def addNameRequest(self, avId, name):
-        return executeHttpRequest('names/append', ID=str(avId), Name=name)
-
-    def getNameStatus(self, avId):
-        return executeHttpRequest('names/status/?Id=' + str(avId))
-
-    def removeNameRequest(self, avId):
-        return executeHttpRequest('names/remove', ID=str(avId))
+        return {} #executeHttpRequest('names/remove', ID=str(avId))
 
     def lookup(self, token, callback):
-        # First, base64 decode the token:
-        try:
-            token = base64.b64decode(token)
-        except TypeError:
-            self.notify.warning('Could not decode the provided token!')
-            response = {
-                'success': False,
-                'reason': "Can't decode this token."
-            }
-            callback(response)
-            return response
 
-        # Ensure this token is a valid size:
-        if (not token) or ((len(token) % 16) != 0):
-            self.notify.warning('Invalid token length!')
-            response = {
-                'success': False,
-                'reason': 'Invalid token length.'
-            }
-            callback(response)
-            return response
+        # Next, check if this token is valid
+        with SessionToken(token):
+            try:
+                user = User.current_user()
+            except:
+                response = {
+                    'success': False,
+                    'reason': 'This token has expired.'
+                }
+                callback(response)
+                return response
 
-        # Next, decrypt the token using AES-128 in CBC mode:
-        accountServerSecret = simbase.config.GetString(
-            'account-server-secret', '6163636f756e7473')
-
-        # Ensure that our secret is the correct size:
-        if len(accountServerSecret) > AES.block_size:
-            self.notify.warning('account-server-secret is too big!')
-            accountServerSecret = accountServerSecret[:AES.block_size]
-        elif len(accountServerSecret) < AES.block_size:
-            self.notify.warning('account-server-secret is too small!')
-            accountServerSecret += '\x80'
-            while len(accountServerSecret) < AES.block_size:
-                accountServerSecret += '\x00'
-
-        # Take the initialization vector off the front of the token:
-        iv = token[:AES.block_size]
-
-        # Truncate the token to get our cipher text:
-        cipherText = token[AES.block_size:]
-
-        # Decrypt!
-        cipher = AES.new(accountServerSecret, mode=AES.MODE_CBC, IV=iv)
-        try:
-            token = json.loads(cipher.decrypt(cipherText).replace('\x00', ''))
-            if ('timestamp' not in token) or (not isinstance(token['timestamp'], int)):
-                raise ValueError
-            if ('userid' not in token) or (not isinstance(token['userid'], int)):
-                raise ValueError
-            if ('accesslevel' not in token) or (not isinstance(token['accesslevel'], int)):
-                raise ValueError
-        except ValueError, e:
-            print e
-            self.notify.warning('Invalid token.')
-            response = {
-                'success': False,
-                'reason': 'Invalid token.'
-            }
-            callback(response)
-            return response
-
-        # Next, check if this token has expired:
-        expiration = simbase.config.GetInt('account-token-expiration', 1800)
-        tokenDelta = int(time.time()) - token['timestamp']
-        if tokenDelta > expiration:
-            response = {
-                'success': False,
-                'reason': 'This token has expired.'
-            }
-            callback(response)
-            return response
-
-        # This token is valid. That's all we need to know. Next, let's check if
-        # this user's ID is in your account database bridge:
-        if str(token['userid']) not in self.dbm:
-
-            # Nope. Let's associate them with a brand new Account object!
-            response = {
-                'success': True,
-                'userId': token['userid'],
-                'accountId': 0,
-                'accessLevel': max(int(token['accesslevel']), minAccessLevel)
-            }
-            callback(response)
-            return response
-
-        else:
-
-            # Yep. Let's return their account ID and access level!
-            response = {
-                'success': True,
-                'userId': token['userid'],
-                'accountId': int(self.dbm[str(token['userid'])]),
-                'accessLevel': max(int(token['accesslevel']), minAccessLevel)
-            }
-            callback(response)
-            return response
+        # Yep. Let's return their account ID and access level!
+        response = {
+            'success': True,
+            'userId': user.username,
+            'accountId': int(user.account_id),
+            'accessLevel': int(user.access_level)
+        }
+        callback(response)
+        return response
 
 
 # --- FSMs ---
@@ -368,10 +172,16 @@ class LoginAccountFSM(OperationFSM):
         self.demand('StoreAccountID')
 
     def enterStoreAccountID(self):
-        self.csm.accountDB.storeAccountID(
-            self.userId,
-            self.accountId,
-            self.__handleStored)
+        with SessionToken(self.token):
+            success = True
+            try:
+                user = User.current_user()
+                user.account_id = self.accountId
+                user.save()
+            except:
+                success = False
+            finally:
+                self.__handleStored(success)
 
     def __handleStored(self, success=True):
         if not success:
@@ -439,7 +249,7 @@ class LoginAccountFSM(OperationFSM):
 
         # We're done.
         self.csm.air.writeServerEvent('accountLogin', target=self.target, accountId=self.accountId, userId=self.userId)
-        self.csm.sendUpdateToChannel(self.target, 'acceptLogin', [])
+        self.csm.sendUpdateToChannel(self.target, 'acceptLogin', [self.userId])
         self.demand('Off')
 
 class CreateAvatarFSM(OperationFSM):
@@ -1014,14 +824,7 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
         self.account2fsm = {}
 
         # Instantiate our account DB interface:
-        if accountDBType == 'developer':
-            self.accountDB = DeveloperAccountDB(self)
-        elif accountDBType == 'local':
-            self.accountDB = LocalAccountDB(self)
-        elif accountDBType == 'remote':
-            self.accountDB = RemoteAccountDB(self)
-        else:
-            self.notify.error('Invalid accountdb-type: ' + accountDBType)
+        self.accountDB = AccountDB(self)
 
     def killConnection(self, connId, reason, code=122):
         datagram = PyDatagram()
@@ -1106,7 +909,7 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
         currentAvId = self.air.getAvatarIdFromSender()
         accountId = self.air.getAccountIdFromSender()
         if currentAvId and avId:
-            self.killAccount(accountId, 'A Toon is already chosen!')
+            self.killAccount(accountId, 'A Pirate is already chosen!')
             return
         elif not currentAvId and not avId:
             # This isn't really an error, the client is probably just making sure

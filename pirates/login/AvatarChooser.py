@@ -1287,7 +1287,7 @@ class AvatarChooser(DirectObject, StateData):
             self.nextSubButton.show()
 
         self.currentSubId = self.subIds[self.currentSubIndex]
-        subLabelText = '\x01white\x01%s\x02' % base.cr.launcher.getPlayToken()
+        subLabelText = '\x01white\x01%s\x02' % base.cr.account_username
         self.subLabel['text'] = subLabelText
         for frame in self.subFrames.values():
             frame.hide()

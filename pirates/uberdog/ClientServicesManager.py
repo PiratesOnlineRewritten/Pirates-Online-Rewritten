@@ -12,7 +12,8 @@ class ClientServicesManager(DistributedObjectGlobal):
 
         self.sendUpdate('login', [self.cr.playToken or 'dev'])
 
-    def acceptLogin(self):
+    def acceptLogin(self, username):
+        self.cr.account_username = username
         messenger.send(self.doneEvent, [{'mode': 'success'}])
         base.funnel.start_session()
         base.funnel.submit_events()

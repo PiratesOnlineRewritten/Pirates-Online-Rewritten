@@ -12,5 +12,5 @@ echo ============================================
 
 rem Start UberDOG server
 :main
-%PYTHON_CMD% -m pirates.uberdog.ServiceStart 
+%PYTHON_CMD% -m pirates.uberdog.ServiceStart --parse-hostname http://127.0.0.1:1337/por-parse
 goto main

@@ -1,0 +1,19 @@
+{
+  "apps": [
+    {
+      "serverURL": "http://127.0.0.1:1337/por-parse",
+      "appId": "pirates-online-rewritten",
+      "masterKey": "b20IJn45;vwQM]V3!lUZ/x<4~tWWYC591L|{nTV&hJ3@i<u},7;)J`.Y1D~oqM3",
+      "appName": "Pirates Online Rewritten",
+      "iconName": "por.png",
+      "production": false
+    }
+  ],
+  "users": [
+    {
+        "user": "admin",
+        "pass": "payagU4a"
+    }
+  ],
+  "iconsFolder": "icons"
+}

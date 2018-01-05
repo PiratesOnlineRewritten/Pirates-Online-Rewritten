@@ -12,6 +12,7 @@ parser.add_argument('--stateserver', help="The control channel of this AI's desi
 parser.add_argument('--district-name', help="What this AI Server's district will be named.")
 parser.add_argument('--astron-ip', help="The IP address of the Astron Message Director to connect to.")
 parser.add_argument('--eventlogger-ip', help="The IP address of the Astron Event Logger to log to.")
+parser.add_argument('--parse-hostname', help="The hostname address for the Pirates Online Rewritten Parse Server.")
 parser.add_argument('config', nargs='*', default=['config/general.prc', 'config/server.prc'], help="PRC file(s) to load.")
 args = parser.parse_args()
 
@@ -32,6 +33,9 @@ if args.district_name: localconfig += 'district-name %s\n' % args.district_name
 if args.astron_ip: localconfig += 'air-connect %s\n' % args.astron_ip
 if args.eventlogger_ip: localconfig += 'eventlog-host %s\n' % args.eventlogger_ip
 loadPrcFileData('Command-line', localconfig)
+
+import os
+os.environ["PARSE_API_ROOT"] = args.parse_hostname
 
 class game:
     name = 'pirates'
