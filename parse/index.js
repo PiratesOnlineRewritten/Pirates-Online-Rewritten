@@ -37,7 +37,7 @@ var dashboard = new ParseDashboard({
         "clientKey": "test",
         "appName": "Pirates Online Rewritten",
         "iconName": "por.png",
-        "production": true
+        "production": false
       }
     ],
     "users": [
