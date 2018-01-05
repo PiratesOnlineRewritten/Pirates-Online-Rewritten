@@ -126,6 +126,9 @@ Library/
 # Visual Studio
 .vs/
 
+# Visual Studio Code
+.vscode/
+
 # Game logs
 *.log
 logs/
