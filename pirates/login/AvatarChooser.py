@@ -631,7 +631,7 @@ class AvatarChooser(DirectObject, StateData):
             return
 
         self.choice = (subId, slot)
-        base.funnel.add_to_event_queue(base.funnel.get_design_event('NEW_AVATAR', slot))
+        base.funnel.submit_event('NEW_AVATAR', slot=slot, account=base.cr.account_username)
         self.ignore('rejectAvatarSlot')
         self.ignore('avatarSlotResponse')
         base.cr.cleanupWaitingForDatabase()

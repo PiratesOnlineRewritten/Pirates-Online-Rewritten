@@ -7,6 +7,4 @@ discord-ping-everyone #t
 notify-timestamp #t
 
 # Parse Server
-parse-project-title pirates-online-rewritten
-parse-restful-key restful_pirates_online_rewritten
 parse-master-key b20IJn45;vwQM]V3!lUZ/x<4~tWWYC591L|{nTV&hJ3@i<u},7;)J`.Y1D~oqM3

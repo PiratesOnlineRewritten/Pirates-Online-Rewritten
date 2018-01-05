@@ -1,6 +1,7 @@
 import sys
 import time
 import os
+import json
 from pandac.PandaModules import *
 from otp.nametag import NametagGlobals
 from otp.nametag.ChatBalloon import ChatBalloon
@@ -807,9 +808,6 @@ class PiratesBase(OTPBase):
             return
         self.__alreadyExiting = True
         requestResult = False
-        if hasattr(self, 'funnel'):
-            self.funnel.end_session()
-            self.funnel.submit_events()
         if hasattr(base, 'cr'):
             if self.cr.timeManager:
                 self.cr.timeManager.setDisconnectReason(PiratesGlobals.DisconnectCloseWindow)

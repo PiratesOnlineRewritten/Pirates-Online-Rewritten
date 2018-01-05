@@ -404,3 +404,9 @@ clip-plane-cull #f
 # Networking:
 collect-tcp 1
 collect-tcp-interval 0.1
+
+# Parse:
+parse-server-url http://127.0.0.1:1337
+parse-url-path por-parse
+parse-project-title pirates-online-rewritten
+parse-restful-key restful_pirates_online_rewritten

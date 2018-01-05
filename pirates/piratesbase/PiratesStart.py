@@ -64,8 +64,7 @@ base.initNametagGlobals()
 base.startShow(cr)
 from otp.distributed import OtpDoGlobals
 from pirates.piratesbase import UserFunnel
-UserFunnel.logSubmit(1, 'CLIENT_OPENS')
-UserFunnel.logSubmit(0, 'CLIENT_OPENS')
+base.funnel.report_client_opened()
 if base.config.GetBool('want-portal-cull', 0):
     base.cam.node().setCullCenter(base.camera)
     base.graphicsEngine.setPortalCull(1)

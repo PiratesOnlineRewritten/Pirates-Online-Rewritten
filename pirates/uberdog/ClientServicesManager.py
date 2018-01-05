@@ -15,8 +15,6 @@ class ClientServicesManager(DistributedObjectGlobal):
     def acceptLogin(self, username):
         self.cr.account_username = username
         messenger.send(self.doneEvent, [{'mode': 'success'}])
-        base.funnel.start_session()
-        base.funnel.submit_events()
 
     def requestAvatars(self):
         self.sendUpdate('requestAvatars')
