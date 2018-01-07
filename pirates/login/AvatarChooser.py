@@ -720,7 +720,7 @@ class AvatarChooser(DirectObject, StateData):
         base.emoteGender = base.cr.avList[subId][slot].dna.gender
         subId, slot = self.choice
         self.notify.info('AvatarChooser: acquired avatar slot: %s avId: %s subId: %s' % (slot, avatarId, subId))
-        base.funnel.add_to_event_queue(base.funnel.get_design_event('CHOOSE_AVATAR', avatarId))
+        #base.funnel.add_to_event_queue(base.funnel.get_design_event('CHOOSE_AVATAR', avatarId))
         base.cr.cleanupWaitingForDatabase()
         self.doneStatus = {'mode': 'chose'}
         messenger.send(self.doneEvent, [self.doneStatus])
