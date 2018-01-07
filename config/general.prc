@@ -31,9 +31,8 @@ model-path ../resources/phase_6
 default-model-extension .bam
 
 # Display Pipeline:
-load-display pandagl
+load-display pandadx9
 aux-display pandagl
-aux-display pandadx9
 aux-display tinydisplay
 
 # Audio:
@@ -68,8 +67,7 @@ restore-initial-pose #f
 
 # Cache:
 model-cache-max-kbytes 262144
-want-preloader #t
-want-disk-cache #t
+want-disk-cache #f
 state-cache #t
 transform-cache #t
 model-cache-textures #f

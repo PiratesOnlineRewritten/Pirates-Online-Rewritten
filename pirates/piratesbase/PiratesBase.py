@@ -609,29 +609,13 @@ class PiratesBase(OTPBase):
     def setLowMemory(self, lowMemory):
         self.lowMemory = lowMemory
         if lowMemory:
-            GeomVertexArrayData.getIndependentLru().setMaxSize(5242880)
-            VertexDataPage.getGlobalLru(VertexDataPage.RCResident).setMaxSize(5242880)
+            GeomVertexArrayData.getIndependentLru().setMaxSize(sys.maxint / 2)
+            VertexDataPage.getGlobalLru(VertexDataPage.RCResident).setMaxSize(sys.maxint / 2)
             taskMgr.setupTaskChain('background', numThreads=0)
         else:
-            GeomVertexArrayData.getIndependentLru().setMaxSize(4294967295L)
-            VertexDataPage.getGlobalLru(VertexDataPage.RCResident).setMaxSize(4294967295L)
+            GeomVertexArrayData.getIndependentLru().setMaxSize(sys.maxint)
+            VertexDataPage.getGlobalLru(VertexDataPage.RCResident).setMaxSize(sys.maxint)
             taskMgr.setupTaskChain('background', numThreads=1)
-        for filename in ['models/misc/male_face.bam', 'models/misc/female_face.bam']:
-            self._setKeepRamImage(filename)
-
-    def _setKeepRamImage(self, filename):
-        model = loader.loadModel(filename)
-        if self.lowMemory:
-            for tex in model.findAllTextures():
-                tex.setCompression(tex.CMDefault)
-                tex.setKeepRamImage(False)
-                tex.clearRamImage()
-
-        else:
-            for tex in model.findAllTextures():
-                tex.setCompression(tex.CMOff)
-                tex.setKeepRamImage(True)
-                tex.reload()
 
     def setupRender2d(self):
         OTPBase.setupRender2d(self)

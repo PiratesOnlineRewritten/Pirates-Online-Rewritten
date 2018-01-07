@@ -1,4 +1,3 @@
-import PiratesPreloader
 print 'PiratesStart: Starting the game.'
 import __builtin__
 
@@ -36,8 +35,6 @@ launcher.setPandaErrorCode(7)
 import PiratesBase
 PiratesBase.PiratesBase()
 from direct.showbase.ShowBaseGlobal import *
-if base.config.GetBool('want-preloader', 0):
-    base.preloader = PiratesPreloader.PiratesPreloader()
 
 if base.win == None:
     print 'Unable to open window; aborting.'
