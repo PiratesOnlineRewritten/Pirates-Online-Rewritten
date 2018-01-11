@@ -26,16 +26,29 @@ class TeleportFSM(FSM):
         pass
 
     def enterStart(self):
+        self.acceptOnce(self.avatar.getDeleteEvent(), lambda: self.demand('Stop'))
+
         self.teleportZone = DistributedTeleportZoneAI(self.teleportMgr.air)
         self.teleportZone.generateWithRequired(self.teleportMgr.air.allocateZone())
 
+        def _teleporting(teleportHandler):
+            if not teleportHandler:
+                self.notify.warning('Failed to generate teleportHandler %d for avatar %d while trying to teleport!' % (
+                    self.teleportHandler.doId, self.avatar.doId))
+
+                self.demand('Stop')
+                return
+
+            self.avatar.d_forceTeleportStart(self.world.getFileName(), self.teleportZone.doId, self.teleportHandler.doId, 0,
+                self.teleportZone.parentId, self.teleportZone.zoneId)
+
+        # pre-allocate a doId for the teleport handler object, so we know when it
+        # successfully generates on the state server; then begin the teleporation mgr process...
+        teleportHandlerDoId = self.teleportMgr.air.allocateChannel()
+        self.acceptOnce('generate-%d' % teleportHandlerDoId, _teleporting)
+
         self.teleportHandler = DistributedTeleportHandlerAI(self.teleportMgr.air, self.teleportMgr, self, self.avatar)
-        self.teleportHandler.generateWithRequired(self.teleportZone.zoneId)
-
-        self.avatar.d_forceTeleportStart(self.world.getFileName(), self.teleportZone.doId, self.teleportHandler.doId, 0,
-            self.teleportZone.parentId, self.teleportZone.zoneId)
-
-        self.acceptOnce(self.avatar.getDeleteEvent(), lambda: self.request('Stop'))
+        self.teleportHandler.generateWithRequiredAndId(teleportHandlerDoId, self.teleportMgr.air.districtId, self.teleportZone.zoneId)
 
     def exitStart(self):
         pass
@@ -90,14 +103,14 @@ class DistributedTeleportMgrAI(DistributedObjectAI):
 
     def __initiateTeleport(self, avatar, instanceType=None, instanceName=None, islandUid=LocationIds.PORT_ROYAL_ISLAND, spawnPt=None):
         if avatar.doId in self.avatar2fsm:
-            self.notify.warning('Cannot initiate teleport for %d, already teleporting!' % avatar.doId)
+            self.notify.debug('Cannot initiate teleport for %d, already teleporting!' % avatar.doId)
             self.d_failTeleportRequest(avatar.doId, PiratesGlobals.TFInTeleport)
             return
 
         instance = avatar.getParentObj()
 
         if instance and instance.getUniqueId() == islandUid:
-            self.notify.warning('Cannot initiate teleport for %d, already there!' % avatar.doId)
+            self.notify.debug('Cannot initiate teleport for %d, already there!' % avatar.doId)
             self.d_failTeleportRequest(avatar.doId, PiratesGlobals.TFSameArea)
             return
 
