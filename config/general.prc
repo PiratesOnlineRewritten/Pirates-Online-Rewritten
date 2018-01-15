@@ -15,7 +15,7 @@ aux-display tinydisplay
 ime-aware #t
 ime-hide #t
 
-# Culling :
+# Culling:
 cull-bin gui-popup 60 unsorted
 cull-bin shadow 15 fixed
 cull-bin ground 14 fixed
