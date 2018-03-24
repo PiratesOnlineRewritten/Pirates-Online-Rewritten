@@ -1,14 +1,14 @@
-from direct.distributed.DistributedNodeAI import DistributedNodeAI
+from direct.distributed.DistributedObjectAI import DistributedObjectAI
 from direct.directnotify import DirectNotifyGlobal
 from DistributedRepairGameBase import *
 import RepairGlobals
 import random
 
-class DistributedRepairGameAI(DistributedNodeAI, DistributedRepairGameBase):
+class DistributedRepairGameAI(DistributedRepairGameBase, DistributedObjectAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedRepairGameAI')
 
     def __init__(self, air):
-        DistributedNodeAI.__init__(self, air)
+        DistributedObjectAI.__init__(self, air)
         DistributedRepairGameBase.__init__(self)
 
         self.avatar2game = {}
