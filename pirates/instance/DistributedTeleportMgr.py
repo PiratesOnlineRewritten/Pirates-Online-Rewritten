@@ -44,6 +44,18 @@ class DistributedTeleportMgr(DistributedObject.DistributedObject):
         DistributedObject.DistributedObject.generate(self)
         base.cr.teleportMgr = self
 
+    def setDoEffect(self, doEffect):
+        self.doEffect = doEffect
+
+    def getDoEffect(self):
+        return self.doEffect
+
+    def setStowawayEffect(self, stowawayEffect):
+        self.stowawayEffect = stowawayEffect
+
+    def getStowawayEffect(self):
+        return self.stowawayEffect
+
     def requestTeleportToFishingShip(self):
         self.cr.teleportMgr.sendUpdate('requestTeleportToFishingShip')
 

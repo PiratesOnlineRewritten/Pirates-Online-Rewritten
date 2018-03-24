@@ -89,7 +89,7 @@ class DistributedTeleportMgrAI(DistributedObjectAI):
             self.notify.warning('Cannot teleport non-existant avatar to instance %d %s!' % (instanceType, instanceName))
             return
 
-        self.__initiateTeleport(avatar, instanceType=instanceType, instanceName=instanceName)
+        self.doInitiateTeleport(avatar, instanceType=instanceType, instanceName=instanceName, doEffect=True)
 
     def requestIslandTeleport(self, islandUid):
         avatar = self.air.doId2do.get(self.air.getAvatarIdFromSender())
@@ -98,9 +98,9 @@ class DistributedTeleportMgrAI(DistributedObjectAI):
             self.notify.warning('Cannot teleport non-existant avatar to island %s!' % islandUid)
             return
 
-        self.__initiateTeleport(avatar, islandUid=islandUid)
+        self.doInitiateTeleport(avatar, islandUid=islandUid, doEffect=True)
 
-    def __initiateTeleport(self, avatar, instanceType=None, instanceName=None, islandUid=LocationIds.PORT_ROYAL_ISLAND, spawnPt=None):
+    def doInitiateTeleport(self, avatar, instanceType=None, instanceName=None, islandUid=LocationIds.PORT_ROYAL_ISLAND, spawnPt=None, doEffect=False, stowawayEffect=False):
         if avatar.doId in self.avatar2fsm:
             self.notify.debug('Cannot initiate teleport for %d, already teleporting!' % avatar.doId)
             self.d_failTeleportRequest(avatar.doId, PiratesGlobals.TFInTeleport)
@@ -135,8 +135,17 @@ class DistributedTeleportMgrAI(DistributedObjectAI):
         if not spawnPt:
             spawnPt = world.getSpawnPt(instance.getUniqueId())
 
+        self.d_setDoEffect(avatar.doId, doEffect)
+        self.d_setStowawayEffect(avatar.doId, stowawayEffect)
+
         self.avatar2fsm[avatar.doId] = TeleportFSM(self, avatar, world, instance, spawnPt)
         self.avatar2fsm[avatar.doId].request('Start')
+
+    def d_setDoEffect(self, avatarId, doEffect):
+        self.sendUpdateToAvatarId(avatarId, 'setDoEffect', [doEffect])
+
+    def d_setStowawayEffect(self, avatarId, stowawayEffect):
+        self.sendUpdateToAvatarId(avatarId, 'setStowawayEffect', [stowawayEffect])
 
     def d_failTeleportRequest(self, avatarId, reasonBit):
         self.sendUpdateToAvatarId(avatarId, 'failTeleportRequest', [reasonBit.getHighestOnBit()])

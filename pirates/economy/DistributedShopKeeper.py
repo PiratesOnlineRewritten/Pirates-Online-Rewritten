@@ -309,7 +309,7 @@ class DistributedShopKeeper():
             self.storeMenuGUI = AccessoriesStoreGUI.AccessoriesStoreGUI(npc=self, shopId=PiratesGlobals.PRIVATEER_COATS)
         elif storeType == InteractGlobals.CATALOG_STORE:
             self.storeMenuGUI = SimpleStoreGUI.CatalogStoreGUI(npc=self, shopId=self.getShopId())
-            
+
         self.accept(InventoryGlobals.getCategoryChangeMsg(localAvatar.getInventoryId(), InventoryType.ItemTypeMoney), self.saleFinishedResponse)
 
     def finishShopping(self):
@@ -676,5 +676,5 @@ class DistributedShopKeeper():
         if item:
             self.sendUpdate('requestSellItem', [item[0], item[1], item[2], amount])
 
-    def sendRequestStowaway(self, destUID):
-        self.sendUpdate('requestStowaway', [destUID])
+    def sendRequestStowaway(self, destUid):
+        self.sendUpdate('requestStowaway', [destUid])

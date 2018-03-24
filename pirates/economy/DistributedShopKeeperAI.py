@@ -39,7 +39,6 @@ class DistributedShopKeeperAI(DistributedObjectAI):
             return
 
         if inventory.getGoldInPocket() < 5:
-            
             self.air.logPotentialHacker(
                 message='Attempted to make sale without sufficent gold',
                 pirateGold=inventory.getGoldInPocket(),
@@ -116,7 +115,44 @@ class DistributedShopKeeperAI(DistributedObjectAI):
             self.sendUpdateToAvatarId(avatar.doId, 'makeSaleResponse', [resultCode])
 
         for sell in selling:
-            pass #TODO          
+            pass #TODO
+
+    def requestStowaway(self, destUid):
+        avatar = self.air.doId2do.get(self.air.getAvatarIdFromSender())
+
+        if not avatar:
+            return
+
+        inventory = self.air.inventoryManager.getInventory(avatar.doId)
+
+        if not inventory:
+            self.notify.warning('Failed to get inventory for avatar %d!' % avatar.doId)
+            return
+
+        if destUid not in EconomyGlobals.StowawayCost:
+            self.air.logPotentialHacker(
+                message='Attempted to stowaway to an unavailable island',
+                accountId=self.air.getAccountIdFromSender(),
+                targetAvId=avatar.doId)
+
+            return
+
+        requiredGold = EconomyGlobals.StowawayCost[destUid]
+
+        if inventory.getGoldInPocket() < requiredGold:
+            self.air.logPotentialHacker(
+                message='Attempted to make sale without sufficent gold',
+                pirateGold=inventory.getGoldInPocket(),
+                requiredGold=requiredGold)
+
+            return
+
+        self.air.writeServerEvent('shop-transaction',
+            transactionType='stowaway',
+            avatarId=avatar.doId)
+
+        inventory.setGoldInPocket(inventory.getGoldInPocket() - requiredGold)
+        self.air.teleportMgr.doInitiateTeleport(avatar, islandUid=destUid, stowawayEffect=True)
 
     def requestMakeShipSale(self, buying, selling, names):
         avatar = self.air.doId2do.get(self.air.getAvatarIdFromSender())

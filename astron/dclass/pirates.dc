@@ -1451,6 +1451,8 @@ struct InterestLocations {
 
 dclass DistributedTeleportMgr : DistributedObject {
   setParentingRules(string, string) broadcast ram;
+  setDoEffect(bool);
+  setStowawayEffect(bool);
   initiateTeleport(uint8, uint8, uint32, string, uint32, string, int32, uint32, uint32) airecv clsend;
   initiateTeleportAI(uint8, string);
   teleportHasBegun(uint8, uint8, string, int32);
