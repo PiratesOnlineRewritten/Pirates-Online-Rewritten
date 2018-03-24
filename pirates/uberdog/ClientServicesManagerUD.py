@@ -42,23 +42,8 @@ def executeHttpRequest(url, **extras):
     except:
         return None
 
-blacklist = executeHttpRequest('names/blacklist.json')
-if blacklist:
-    blacklist = json.loads(blacklist)
-
 def judgeName(name):
-    if not name:
-        return False
-
-    if blacklist:
-        for namePart in name.split(' '):
-            namePart = namePart.lower()
-            if len(namePart) < 1:
-                return False
-
-            for banned in blacklist.get(namePart[0], []):
-                if banned in namePart:
-                    return False
+    # TODO!
     return True
 
 # --- ACCOUNT DATABASES ---
