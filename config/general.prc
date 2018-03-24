@@ -84,7 +84,7 @@ model-path ../resources/phase_6
 default-model-extension .bam
 
 # Smooth:
-smooth-lag #t
+smooth-lag 0.3
 
 # LOD:
 default-lod-type fade
