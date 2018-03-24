@@ -31,7 +31,7 @@ class TeleportFSM(FSM):
         self.teleportZone = DistributedTeleportZoneAI(self.teleportMgr.air)
         self.teleportZone.generateWithRequired(self.teleportMgr.air.allocateZone())
 
-        def _teleporting(teleportHandler):
+        def teleportHandlerReady(teleportHandler):
             if not teleportHandler:
                 self.notify.warning('Failed to generate teleportHandler %d for avatar %d while trying to teleport!' % (
                     self.teleportHandler.doId, self.avatar.doId))
@@ -42,10 +42,8 @@ class TeleportFSM(FSM):
             self.avatar.d_forceTeleportStart(self.world.getFileName(), self.teleportZone.doId, self.teleportHandler.doId, 0,
                 self.teleportZone.parentId, self.teleportZone.zoneId)
 
-        # pre-allocate a doId for the teleport handler object, so we know when it
-        # successfully generates on the state server; then begin the teleporation mgr process...
         teleportHandlerDoId = self.teleportMgr.air.allocateChannel()
-        self.acceptOnce('generate-%d' % teleportHandlerDoId, _teleporting)
+        self.acceptOnce('generate-%d' % teleportHandlerDoId, teleportHandlerReady)
 
         self.teleportHandler = DistributedTeleportHandlerAI(self.teleportMgr.air, self.teleportMgr, self, self.avatar)
         self.teleportHandler.generateWithRequiredAndId(teleportHandlerDoId, self.teleportMgr.air.districtId, self.teleportZone.zoneId)
@@ -75,6 +73,7 @@ class DistributedTeleportMgrAI(DistributedObjectAI):
 
     def getWorld(self, instanceType, instanceName):
         for object in self.air.doId2do.values():
+
             if not object or not isinstance(object, DistributedInstanceBaseAI):
                 continue
 
@@ -120,7 +119,7 @@ class DistributedTeleportMgrAI(DistributedObjectAI):
             world = self.getWorld(instanceType, instanceName)
 
         if not world or not isinstance(world, DistributedInstanceBaseAI):
-            self.notify.warning('Cannot initiate teleport for %d unknown world %d %s!' % (avatar.doId,
+            self.notify.warning('Cannot initiate teleport for %d, unknown world %d %s!' % (avatar.doId,
                 instanceType, instanceName))
 
             return
@@ -128,7 +127,9 @@ class DistributedTeleportMgrAI(DistributedObjectAI):
         instance = world.uidMgr.justGetMeMeObject(islandUid)
 
         if not instance or not isinstance(instance, DistributedGameAreaAI):
-            self.notify.warning('Cannot initiate teleport for %d unknown instance!' % avatar.doId)
+            self.notify.warning('Cannot initiate teleport for %d, unknown instance %s!' % (avatar.doId,
+                islandUid))
+
             return
 
         if not spawnPt:
