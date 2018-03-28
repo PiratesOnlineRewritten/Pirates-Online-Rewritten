@@ -86,7 +86,7 @@ class DistributedTeleportMgrAI(DistributedObjectAI):
         avatar = self.air.doId2do.get(self.air.getAvatarIdFromSender())
 
         if not avatar:
-            self.notify.warning('Cannot teleport non-existant avatar to instance %d %s!' % (instanceType, instanceName))
+            self.notify.debug('Cannot teleport non-existant avatar to instance %d %s!' % (instanceType, instanceName))
             return
 
         self.doInitiateTeleport(avatar, instanceType=instanceType, instanceName=instanceName, doEffect=True)
@@ -95,7 +95,7 @@ class DistributedTeleportMgrAI(DistributedObjectAI):
         avatar = self.air.doId2do.get(self.air.getAvatarIdFromSender())
 
         if not avatar:
-            self.notify.warning('Cannot teleport non-existant avatar to island %s!' % islandUid)
+            self.notify.debug('Cannot teleport non-existant avatar to island %s!' % islandUid)
             return
 
         self.doInitiateTeleport(avatar, islandUid=islandUid, doEffect=True)
@@ -119,7 +119,7 @@ class DistributedTeleportMgrAI(DistributedObjectAI):
             world = self.getWorld(instanceType, instanceName)
 
         if not world or not isinstance(world, DistributedInstanceBaseAI):
-            self.notify.warning('Cannot initiate teleport for %d, unknown world %d %s!' % (avatar.doId,
+            self.notify.debug('Cannot initiate teleport for %d, unknown world %d %s!' % (avatar.doId,
                 instanceType, instanceName))
 
             return
@@ -127,7 +127,7 @@ class DistributedTeleportMgrAI(DistributedObjectAI):
         instance = world.uidMgr.justGetMeMeObject(islandUid)
 
         if not instance or not isinstance(instance, DistributedGameAreaAI):
-            self.notify.warning('Cannot initiate teleport for %d, unknown instance %s!' % (avatar.doId,
+            self.notify.debug('Cannot initiate teleport for %d, unknown instance %s!' % (avatar.doId,
                 islandUid))
 
             return
