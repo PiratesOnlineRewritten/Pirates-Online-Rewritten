@@ -1,14 +1,14 @@
-from direct.distributed.DistributedNodeAI import DistributedNodeAI
+from direct.distributed.DistributedObjectAI import DistributedObjectAI
 from direct.directnotify import DirectNotifyGlobal
 from DistributedRepairGameBase import *
 import RepairGlobals
 import random
 
-class DistributedRepairGameAI(DistributedNodeAI, DistributedRepairGameBase):
+class DistributedRepairGameAI(DistributedRepairGameBase, DistributedObjectAI):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedRepairGameAI')
 
     def __init__(self, air):
-        DistributedNodeAI.__init__(self, air)
+        DistributedObjectAI.__init__(self, air)
         DistributedRepairGameBase.__init__(self)
 
         self.avatar2game = {}
@@ -166,13 +166,8 @@ class DistributedRepairGameAI(DistributedNodeAI, DistributedRepairGameBase):
         self.notify.debug('%s complete game %d with a rating of %s' % (avatar.doId, gameIndex, rating))
 
         # Reward the player with gold
-        goldReward = random.randint(*RepairGlobals.AI.goldRewardRange)
-        rewardMultiplier = 1
-
-        if rating in RepairGlobals.AI.goldRewardMultiplier:
-            rewardMultiplier = random.randint(*RepairGlobals.AI.goldRewardMultiplier[rating])
-
-        goldReward * rewardMultiplier
+        goldReward = random.randint(*RepairGlobals.AI.goldRewardRange) * random.randint(*RepairGlobals.AI.goldRewardMultiplier[
+            rating]) if rating in RepairGlobals.AI.goldRewardMultiplier else 1
 
         inventory = self.air.inventoryManager.getInventory(avatar.doId)
         if not inventory:

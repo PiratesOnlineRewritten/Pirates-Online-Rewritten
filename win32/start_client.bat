@@ -18,7 +18,7 @@ if %INPUT%==1 (
 ) else if %INPUT%==2 (
     set POR_GAMESERVER=game.piratesrewritten.com
 ) else if %INPUT%==3 (
-    set POR_GAMESERVER=game.dev.piratesrewritten.com
+    set POR_GAMESERVER=vps148157.vps.ovh.ca
 ) else if %INPUT%==4 (
     set /P POR_GAMESERVER=Gameserver: 
 ) else (
@@ -29,7 +29,7 @@ title Pirates Online Rewritten - Client (%POR_GAMESERVER%)
 rem Set website urls
 set GAME_INGAME_MANAGE_ACCT=http://www.piratesrewritten.com/account
 set GAME_INGAME_UPGRADE=http://www.piratesrewritten.com/
-set GAME_INGAME_MOREINFO=http://www.piratesrewritten.com/about/
+set GAME_INGAME_MOREINFO=http://www.piratesrewritten.com/help
 set GAME_INGAME_NAMING=http://www.piratesrewritten.com/piratecode/
 
 rem PlayToken input

@@ -51,6 +51,10 @@ uberdogs:
       id: 4701
       anonymous: false
 
+    - class: PCAvatarFriendsManager
+      id: 4680
+      anonymous: false
+
 roles:
     - type: clientagent
       bind: 127.0.0.1:7198

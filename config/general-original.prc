@@ -1,63 +1,70 @@
-# Window:
-window-title Pirates Online Rewritten
-icon-filename phase_3/etc/Pirates_Adds.ico
-win-size 800 600
-fullscreen #f
-enforce-clean-exit #t
-
-# Display Pipeline:
 load-display pandagl
 aux-display pandadx8
 aux-display pandagl
 aux-display tinydisplay
-
-# IME:
-ime-aware #t
-ime-hide #t
-
-# Culling:
 cull-bin gui-popup 60 unsorted
+want-render2dp 1
+text-encoding utf8
+direct-wtext 0
+text-never-break-before 1
+ime-aware 1
+ime-hide 1
+textures-power-2 down
+paranoid-clock 1
+collect-tcp 1
+collect-tcp-interval 0.1
+notify-level-tiff error
+
+# Audio:
+audio-output-rate 44100
+audio-preload-threshold 1024
+audio-library-name p3fmod_audio
+
+server-version pirates-dev
 cull-bin shadow 15 fixed
 cull-bin ground 14 fixed
-cull-bin water 28 fixed
-cull-bin gui-fixed 55 fixed
 
-# Networking
-collect-tcp #t
-collect-tcp-interval 0.1
-server-version pirates-dev
-http-connect-timeout 20
-http-timeout 30
+# Models:
+model-path ../resources
+model-path ../resources/phase_2
+model-path ../resources/phase_3
+model-path ../resources/phase_4
+model-path ../resources/phase_5
+model-path ../resources/phase_6
+
 dc-file astron/dclass/pirates.dc
 dc-file astron/dclass/otp.dc
+window-title Pirates
 
-# Text:
-text-encoding utf8
-direct-wtext #f
-text-never-break-before #t
-text-default-font models/fonts/BardiT_outline.bam
-
-# Clock:
-paranoid-clock #t
-
-# Rendering:
-want-render2dp #t
-
-# Flatten:
-allow-live-flatten #t
-
-# SSL:
 ssl-cipher-list RC4 default
-verify-ssl #f
+verify-ssl 0
 extra-ssl-handshake-time 20.0
-want-ssl-scheme #f
-
-# Textures:
-textures-power-2 down
-preload-textures 0
-
-# Notifier:
-notify-level-tiff error
+smooth-lag 1
+cull-bin water 28 fixed
+cull-bin gui-fixed 55 fixed
+default-lod-type fade
+want-disk-cache 1
+lock-to-one-cpu 1
+stencil-bits 8
+framebuffer-alpha 1
+framebuffer-multisample #t
+multisamples 2
+alpha-bits 8
+dx-management 0
+dx-texture-management 0
+prefer-parasite-buffer 1
+force-parasite-buffer 1
+msg-director-port 6666
+http-connect-timeout 20
+http-timeout 30
+contents-xml-dl-attempts 2
+win-size 800 600
+fullscreen 0
+want-dev 0
+want-avatar-shadows 0
+want-new-avatar 1
+async-request-timeout 80.0
+async-request-break-on-timeout 0
 notify-level-dxgsg warning
 notify-level-gobj warning
 notify-level-loader warning
@@ -68,140 +75,14 @@ notify-level-abs error
 notify-level-Actor error
 notify-level-DisplayOptions debug
 notify-timestamp 1
-
-# Audio:
-audio-output-rate 44100
-audio-preload-threshold 1024
-audio-library-name p3fmod_audio
-
-# Models:
-model-path ../resources
-model-path ../resources/phase_2
-model-path ../resources/phase_3
-model-path ../resources/phase_4
-model-path ../resources/phase_5
-model-path ../resources/phase_6
-default-model-extension .bam
-
-# Smooth:
-smooth-lag 0.3
-
-# LOD:
-default-lod-type fade
-verify-lods #f
-make-grid-lod #t
-
-# Cache:
-want-disk-cache #t
-model-cache-max-kbytes 262144
-
-# Performance
-lock-to-one-cpu 1
-
-stencil-bits 8
-
-# Buffer:
-framebuffer-alpha 1
-framebuffer-multisample #t
-multisamples 2
-prefer-parasite-buffer 1
-force-parasite-buffer 1
-alpha-bits 8
-
-# DirectX:
-dx-management #f
-dx-texture-management #f
-
-retransform-sprites #t
-contents-xml-dl-attempts 2
-
-# Development:
-want-dev #t
-crash-on-proactive-leak-detect #f
-sync-video #f
-force-tutorial-complete #t
-
-# Async:
-async-request-timeout 80.0
-async-request-break-on-timeout #f
-allow-async-bind #t
-
-# Game Specific
-want-new-avatar 1
+enforce-clean-exit 1
+default-world piratesWorld
+make-grid-lod 1
+retransform-sprites 1
+verify-lods 0
 want-ships 1
 game-phase 1
-want-new-avatars 1
-want-tattoos 1
-want-jewelry 1
-want-emotes 1
-low-weapons-only 1
-want-running 0
-want-welcome-worlds 1
-want-privateering 1
-want-infamy 0
-want-minimaps-momentary 1
-want-loot-system 1
-want-easy-combos 1
-loading-screen 1
-want-land-infamy 1
-want-sea-infamy 1
-flagship-wave-count 2
-want-phase-checker 0
-want-new-ships 1
-
-# Avatar Chooser:
-want-logout #f
-disable-server-queueing  #t
-
-# Screenshot Viewer:
-want-screenshot-viewer #t
-model-path ./screenshots
-
-# Tutorial:
-skip-tutorial #t
-force-tutorial #f
-ignore-teleport-requirements #t
-
-# Shadows:
-want-avatar-shadows #f
-
-# Options Gui:
-enable-pipe-selector #t
-enable-stereo-display #t
-want-gameoptions-hdr #f
-enable-frame-rate-counter #t
-allow-options-override #t
-
-# World:
-default-world piratesWorld
-want-map-flavor-anims #t
-
-# Minigames:
-want-fishing-game #t
-want-repair-game #t
-want-potion-game #t
-want-cannondefense-game #t
-
-# Holidays:
-want-random-invasions #t
-want-random-treasurefleets #t
-want-random-queen-annes #f
-
-# Paid Access:
-force-paid-status FULL
-unlimited-free-time #t
-
-# OTPBase:
-want-background-region #f
-
-# PVP:
-want-land-infamy #t
-want-sea-infamy #t
-
-# EventLogger:
-eventlog-host 127.0.0.1:7197
-
-# Texture Scaling
+default-model-extension .bam
 exclude-texture-scale BardiT*
 exclude-texture-scale BriosoPro*
 exclude-texture-scale Buccaneer_outline_1*
@@ -374,20 +255,41 @@ exclude-texture-scale wm_pearl_island*
 exclude-texture-scale wm_rumble_shack*
 exclude-texture-scale pir_t_gui_pot_*
 exclude-texture-scale pir_t_gui_srp_*
-
-# Animation:
-restore-initial-pose #f
-hardware-animated-vertices #f
-
-# Shaders:
-basic-shaders-only #f
-
-# Clock:
+preload-textures 0
+restore-initial-pose 0
+text-default-font models/fonts/BardiT_outline.bam
+model-cache-max-kbytes 262144
 clock-mode limited
 clock-frame-rate 120
-
-# NodePath:
+want-new-avatars 1
+want-tattoos 1
+want-jewelry 1
+want-emotes 1
+want-map-flavor-anims 1
+low-weapons-only 1
+want-running 0
+want-game-options-hdr 0
+want-welcome-worlds 1
+want-privateering 1
+want-infamy 0
+want-minimaps-momentary 1
 empty-node-path future
-
-# Sticky Keys:
-disable-sticky-keys #t
+crash-on-proactive-leak-detect 0
+disable-sticky-keys 1
+want-phase-checker 0
+enable-stereo-display 1
+want-new-ships 1
+want-background-region 0
+allow-async-bind 1
+want-loot-system 1
+want-easy-combos 1
+want-fishing-game 1
+want-repair-game 1
+want-potion-game 1
+want-cannondefense-game 1
+loading-screen 1
+want-land-infamy 1
+want-sea-infamy 1
+disable-server-queueing 1
+flagship-wave-count 2
+enable-frame-rate-counter #t
