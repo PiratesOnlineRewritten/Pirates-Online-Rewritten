@@ -6,4 +6,4 @@ Pirates of the Caribbean Online Rewritten is a custom private server for Disney'
 
 ## License
 
-PiratesOnlineRewritten is licensed under the "MIT License" for more info, refer to the [LICENSE](LICENSE) file.
+PiratesOnlineRewritten is licensed under the "BSD 3-Clause" for more info, refer to the [LICENSE](LICENSE) file.
