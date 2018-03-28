@@ -9,4 +9,4 @@ Documentations regarding configuration settings, Web services, ect. can be locat
 
 ## License
 
-Bitnote is licensed under the "MIT License" for more info, refer to the [LICENSE](LICENSE) file.
+PiratesOnlineRewritten is licensed under the "MIT License" for more info, refer to the [LICENSE](LICENSE) file.
