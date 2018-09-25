@@ -6,7 +6,7 @@ from direct.showbase.InputStateGlobal import inputState
 from direct.task import Task
 from direct.task.TaskProfiler import TaskProfiler
 from otp.avatar import Avatar
-from otp.nametag.NametagGlobals import CFSpeech, CFThought, CFTimeout, CFPageButton, CFNoQuitButton, CFQuitButton
+from otp.nametag.NametagConstants import CFSpeech, CFThought, CFTimeout, CFPageButton, CFNoQuitButton, CFQuitButton
 import string
 import traceback
 from direct.showbase import PythonUtil

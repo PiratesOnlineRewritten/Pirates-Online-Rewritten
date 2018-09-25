@@ -838,9 +838,9 @@ class PiratesBase(OTPBase):
     def initNametagGlobals(self):
         arrow = loader.loadModel('models/gui/arrow')
         card = NodePath('card')
-        speech3d = ChatBalloon(loader.loadModel('models/gui/chatbox'))
-        thought3d = ChatBalloon(loader.loadModel('models/gui/chatbox_thought_cutout'))
-        speech2d = ChatBalloon(loader.loadModel('models/gui/chatbox_noarrow'))
+        speech3d = ChatBalloon(loader.loadModelNode('models/gui/chatbox'))
+        thought3d = ChatBalloon(loader.loadModelNode('models/gui/chatbox_thought_cutout'))
+        speech2d = ChatBalloon(loader.loadModelNode('models/gui/chatbox_noarrow'))
         chatButtonGui = loader.loadModel('models/gui/triangle')
         chatButtonGui.setScale(0.1)
         chatButtonGui.flattenStrong()

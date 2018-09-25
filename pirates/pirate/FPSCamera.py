@@ -261,10 +261,13 @@ class FPSCamera(CameraMode.CameraMode, NodePath, ParamObj):
             return Task.cont
 
         self._cTrav.traverse(render)
-        self._cHandlerQueue.sortEntries()
+        try:
+            self._cHandlerQueue.sortEntries()
+        except AssertionError:
+            return Task.cont
+
         cNormal = (0, -1, 0)
         collEntry = None
-
         for i in xrange(self._cHandlerQueue.getNumEntries()):
             collEntry = self._cHandlerQueue.getEntry(i)
             cNormal = collEntry.getSurfaceNormal(self)

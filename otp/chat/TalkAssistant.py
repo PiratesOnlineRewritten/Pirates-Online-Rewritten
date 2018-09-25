@@ -11,7 +11,7 @@ from otp.chat.TalkHandle import TalkHandle
 import time
 from otp.chat.TalkGlobals import *
 from otp.chat.ChatGlobals import *
-from otp.nametag.NametagGlobals import CFSpeech, CFTimeout, CFThought
+from otp.nametag.NametagConstants import CFSpeech, CFTimeout, CFThought
 
 ThoughtPrefix = '.'
 

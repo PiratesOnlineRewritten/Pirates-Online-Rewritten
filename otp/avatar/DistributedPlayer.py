@@ -1,6 +1,6 @@
 from pandac.PandaModules import *
 from otp.nametag.WhisperPopup import WhisperPopup
-from otp.nametag.NametagGlobals import CFQuicktalker, CFPageButton, CFQuitButton, CFSpeech, CFThought, CFTimeout
+from otp.nametag.NametagConstants import CFQuicktalker, CFPageButton, CFQuitButton, CFSpeech, CFThought, CFTimeout
 from otp.chat import ChatGarbler
 import string
 from direct.task import Task

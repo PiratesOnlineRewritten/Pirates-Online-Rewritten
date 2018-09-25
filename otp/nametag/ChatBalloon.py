@@ -1,94 +1,224 @@
 from panda3d.core import *
 
+from otp.nametag import NametagGlobals
+
+
 class ChatBalloon:
-    TEXT_SHIFT = (0.1, -0.05, 1.1)
-    TEXT_SHIFT_REVERSED = -0.05
-    TEXT_SHIFT_PROP = 0.08
-    NATIVE_WIDTH = 10.0
-    MIN_WIDTH = 2.5
-    MIN_HEIGHT = 1
-    BUBBLE_PADDING = 0.3
-    BUBBLE_PADDING_PROP = 0.05
-    BUTTON_SCALE = 6
-    BUTTON_SHIFT = (-0.2, 0, 0.6)
-    FRAME_SHIFT = (0.2, 1.4)
 
-    def __init__(self, model):
-        self.model = model
+    def __init__(self, node=None):
+        self.copy_node = None
+        self.top_node = None
+        self.top_mat = None
+        self.middle_node = None
+        self.middle_mat = None
+        self.bottom_node = None
+        self.bottom_mat = None
 
-    def generate(self, text, font, textColor=(0,0,0,1), balloonColor=(1,1,1,1),
-                 wordWrap = 10.0, button=None, reversed=False):
+        self.hscale = 0
+        self.text_height = 0
+        self.text_frame = Vec4(0)
 
-        root = NodePath('balloon')
+        self.scan(node)
 
-        # Add balloon geometry:
-        balloon = self.model.copyTo(root)
-        top = balloon.find('**/top')
-        middle = balloon.find('**/middle')
-        bottom = balloon.find('**/bottom')
+    @staticmethod
+    def find_geom_node(node):
+        if node.isGeomNode():
+            return node
 
-        balloon.setColor(balloonColor)
-        if balloonColor[3] < 1.0:
-            balloon.setTransparency(1)
+        for i in xrange(node.getNumChildren()):
+            n = ChatBalloon.find_geom_node(node.getChild(i))
+            if n:
+                return n
 
-        # Render the text into a TextNode, using the font:
-        t = root.attachNewNode(TextNode('text'))
-        t.node().setFont(font)
-        t.node().setWordwrap(wordWrap)
-        t.node().setText(text)
-        t.node().setTextColor(textColor)
+        return None
 
-        width, height = t.node().getWidth(), t.node().getHeight()
+    @staticmethod
+    def find_middle_geom(node):
+        if not node.getNumChildren():
+            return None
 
-        # Turn off depth write for the text: The place in the depth buffer is
-        # held by the chat bubble anyway, and the text renders after the bubble
-        # so there's no risk of the bubble overwriting the text's pixels.
-        t.setAttrib(DepthWriteAttrib.make(0))
-        t.setPos(self.TEXT_SHIFT)
-        t.setX(t, self.TEXT_SHIFT_PROP*width)
-        t.setZ(t, height)
+        child = None
+        for i in xrange(node.getNumChildren()):
+            child = node.getChild(i)
+            if child.getName() == 'middle':
+                return n
 
+            n = ChatBalloon.find_middle_geom(child)
+            if n:
+                return n
+
+        return ChatBalloon.find_geom_node(child)
+
+    def scan(self, node):
+        if node.getName() == 'chatBalloon':
+            return self.scan_balloon(node)
+
+        for i in xrange(node.getNumChildren()):
+            if self.scan(node.getChild(i)):
+                return True
+
+        return False
+
+    def scan_balloon(self, node):
+        self.copy_node = node.copySubgraph()
+
+        for i in xrange(node.getNumChildren()):
+            child = node.getChild(i)
+            if child.getName() == 'top':
+                self.top_node = child
+                self.top_mat = child.getTransform().getMat()
+
+            elif child.getName() == 'middle':
+                self.middle_node = child
+                self.middle_mat = child.getTransform().getMat()
+
+            elif child.getName() == 'bottom':
+                self.bottom_node = child
+                self.bottom_mat = child.getTransform().getMat()
+
+        if self.top_node and self.middle_node and self.bottom_node:
+            return True
+
+        else:
+            print "ChatBalloon geometry does not include top, middle, and bottom nodes."  # WARNING
+            return False
+
+    def generate(self, text, font, wordwrap, text_color, balloon_color, for_3d,
+                 has_draw_order, draw_order, page_button, space_for_button,
+                 reversed, new_button):  # new_button is a pointer, let's use a list hack here
+        chat_node = PandaNode('chat')
+        chat_node.setAttrib(CullFaceAttrib.make(0))
+        text_node = NametagGlobals.getTextNode()
+        text_node.setFont(font)
+        text_node.setWordwrap(wordwrap)
+        text_node.setAlign(TextNode.ALeft)
+        text_node.setText(text)
+
+        v116 = NametagGlobals._balloon_text_origin[0]
         if reversed:
-            # The nametag code wants the text on the left side of the axis,
-            # rather than on the right side. Therefore, we move the text to the
-            # opposite side:
-            t.setX(self.TEXT_SHIFT_REVERSED - self.TEXT_SHIFT_PROP*width - width)
+            v116 = v116 + 9.0
 
-        # Give the chat bubble a button, if one is requested:
-        if button:
-            np = button.copyTo(root)
-            np.setPos(t, width, 0, -height)
-            np.setPos(np, self.BUTTON_SHIFT)
-            np.setScale(self.BUTTON_SCALE)
+        v27 = (text_node.getRight() - text_node.getLeft()) * 0.11111111
+        self.hscale = v27
 
-        # Set a minimum width and height for short or empty messages
-        if width < self.MIN_WIDTH:
-            width = self.MIN_WIDTH
-            if reversed:
-                t.setX(t, -width/2.0)
+        if v27 < 0.25:
+            self.hscale = 0.25
+            text_node.setAlign(TextNode.ACenter)
+
+            v29 = v116
+            if not reversed:
+                v116 = v29 + 4.5
+
             else:
-                t.setX(t, width/2.0)
-            t.node().setAlign(TextNode.ACenter)
+                v116 = v29 - 4.5
 
-        if height < self.MIN_HEIGHT:
-            height = self.MIN_HEIGHT
-            t.setX(t, height/2.0)
-            t.node().setAlign(TextNode.ACenter)
+        elif reversed:
+            self.hscale = -self.hscale
 
-        # Set the balloon's size:
-        width *= 1+self.BUBBLE_PADDING_PROP
-        width += self.BUBBLE_PADDING
-        balloon.setSx(width/self.NATIVE_WIDTH)
-        if reversed:
-            balloon.setSx(-balloon.getSx())
-            balloon.setTwoSided(True) # Render the backface of the balloon
-        middle.setSz(height)
-        top.setZ(top, height-1)
+        self.text_frame = text_node.getCardActual()
+        _space = 0.2 if space_for_button else 0.0
+        num_rows = max(1, text_node.getNumRows())
+        _num_rows = num_rows
+        line_h = text_node.getFont().getLineHeight()
 
-        # Calculate the frame occupied by the balloon:
-        left, bottom = self.FRAME_SHIFT
-        if reversed:
-            left = -left - width
-        frame = (left, left+width, bottom, bottom+height+1)
+        num_rows_minus_1 = num_rows - 1
+        subgraph_copy_mat = Mat4(self.hscale, 0, 0, 0,
+                                 0, 1.0, 0, 0,
+                                 0, 0, 1.0, 0,
+                                 0, 0, 0, 1.0)
+        text_h = _num_rows * line_h + _space
+        self.text_height = text_h
 
-        return root, frame
+        v132 = num_rows_minus_1 * line_h + _space
+
+        middle_mat = Mat4(1, 0, 0, 0,
+                          0, 1, 0, 0,
+                          0, 0, text_h, 0,
+                          0, 0, 0, 1) * self.middle_mat
+        top_mat = Mat4(1, 0, 0, 0,
+                       0, 1, 0, 0,
+                       0, 0, 1, 0,
+                       0, 0, text_h - 1.0, 1) * self.top_mat
+
+        v137 = v116 * self.hscale
+        v138 = 0.0
+        v139 = NametagGlobals._balloon_text_origin[2] + v132 + 0.2
+
+        self.text_frame += Vec4(v137, v137, v139, v139)
+
+        '''
+        Correct code:
+        Python won't let us edit this transform, we'll have to copy it all
+
+        if self.top_node:
+            self.top_node.setTransform(TransformState.makeMat(top_mat))
+
+        if self.middle_node:
+            self.middle_node.setTransform(TransformState.makeMat(middle_mat))
+
+        subgraph_copy = self.copy_node.copySubgraph()
+        chat_node.addChild(subgraph_copy)
+        subgraph_copy.setTransform(TransformState.makeMat(subgraph_copy_mat))
+        '''
+
+        # BEGIN PYTHON CODE
+        subgraph_copy = self.copy_node.copySubgraph()
+        NodePath.anyPath(subgraph_copy).find('**/top').node().setTransform(TransformState.makeMat(top_mat))
+        NodePath.anyPath(subgraph_copy).find('**/middle').node().setTransform(TransformState.makeMat(middle_mat))
+
+        chat_node.addChild(subgraph_copy)
+        subgraph_copy.setTransform(TransformState.makeMat(subgraph_copy_mat))
+        # END PYTHON CODE
+
+        if has_draw_order:
+            bin = config.GetString('nametag-fixed-bin', 'fixed')
+            subgraph_copy.setAttrib(CullBinAttrib.make(bin, draw_order))
+
+        subgraph_copy.setAttrib(ColorAttrib.makeFlat(balloon_color))
+        if balloon_color[3] != 1.0:
+            subgraph_copy.setAttrib(TransparencyAttrib.make(1))
+
+        reducer = SceneGraphReducer()
+        reducer.applyAttribs(subgraph_copy)
+        reducer.flatten(chat_node, -1)
+
+        generated_text = text_node.generate()
+        if for_3d:
+            v86 = ChatBalloon.find_middle_geom(chat_node)
+            if not v86:
+                v86 = ChatBalloon.find_geom_node(chat_node)
+
+            v86.setEffect(DecalEffect.make())
+
+        else:
+            v86 = chat_node
+            if has_draw_order:
+                bin = config.GetString('nametag-fixed-bin', 'fixed')
+                generated_text.setAttrib(CullBinAttrib.make(bin, draw_order + 1))
+
+        np = NodePath.anyPath(v86)
+        v144 = np.attachNewNode(generated_text)
+        v144.setPos((v137, v138, v139))
+        v144.setColor(text_color)
+        v144.setY(-0.01)  # Panda3D 1.10 hack to prevent z-fighting.
+        if text_color[3] != 1.0:
+            v144.setTransparency(1)
+
+        if page_button:
+            v116 = ModelNode('button')
+            new_button[0] = np.attachNewNode(v116)
+            button_copy = page_button.copyTo(new_button[0])
+            if reversed:
+                button_copy.setPos(self.hscale * 1.7, 0, 1.8)
+
+            else:
+                button_copy.setPos(self.hscale * 9.0, 0, 1.8)
+
+            button_copy.setScale(8.0, 8.0, 8.0)
+            button_copy.setY(-0.01)  # Panda3D 1.10 hack to prevent z-fighting.
+
+        reducer = SceneGraphReducer()
+        reducer.applyAttribs(generated_text)
+        reducer.flatten(chat_node, 1)
+
+        return chat_node

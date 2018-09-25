@@ -1,2 +1,2 @@
 cd ..
-./astrond --pretty --loglevel debug config/astrond.yml
+./astrond --loglevel debug config/astrond.yml
